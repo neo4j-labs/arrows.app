@@ -16,6 +16,10 @@
 .env.test.local
 .env.production.local
 
+# IDE
+.idea/
+*.iml
+
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
