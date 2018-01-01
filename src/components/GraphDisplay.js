@@ -29,11 +29,6 @@ class GraphDisplay extends Component {
       drawNode(ctx, node.position.x, node.position.y, '#53acf3', 50)
     })
   }
-
-  static rect(props) {
-    const {ctx, x, y, width, height} = props;
-    ctx.fillRect(x, y, width, height);
-  }
 }
 
 export default GraphDisplay
