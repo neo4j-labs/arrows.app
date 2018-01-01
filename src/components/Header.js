@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import headerStyle from '../App'
 
 export const headerHeight = 50;
 
@@ -9,7 +8,9 @@ export default class Header extends Component {
       height: headerHeight
     };
     return (
-      <header style={headerStyle} className="App-header"/>
+      <header style={headerStyle} className="App-header">
+        <button onClick={this.props.onPlusNodeClick}>+ Node</button>
+      </header>
     )
   }
 }
