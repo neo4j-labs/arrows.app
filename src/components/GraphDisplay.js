@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {drawNode} from "../graphics/canvasRenderer";
 
 class GraphDisplay extends Component {
   constructor() {
@@ -25,7 +26,7 @@ class GraphDisplay extends Component {
     const ctx = this.refs.canvas.getContext('2d');
     ctx.clearRect(0,0, this.props.canvasSize.width, this.props.canvasSize.height);
     this.props.graph.nodes.forEach((node) => {
-      GraphDisplay.rect({ctx, x: node.position.x, y: node.position.y, width: 50, height: 50});
+      drawNode(ctx, node.position.x, node.position.y, '#53acf3', 50)
     })
   }
 
