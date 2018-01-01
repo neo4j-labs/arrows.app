@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux'
-import createNode from "./createNode";
+import graph from "./graph";
 
 const arrowsApp = combineReducers({
-  createNode
+  graph
 })
 
 export default arrowsApp

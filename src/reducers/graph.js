@@ -1,6 +1,6 @@
 import {Graph} from "../model/Graph";
 
-const createNode = (state = new Graph(), action) => {
+const graph = (state = new Graph(), action) => {
   switch (action.type) {
     case 'CREATE_NODE':
       return state.createNode();
@@ -10,4 +10,4 @@ const createNode = (state = new Graph(), action) => {
   }
 }
 
-export default createNode
+export default graph
