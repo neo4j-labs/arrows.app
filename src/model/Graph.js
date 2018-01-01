@@ -1,6 +1,7 @@
 import { Node } from './Node'
 /*
- * Immutable graph data-structure
+ * Graph data-structure that's intended to be used immutably: please remember not to modify any of the internal arrays;
+ * make a new graph object instead.
  */
 export class Graph {
   constructor(nodes = []) {
