@@ -3,3 +3,11 @@ export const createNode = () => {
     type: 'CREATE_NODE'
   }
 }
+
+export const windowResized = (width, height) => {
+  return {
+    type: 'WINDOW_RESIZED',
+    width,
+    height
+  }
+}

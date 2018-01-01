@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { headerHeight } from './Header'
 
 class GraphDisplay extends Component {
   constructor() {
@@ -8,8 +7,7 @@ class GraphDisplay extends Component {
   }
 
   componentDidMount() {
-    this.fillPage();
-    window.addEventListener('resize', this.fillPage.bind(this))
+    window.addEventListener('resize', this.props.onWindowResized.bind(this))
     this.drawGraph();
   }
 
@@ -17,9 +15,15 @@ class GraphDisplay extends Component {
     this.drawGraph();
   }
 
+  render() {
+    return (
+      <canvas width={this.props.canvasSize.width} height={this.props.canvasSize.height} ref="canvas"/>
+    )
+  }
+
   drawGraph() {
     const ctx = this.refs.canvas.getContext('2d');
-    ctx.clearRect(0,0, this.state.width, this.state.height);
+    ctx.clearRect(0,0, this.props.canvasSize.width, this.props.canvasSize.height);
     this.props.graph.nodes.forEach((node) => {
       GraphDisplay.rect({ctx, x: node.position.x, y: node.position.y, width: 50, height: 50});
     })
@@ -28,18 +32,6 @@ class GraphDisplay extends Component {
   static rect(props) {
     const {ctx, x, y, width, height} = props;
     ctx.fillRect(x, y, width, height);
-  }
-
-  fillPage() {
-    let innerWidth = window.innerWidth;
-    let innerHeight = window.innerHeight;
-    this.setState({width: innerWidth, height: innerHeight - headerHeight})
-  }
-
-  render() {
-    return (
-      <canvas width={this.state.width} height={this.state.height} ref="canvas"/>
-    )
   }
 }
 

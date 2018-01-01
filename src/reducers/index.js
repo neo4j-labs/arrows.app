@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux'
 import graph from "./graph";
+import windowSize from "./windowSize";
 
 const arrowsApp = combineReducers({
-  graph
+  graph,
+  windowSize
 })
 
 export default arrowsApp
