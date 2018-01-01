@@ -1,4 +1,7 @@
 import {FETCHING_GRAPH, FETCHING_GRAPH_SUCCEEDED, FETCHING_GRAPH_FAILED} from "../reducers/storageStatus";
+import {Graph} from "../model/Graph";
+import {Node} from "../model/Node";
+import {Point} from "../model/Point";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 
@@ -17,9 +20,10 @@ function fetchingGraphFailed() {
   }
 }
 
-function fetchingGraphSucceeded() {
+function fetchingGraphSucceeded(storedGraph) {
   return {
-    type: FETCHING_GRAPH_SUCCEEDED
+    type: FETCHING_GRAPH_SUCCEEDED,
+    storedGraph
   }
 }
 
@@ -29,10 +33,15 @@ export function fetchGraphFromDatabase() {
 
     let session = driver.session();
 
-    return session.run('RETURN 1')
+    return session.run('MATCH (n:Diagram0) RETURN n')
       .then((result) => {
         console.log(result)
-        dispatch(fetchingGraphSucceeded())
+        let nodes = result.records.map((record) => {
+          let neo4jNode = record.get('n');
+          return new Node(new Point(neo4jNode.properties['_x'] || 0, neo4jNode.properties['_y'] || 0));
+        });
+        dispatch(fetchingGraphSucceeded(new Graph(nodes)))
+        session.close();
       }, (error) => {
         console.log(error)
         dispatch(fetchingGraphFailed())
