@@ -1,17 +1,18 @@
-export const IDLE = 'IDLE'
-export const FETCHING_GRAPH = 'FETCHING_GRAPH'
-export const FETCHING_GRAPH_FAILED = 'FETCHING_GRAPH_FAILED'
-export const FETCHING_GRAPH_SUCCEEDED = 'FETCHING_GRAPH_SUCCEEDED'
+import {
+  FETCHING_GRAPH, FETCHING_GRAPH_FAILED, FETCHING_GRAPH_SUCCEEDED, IDLE,
+  UPDATING_GRAPH, UPDATING_GRAPH_FAILED, UPDATING_GRAPH_SUCCEEDED
+} from "../state/storageStatus";
 
 const storageStatus = (state = IDLE, action) => {
   switch (action.type) {
     case FETCHING_GRAPH:
-      return FETCHING_GRAPH;
-
     case FETCHING_GRAPH_FAILED:
-      return FETCHING_GRAPH_FAILED;
+    case UPDATING_GRAPH:
+    case UPDATING_GRAPH_FAILED:
+      return action.type;
 
     case FETCHING_GRAPH_SUCCEEDED:
+    case UPDATING_GRAPH_SUCCEEDED:
       return IDLE;
 
     default:

@@ -7,6 +7,7 @@ import './index.css';
 import reducer from './reducers'
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
+import {fetchGraphFromDatabase} from "./actions/neo4jStorage";
 
 //noinspection JSUnresolvedVariable,JSUnresolvedFunction
 let store = createStore(
@@ -21,4 +22,5 @@ render(
   </Provider>,
   document.getElementById('root')
 )
+store.dispatch(fetchGraphFromDatabase())
 registerServiceWorker();

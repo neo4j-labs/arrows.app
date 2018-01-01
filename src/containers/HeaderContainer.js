@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 import {createNode} from '../actions'
-import {fetchGraphFromDatabase} from "../actions/neo4jStorage";
+import {fetchGraphFromDatabase, modifyGraph} from "../actions/neo4jStorage";
 import Header from '../components/Header'
 
 const mapStateToProps = state => {
@@ -12,7 +12,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onPlusNodeClick: () => {
-      dispatch(createNode())
+      dispatch(modifyGraph(createNode()))
     },
     onReloadGraphClick: () => {
       dispatch(fetchGraphFromDatabase())

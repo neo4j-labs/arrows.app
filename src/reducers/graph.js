@@ -1,5 +1,5 @@
 import {Graph} from "../model/Graph";
-import {FETCHING_GRAPH_SUCCEEDED} from "./storageStatus";
+import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 
 const graph = (state = new Graph(), action) => {
   switch (action.type) {

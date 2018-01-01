@@ -1,4 +1,7 @@
-import {FETCHING_GRAPH, FETCHING_GRAPH_SUCCEEDED, FETCHING_GRAPH_FAILED} from "../reducers/storageStatus";
+import {
+  IDLE, FETCHING_GRAPH, FETCHING_GRAPH_SUCCEEDED, FETCHING_GRAPH_FAILED,
+  UPDATING_GRAPH, UPDATING_GRAPH_SUCCEEDED
+} from "../state/storageStatus";
 import {Graph} from "../model/Graph";
 import {Node} from "../model/Node";
 import {Point} from "../model/Point";
@@ -27,6 +30,44 @@ function fetchingGraphSucceeded(storedGraph) {
   }
 }
 
+function updatingGraph() {
+  return {
+    type: UPDATING_GRAPH
+  }
+}
+
+function updatingGraphSucceeded() {
+  return {
+    type: UPDATING_GRAPH_SUCCEEDED
+  }
+}
+
+function updateGraph(graphBefore) {
+  return function (dispatch, getState) {
+    dispatch(updatingGraph())
+
+    let graphAfter = getState().graph;
+
+    for (let i = 0; i < Math.max(graphBefore.nodes.length, graphAfter.nodes.length); i++) {
+      if (i >= graphBefore.nodes.length) {
+        let session = driver.session();
+
+        return session.run('CREATE (n:Diagram0 {_x: $x, _y: $y})', {
+          x: graphAfter.nodes[i].position.x,
+          y: graphAfter.nodes[i].position.y
+        })
+          .then(() => {
+            dispatch(updatingGraphSucceeded())
+            session.close();
+          }, (error) => {
+            console.log(error)
+            dispatch(fetchingGraphFailed())
+          })
+      }
+    }
+  }
+  }
+
 export function fetchGraphFromDatabase() {
   return function(dispatch) {
     dispatch(fetchingGraph())
@@ -35,7 +76,6 @@ export function fetchGraphFromDatabase() {
 
     return session.run('MATCH (n:Diagram0) RETURN n')
       .then((result) => {
-        console.log(result)
         let nodes = result.records.map((record) => {
           let neo4jNode = record.get('n');
           return new Node(new Point(neo4jNode.properties['_x'] || 0, neo4jNode.properties['_y'] || 0));
@@ -46,5 +86,15 @@ export function fetchGraphFromDatabase() {
         console.log(error)
         dispatch(fetchingGraphFailed())
       })
+  }
+}
+
+export function modifyGraph(graphAction) {
+  return function (dispatch, getState) {
+    let before = getState().graph
+    dispatch(graphAction)
+    if (getState().storageStatus === IDLE) {
+      dispatch(updateGraph(before))
+    }
   }
 }
