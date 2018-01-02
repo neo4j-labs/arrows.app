@@ -1,19 +1,19 @@
-export function drawNode(ctx, x, y, color, size) {
-  drawSolidCircle(ctx, x, y, color, size)
+export function drawNode(ctx, position, color, size) {
+  drawSolidCircle(ctx, position, color, size)
 }
 
-function drawSolidCircle (ctx, x, y, color, size) {
+function drawSolidCircle (ctx, position, color, size) {
   ctx.beginPath()
 
   ctx.fillStyle = color
 
-  drawCircle(ctx, x, y, size)
+  drawCircle(ctx, position, size)
   ctx.fill()
   ctx.closePath()
 }
 
-function drawCircle (ctx, x, y, r) {
+function drawCircle (ctx, position, r) {
   ctx.beginPath()
-  ctx.arc(x, y, r, 0, 2 * Math.PI, false)
+  ctx.arc(position.x, position.y, r, 0, 2 * Math.PI, false)
   ctx.closePath()
 }
