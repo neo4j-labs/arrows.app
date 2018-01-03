@@ -2,15 +2,15 @@ import DragStateMachine, {StateDragging, StatePressed} from './DragStateMachine'
 import {Point} from "../model/Point";
 
 export default class TouchHandler {
-  constructor(canvas, panZoomState, nodeFinder, callbacks) {
+  constructor(canvas, viewTransformation, nodeFinder, callbacks) {
     this.canvas = canvas
+    this.viewTransformation = viewTransformation;
     this.nodeFinder = nodeFinder;
     this.callbacks = callbacks;
 
     this._registerTouchEvents()
 
     this._dragMachine = new DragStateMachine()
-    this.panZoomState = panZoomState
     this._hasDragged = false
     this._mouseDownItem = null
     this._mouseDownOnCanvas = false
@@ -53,7 +53,7 @@ export default class TouchHandler {
 
   _toLayoutCoord (value) {
     let devicePixelRatio = window.devicePixelRatio || 1
-    return value * devicePixelRatio / this.panZoomState.zoom
+    return value * devicePixelRatio / this.viewTransformation.scale
   }
 
   handleMouseMove (evt) {
@@ -77,8 +77,7 @@ export default class TouchHandler {
     } else if (this._mouseDownOnCanvas) {
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
-        this.panZoomState.pan = this.panZoomState.pan.minus(this._dragMachine.delta)
-        console.log(this.panZoomState.pan)
+        this.callbacks.pan(this.viewTransformation.offset.minus(this._dragMachine.delta))
       }
     }
 
@@ -135,7 +134,7 @@ export default class TouchHandler {
     let rel = hitItems.find(item => item.type === 'relationship')
 
     const rect = this.canvas.getBoundingClientRect()
-    const pos = getMousePosition(evt, { state: this.panZoomState, canvas: this.canvas })
+    const pos = getMousePosition(evt, { state: this.viewTransformation, canvas: this.canvas })
     const pointer = {
       DOM: {
         x: evt.clientX - rect.left,
@@ -157,7 +156,7 @@ export default class TouchHandler {
   }
 
   _getTargetItems (evt, targets = ['node']) {
-    const pos = getMousePosition(evt, { state: this.panZoomState, canvas: this.canvas })
+    const pos = getMousePosition(evt, { state: this.viewTransformation, canvas: this.canvas })
     // const node = this._layout.getNodeAtPoint(pos)
     const node = null
     return node ? [node] : []
@@ -181,7 +180,7 @@ const getMousePosition = (evt, context) => {
   let canvasPosition = new Point(
     evt.clientX - rect.left - rect.width * 0.5,
     evt.clientY - rect.top - rect.height * 0.5
-  ).scale(devicePixelRatio / state.zoom)
+  ).scale(devicePixelRatio / state.scale)
 
-  return canvasPosition.translate(state.pan)
+  return canvasPosition.translate(state.offset)
 }

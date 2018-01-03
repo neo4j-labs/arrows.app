@@ -1,5 +1,5 @@
 import {connect} from 'react-redux'
-import {createNode} from '../actions'
+import {createNode} from '../actions/graph'
 import {fetchGraphFromDatabase, modifyGraph} from "../actions/neo4jStorage";
 import Header from '../components/Header'
 

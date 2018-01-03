@@ -1,18 +1,22 @@
 import {connect} from 'react-redux'
 import GraphDisplay from '../components/GraphDisplay'
 import {headerHeight} from '../components/Header'
-import {windowResized} from "../actions/index";
+import {windowResized} from "../actions/windowSize";
+import {pan, zoom} from "../actions/viewTransformation";
 
 const mapStateToProps = state => {
   return {
     graph: state.graph,
-    canvasSize: state.windowSize.relative(0, -headerHeight)
+    canvasSize: state.windowSize.relative(0, -headerHeight),
+    viewTransformation: state.viewTransformation
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight))
+    onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight)),
+    zoom: (scale) => dispatch(zoom(scale)),
+    pan: (offset) => dispatch(pan(offset))
   }
 }
 
