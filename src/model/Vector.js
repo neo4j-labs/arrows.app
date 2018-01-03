@@ -4,8 +4,8 @@ export class Vector {
     this.dy = dy
   }
 
-  minus(otherVector) {
-    return new Vector(this.dx - otherVector.dx, this.dy - otherVector.dy)
+  plus(otherVector) {
+    return new Vector(this.dx + otherVector.dx, this.dy + otherVector.dy)
   }
 
   distance() {

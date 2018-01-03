@@ -2,11 +2,9 @@ import DragStateMachine, {StateDragging, StatePressed} from './DragStateMachine'
 import {Point} from "../model/Point";
 
 export default class TouchHandler {
-  constructor(canvas, viewTransformation, nodeFinder, callbacks) {
+  constructor(canvas, nodeFinder) {
     this.canvas = canvas
-    this.viewTransformation = viewTransformation;
     this.nodeFinder = nodeFinder;
-    this.callbacks = callbacks;
 
     this._registerTouchEvents()
 
@@ -77,7 +75,7 @@ export default class TouchHandler {
     } else if (this._mouseDownOnCanvas) {
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
-        this.callbacks.pan(this.viewTransformation.offset.minus(this._dragMachine.delta))
+        this.callbacks.pan(this.viewTransformation.offset.plus(this._dragMachine.delta))
       }
     }
 
