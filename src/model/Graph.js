@@ -13,4 +13,16 @@ export class Graph {
     newNodes.push(new Node())
     return new Graph(newNodes)
   }
+
+  moveNode(node, position) {
+    let newNodes = []
+    for (let i = 0; i < this.nodes.length; i++) {
+      if (this.nodes[i] === node) {
+        newNodes[i] = new Node(position)
+      } else {
+        newNodes[i] = this.nodes[i]
+      }
+    }
+    return new Graph(newNodes)
+  }
 }

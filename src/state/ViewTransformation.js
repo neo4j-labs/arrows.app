@@ -17,4 +17,8 @@ export class ViewTransformation {
   transform(point) {
     return point.scale(this.scale).translate(this.offset)
   }
+
+  inverse(point) {
+    return point.translate(this.offset.invert()).scale(1 / this.scale)
+  }
 }

@@ -6,7 +6,7 @@ class GraphDisplay extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.props.onWindowResized.bind(this))
-    this.touchHandler = new TouchHandler(this.refs.canvas, null)
+    this.touchHandler = new TouchHandler(this.refs.canvas, this)
     this.drawGraph();
   }
 
@@ -23,7 +23,11 @@ class GraphDisplay extends Component {
   drawGraph() {
     this.touchHandler.viewTransformation = this.props.viewTransformation
     this.touchHandler.callbacks = {
-      pan: this.props.pan
+      pan: this.props.pan,
+      canvasClicked: () => {},
+      nodeClicked: (node) => {},
+      nodeDoubleClicked: (node) => {},
+      nodeDragged: this.props.moveNode
     }
 
     const ctx = this.refs.canvas.getContext('2d');
@@ -31,6 +35,11 @@ class GraphDisplay extends Component {
     this.props.graph.nodes.forEach((node) => {
       drawNode(ctx, this.props.viewTransformation.transform(node.position), '#53acf3', 50)
     })
+  }
+
+  getNodeAtPoint(point) {
+    return this.props.graph.nodes.find((node) =>
+      node.position.vectorFrom(point).distance() < node.radius)
   }
 }
 

@@ -8,6 +8,10 @@ export class Vector {
     return new Vector(this.dx + otherVector.dx, this.dy + otherVector.dy)
   }
 
+  invert() {
+    return new Vector(-this.dx, -this.dy)
+  }
+
   distance() {
     return Math.sqrt(this.dx * this.dx + this.dy * this.dy)
   }

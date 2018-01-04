@@ -6,6 +6,9 @@ const graph = (state = new Graph(), action) => {
     case 'CREATE_NODE':
       return state.createNode();
 
+    case 'MOVE_NODE':
+      return state.moveNode(action.node, action.position);
+
     case FETCHING_GRAPH_SUCCEEDED:
       return action.storedGraph
 
