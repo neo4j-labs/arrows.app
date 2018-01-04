@@ -47,27 +47,20 @@ export default class TouchHandler {
     evt.preventDefault()
   }
 
-  _toLayoutCoord (value) {
-    let devicePixelRatio = window.devicePixelRatio || 1
-    return value * devicePixelRatio / this.viewTransformation.scale
-  }
-
   handleMouseMove (evt) {
     if (evt.button !== 0) {
       return
     }
 
     if (this._mouseDownItem) {
-      let prevState = this._dragMachine.state
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
-        const newPosition = this.itemBeingDragged.position.translate(this._dragMachine.delta)
-        this.callbacks.nodeDragged(this.itemBeingDragged, newPosition)
+        this.callbacks.nodeDragged(this.itemBeingDragged.id, this._dragMachine.delta)
       }
     } else if (this._mouseDownOnCanvas) {
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
-        this.callbacks.pan(this.viewTransformation.offset.plus(this._dragMachine.delta))
+        this.callbacks.pan(this._dragMachine.delta)
       }
     }
 

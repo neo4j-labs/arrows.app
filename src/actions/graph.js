@@ -4,10 +4,10 @@ export const createNode = () => {
   }
 }
 
-export const moveNode = (node, position) => {
+export const moveNode = (nodeId, vector) => {
   return {
     type: 'MOVE_NODE',
-    node,
-    position
+    nodeId,
+    vector
   }
 }

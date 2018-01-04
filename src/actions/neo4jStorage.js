@@ -74,11 +74,15 @@ export function fetchGraphFromDatabase() {
 
     let session = driver.session();
 
-    return session.run('MATCH (n:Diagram0) RETURN n')
+    return session.run('MATCH (n:Diagram0) RETURN n, id(n) as id')
       .then((result) => {
         let nodes = result.records.map((record) => {
           let neo4jNode = record.get('n');
-          return new Node(new Point(neo4jNode.properties['_x'] || 0, neo4jNode.properties['_y'] || 0));
+          let neo4jId = record.get('id')
+          return new Node({
+            type: 'NEO4J',
+            value: neo4jId
+          }, new Point(neo4jNode.properties['_x'] || 0, neo4jNode.properties['_y'] || 0));
         });
         dispatch(fetchingGraphSucceeded(new Graph(nodes)))
         session.close();

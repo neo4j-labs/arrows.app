@@ -18,7 +18,7 @@ const mapDispatchToProps = dispatch => {
     onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight)),
     zoom: (scale) => dispatch(zoom(scale)),
     pan: (offset) => dispatch(pan(offset)),
-    moveNode: (node, position) => dispatch(moveNode(node, position))
+    moveNode: (nodeId, vector) => dispatch(moveNode(nodeId, vector))
   }
 }
 

@@ -11,7 +11,7 @@ export class ViewTransformation {
   }
 
   pan(offset) {
-    return new ViewTransformation(this.scale, offset)
+    return new ViewTransformation(this.scale, this.offset.plus(offset))
   }
 
   transform(point) {
