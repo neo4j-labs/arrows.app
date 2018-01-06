@@ -27,7 +27,7 @@ export class Node {
     return node
   }
 
-  move(vector) {
-    return new Node(this.id, this.position.translate(vector))
+  moveTo(newPosition) {
+    return new Node(this.id, newPosition)
   }
 }

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {drawNode} from "../graphics/canvasRenderer";
+import {drawGuideline, drawNode} from "../graphics/canvasRenderer";
 import TouchHandler from "../interactions/TouchHandler";
 
 class GraphDisplay extends Component {
@@ -27,11 +27,20 @@ class GraphDisplay extends Component {
       canvasClicked: () => {},
       nodeClicked: (node) => {},
       nodeDoubleClicked: (node) => {},
-      nodeDragged: this.props.moveNode
+      nodeDragged: this.props.moveNode,
+      endDrag: this.props.endDrag
     }
 
     const ctx = this.refs.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.props.canvasSize.width, this.props.canvasSize.height);
+
+    this.props.guides.guidelines.forEach((guideline) => {
+      drawGuideline(ctx, guideline, this.props.canvasSize.width, this.props.canvasSize.height)
+    })
+    if (this.props.guides.naturalPosition) {
+      drawNode(ctx, this.props.viewTransformation.transform(this.props.guides.naturalPosition), 'grey', 50)
+    }
+
     this.props.graph.nodes.forEach((node) => {
       drawNode(ctx, this.props.viewTransformation.transform(node.position), '#53acf3', 50)
     })

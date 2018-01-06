@@ -103,6 +103,9 @@ export default class TouchHandler {
   }
 
   endMouseEvents () {
+    if (this._dragMachine.state === StateDragging) {
+      this.callbacks.endDrag()
+    }
     this._mouseDownItem = null
     this._mouseDownOnCanvas = false
     this._dragMachine.reset()

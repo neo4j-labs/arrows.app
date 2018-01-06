@@ -7,7 +7,7 @@ const graph = (state = new Graph(), action) => {
       return state.createNode();
 
     case 'MOVE_NODE':
-      return state.moveNode(action.nodeId, action.vector);
+      return state.moveNode(action.nodeId, action.newPosition);
 
     case FETCHING_GRAPH_SUCCEEDED:
       return action.storedGraph

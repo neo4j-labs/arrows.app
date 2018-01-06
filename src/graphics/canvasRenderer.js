@@ -2,6 +2,26 @@ export function drawNode(ctx, position, color, size) {
   drawSolidCircle(ctx, position, color, size)
 }
 
+export function drawGuideline(ctx, guideline, width, height) {
+  switch (guideline.type) {
+    case 'HORIZONTAL':
+      ctx.beginPath()
+      ctx.moveTo(0, guideline.y)
+      ctx.lineTo(width, guideline.y)
+      ctx.stroke()
+      ctx.closePath()
+      break
+
+    case 'VERTICAL':
+      ctx.beginPath()
+      ctx.moveTo(guideline.x, 0)
+      ctx.lineTo(guideline.x, height)
+      ctx.stroke()
+      ctx.closePath()
+      break
+  }
+}
+
 function drawSolidCircle (ctx, position, color, size) {
   ctx.beginPath()
 

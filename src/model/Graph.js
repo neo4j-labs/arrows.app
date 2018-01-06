@@ -14,7 +14,7 @@ export class Graph {
     return new Graph(newNodes)
   }
 
-  moveNode(nodeId, vector) {
-    return new Graph(this.nodes.map((node) => node.idMatches(nodeId) ? node.move(vector) : node))
+  moveNode(nodeId, newPosition) {
+    return new Graph(this.nodes.map((node) => node.idMatches(nodeId) ? node.moveTo(newPosition) : node))
   }
 }
