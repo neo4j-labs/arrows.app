@@ -6,7 +6,7 @@ class GraphDisplay extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.props.onWindowResized.bind(this))
-    this.touchHandler = new TouchHandler(this.refs.canvas, this)
+    this.touchHandler = new TouchHandler(this.canvas, this)
     this.drawGraph();
   }
 
@@ -16,7 +16,7 @@ class GraphDisplay extends Component {
 
   render() {
     return (
-      <canvas width={this.props.canvasSize.width} height={this.props.canvasSize.height} ref="canvas"/>
+      <canvas width={this.props.canvasSize.width} height={this.props.canvasSize.height} ref={(elm) => this.canvas = elm} />
     )
   }
 
@@ -31,7 +31,7 @@ class GraphDisplay extends Component {
       endDrag: this.props.endDrag
     }
 
-    const ctx = this.refs.canvas.getContext('2d');
+    const ctx = this.canvas.getContext('2d');
     ctx.clearRect(0, 0, this.props.canvasSize.width, this.props.canvasSize.height);
 
     this.props.guides.guidelines.forEach((guideline) => {
