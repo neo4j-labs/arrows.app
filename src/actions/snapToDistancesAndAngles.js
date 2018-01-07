@@ -63,7 +63,7 @@ const snapToDistancesAndAngles = (graph, excludedNodeId, naturalPosition) => {
             y = ring.node.position.y < y ? ring.node.position.y + dy : ring.node.position.y - dy
           }
           break
-        
+
         case 'HORIZONTAL':
           dy = Math.abs(ring.node.position.y - otherGuide.y)
           if (dy > ring.radius) {
@@ -73,6 +73,23 @@ const snapToDistancesAndAngles = (graph, excludedNodeId, naturalPosition) => {
             x = ring.node.position.x < x ? ring.node.position.x + dx : ring.node.position.x - dx
           }
           break
+
+        case 'CIRCLE':
+          let betweenCenters = ring.node.position.vectorFrom(otherGuide.center)
+          let d = betweenCenters.distance()
+          if (d > Math.abs(ring.radius - otherGuide.radius) && d < ring.radius + otherGuide.radius) {
+            let a = (otherGuide.radius * otherGuide.radius - ring.radius * ring.radius + d * d) / (2 * d)
+            let midPoint = otherGuide.center.translate(betweenCenters.scale(a / d))
+            let h = Math.sqrt(otherGuide.radius * otherGuide.radius - a * a)
+            let bisector = betweenCenters.perpendicular().scale(h / d)
+            let intersections = [midPoint.translate(bisector), midPoint.translate(bisector.invert())]
+            let errors = intersections.map((point) => point.vectorFrom(naturalPosition).distance())
+            let intersection = errors[0] < errors[1] ? intersections[0] : intersections[1]
+            x = intersection.x
+            y = intersection.y
+          } else {
+            constraintPossible = false
+          }
       }
     }
     if (constraintPossible) guidelines.push({type: 'CIRCLE', center: ring.node.position, radius: ring.radius})

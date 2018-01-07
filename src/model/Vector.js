@@ -16,6 +16,10 @@ export class Vector {
     return new Vector(-this.dx, -this.dy)
   }
 
+  perpendicular() {
+    return new Vector(-this.dy, this.dx)
+  }
+
   distance() {
     return Math.sqrt(this.dx * this.dx + this.dy * this.dy)
   }
