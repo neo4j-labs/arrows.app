@@ -19,6 +19,12 @@ export function drawGuideline(ctx, guideline, width, height) {
       ctx.stroke()
       ctx.closePath()
       break
+
+    case 'CIRCLE':
+      ctx.beginPath()
+      drawCircle(ctx, guideline.center, guideline.radius)
+      ctx.stroke()
+      ctx.closePath()
   }
 }
 
