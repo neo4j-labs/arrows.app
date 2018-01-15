@@ -32,12 +32,12 @@ export default {
   edgeTypePlugin: {
     arrows: {
       to: {
-        gap: 1,
+        gap: 2,
         type: 'arrow',
         scaleFactor: 1
       },
       from: {
-        gap: 1,
+        gap: 0,
         type: 'none',
         scaleFactor: 1
       }
