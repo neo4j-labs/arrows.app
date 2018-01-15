@@ -60,6 +60,6 @@ export default {
     },
     selfReferringLength: 70,
     selfReferringAngle: 20,
-    bundleSpacing: 10
+    bundleSpacing: 30
   }
 }
