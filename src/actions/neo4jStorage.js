@@ -94,15 +94,17 @@ export function fetchGraphFromDatabase() {
         result.records.forEach(record => {
           let pair = record.get('p');
           if (pair) {
-            const segment = pair.segments[0]
-            const relId = segment.relationship.identity.toString()
-            if (!relationsMap[relId]) {
-              const from = segment.start.identity.toString()
-              const to = segment.end.identity.toString()
-              const newRelationship = new Relationship({ id: relId, ...segment.relationship }, from, to)
-              relationsMap[relId] = newRelationship
-              relationships.push(newRelationship)
-            }
+            pair.segments.forEach(segment => {
+              const relationship = segment.relationship
+              const relId = relationship.identity.toString()
+              if (!relationsMap[relId]) {
+                const from = relationship.start.toString()
+                const to = relationship.end.toString()
+                const newRelationship = new Relationship({ id: relId, ...segment.relationship }, from, to)
+                relationsMap[relId] = newRelationship
+                relationships.push(newRelationship)
+              }
+            })
           }
         });
 
