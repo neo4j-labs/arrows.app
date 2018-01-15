@@ -1,5 +1,44 @@
+import NeoEdge from './NeoEdge'
+import NodePairsHandler from './NodePairsHandler'
+import NeoNode from './NeoNode'
+
 export function drawNode(ctx, position, color, size) {
   drawSolidCircle(ctx, position, color, size)
+}
+
+export function drawRelationships(ctx, graph, relConfig, displayOptions) {
+  const nodes = graph.nodes.reduce((nodes, node) => {
+    nodes[node.id.value] = new NeoNode(node, displayOptions.viewTransformation)
+    return nodes
+  }, {})
+
+  const relsArray = []
+  const body = { nodes, relationships: [] }
+  const nodePairsHandler = new NodePairsHandler(body)
+  body.relationships = graph.relationships.reduce((relationships, relationship) => {
+    const neoEdge = new NeoEdge({
+      ...relationship,
+      from: nodes[relationship.fromId],
+        to: nodes[relationship.toId]
+      },
+      {
+        relConfig,
+        nodePairsHandler
+      })
+    relationships[relationship.id] = neoEdge
+    relsArray.push(neoEdge)
+    return relationships
+  }, {})
+
+  nodePairsHandler.updateNodePairs()
+
+  relsArray.forEach(rel => rel.updateEndPoints(false))
+
+  nodePairsHandler.prepareDraw(relsArray)
+
+  relsArray.forEach(rel => rel.updateEndPoints(true))
+
+  relsArray.forEach(rel => rel.draw(ctx))
 }
 
 export function drawGuideline(ctx, guideline, width, height) {

@@ -1,4 +1,5 @@
-import {drawGuideline, drawNode} from "../graphics/canvasRenderer";
+import {drawGuideline, drawNode, drawRelationships} from "../graphics/canvasRenderer";
+import config from './config'
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const { graph, guides } = visuals
@@ -16,4 +17,6 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   graph.nodes.forEach((node) => {
     drawNode(ctx, displayOptions.viewTransformation.transform(node.position), '#53acf3', 50)
   })
+
+  drawRelationships(ctx, graph, config, displayOptions)
 }
