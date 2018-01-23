@@ -61,5 +61,6 @@ export default {
     selfReferringLength: 70,
     selfReferringAngle: 20,
     bundleSpacing: 30
-  }
+  },
+  drawLabel: true
 }

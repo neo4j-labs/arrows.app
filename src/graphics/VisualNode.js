@@ -1,7 +1,17 @@
-export default class NeoNode {
+export default class VisualNode {
   constructor (node, viewTransformation) {
     this.node = node
     this.viewTransformation= viewTransformation
+    this.edges = []
+    this.edgeMap = {}
+  }
+
+  addEdge (edge, direction) {
+    this.edges.push(edge)
+    this.edgeMap[edge.id] = {
+      edge,
+      direction
+    }
   }
 
   get id () {

@@ -1,6 +1,6 @@
-import NeoEdge from './NeoEdge'
-import NodePairsHandler from './NodePairsHandler'
-import NeoNode from './NeoNode'
+import VisualNode from './VisualNode'
+import VisualEdge from "./VisualEdge"
+import VisualGraph from './VisualGraph'
 
 export function drawNode(ctx, position, color, size) {
   drawSolidCircle(ctx, position, color, size)
@@ -8,37 +8,22 @@ export function drawNode(ctx, position, color, size) {
 
 export function drawRelationships(ctx, graph, relConfig, displayOptions) {
   const nodes = graph.nodes.reduce((nodes, node) => {
-    nodes[node.id.value] = new NeoNode(node, displayOptions.viewTransformation)
+    nodes[node.id.value] = new VisualNode(node, displayOptions.viewTransformation)
     return nodes
   }, {})
 
-  const relsArray = []
-  const body = { nodes, relationships: [] }
-  const nodePairsHandler = new NodePairsHandler(body)
-  body.relationships = graph.relationships.reduce((relationships, relationship) => {
-    const neoEdge = new NeoEdge({
-      ...relationship,
-      from: nodes[relationship.fromId],
+  const relationships = graph.relationships.map(relationship =>
+    new VisualEdge({
+        relationship,
+        from: nodes[relationship.fromId],
         to: nodes[relationship.toId]
       },
-      {
-        relConfig,
-        nodePairsHandler
-      })
-    relationships[relationship.id] = neoEdge
-    relsArray.push(neoEdge)
-    return relationships
-  }, {})
+      relConfig)
+  )
 
-  nodePairsHandler.updateNodePairs()
-
-  relsArray.forEach(rel => rel.updateEndPoints(false))
-
-  nodePairsHandler.prepareDraw(relsArray)
-
-  relsArray.forEach(rel => rel.updateEndPoints(true))
-
-  relsArray.forEach(rel => rel.draw(ctx))
+  const visualGraph = new VisualGraph(nodes, relationships)
+  visualGraph.constructEdgeBundles()
+  visualGraph.edges.forEach(edge => edge.draw(ctx))
 }
 
 export function drawGuideline(ctx, guideline, width, height) {
