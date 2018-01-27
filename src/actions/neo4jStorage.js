@@ -96,7 +96,8 @@ export function fetchGraphFromDatabase() {
           const node = new Node({
             type: 'NEO4J',
             value: neo4jId
-          }, new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])));
+          }, new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
+            neo4jNode.properties);
           nodesMap[neo4jId] = node
           return node
         });

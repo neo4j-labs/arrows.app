@@ -1,9 +1,14 @@
 import VisualNode from './VisualNode'
 import VisualEdge from "./VisualEdge"
 import VisualGraph from './VisualGraph'
+import { getLines } from "./utils/wordwrap";
+import get from 'lodash.get'
 
-export function drawNode(ctx, position, color, size) {
+export function drawNode(ctx, position, color, size, caption, config) {
   drawSolidCircle(ctx, position, color, size)
+  if (caption) {
+    drawLabel(ctx, position, caption, size * 2, config)
+  }
 }
 
 export function drawRing(ctx, position, color, size) {
@@ -70,4 +75,26 @@ function drawCircle (ctx, position, r) {
   ctx.beginPath()
   ctx.arc(position.x, position.y, r, 0, 2 * Math.PI, false)
   ctx.closePath()
+}
+
+function drawLabel (ctx, position, label, maxWidth, config) {
+  const fontSize = get(config, 'font.size')
+  const fontColor = get(config, 'color.fill')
+  const fontFace = get(config, 'font.face')
+
+  let lines = getLines(ctx, label, fontFace, fontSize, maxWidth, false)//this.hasIcon)
+
+  ctx.fillStyle = fontColor
+  let fontWeight = 'normal' // this.boldText ? 'bold ' : 'normal '
+  ctx.font = fontWeight + fontSize + 'px ' + fontFace
+
+  const lineDistance = 1 + fontSize
+  const totalHeight = (lines.length - 2) * lineDistance
+  let ypos = -totalHeight / 2
+  for (let line of lines) {
+    let lineWidth = ctx.measureText(line).width
+    let xpos = -lineWidth / 2
+    ctx.fillText(line, position.x + xpos, position.y + ypos)
+    ypos += lineDistance
+  }
 }

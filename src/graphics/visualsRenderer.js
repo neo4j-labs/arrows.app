@@ -44,7 +44,8 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   }
 
   graph.nodes.forEach((node) => {
-    drawNode(ctx, transform(node.position), '#53acf3', defaultNodeRadius)
+    const caption = node.properties['name']
+    drawNode(ctx, transform(node.position), '#53acf3', defaultNodeRadius, caption, config)
   })
 
   drawRelationships(ctx, graph, config, displayOptions)

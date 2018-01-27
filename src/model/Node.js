@@ -5,10 +5,11 @@ export class Node {
   constructor(id = {
     type: 'SYNTHETIC',
     value: uuid()
-  }, position = new Point(1000 * Math.random(), 1000 * Math.random())) {
+  }, position = new Point(1000 * Math.random(), 1000 * Math.random()), properties) {
     this.id = id
     this.position = position
     this.radius = 50
+    this.properties = properties || {}
   }
 
   idMatches(id) {
@@ -28,6 +29,6 @@ export class Node {
   }
 
   moveTo(newPosition) {
-    return new Node(this.id, newPosition)
+    return new Node(this.id, newPosition, this.properties)
   }
 }

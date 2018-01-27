@@ -10,7 +10,7 @@ export default {
     roundness: 0.5
   },
   font: {
-    size: 6,
+    size: 10,
     strokeWidth: 0,
     align: 'top',
     vadjust: 2
