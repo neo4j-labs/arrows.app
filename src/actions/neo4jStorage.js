@@ -69,6 +69,16 @@ function updateGraph(graphBefore) {
   }
   }
 
+function toNumber(prop) {
+  if (prop) {
+    if (prop.toNumber) {
+      return prop.toNumber()
+    }
+    return prop
+  }
+  return 0
+}
+
 export function fetchGraphFromDatabase() {
   return function(dispatch) {
     dispatch(fetchingGraph())
@@ -86,7 +96,7 @@ export function fetchGraphFromDatabase() {
           const node = new Node({
             type: 'NEO4J',
             value: neo4jId
-          }, new Point(neo4jNode.properties['_x'] || 0, neo4jNode.properties['_y'] || 0));
+          }, new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])));
           nodesMap[neo4jId] = node
           return node
         });
