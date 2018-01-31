@@ -5,6 +5,7 @@ import {
 import {Graph} from "../model/Graph";
 import {Node} from "../model/Node";
 import {Point} from "../model/Point";
+import Relationship from "../model/Relationship"
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 
@@ -74,17 +75,40 @@ export function fetchGraphFromDatabase() {
 
     let session = driver.session();
 
-    return session.run('MATCH (n:Diagram0) RETURN n, id(n) as id')
+    return session.run('MATCH (n:Diagram0) OPTIONAL MATCH p=(n)-[]-() return n, p')
       .then((result) => {
+        const nodesMap = {}
+        const relationsMap = {}
+        const relationships = []
         let nodes = result.records.map((record) => {
           let neo4jNode = record.get('n');
-          let neo4jId = record.get('id')
-          return new Node({
+          let neo4jId = neo4jNode.identity.toString()
+          const node = new Node({
             type: 'NEO4J',
             value: neo4jId
           }, new Point(neo4jNode.properties['_x'] || 0, neo4jNode.properties['_y'] || 0));
+          nodesMap[neo4jId] = node
+          return node
         });
-        dispatch(fetchingGraphSucceeded(new Graph(nodes)))
+
+        result.records.forEach(record => {
+          let pair = record.get('p');
+          if (pair) {
+            pair.segments.forEach(segment => {
+              const relationship = segment.relationship
+              const relId = relationship.identity.toString()
+              if (!relationsMap[relId]) {
+                const from = relationship.start.toString()
+                const to = relationship.end.toString()
+                const newRelationship = new Relationship({ id: relId, ...segment.relationship }, from, to)
+                relationsMap[relId] = newRelationship
+                relationships.push(newRelationship)
+              }
+            })
+          }
+        });
+
+        dispatch(fetchingGraphSucceeded(new Graph(nodes, relationships)))
         session.close();
       }, (error) => {
         console.log(error)

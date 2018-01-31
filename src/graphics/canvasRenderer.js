@@ -1,5 +1,29 @@
+import VisualNode from './VisualNode'
+import VisualEdge from "./VisualEdge"
+import VisualGraph from './VisualGraph'
+
 export function drawNode(ctx, position, color, size) {
   drawSolidCircle(ctx, position, color, size)
+}
+
+export function drawRelationships(ctx, graph, relConfig, displayOptions) {
+  const nodes = graph.nodes.reduce((nodes, node) => {
+    nodes[node.id.value] = new VisualNode(node, displayOptions.viewTransformation)
+    return nodes
+  }, {})
+
+  const relationships = graph.relationships.map(relationship =>
+    new VisualEdge({
+        relationship,
+        from: nodes[relationship.fromId],
+        to: nodes[relationship.toId]
+      },
+      relConfig)
+  )
+
+  const visualGraph = new VisualGraph(nodes, relationships)
+  visualGraph.constructEdgeBundles()
+  visualGraph.edges.forEach(edge => edge.draw(ctx))
 }
 
 export function drawGuideline(ctx, guideline, width, height) {

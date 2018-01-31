@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "lodash.get": "^4.4.2",
     "neo4j-driver": "^1.5.1",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
