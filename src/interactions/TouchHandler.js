@@ -11,6 +11,7 @@ export default class TouchHandler {
     this._dragMachine = new DragStateMachine()
     this._hasDragged = false
     this._mouseDownItem = null
+    this.activeRing = null
     this._mouseDownOnCanvas = false
     this.itemBeingDragged = {
       id: 0,
@@ -61,6 +62,19 @@ export default class TouchHandler {
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
         this.callbacks.pan(this._dragMachine.delta)
+      }
+    } else {
+      const nodeRing = this.nodeFinder.getNodeRingAtPoint(this.eventPosition(evt))
+      if (nodeRing) {
+        if (this.activeRing === null || (this.activeRing && nodeRing !== this.activeRing)) {
+          this.activeRing = nodeRing
+          this.callbacks.activateRing(nodeRing.id)
+        }
+      } else {
+        if (this.activeRing !== null) {
+          this.activeRing = null
+          this.callbacks.deactivateRing()
+        }
       }
     }
 

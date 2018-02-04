@@ -6,6 +6,10 @@ export function drawNode(ctx, position, color, size) {
   drawSolidCircle(ctx, position, color, size)
 }
 
+export function drawRing(ctx, position, color, size) {
+  drawSolidCircle(ctx, position, color, size)
+}
+
 export function drawRelationships(ctx, graph, relConfig, displayOptions) {
   const nodes = graph.nodes.reduce((nodes, node) => {
     nodes[node.id.value] = new VisualNode(node, displayOptions.viewTransformation)

@@ -21,7 +21,7 @@ class GraphDisplay extends Component {
   }
 
   drawVisuals() {
-    const { graph, guides, viewTransformation, canvasSize, pan, moveNode, endDrag } = this.props
+    const { graph, gestures, guides, viewTransformation, canvasSize, pan, moveNode, endDrag, activateRing, deactivateRing } = this.props
     this.touchHandler.viewTransformation = viewTransformation
     this.touchHandler.callbacks = {
       pan,
@@ -29,15 +29,24 @@ class GraphDisplay extends Component {
       nodeClicked: (node) => {},
       nodeDoubleClicked: (node) => {},
       nodeDragged: moveNode,
-      endDrag
+      endDrag,
+      activateRing,
+      deactivateRing
     }
 
-    renderVisuals({visuals: {graph, guides}, canvas: this.canvas, displayOptions: { canvasSize, viewTransformation }})
+    renderVisuals({visuals: {graph, gestures, guides}, canvas: this.canvas, displayOptions: { canvasSize, viewTransformation }})
   }
 
   getNodeAtPoint(point) {
     return this.props.graph.nodes.find((node) =>
       node.position.vectorFrom(point).distance() < node.radius)
+  }
+
+  getNodeRingAtPoint(point) {
+    return this.props.graph.nodes.find((node) => {
+      const distance = node.position.vectorFrom(point).distance()
+      return distance > node.radius && distance < node.radius + 10;
+    })
   }
 }
 
