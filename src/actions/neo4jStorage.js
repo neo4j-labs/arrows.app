@@ -97,7 +97,7 @@ export function fetchGraphFromDatabase() {
             type: 'NEO4J',
             value: neo4jId
           }, new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
-            neo4jNode.properties);
+            neo4jNode.properties['_caption']);
           nodesMap[neo4jId] = node
           return node
         });
