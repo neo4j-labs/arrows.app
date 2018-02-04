@@ -10,7 +10,7 @@ export default class TouchHandler {
 
     this._dragMachine = new DragStateMachine()
     this._hasDragged = false
-    this._mouseDownItem = null
+    this.mouseDownNode = null
     this.activeRing = null
     this._mouseDownOnCanvas = false
     this.itemBeingDragged = {
@@ -53,22 +53,25 @@ export default class TouchHandler {
       return
     }
 
-    if (this._mouseDownItem) {
+    if (this.mouseDownNode) {
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
         this.callbacks.nodeDragged(this.itemBeingDragged.id, this._dragMachine.delta)
       }
+    } else if (this.mouseDownRing) {
+      this._dragMachine.update(evt)
+      this.callbacks.ringDragged(this.mouseDownRing.id, this.eventPosition(evt))
     } else if (this._mouseDownOnCanvas) {
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
         this.callbacks.pan(this._dragMachine.delta)
       }
     } else {
-      const nodeRing = this.nodeFinder.getNodeRingAtPoint(this.eventPosition(evt))
-      if (nodeRing) {
-        if (this.activeRing === null || (this.activeRing && nodeRing !== this.activeRing)) {
-          this.activeRing = nodeRing
-          this.callbacks.activateRing(nodeRing.id)
+      const ringUnderCursor = this.nodeFinder.getNodeRingAtPoint(this.eventPosition(evt))
+      if (ringUnderCursor) {
+        if (this.activeRing === null || (this.activeRing && ringUnderCursor !== this.activeRing)) {
+          this.activeRing = ringUnderCursor
+          this.callbacks.activateRing(ringUnderCursor.id)
         }
       } else {
         if (this.activeRing !== null) {
@@ -88,11 +91,18 @@ export default class TouchHandler {
       return
     }
 
-    const item = this.nodeFinder.getNodeAtPoint(this.eventPosition(evt))
-    if (item) {
+    let cursorPosition = this.eventPosition(evt);
+
+    const nodeUnderCursor = this.nodeFinder.getNodeAtPoint(cursorPosition)
+    const ringUnderCursor = this.nodeFinder.getNodeRingAtPoint(cursorPosition)
+
+    if (nodeUnderCursor) {
       // Do not drag or select until figure out users' intention
-      this._mouseDownItem = item
-      this.itemBeingDragged = item
+      this.mouseDownNode = nodeUnderCursor
+      this.itemBeingDragged = nodeUnderCursor
+    } else if (ringUnderCursor) {
+      this.mouseDownRing = ringUnderCursor
+      this.callbacks.ringDragged(ringUnderCursor.id, cursorPosition)
     } else {
       this._mouseDownOnCanvas = true
     }
@@ -117,10 +127,9 @@ export default class TouchHandler {
   }
 
   endMouseEvents () {
-    if (this._dragMachine.state === StateDragging) {
-      this.callbacks.endDrag()
-    }
-    this._mouseDownItem = null
+    this.callbacks.endDrag()
+    this.mouseDownNode = null
+    this.mouseDownRing = null
     this._mouseDownOnCanvas = false
     this._dragMachine.reset()
   }

@@ -4,7 +4,7 @@ import {headerHeight} from '../components/Header'
 import {windowResized} from "../actions/windowSize";
 import {pan, zoom} from "../actions/viewTransformation";
 import {endDrag, tryMoveNode} from "../actions/graph";
-import {activateRing, deactivateRing} from "../actions/gestures";
+import {activateRing, deactivateRing, ringDragged} from "../actions/gestures";
 
 const mapStateToProps = state => {
   return {
@@ -24,7 +24,8 @@ const mapDispatchToProps = dispatch => {
     moveNode: (nodeId, vector) => dispatch(tryMoveNode(nodeId, vector)),
     endDrag: () => dispatch(endDrag()),
     activateRing: (nodeId) => dispatch(activateRing(nodeId)),
-    deactivateRing: () => dispatch(deactivateRing())
+    deactivateRing: () => dispatch(deactivateRing()),
+    ringDragged: (nodeId, position) => dispatch(ringDragged(nodeId, position))
   }
 }
 
