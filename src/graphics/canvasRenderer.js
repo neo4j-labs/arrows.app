@@ -3,6 +3,7 @@ import VisualEdge from "./VisualEdge"
 import VisualGraph from './VisualGraph'
 import { getLines } from "./utils/wordwrap";
 import get from 'lodash.get'
+import {Point} from "../model/Point";
 
 export function drawNode(ctx, position, color, size, caption, config) {
   drawSolidCircle(ctx, position, color, size)
@@ -35,27 +36,29 @@ export function drawRelationships(ctx, graph, relConfig, displayOptions) {
   visualGraph.edges.forEach(edge => edge.draw(ctx))
 }
 
-export function drawGuideline(ctx, guideline, width, height) {
+export function drawGuideline(ctx, guideline, displayOptions) {
   switch (guideline.type) {
     case 'HORIZONTAL':
+      const y = displayOptions.viewTransformation.transform(new Point(0, guideline.y)).y
       ctx.beginPath()
-      ctx.moveTo(0, guideline.y)
-      ctx.lineTo(width, guideline.y)
+      ctx.moveTo(0, y)
+      ctx.lineTo(displayOptions.canvasSize.width, y)
       ctx.stroke()
       ctx.closePath()
       break
 
     case 'VERTICAL':
+      const x = displayOptions.viewTransformation.transform(new Point(guideline.x, 0)).x
       ctx.beginPath()
-      ctx.moveTo(guideline.x, 0)
-      ctx.lineTo(guideline.x, height)
+      ctx.moveTo(x, 0)
+      ctx.lineTo(x, displayOptions.canvasSize.height)
       ctx.stroke()
       ctx.closePath()
       break
 
     case 'CIRCLE':
       ctx.beginPath()
-      drawCircle(ctx, guideline.center, guideline.radius)
+      drawCircle(ctx, displayOptions.viewTransformation.transform(guideline.center), guideline.radius)
       ctx.stroke()
       ctx.closePath()
   }

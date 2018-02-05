@@ -14,7 +14,7 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
 
   guides.guidelines.forEach((guideline) => {
-    drawGuideline(ctx, guideline, displayOptions.canvasSize.width, displayOptions.canvasSize.height)
+    drawGuideline(ctx, guideline, displayOptions)
   })
 
   if (guides.naturalPosition) {
