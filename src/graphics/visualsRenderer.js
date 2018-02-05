@@ -7,7 +7,7 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
 
   const transform = (position) => displayOptions.viewTransformation.transform(position)
   const defaultNodeRadius = 50;
-  const defaultNewNodeRadius = 30;
+  const defaultNewNodeRadius = 40;
   const ringMargin = 10;
 
   const ctx = canvas.getContext('2d');
