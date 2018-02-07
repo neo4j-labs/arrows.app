@@ -10,7 +10,7 @@ import Relationship from "../model/Relationship"
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 
 const host = "bolt://localhost:7687"
-const driver = neo4j.driver(host, neo4j.auth.basic("neo4j", ""))
+const driver = neo4j.driver(host, neo4j.auth.basic("neo4j", "a"))
 
 function fetchingGraph() {
   return {

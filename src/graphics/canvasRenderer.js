@@ -101,3 +101,16 @@ function drawLabel (ctx, position, label, maxWidth, config) {
     ypos += lineDistance
   }
 }
+
+export function drawStraightArrow(ctx, sourcePoint, targetPoint) {
+  drawStraightLine(ctx, sourcePoint, targetPoint)
+}
+
+function drawStraightLine(ctx, sourcePoint, targetPoint) {
+  /*ctx.strokeStyle = this._getOption('color.fill')
+  ctx.lineWidth = selected ? 1.5 : 1*/
+  ctx.beginPath()
+  ctx.moveTo(sourcePoint.x, sourcePoint.y)
+  ctx.lineTo(targetPoint.x, targetPoint.y)
+  ctx.stroke()
+}

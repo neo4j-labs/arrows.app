@@ -1,6 +1,5 @@
-import {drawGuideline, drawNode, drawRelationships} from "../graphics/canvasRenderer";
+import {drawGuideline, drawNode, drawRelationships, drawRing, drawStraightArrow} from "./canvasRenderer";
 import config from './config'
-import {drawRing} from "./canvasRenderer";
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const { graph, gestures, guides } = visuals
@@ -37,6 +36,8 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
           newNodeRadius = defaultNewNodeRadius
         }
       }
+
+      drawStraightArrow(ctx, transform(gestures.originalPosition), transform(newNodePosition))
       drawRing(ctx, transform(newNodePosition), 'blue', newNodeRadius)
     } else {
       drawRing(ctx, transform(activeRingPosition), 'grey', defaultNodeRadius + ringMargin)
