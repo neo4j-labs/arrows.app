@@ -37,8 +37,8 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
         }
       }
 
-      drawStraightArrow(ctx, transform(gestures.originalPosition), transform(newNodePosition))
       drawRing(ctx, transform(newNodePosition), 'blue', newNodeRadius)
+      drawStraightArrow(ctx, transform(gestures.originalPosition), transform(newNodePosition))
     } else {
       drawRing(ctx, transform(activeRingPosition), 'grey', defaultNodeRadius + ringMargin)
     }

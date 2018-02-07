@@ -1,9 +1,14 @@
 import VisualNode from './VisualNode'
 import VisualEdge from "./VisualEdge"
 import VisualGraph from './VisualGraph'
-import { getLines } from "./utils/wordwrap";
+import { getLines } from "./utils/wordwrap"
 import get from 'lodash.get'
-import {Point} from "../model/Point";
+import {Point} from "../model/Point"
+import {Vector} from '../model/Vector'
+
+const defaultNewNodeRadius = 40
+const arrowLength = 10
+const arrowWidth = 7
 
 export function drawNode(ctx, position, color, size, caption, config) {
   drawSolidCircle(ctx, position, color, size)
@@ -107,10 +112,41 @@ export function drawStraightArrow(ctx, sourcePoint, targetPoint) {
 }
 
 function drawStraightLine(ctx, sourcePoint, targetPoint) {
-  /*ctx.strokeStyle = this._getOption('color.fill')
-  ctx.lineWidth = selected ? 1.5 : 1*/
+  const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
+  const unitVector = arrowVector.unit()
+  const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(defaultNewNodeRadius))
+
   ctx.beginPath()
   ctx.moveTo(sourcePoint.x, sourcePoint.y)
-  ctx.lineTo(targetPoint.x, targetPoint.y)
+  ctx.lineTo(targetBorderPoint.x, targetBorderPoint.y)
   ctx.stroke()
+
+  drawArrowHead(ctx, sourcePoint, targetBorderPoint)
+}
+
+function drawArrowHead(ctx, sourcePoint, targetPoint) {
+  const arrowPoints = getArrowPoints(sourcePoint, targetPoint)
+  drawTriangle(ctx, arrowPoints)
+}
+
+function drawTriangle(ctx, points) {
+  ctx.beginPath();
+  ctx.fillStyle = ctx.strokeStyle
+  ctx.moveTo(points[0].x, points[0].y)
+  ctx.lineTo(points[1].x, points[1].y)
+  ctx.lineTo(points[2].x, points[2].y)
+  ctx.fill();
+}
+
+const getArrowPoints = (sourcePoint, targetPoint) => {
+  const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
+  const unitVector = arrowVector.unit()
+  const perpendicular1 = unitVector.perpendicular()
+  const perpendicular2 = perpendicular1.invert()
+
+  const arrowCrossPoint = targetPoint.translate(unitVector.invert().scale(arrowLength))
+  const leftPoint = arrowCrossPoint.translate(perpendicular1.scale(arrowWidth))
+  const rightPoint = arrowCrossPoint.translate(perpendicular2.scale(arrowWidth))
+
+  return [targetPoint, leftPoint, rightPoint]
 }
