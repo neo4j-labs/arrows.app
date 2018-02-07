@@ -6,6 +6,7 @@ import get from 'lodash.get'
 import {Point} from "../model/Point"
 import {Vector} from '../model/Vector'
 
+const defaultNodeRadius = 50
 const defaultNewNodeRadius = 40
 const arrowLength = 10
 const arrowWidth = 7
@@ -114,14 +115,15 @@ export function drawStraightArrow(ctx, sourcePoint, targetPoint) {
 function drawStraightLine(ctx, sourcePoint, targetPoint) {
   const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
   const unitVector = arrowVector.unit()
+  const sourceBorderPoint = sourcePoint.translate(unitVector.scale(defaultNodeRadius))
   const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(defaultNewNodeRadius))
 
   ctx.beginPath()
-  ctx.moveTo(sourcePoint.x, sourcePoint.y)
+  ctx.moveTo(sourceBorderPoint.x, sourceBorderPoint.y)
   ctx.lineTo(targetBorderPoint.x, targetBorderPoint.y)
   ctx.stroke()
 
-  drawArrowHead(ctx, sourcePoint, targetBorderPoint)
+  drawArrowHead(ctx, sourceBorderPoint, targetBorderPoint)
 }
 
 function drawArrowHead(ctx, sourcePoint, targetPoint) {
