@@ -23,4 +23,9 @@ export class Vector {
   distance() {
     return Math.sqrt(this.dx * this.dx + this.dy * this.dy)
   }
+
+  unit () {
+    const distance = this.distance()
+    return new Vector(this.dx / distance, this.dy / distance)
+  }
 }

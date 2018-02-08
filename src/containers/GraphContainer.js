@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => {
     endDrag: () => dispatch(endDrag()),
     activateRing: (nodeId) => dispatch(activateRing(nodeId)),
     deactivateRing: () => dispatch(deactivateRing()),
-    ringDragged: (nodeId, position) => dispatch(ringDragged(nodeId, position))
+    ringDragged: (nodeId, originalPosition, position) => dispatch(ringDragged(nodeId, originalPosition, position))
   }
 }
 

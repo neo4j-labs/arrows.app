@@ -11,10 +11,11 @@ export const deactivateRing = () => {
   }
 }
 
-export const ringDragged = (nodeId, position) => {
+export const ringDragged = (nodeId, originalPosition, position) => {
   return {
     type: 'RING_DRAGGED',
     nodeId,
+    originalPosition,
     position
   }
 }
