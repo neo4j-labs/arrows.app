@@ -1,7 +1,12 @@
+import {drawCaption, drawSolidCircle, drawTextLine} from "./canvasRenderer";
+import {getLines} from "./utils/wordwrap";
+import config from './config'
+import get from 'lodash.get'
+
 export default class VisualNode {
-  constructor (node, viewTransformation) {
+  constructor(node, viewTransformation) {
     this.node = node
-    this.viewTransformation= viewTransformation
+    this.viewTransformation = viewTransformation
     this.edges = []
     this.edgeMap = {}
   }
@@ -34,11 +39,43 @@ export default class VisualNode {
     }
   }
 
+  get position() {
+    return this.viewTransformation.transform(this.node.position)
+  }
+
   get radius () {
     return this.node.radius
   }
 
   distanceToBorder () {
     return this.radius
+  }
+
+  draw(ctx) {
+    const { color, radius, caption } = this.node
+    drawSolidCircle(ctx, this.position, color, radius)
+    if (caption) {
+      this.drawCaption(ctx, this.position, caption, radius * 2, config)
+    }
+  }
+
+  drawCaption(ctx, position, label, maxWidth, config) {
+    const fontSize = get(config, 'font.size')
+    const fontColor = get(config, 'color.fill')
+    const fontFace = get(config, 'font.face')
+
+    let lines = getLines(ctx, label, fontFace, fontSize, maxWidth, false)//this.hasIcon)
+
+    ctx.fillStyle = fontColor
+    let fontWeight = 'normal' // this.boldText ? 'bold ' : 'normal '
+    ctx.font = fontWeight + fontSize + 'px ' + fontFace
+
+    const lineDistance = 1 + fontSize
+    const totalHeight = (lines.length - 2) * lineDistance
+    let yPos = -totalHeight / 2
+    for (let line of lines) {
+      drawTextLine(ctx, line, position.translate(0, yPos));
+      yPos += lineDistance
+    }
   }
 }

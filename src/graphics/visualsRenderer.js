@@ -1,4 +1,4 @@
-import {drawGuideline, drawNode, drawRelationships, drawRing, drawStraightArrow} from "./canvasRenderer";
+import {drawGuideline, drawGraph, drawRing, drawStraightArrow} from "./canvasRenderer";
 import config from './config'
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
@@ -17,7 +17,7 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   })
 
   if (guides.naturalPosition) {
-    drawNode(ctx, transform(guides.naturalPosition), 'grey', defaultNodeRadius)
+    // drawNode(ctx, transform(guides.naturalPosition), 'grey', defaultNodeRadius)
   }
 
   if (gestures.activeRing) {
@@ -44,9 +44,5 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
     }
   }
 
-  graph.nodes.forEach((node) => {
-    drawNode(ctx, transform(node.position), '#53acf3', defaultNodeRadius, node.caption, config)
-  })
-
-  drawRelationships(ctx, graph, config, displayOptions)
+  drawGraph(ctx, graph, config, displayOptions)
 }

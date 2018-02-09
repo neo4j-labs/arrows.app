@@ -1,28 +1,19 @@
-import VisualNode from './VisualNode'
-import VisualEdge from "./VisualEdge"
-import VisualGraph from './VisualGraph'
-import { getLines } from "./utils/wordwrap"
-import get from 'lodash.get'
-import {Point} from "../model/Point"
-import {Vector} from '../model/Vector'
+import VisualNode from "./VisualNode";
+import VisualEdge from "./VisualEdge";
+import VisualGraph from "./VisualGraph";
+import {Point} from "../model/Point";
+import {Vector} from "../model/Vector";
 
 const defaultNodeRadius = 50
 const defaultNewNodeRadius = 40
 const arrowLength = 10
 const arrowWidth = 7
 
-export function drawNode(ctx, position, color, size, caption, config) {
-  drawSolidCircle(ctx, position, color, size)
-  if (caption) {
-    drawLabel(ctx, position, caption, size * 2, config)
-  }
-}
-
 export function drawRing(ctx, position, color, size) {
   drawSolidCircle(ctx, position, color, size)
 }
 
-export function drawRelationships(ctx, graph, relConfig, displayOptions) {
+export function drawGraph(ctx, graph, relConfig, displayOptions) {
   const nodes = graph.nodes.reduce((nodes, node) => {
     nodes[node.id.value] = new VisualNode(node, displayOptions.viewTransformation)
     return nodes
@@ -40,6 +31,7 @@ export function drawRelationships(ctx, graph, relConfig, displayOptions) {
   const visualGraph = new VisualGraph(nodes, relationships)
   visualGraph.constructEdgeBundles()
   visualGraph.edges.forEach(edge => edge.draw(ctx))
+  Object.values(visualGraph.nodes).forEach(node => node.draw(ctx))
 }
 
 export function drawGuideline(ctx, guideline, displayOptions) {
@@ -70,7 +62,7 @@ export function drawGuideline(ctx, guideline, displayOptions) {
   }
 }
 
-function drawSolidCircle (ctx, position, color, size) {
+export function drawSolidCircle (ctx, position, color, size) {
   ctx.beginPath()
 
   ctx.fillStyle = color
@@ -80,32 +72,10 @@ function drawSolidCircle (ctx, position, color, size) {
   ctx.closePath()
 }
 
-function drawCircle (ctx, position, r) {
+export function drawCircle (ctx, position, r) {
   ctx.beginPath()
   ctx.arc(position.x, position.y, r, 0, 2 * Math.PI, false)
   ctx.closePath()
-}
-
-function drawLabel (ctx, position, label, maxWidth, config) {
-  const fontSize = get(config, 'font.size')
-  const fontColor = get(config, 'color.fill')
-  const fontFace = get(config, 'font.face')
-
-  let lines = getLines(ctx, label, fontFace, fontSize, maxWidth, false)//this.hasIcon)
-
-  ctx.fillStyle = fontColor
-  let fontWeight = 'normal' // this.boldText ? 'bold ' : 'normal '
-  ctx.font = fontWeight + fontSize + 'px ' + fontFace
-
-  const lineDistance = 1 + fontSize
-  const totalHeight = (lines.length - 2) * lineDistance
-  let ypos = -totalHeight / 2
-  for (let line of lines) {
-    let lineWidth = ctx.measureText(line).width
-    let xpos = -lineWidth / 2
-    ctx.fillText(line, position.x + xpos, position.y + ypos)
-    ypos += lineDistance
-  }
 }
 
 export function drawStraightArrow(ctx, sourcePoint, targetPoint) {
@@ -151,4 +121,11 @@ const getArrowPoints = (sourcePoint, targetPoint) => {
   const rightPoint = arrowCrossPoint.translate(perpendicular2.scale(arrowWidth))
 
   return [targetPoint, leftPoint, rightPoint]
+}
+
+export const drawTextLine = (ctx, line, position) => {
+  let lineWidth = ctx.measureText(line).width
+  let xPos = -lineWidth / 2
+  ctx.fillText(line, position.x + xPos, position.y)
+  return {lineWidth, xPos};
 }

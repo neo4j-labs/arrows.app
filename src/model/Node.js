@@ -5,11 +5,12 @@ export class Node {
   constructor(id = {
     type: 'SYNTHETIC',
     value: uuid()
-  }, position = new Point(1000 * Math.random(), 1000 * Math.random()), caption = "") {
+  }, position = new Point(1000 * Math.random(), 1000 * Math.random()), caption = "", color = '#53acf3') {
     this.id = id
     this.position = position
     this.radius = 50
     this.caption = caption
+    this.color = color
   }
 
   idMatches(id) {
