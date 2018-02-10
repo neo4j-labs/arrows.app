@@ -2,6 +2,7 @@ import {drawCaption, drawSolidCircle, drawTextLine} from "./canvasRenderer";
 import {getLines} from "./utils/wordwrap";
 import config from './config'
 import get from 'lodash.get'
+import { Vector } from "../model/Vector";
 
 export default class VisualNode {
   constructor(node, viewTransformation) {
@@ -74,7 +75,7 @@ export default class VisualNode {
     const totalHeight = (lines.length - 2) * lineDistance
     let yPos = -totalHeight / 2
     for (let line of lines) {
-      drawTextLine(ctx, line, position.translate(0, yPos));
+      drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
       yPos += lineDistance
     }
   }

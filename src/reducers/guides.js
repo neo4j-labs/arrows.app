@@ -1,4 +1,4 @@
-import {Guides} from "../model/Guides"
+import {Guides} from "../graphics/Guides"
 
 export default function guides(state = new Guides(), action) {
   switch (action.type) {

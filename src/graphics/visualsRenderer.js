@@ -1,48 +1,40 @@
-import {drawGuideline, drawGraph, drawRing, drawStraightArrow} from "./canvasRenderer";
 import config from './config'
+import Gestures from "./Gestures";
+import VisualNode from "./VisualNode";
+import VisualEdge from "./VisualEdge";
+import VisualGraph from "./VisualGraph";
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const { graph, gestures, guides } = visuals
 
-  const transform = (position) => displayOptions.viewTransformation.transform(position)
-  const defaultNodeRadius = 50;
-  const defaultNewNodeRadius = 40;
-  const ringMargin = 10;
-
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
 
-  guides.guidelines.forEach((guideline) => {
-    drawGuideline(ctx, guideline, displayOptions)
-  })
+  guides.draw(ctx, displayOptions)
 
-  if (guides.naturalPosition) {
-    // drawNode(ctx, transform(guides.naturalPosition), 'grey', defaultNodeRadius)
-  }
-
-  if (gestures.activeRing) {
-    const activeRingPosition = graph.nodes.find((node) => node.idMatches(gestures.activeRing)).position;
-    if (gestures.newNodePosition) {
-      const delta = gestures.newNodePosition.vectorFrom(activeRingPosition)
-      let newNodePosition = activeRingPosition;
-      let newNodeRadius = defaultNodeRadius + ringMargin;
-      if (delta.distance() > defaultNodeRadius + ringMargin) {
-        if (delta.distance() < defaultNodeRadius + defaultNewNodeRadius) {
-          const ratio = (delta.distance() - defaultNodeRadius - ringMargin) / (defaultNewNodeRadius - ringMargin);
-          newNodePosition = activeRingPosition.translate(delta.scale(ratio))
-          newNodeRadius = defaultNodeRadius + ringMargin + (defaultNewNodeRadius - defaultNodeRadius - ringMargin) * ratio
-        } else {
-          newNodePosition = gestures.newNodePosition
-          newNodeRadius = defaultNewNodeRadius
-        }
-      }
-
-      drawRing(ctx, transform(newNodePosition), 'blue', newNodeRadius)
-      drawStraightArrow(ctx, transform(gestures.originalPosition), transform(newNodePosition))
-    } else {
-      drawRing(ctx, transform(activeRingPosition), 'grey', defaultNodeRadius + ringMargin)
-    }
-  }
+  const visualGestures = new Gestures(gestures, graph)
+  visualGestures.draw(ctx, displayOptions)
 
   drawGraph(ctx, graph, config, displayOptions)
+}
+
+function drawGraph(ctx, graph, relConfig, displayOptions) {
+  const nodes = graph.nodes.reduce((nodes, node) => {
+    nodes[node.id.value] = new VisualNode(node, displayOptions.viewTransformation)
+    return nodes
+  }, {})
+
+  const relationships = graph.relationships.map(relationship =>
+    new VisualEdge({
+        relationship,
+        from: nodes[relationship.fromId],
+        to: nodes[relationship.toId]
+      },
+      relConfig)
+  )
+
+  const visualGraph = new VisualGraph(nodes, relationships)
+  visualGraph.constructEdgeBundles()
+  visualGraph.edges.forEach(edge => edge.draw(ctx))
+  Object.values(visualGraph.nodes).forEach(node => node.draw(ctx))
 }
