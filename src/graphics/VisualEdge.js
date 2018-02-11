@@ -1,4 +1,9 @@
 import get from 'lodash.get'
+import {
+  getArrowGeometryData, getBezierAndCircleCrossPoint, getCirclesCrossPoint,
+  getPointAtRange
+} from "./geometryUtils";
+import { drawArrowEndpoint } from "./canvasRenderer";
 
 export default class VisualEdge {
   constructor(edgeData, options) {
@@ -37,9 +42,8 @@ export default class VisualEdge {
     // get the via node from the edge type
     const viaCoordinates = this._getViaCoordinates()
 
-    // from and to arrows give a different end point for edges. we set them here
-    const dataFrom = this.getArrowData(ctx, 'from', viaCoordinates)
-    const dataTo = this.getArrowData(ctx, 'to', viaCoordinates)
+    //const dataFrom = getArrowGeometryData(this.from, this.to, viaCoordinates, 'from')
+    const dataTo = getArrowGeometryData(this.from, this.to, viaCoordinates)
 
     // Move back end point sligthly so line doesnt stick out of arrow head
     const pixelRatio = (window.devicePixelRatio || 1)
@@ -49,7 +53,7 @@ export default class VisualEdge {
 
     // draw arrow
     this.drawLine(ctx, viaCoordinates, false, false)
-    this.drawArrowHead(ctx, dataFrom, false, false)
+    //this.drawArrowHead(ctx, dataFrom, false, false)
     this.drawArrowHead(ctx, dataTo, false, false)
 
     // draw label
@@ -81,42 +85,18 @@ export default class VisualEdge {
     }
   }
 
-  drawArrowHead (ctx, arrowData, outline, blur) {
-    // set style
-    if (outline) {
-      ctx.lineWidth = 3 * this._getOption('edgeTypePlugin.outlineWidth')
-      ctx.strokeStyle = this._getOption('edgeTypePlugin.color.outlineSelected')
-    } else {
-      ctx.lineWidth = this._getOption('width')
-      ctx.strokeStyle = this._getOption('color.fill')
-      const selected = this._getOption('selected')
-      if (selected) {
-        ctx.lineWidth *= 1.5
-      }
-    }
-    ctx.fillStyle = ctx.strokeStyle
-
-    const pixelRatio = (window.devicePixelRatio || 1)
-    ctx.lineWidth *= pixelRatio
-
+  drawArrowHead (ctx, arrowData) {
     let length = arrowData.length
     let x = arrowData.point.x
     let y = arrowData.point.y
 
-    if (outline) {
-      const outlineWidth = this._getOption('edgeTypePlugin.outlineWidth') * pixelRatio
-      length += 4 * outlineWidth
-      x += 2.5 * outlineWidth * Math.cos(arrowData.angle)
-      y += 2.5 * outlineWidth * Math.sin(arrowData.angle)
-    }
-
     // draw arrow at the end of the line
-    this._drawArrowEndpoint(ctx, x, y, arrowData.angle, length)
+    drawArrowEndpoint(ctx, x, y, arrowData.angle, length)
 
     ctx.fill()
   }
 
-  getArrowData (ctx, position, viaNode) {
+  getArrowData (ctx, position, viaNode = this._getViaCoordinates()) {
     const pixelRatio = (window.devicePixelRatio || 1)
     const lineWidth = this._getOption('width') * pixelRatio
 
@@ -150,7 +130,7 @@ export default class VisualEdge {
     } else {
       if (node1 !== node2) {
         arrowPoint = this.findBorderPosition(node1, ctx, { via: viaNode })
-        var guidePos = this.getPoint(Math.max(0.0, Math.min(1.0, arrowPoint.t + guideOffset)), viaNode)
+        var guidePos = getPointAtRange(Math.max(0.0, Math.min(1.0, arrowPoint.t + guideOffset)), this.from, this.to, viaNode)
         angle = Math.atan2(arrowPoint.y - guidePos.y, arrowPoint.x - guidePos.x)
       } else {
         // draw circle
@@ -302,7 +282,7 @@ export default class VisualEdge {
 
     // Adjust the centerpoint slightly to adjust for the difference in radius
     xVia += radiusDifference / 2 * xVectorNormalized
-    xVia += radiusDifference / 2 * yVectorNormalized
+    yVia += radiusDifference / 2 * yVectorNormalized
 
     // Us the inverted vectors times the spacing for the edge to move the center point along the normal vector
     var spacing = bundleSpacing * this.deflection
@@ -357,11 +337,11 @@ export default class VisualEdge {
     }
   }
 
-  findBorderPosition (nearNode, ctx, options) {
+  findBorderPosition (nearNode, options) {
     if (this.from !== this.to) {
-      return this._findBorderPositionBezier(nearNode, ctx)
+      return this._findBorderPositionBezier(nearNode)
     } else {
-      return this._findBorderPositionCircle(nearNode, ctx, options)
+      return this._findBorderPositionCircle(nearNode, options)
     }
   }
 
@@ -379,56 +359,14 @@ export default class VisualEdge {
    * @param viaNode
    */
   _findBorderPositionBezier (nearNode, ctx, viaNode = this._getViaCoordinates()) {
-    var maxIterations = 10
-    var iteration = 0
-    var low = 0
-    var high = 1
-    var pos, angle, distanceToBorder, distanceToPoint, difference
-    var threshold = 0.2
     var node = this.to
-    var from = false
+    var isFrom = false
     if (nearNode.id === this.from.id) {
       node = this.from
-      from = true
+      isFrom = true
     }
 
-    while (low <= high && iteration < maxIterations) {
-      var middle = (low + high) * 0.5
-
-      pos = this.getPoint(middle, viaNode)
-      angle = Math.atan2((node.y - pos.y), (node.x - pos.x))
-      distanceToBorder = node.distanceToBorder(ctx, angle)
-      distanceToPoint = Math.sqrt(Math.pow(pos.x - node.x, 2) + Math.pow(pos.y - node.y, 2))
-      difference = distanceToBorder - distanceToPoint
-      if (Math.abs(difference) < threshold) {
-        break // found
-      } else if (difference < 0) { // distance to nodes is larger than distance to border --> t needs to be bigger if we're looking at the to node.
-        if (from === false) {
-          low = middle
-        } else {
-          high = middle
-        }
-      } else {
-        if (from === false) {
-          high = middle
-        } else {
-          low = middle
-        }
-      }
-
-      iteration++
-    }
-    pos.t = middle
-
-    return pos
-  }
-
-  _pointOnCircle (x, y, radius, percentage) {
-    let angle = percentage * 2 * Math.PI
-    return {
-      x: x + radius * Math.cos(angle),
-      y: y - radius * Math.sin(angle)
-    }
+    return getBezierAndCircleCrossPoint(node, this.from, this.to, isFrom, viaNode)
   }
 
   /**
@@ -445,86 +383,10 @@ export default class VisualEdge {
     let low = options.low
     let high = options.high
     let direction = options.direction
-
-    let maxIterations = 10
-    let iteration = 0
     let radius = this.options.selfReferenceSize
-    let pos, angle, distanceToBorder, distanceToPoint, difference
-    let threshold = 0.05
-    let middle = (low + high) * 0.5
 
-    while (low <= high && iteration < maxIterations) {
-      middle = (low + high) * 0.5
-
-      pos = this._pointOnCircle(x, y, radius, middle)
-      angle = Math.atan2((node.y - pos.y), (node.x - pos.x))
-      distanceToBorder = node.distanceToBorder(ctx, angle)
-      distanceToPoint = Math.sqrt(Math.pow(pos.x - node.x, 2) + Math.pow(pos.y - node.y, 2))
-      difference = distanceToBorder - distanceToPoint
-      if (Math.abs(difference) < threshold) {
-        break // found
-      } else if (difference > 0) { // distance to nodes is larger than distance to border --> t needs to be bigger if we're looking at the to node.
-        if (direction > 0) {
-          low = middle
-        } else {
-          high = middle
-        }
-      } else {
-        if (direction > 0) {
-          high = middle
-        } else {
-          low = middle
-        }
-      }
-      iteration++
-    }
-    pos.t = middle
-
-    return pos
+    return getCirclesCrossPoint(node, x, y, low, high, direction, radius)
   }
-
-  /**
-   * Combined function of pointOnLine and pointOnBezier. This gives the coordinates of a point on the line at a certain percentage of the way
-   * @param percentage
-   * @param viaNode
-   * @returns {{x: number, y: number}}
-   * @private
-   */
-  getPoint (percentage, viaNode = this._getViaCoordinates()) {
-    var t = percentage
-    var x = Math.pow(1 - t, 2) * this.fromPoint.x + (2 * t * (1 - t)) * viaNode.x + Math.pow(t, 2) * this.toPoint.x
-    var y = Math.pow(1 - t, 2) * this.fromPoint.y + (2 * t * (1 - t)) * viaNode.y + Math.pow(t, 2) * this.toPoint.y
-
-    return {x: x, y: y}
-  }
-
-  /**
-   * Draw an arrow at the end of a line with the given angle.
-   */
-  _drawArrowEndpoint (ctx, x, y, angle, length) {
-    // tail
-    var xt = x - length * Math.cos(angle)
-    var yt = y - length * Math.sin(angle)
-
-    // inner tail
-    var xi = x - length * 0.9 * Math.cos(angle)
-    var yi = y - length * 0.9 * Math.sin(angle)
-
-    // left
-    var xl = xt + length / 3 * Math.cos(angle + 0.5 * Math.PI)
-    var yl = yt + length / 3 * Math.sin(angle + 0.5 * Math.PI)
-
-    // right
-    var xr = xt + length / 3 * Math.cos(angle - 0.5 * Math.PI)
-    var yr = yt + length / 3 * Math.sin(angle - 0.5 * Math.PI)
-
-    ctx.beginPath()
-    ctx.moveTo(x, y)
-    ctx.lineTo(xl, yl)
-    ctx.lineTo(xi, yi)
-    ctx.lineTo(xr, yr)
-    ctx.closePath()
-  };
 
   _rotateForLabelAlignment (ctx) {
     var dy = this.from.y - this.to.y
@@ -557,7 +419,7 @@ export default class VisualEdge {
       var node2 = this.to
 
       if (node1 !== node2) {
-        const point = this.getPoint(0.5, viaNode)
+        const point = getPointAtRange(0.5, this.from, this.to, viaNode)
         ctx.save()
 
         ctx.fillStyle = fontColor

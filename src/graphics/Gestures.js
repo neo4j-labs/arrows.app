@@ -1,6 +1,7 @@
-import { drawRing, drawStraightArrow } from "./canvasRenderer";
+import { drawArrowEndpoint, drawRing, drawStraightArrow } from "./canvasRenderer";
 import { defaultNewNodeRadius, defaultNodeRadius, ringMargin } from "./constants";
 import { Vector } from "../model/Vector";
+import { getArrowGeometryData, getPointAtRange } from "./geometryUtils";
 
 export default class Gestures {
   constructor (gestures, graph) {
@@ -37,7 +38,11 @@ export default class Gestures {
         const unitVector = arrowVector.unit()
         const sourceBorderPoint = sourcePoint.translate(unitVector.scale(defaultNodeRadius))
         const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(defaultNewNodeRadius))
-        drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint)
+
+        const arrowData = getArrowGeometryData(sourcePoint, targetPoint)
+        drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)
+
+
       } else {
         drawRing(ctx, transform(activeRingPosition), 'grey', defaultNodeRadius + ringMargin)
       }

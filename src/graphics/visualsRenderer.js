@@ -34,7 +34,8 @@ function drawGraph(ctx, graph, relConfig, displayOptions) {
   )
 
   const visualGraph = new VisualGraph(nodes, relationships)
+  Object.values(visualGraph.nodes).forEach(node => node.draw(ctx))
   visualGraph.constructEdgeBundles()
   visualGraph.edges.forEach(edge => edge.draw(ctx))
-  Object.values(visualGraph.nodes).forEach(node => node.draw(ctx))
+
 }

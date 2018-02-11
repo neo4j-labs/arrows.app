@@ -20,8 +20,17 @@ export function drawCircle (ctx, position, r, stroke = false) {
   ctx.closePath()
 }
 
-export function drawStraightArrow(ctx, sourcePoint, targetPoint) {
+export function drawStraightArrow(ctx, sourcePoint, targetPoint, arrowData) {
   drawStraightLine(ctx, sourcePoint, targetPoint)
+
+  let length = arrowData.length
+  let x = arrowData.point.x
+  let y = arrowData.point.y
+
+  // draw arrow at the end of the line
+  drawArrowEndpoint(ctx, x, y, arrowData.angle, length)
+
+  ctx.fill()
 }
 
 export function drawStraightLine(ctx, sourcePoint, targetPoint) {
@@ -30,13 +39,6 @@ export function drawStraightLine(ctx, sourcePoint, targetPoint) {
   ctx.lineTo(targetPoint.x, targetPoint.y)
   ctx.stroke()
   ctx.closePath()
-
-  drawArrowHead(ctx, sourcePoint, targetPoint)
-}
-
-function drawArrowHead(ctx, sourcePoint, targetPoint) {
-  const arrowPoints = getArrowPoints(sourcePoint, targetPoint)
-  drawTriangle(ctx, arrowPoints)
 }
 
 function drawTriangle(ctx, points) {
@@ -67,4 +69,36 @@ export const drawTextLine = (ctx, line, position) => {
   let xPos = -lineWidth / 2
   ctx.fillText(line, position.x + xPos, position.y)
   return {lineWidth, xPos};
+}
+
+export const drawArrowEndpoint = (ctx, x, y, angle, length) => {
+  ctx.fillStyle = ctx.strokeStyle
+
+  const pixelRatio = (window.devicePixelRatio || 1)
+  ctx.lineWidth *= pixelRatio
+
+  // tail
+  var xt = x - length * Math.cos(angle)
+  var yt = y - length * Math.sin(angle)
+
+  // inner tail
+  var xi = x - length * 0.9 * Math.cos(angle)
+  var yi = y - length * 0.9 * Math.sin(angle)
+
+  // left
+  var xl = xt + length / 3 * Math.cos(angle + 0.5 * Math.PI)
+  var yl = yt + length / 3 * Math.sin(angle + 0.5 * Math.PI)
+
+  // right
+  var xr = xt + length / 3 * Math.cos(angle - 0.5 * Math.PI)
+  var yr = yt + length / 3 * Math.sin(angle - 0.5 * Math.PI)
+
+  ctx.beginPath()
+  ctx.moveTo(x, y)
+  ctx.lineTo(xl, yl)
+  ctx.lineTo(xi, yi)
+  ctx.lineTo(xr, yr)
+  ctx.closePath()
+
+  ctx.lineWidth /= pixelRatio
 }
