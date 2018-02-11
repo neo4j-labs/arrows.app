@@ -43,31 +43,52 @@ function updatingGraphSucceeded() {
   }
 }
 
-function updateGraph(graphBefore) {
+export function updateGraph() {
   return function (dispatch, getState) {
-    dispatch(updatingGraph())
+    getState().graph.nodes.forEach(node => {
+      switch (node.state) {
+        case 'new': {
+          dispatch(updatingGraph())
+          let session = driver.session();
 
-    let graphAfter = getState().graph;
-
-    for (let i = 0; i < Math.max(graphBefore.nodes.length, graphAfter.nodes.length); i++) {
-      if (i >= graphBefore.nodes.length) {
-        let session = driver.session();
-
-        return session.run('CREATE (n:Diagram0 {_x: $x, _y: $y})', {
-          x: graphAfter.nodes[i].position.x,
-          y: graphAfter.nodes[i].position.y
-        })
-          .then(() => {
-            dispatch(updatingGraphSucceeded())
-            session.close();
-          }, (error) => {
-            console.log(error)
-            dispatch(fetchingGraphFailed())
+          return session.run('CREATE (n:Diagram0 {_x: $x, _y: $y})', {
+            x: node.position.x,
+            y: node.position.y
           })
+            .then(() => {
+              dispatch(updatingGraphSucceeded())
+              session.close();
+            }, (error) => {
+              console.log(error)
+              dispatch(fetchingGraphFailed())
+            })
+          break
+        }
+        case 'modified': {
+          dispatch(updatingGraph())
+
+          let session = driver.session();
+
+          return session.run('MATCH (n:Diagram0) WHERE ID(n) = $nodeId SET n._x = $x, n._y = $y return n', {
+            nodeId: +node.id.value,
+            x: node.position.x,
+            y: node.position.y
+          })
+            .then(() => {
+              dispatch(updatingGraphSucceeded())
+              session.close();
+            }, (error) => {
+              console.log(error)
+              dispatch(fetchingGraphFailed())
+            })
+          break
+        }
+        default:
+          break
       }
-    }
+    })
   }
-  }
+}
 
 function toNumber(prop) {
   if (prop) {
@@ -97,7 +118,7 @@ export function fetchGraphFromDatabase() {
             type: 'NEO4J',
             value: neo4jId
           }, new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
-            neo4jNode.properties['_caption']);
+            neo4jNode.properties['_caption'], neo4jNode.properties['_color'], 'unmodified')
           nodesMap[neo4jId] = node
           return node
         });
@@ -130,10 +151,9 @@ export function fetchGraphFromDatabase() {
 
 export function modifyGraph(graphAction) {
   return function (dispatch, getState) {
-    let before = getState().graph
     dispatch(graphAction)
     if (getState().storageStatus === IDLE) {
-      dispatch(updateGraph(before))
+      dispatch(updateGraph())
     }
   }
 }
