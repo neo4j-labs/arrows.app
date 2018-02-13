@@ -1,5 +1,6 @@
 import React from 'react';
 import {FETCHING_GRAPH, FETCHING_GRAPH_FAILED, UPDATING_GRAPH, UPDATING_GRAPH_FAILED} from "../state/storageStatus";
+import { Button,  Header as SemanticHeader } from 'semantic-ui-react'
 
 export const headerHeight = 50;
 
@@ -32,11 +33,12 @@ const Header = (props) => {
   }
 
   return (
-    <header style={headerStyle} className="App-header">
-      <button onClick={props.onPlusNodeClick}>+ Node</button>
-      <button onClick={props.onReloadGraphClick}>Reload graph</button>
+    <SemanticHeader style={headerStyle}>
+      <Button onClick={props.toggleSidebar}>{props.sidebarVisible ? '<' : '>'}</Button>
+      <Button onClick={props.onPlusNodeClick}>+ Node</Button>
+      <Button onClick={props.onReloadGraphClick}>Reload graph</Button>
       {storageStatusMessage(props)}
-    </header>
+    </SemanticHeader>
   )
 }
 
