@@ -1,6 +1,8 @@
 import snapToDistancesAndAngles from "./snapToDistancesAndAngles";
 import placeGuides from "./guides";
 
+export const END_DRAG = 'END_DRAG'
+
 export const createNode = () => {
   return {
     type: 'CREATE_NODE'

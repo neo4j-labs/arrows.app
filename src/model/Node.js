@@ -2,15 +2,22 @@ import {Point} from "./Point"
 import uuid from "uuid/v4"
 
 export class Node {
-  constructor(id = {
-    type: 'SYNTHETIC',
-    value: uuid()
-  }, position = new Point(1000 * Math.random(), 1000 * Math.random()), caption = "", color = '#53acf3') {
+  constructor(
+    id = {
+      type: 'SYNTHETIC',
+      value: uuid()
+    },
+    position = new Point(1000 * Math.random(), 1000 * Math.random()),
+    caption = "",
+    color = '#53acf3',
+    state = 'new'
+    ) {
     this.id = id
     this.position = position
     this.radius = 50
     this.caption = caption
     this.color = color
+    this.state = state
   }
 
   idMatches(id) {
@@ -30,6 +37,6 @@ export class Node {
   }
 
   moveTo(newPosition) {
-    return new Node(this.id, newPosition, this.caption)
+    return new Node(this.id, newPosition, this.caption, this.color, 'modified')
   }
 }
