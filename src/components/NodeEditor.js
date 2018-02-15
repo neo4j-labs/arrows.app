@@ -1,5 +1,6 @@
 import React from 'react'
 import { Button, Checkbox, Form, Segment, Icon, Header } from 'semantic-ui-react'
+import EagerInput from './EagerInput'
 
 const NodeEditor = () => (
   <Segment inverted>
@@ -10,11 +11,11 @@ const NodeEditor = () => (
     <Form inverted style={{'textAlign': 'left'}}>
       <Form.Field>
         <label >Caption</label>
-        <input placeholder='Node Caption' />
+        <EagerInput onSave={(val) => console.log('VALUE', val)} placeholder='Node Caption' />
       </Form.Field>
       <Form.Field>
         <label>Name</label>
-        <input placeholder='Name' />
+        <EagerInput placeholder='Name' />
       </Form.Field>
       <Button type='submit'>Submit</Button>
     </Form>
