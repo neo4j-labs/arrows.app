@@ -2,9 +2,8 @@ import DragStateMachine, {StateDragging} from './DragStateMachine'
 import {Point} from "../model/Point";
 
 export default class TouchHandler {
-  constructor(canvas, nodeFinder) {
+  constructor(canvas) {
     this.canvas = canvas
-    this.nodeFinder = nodeFinder;
 
     this._registerTouchEvents()
 
@@ -29,7 +28,7 @@ export default class TouchHandler {
   }
 
   handleClick (evt) {
-    const item = this.nodeFinder.getNodeAtPoint(this.eventPosition(evt))
+    const item = this.callbacks.nodeFinder.getNodeAtPoint(this.eventPosition(evt))
     if (!this._hasDragged) {
       if (item) {
         this.callbacks.nodeClicked(item)
@@ -41,7 +40,7 @@ export default class TouchHandler {
   }
 
   handleDoubleClick (evt) {
-    const item = this.nodeFinder.getNodeAtPoint(this.eventPosition(evt))
+    const item = this.callbacks.nodeFinder.getNodeAtPoint(this.eventPosition(evt))
     if (item) {
       this.callbacks.nodeDoubleClicked()
     }
@@ -67,7 +66,7 @@ export default class TouchHandler {
         this.callbacks.pan(this._dragMachine.delta)
       }
     } else {
-      const ringUnderCursor = this.nodeFinder.getNodeRingAtPoint(this.eventPosition(evt))
+      const ringUnderCursor = this.callbacks.nodeFinder.getNodeRingAtPoint(this.eventPosition(evt))
       if (ringUnderCursor) {
         if (this.activeRing === null || (this.activeRing && ringUnderCursor !== this.activeRing)) {
           this.activeRing = ringUnderCursor
@@ -93,8 +92,8 @@ export default class TouchHandler {
 
     let cursorPosition = this.eventPosition(evt);
 
-    const nodeUnderCursor = this.nodeFinder.getNodeAtPoint(cursorPosition)
-    const ringUnderCursor = this.nodeFinder.getNodeRingAtPoint(cursorPosition)
+    const nodeUnderCursor = this.callbacks.nodeFinder.getNodeAtPoint(cursorPosition)
+    const ringUnderCursor = this.callbacks.nodeFinder.getNodeRingAtPoint(cursorPosition)
 
     if (nodeUnderCursor) {
       // Do not drag or select until figure out users' intention
