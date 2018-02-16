@@ -1,5 +1,5 @@
 import snapToDistancesAndAngles from "./snapToDistancesAndAngles";
-import placeGuides from "./guides";
+import { placeGuides, clearGuides } from "./guides";
 
 export const END_DRAG = 'END_DRAG'
 
@@ -15,11 +15,12 @@ export const tryMoveNode = (nodeId, vector) => {
     let currentPosition = getState().guides.naturalPosition || graph.nodes.find((node) => node.idMatches(nodeId)).position
     let naturalPosition = currentPosition.translate(vector)
     let snaps = snapToDistancesAndAngles(graph, nodeId, naturalPosition)
-    if (snaps) {
+    if (snaps.snapped) {
       dispatch(moveNode(nodeId, snaps.snappedPosition))
       dispatch(placeGuides(snaps.guidelines, naturalPosition))
     } else {
       dispatch(moveNode(nodeId, naturalPosition))
+      dispatch(clearGuides())
     }
   }
 }

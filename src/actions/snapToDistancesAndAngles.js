@@ -96,6 +96,7 @@ const snapToDistancesAndAngles = (graph, excludedNodeId, naturalPosition) => {
   }
 
   return {
+    snapped: guidelines.length > 0,
     guidelines: guidelines,
     snappedPosition: new Point(x, y)
   }

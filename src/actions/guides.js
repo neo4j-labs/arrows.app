@@ -1,4 +1,4 @@
-const placeGuides = (guidelines, naturalPosition) => {
+export const placeGuides = (guidelines, naturalPosition) => {
   return {
     type: 'PLACE_GUIDES',
     guidelines,
@@ -6,4 +6,8 @@ const placeGuides = (guidelines, naturalPosition) => {
   }
 }
 
-export default placeGuides
+export const clearGuides = () => {
+  return {
+    type: 'CLEAR_GUIDES'
+  }
+}
