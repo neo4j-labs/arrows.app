@@ -19,15 +19,24 @@ export class Graph {
     return new Graph(this.nodes.map((node) => node.idMatches(nodeId) ? node.moveTo(newPosition) : node), this.relationships)
   }
 
-  getNodeAtPoint(point) {
-    return this.nodes.find((node) =>
-    node.position.vectorFrom(point).distance() < node.radius)
+  closestNode(point, nodeTest) {
+    let closestDistance = Number.POSITIVE_INFINITY
+    let closestNode = null
+    this.nodes.forEach((node) => {
+      const distance = node.position.vectorFrom(point).distance()
+      if (distance < closestDistance && nodeTest(node, distance)) {
+        closestDistance = distance
+        closestNode = node
+      }
+    })
+    return closestNode
   }
 
-  getNodeRingAtPoint(point) {
-    return this.nodes.find((node) => {
-      const distance = node.position.vectorFrom(point).distance()
-      return distance > node.radius && distance < node.radius + 10;
-    })
+  nodeAtPoint(point) {
+    return this.closestNode(point, (node, distance) => distance < node.radius)
+  }
+
+  nodeRingAtPoint(point) {
+    return this.closestNode(point, (node, distance) => distance > node.radius && distance < node.radius + 10)
   }
 }
