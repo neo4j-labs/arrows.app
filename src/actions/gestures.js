@@ -15,41 +15,39 @@ export const deactivateRing = () => {
   }
 }
 
-export const tryDragRing = (sourceNodeId, originalPosition, position) => {
+export const tryDragRing = (sourceNodeId, position) => {
   return function (dispatch, getState) {
     let graph = getState().graph;
     let targetSnaps = snapToTargetNode(graph, sourceNodeId, position)
     if (targetSnaps.snapped) {
-      dispatch(ringDraggedConnected(sourceNodeId, targetSnaps.snappedNodeId, originalPosition, targetSnaps.snappedPosition))
+      dispatch(ringDraggedConnected(sourceNodeId, targetSnaps.snappedNodeId, targetSnaps.snappedPosition))
     } else {
       let snaps = snapToDistancesAndAngles(graph, sourceNodeId, position)
       if (snaps.snapped) {
-        dispatch(ringDraggedDisconnected(sourceNodeId, originalPosition, snaps.snappedPosition, new Guides(snaps.guidelines, position)))
+        dispatch(ringDraggedDisconnected(sourceNodeId, snaps.snappedPosition, new Guides(snaps.guidelines, position)))
       } else {
-        dispatch(ringDraggedDisconnected(sourceNodeId, originalPosition, position, new Guides()))
+        dispatch(ringDraggedDisconnected(sourceNodeId, position, new Guides()))
       }
     }
   }
 }
 
-const ringDraggedDisconnected = (sourceNodeId, originalPosition, position, guides) => {
+const ringDraggedDisconnected = (sourceNodeId, position, guides) => {
   return {
     type: 'RING_DRAGGED',
     sourceNodeId,
     targetNodeId: null,
-    originalPosition,
     position,
     guides
   }
 }
 
-const ringDraggedConnected = (sourceNodeId, targetNodeId, originalPosition, position) => {
+const ringDraggedConnected = (sourceNodeId, targetNodeId, position) => {
   console.log('connected', targetNodeId)
   return {
     type: 'RING_DRAGGED',
     sourceNodeId,
     targetNodeId,
-    originalPosition,
     position,
     guides: new Guides()
   }

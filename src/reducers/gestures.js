@@ -7,7 +7,7 @@ export default function gestures(state = { activeRing: null, newNodePosition: nu
       return { activeRing: null, newNodePosition: null }
 
     case 'RING_DRAGGED':
-      return { activeRing: action.sourceNodeId, originalPosition: action.originalPosition, newNodePosition: action.position }
+      return { activeRing: action.sourceNodeId, newNodePosition: action.position }
 
     case 'END_DRAG':
       return { activeRing: null, newNodePosition: null }

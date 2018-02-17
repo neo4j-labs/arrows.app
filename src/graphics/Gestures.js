@@ -32,7 +32,7 @@ export default class Gestures {
 
         drawRing(ctx, transform(newNodePosition), 'blue', newNodeRadius)
 
-        const sourcePoint = transform(gestures.originalPosition)
+        const sourcePoint = transform(activeRingPosition)
         const targetPoint = transform(newNodePosition)
         const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
         const unitVector = arrowVector.unit()

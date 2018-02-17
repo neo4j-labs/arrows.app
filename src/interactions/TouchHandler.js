@@ -59,7 +59,7 @@ export default class TouchHandler {
       }
     } else if (this.mouseDownRing) {
       this._dragMachine.update(evt)
-      this.callbacks.ringDragged(this.mouseDownRing.id, this.mouseDownRing.position, this.eventPosition(evt))
+      this.callbacks.ringDragged(this.mouseDownRing.id, this.eventPosition(evt))
     } else if (this._mouseDownOnCanvas) {
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
@@ -101,7 +101,7 @@ export default class TouchHandler {
       this.itemBeingDragged = nodeUnderCursor
     } else if (ringUnderCursor) {
       this.mouseDownRing = ringUnderCursor
-      this.callbacks.ringDragged(ringUnderCursor.id, cursorPosition, cursorPosition)
+      this.callbacks.ringDragged(ringUnderCursor.id, cursorPosition)
     } else {
       this._mouseDownOnCanvas = true
     }
