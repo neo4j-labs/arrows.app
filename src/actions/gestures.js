@@ -1,5 +1,5 @@
 import snapToDistancesAndAngles from "./snapToDistancesAndAngles";
-import { placeGuides, clearGuides } from "./guides";
+import {Guides} from "../graphics/Guides";
 
 export const activateRing = (nodeId) => {
   return {
@@ -19,20 +19,19 @@ export const tryDragRing = (nodeId, originalPosition, position) => {
     let graph = getState().graph;
     let snaps = snapToDistancesAndAngles(graph, nodeId, position)
     if (snaps.snapped) {
-      dispatch(ringDragged(nodeId, originalPosition, snaps.snappedPosition))
-      dispatch(placeGuides(snaps.guidelines, position))
+      dispatch(ringDragged(nodeId, originalPosition, snaps.snappedPosition, new Guides(snaps.guidelines, position)))
     } else {
-      dispatch(ringDragged(nodeId, originalPosition, position))
-      dispatch(clearGuides())
+      dispatch(ringDragged(nodeId, originalPosition, position, new Guides()))
     }
   }
 }
 
-export const ringDragged = (nodeId, originalPosition, position) => {
+export const ringDragged = (nodeId, originalPosition, position, guides) => {
   return {
     type: 'RING_DRAGGED',
     nodeId,
     originalPosition,
-    position
+    position,
+    guides
   }
 }
