@@ -1,13 +1,13 @@
 export default function gestures(state = { activeRing: null, newNodePosition: null }, action) {
   switch (action.type) {
     case 'ACTIVATE_RING':
-      return { activeRing: action.nodeId, newNodePosition: null }
+      return { activeRing: action.sourceNodeId, newNodePosition: null }
 
     case 'DEACTIVATE_RING':
       return { activeRing: null, newNodePosition: null }
 
     case 'RING_DRAGGED':
-      return { activeRing: action.nodeId, originalPosition: action.originalPosition, newNodePosition: action.position }
+      return { activeRing: action.sourceNodeId, originalPosition: action.originalPosition, newNodePosition: action.position }
 
     case 'END_DRAG':
       return { activeRing: null, newNodePosition: null }
