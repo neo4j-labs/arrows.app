@@ -25,8 +25,13 @@ export class Guides {
           const x = transform(new Point(guideline.x, 0)).x
           drawStraightLine(ctx, new Point(x, 0), new Point(x, displayOptions.canvasSize.height))
           break
+
         case 'CIRCLE':
           drawCircle(ctx, transform(guideline.center), guideline.radius, true)
+          break
+
+        default:
+          console.warn("Don't know how to render guideline of type: ", guideline.type)
       }
     })
 
