@@ -1,6 +1,6 @@
 import {
   IDLE, FETCHING_GRAPH, FETCHING_GRAPH_SUCCEEDED, FETCHING_GRAPH_FAILED,
-  UPDATING_GRAPH, UPDATING_GRAPH_SUCCEEDED
+  UPDATING_GRAPH, UPDATING_GRAPH_FAILED, UPDATING_GRAPH_SUCCEEDED
 } from "../state/storageStatus";
 import {Graph} from "../model/Graph";
 import Node from "../model/Node";
@@ -37,6 +37,12 @@ function updatingGraph() {
   }
 }
 
+function updatingGraphFailed() {
+  return {
+    type: UPDATING_GRAPH_FAILED
+  }
+}
+
 function updatingGraphSucceeded() {
   return {
     type: UPDATING_GRAPH_SUCCEEDED
@@ -45,47 +51,43 @@ function updatingGraphSucceeded() {
 
 export function updateGraph() {
   return function (dispatch, getState) {
+
+    dispatch(updatingGraph())
+    const session = driver.session()
+    let txPromise = session.writeTransaction(() => {})
+
     getState().graph.nodes.forEach(node => {
       switch (node.state) {
-        case 'new': {
-          dispatch(updatingGraph())
-          let session = driver.session();
-
-          return session.run('CREATE (n:Diagram0 {_x: $x, _y: $y})', {
-            x: node.position.x,
-            y: node.position.y
-          })
-            .then(() => {
-              dispatch(updatingGraphSucceeded())
-              session.close();
-            }, (error) => {
-              console.log(error)
-              dispatch(fetchingGraphFailed())
+        case 'new':
+          txPromise = txPromise.then(() => session.writeTransaction((tx) => {
+            tx.run('CREATE (n:Diagram0 {_x: $x, _y: $y})', {
+              x: node.position.x,
+              y: node.position.y
             })
+          }))
           break
-        }
-        case 'modified': {
-          dispatch(updatingGraph())
 
-          let session = driver.session();
-
-          return session.run('MATCH (n:Diagram0) WHERE ID(n) = $nodeId SET n._x = $x, n._y = $y return n', {
-            nodeId: +node.id.value,
-            x: node.position.x,
-            y: node.position.y
-          })
-            .then(() => {
-              dispatch(updatingGraphSucceeded())
-              session.close();
-            }, (error) => {
-              console.log(error)
-              dispatch(fetchingGraphFailed())
+        case 'modified':
+          txPromise = txPromise.then(() => session.writeTransaction((tx) => {
+            tx.run('MATCH (n) WHERE ID(n) = $nodeId SET n._x = $x, n._y = $y', {
+              nodeId: +node.id.value,
+              x: node.position.x,
+              y: node.position.y
             })
+          }))
           break
-        }
+
         default:
-          break
+          // other states don't matter
       }
+    })
+
+    txPromise.then(() => {
+      session.close();
+      dispatch(updatingGraphSucceeded())
+    }, (error) => {
+      console.log(error)
+      dispatch(updatingGraphFailed())
     })
   }
 }
