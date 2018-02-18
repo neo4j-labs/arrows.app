@@ -1,4 +1,6 @@
-import { Node } from './Node'
+import Node from './Node'
+import Relationship from "./Relationship";
+import * as uuid from "uuid";
 /*
  * Graph data-structure that's intended to be used immutably: please remember not to modify any of the internal arrays;
  * make a new graph object instead.
@@ -13,6 +15,23 @@ export class Graph {
     let newNodes = this.nodes.slice();
     newNodes.push(new Node())
     return new Graph(newNodes, this.relationships)
+  }
+
+  createNodeAndRelationship(sourceNodeId, targetNodePosition) {
+
+  }
+
+  connectNodes(sourceNodeId, targetNodeId) {
+    const newRelationships = this.relationships.slice();
+    newRelationships.push(new Relationship({
+      id: {
+        type: 'SYNTHETIC',
+        value: uuid()
+      },
+      type: '_RELATED',
+      properties: {}
+    }, sourceNodeId.value, targetNodeId.value))
+    return new Graph(this.nodes, newRelationships)
   }
 
   moveNode(nodeId, newPosition) {

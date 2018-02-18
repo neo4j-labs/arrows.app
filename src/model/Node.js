@@ -1,7 +1,7 @@
 import {Point} from "./Point"
 import uuid from "uuid/v4"
 
-export class Node {
+export default class Node {
   constructor(
     id = {
       type: 'SYNTHETIC',

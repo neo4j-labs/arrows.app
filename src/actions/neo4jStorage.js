@@ -3,7 +3,7 @@ import {
   UPDATING_GRAPH, UPDATING_GRAPH_SUCCEEDED
 } from "../state/storageStatus";
 import {Graph} from "../model/Graph";
-import {Node} from "../model/Node";
+import Node from "../model/Node";
 import {Point} from "../model/Point";
 import Relationship from "../model/Relationship"
 

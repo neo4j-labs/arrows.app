@@ -1,11 +1,25 @@
 import snapToDistancesAndAngles from "./snapToDistancesAndAngles";
 import {Guides} from "../graphics/Guides";
 
-export const END_DRAG = 'END_DRAG'
-
 export const createNode = () => {
   return {
     type: 'CREATE_NODE'
+  }
+}
+
+const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => {
+  return {
+    type: 'CREATE_NODE_AND_RELATIONSHIP',
+    sourceNodeId,
+    targetNodePosition
+  }
+}
+
+const connectNodes = (sourceNodeId, targetNodeId) => {
+  return {
+    type: 'CONNECT_NODES',
+    sourceNodeId,
+    targetNodeId,
   }
 }
 
@@ -33,7 +47,13 @@ export const moveNode = (nodeId, newPosition, guides) => {
 }
 
 export const endDrag = () => {
-  return {
-    type: 'END_DRAG'
+  return function (dispatch, getState) {
+    const gestures = getState().gestures;
+    if (gestures.targetNodeId) {
+      dispatch(connectNodes(gestures.activeRing, gestures.targetNodeId))
+    }
+    dispatch({
+      type: 'END_DRAG'
+    })
   }
 }

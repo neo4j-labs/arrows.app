@@ -6,6 +6,9 @@ const graph = (state = new Graph(), action) => {
     case 'CREATE_NODE':
       return state.createNode();
 
+    case 'CONNECT_NODES':
+      return state.connectNodes(action.sourceNodeId, action.targetNodeId)
+
     case 'MOVE_NODE':
       return state.moveNode(action.nodeId, action.newPosition);
 
