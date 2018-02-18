@@ -53,7 +53,7 @@ export function updateGraph() {
   return function (dispatch, getState) {
 
     dispatch(updatingGraph())
-    const session = driver.session()
+    const session = driver.session(neo4j.WRITE)
     let txPromise = session.writeTransaction(() => {})
 
     getState().graph.nodes.forEach(node => {
@@ -103,47 +103,41 @@ function toNumber(prop) {
 }
 
 export function fetchGraphFromDatabase() {
-  return function(dispatch) {
+  return function (dispatch) {
     dispatch(fetchingGraph())
 
-    let session = driver.session();
+    let session = driver.session(neo4j.READ);
+    const nodes = []
+    const relationships = []
 
-    return session.run('MATCH (n:Diagram0) OPTIONAL MATCH p=(n)-[]-() return n, p')
+    session.readTransaction((tx) => tx.run('MATCH (n:Diagram0) RETURN n'))
       .then((result) => {
-        const nodesMap = {}
-        const relationsMap = {}
-        const relationships = []
-        let nodes = result.records.map((record) => {
+        result.records.forEach((record) => {
           let neo4jNode = record.get('n');
           let neo4jId = neo4jNode.identity.toString()
-          const node = new Node({
-            type: 'NEO4J',
-            value: neo4jId
-          }, new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
-            neo4jNode.properties['_caption'], neo4jNode.properties['_color'], 'unmodified')
-          nodesMap[neo4jId] = node
-          return node
-        });
-
+          nodes.push(new Node({
+              type: 'NEO4J',
+              value: neo4jId
+            }, new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
+            neo4jNode.properties['_caption'], neo4jNode.properties['_color'], 'unmodified'))
+        })
+        return session.readTransaction((tx) => tx.run("MATCH (:Diagram0)-[r]->(:Diagram0) RETURN r"))
+      })
+      .then((result) => {
         result.records.forEach(record => {
-          let pair = record.get('p');
-          if (pair) {
-            pair.segments.forEach(segment => {
-              const relationship = segment.relationship
-              const relId = relationship.identity.toString()
-              if (!relationsMap[relId]) {
-                const from = relationship.start.toString()
-                const to = relationship.end.toString()
-                const newRelationship = new Relationship({ id: relId, ...segment.relationship }, from, to)
-                relationsMap[relId] = newRelationship
-                relationships.push(newRelationship)
-              }
-            })
-          }
-        });
-
-        dispatch(fetchingGraphSucceeded(new Graph(nodes, relationships)))
+          const relationship = record.get('r');
+          const relId = relationship.identity.toString()
+          const from = relationship.start.toString()
+          const to = relationship.end.toString()
+          const newRelationship = new Relationship({
+            id: relId,
+            type: relationship.type,
+            properties: relationship.properties
+          }, from, to)
+          relationships.push(newRelationship)
+        })
         session.close();
+        dispatch(fetchingGraphSucceeded(new Graph(nodes, relationships)))
       }, (error) => {
         console.log(error)
         dispatch(fetchingGraphFailed())
