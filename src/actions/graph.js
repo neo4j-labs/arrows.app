@@ -50,7 +50,7 @@ export const endDrag = () => {
   return function (dispatch, getState) {
     const gestures = getState().gestures;
     if (gestures.targetNodeId) {
-      dispatch(connectNodes(gestures.activeRing, gestures.targetNodeId))
+      dispatch(connectNodes(gestures.sourceNodeId, gestures.targetNodeId))
     }
     dispatch({
       type: 'END_DRAG'
