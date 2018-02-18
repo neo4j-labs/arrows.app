@@ -6,6 +6,7 @@ import {Graph} from "../model/Graph";
 import Node from "../model/Node";
 import {Point} from "../model/Point";
 import Relationship from "../model/Relationship"
+import {asKey, neo4jId} from "../model/Id";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 
@@ -70,7 +71,7 @@ export function updateGraph() {
         case 'modified':
           txPromise = txPromise.then(() => session.writeTransaction((tx) => {
             tx.run('MATCH (n) WHERE ID(n) = $nodeId SET n._x = $x, n._y = $y', {
-              nodeId: +node.id.value,
+              nodeId: neo4j.int(node.id.value),
               x: node.position.x,
               y: node.position.y
             })
@@ -114,11 +115,10 @@ export function fetchGraphFromDatabase() {
       .then((result) => {
         result.records.forEach((record) => {
           let neo4jNode = record.get('n');
-          let neo4jId = neo4jNode.identity.toString()
-          nodes.push(new Node({
-              type: 'NEO4J',
-              value: neo4jId
-            }, new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
+          let neo4jNodeId = neo4jId(neo4j.integer.toString(neo4jNode.identity))
+          nodes.push(new Node(
+            neo4jNodeId,
+            new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
             neo4jNode.properties['_caption'], neo4jNode.properties['_color'], 'unmodified'))
         })
         return session.readTransaction((tx) => tx.run("MATCH (:Diagram0)-[r]->(:Diagram0) RETURN r"))
@@ -126,9 +126,10 @@ export function fetchGraphFromDatabase() {
       .then((result) => {
         result.records.forEach(record => {
           const relationship = record.get('r');
-          const relId = relationship.identity.toString()
-          const from = relationship.start.toString()
-          const to = relationship.end.toString()
+          const relId = neo4jId(neo4j.integer.toString(relationship.identity))
+          const from = neo4jId(neo4j.integer.toString(relationship.start))
+          const to = neo4jId(neo4j.integer.toString(relationship.end))
+          console.log(typeof from, to, asKey(from), asKey(to))
           const newRelationship = new Relationship({
             id: relId,
             type: relationship.type,

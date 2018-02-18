@@ -1,12 +1,10 @@
 import {Point} from "./Point"
 import uuid from "uuid/v4"
+import {idsMatch, syntheticId} from "./Id";
 
 export default class Node {
   constructor(
-    id = {
-      type: 'SYNTHETIC',
-      value: uuid()
-    },
+    id = syntheticId(uuid()),
     position = new Point(1000 * Math.random(), 1000 * Math.random()),
     caption = "",
     color = '#53acf3',
@@ -21,11 +19,7 @@ export default class Node {
   }
 
   idMatches(id) {
-    return Node.idsMatch(this.id, id) || Node.idsMatch(this.originalId, id)
-  }
-
-  static idsMatch(a, b) {
-    return a && b && a.type === b.type && a.value === b.value
+    return idsMatch(this.id, id) || idsMatch(this.originalId, id)
   }
 
   withNewId(id) {

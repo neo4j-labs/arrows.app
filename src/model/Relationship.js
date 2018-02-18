@@ -1,10 +1,8 @@
 import uuid from "uuid/v4"
+import {syntheticId} from "./Id";
 
 export default class Relationship {
-  constructor ({ id = {
-    type: 'SYNTHETIC',
-    value: uuid()
-  }, type, properties = {}}
+  constructor ({ id = syntheticId(uuid()), type, properties = {}}
   , fromId, toId) {
     this.id = id
     this.properties = properties

@@ -3,6 +3,7 @@ import {getLines} from "./utils/wordwrap";
 import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
+import {asKey} from "../model/Id";
 
 export default class VisualNode {
   constructor(node, viewTransformation) {
@@ -14,14 +15,14 @@ export default class VisualNode {
 
   addEdge (edge, direction) {
     this.edges.push(edge)
-    this.edgeMap[edge.id] = {
+    this.edgeMap[asKey(edge.id)] = {
       edge,
       direction
     }
   }
 
-  get id () {
-    return this.node.id.value
+  get id() {
+    return this.node.id
   }
 
   get x () {

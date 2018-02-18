@@ -1,4 +1,5 @@
 import EdgeBundle from './EdgeBundle'
+import {asKey} from "../model/Id";
 
 export default class VisualGraph {
   constructor (nodes, edges) {
@@ -9,10 +10,11 @@ export default class VisualGraph {
 
   constructEdgeBundles () {
     const edgeBundles = this.edges.reduce((edgeBundleList, edge) => {
-      let edgeBundle = edgeBundleList[`${edge.from.id}-${edge.to.id}`] || edgeBundleList[`${edge.to.id}-${edge.from.id}`]
+      let edgeBundle = edgeBundleList[`${asKey(edge.from.id)}-${asKey(edge.to.id)}`]
+        || edgeBundleList[`${asKey(edge.to.id)}-${asKey(edge.from.id)}`]
       if (!edgeBundle) {
         edgeBundle = new EdgeBundle(edge)
-        edgeBundleList[`${edge.from.id}-${edge.to.id}`] = edgeBundle
+        edgeBundleList[`${asKey(edge.from.id)}-${asKey(edge.to.id)}`] = edgeBundle
       } else {
         edgeBundle.addEdge(edge)
       }

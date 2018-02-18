@@ -3,6 +3,7 @@ import Gestures from "./Gestures";
 import VisualNode from "./VisualNode";
 import VisualEdge from "./VisualEdge";
 import VisualGraph from "./VisualGraph";
+import {asKey} from "../model/Id";
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const { graph, gestures, guides } = visuals
@@ -20,15 +21,17 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
 
 function drawGraph(ctx, graph, relConfig, displayOptions) {
   const nodes = graph.nodes.reduce((nodes, node) => {
-    nodes[node.id.value] = new VisualNode(node, displayOptions.viewTransformation)
+    nodes[asKey(node.id)] = new VisualNode(node, displayOptions.viewTransformation)
     return nodes
   }, {})
+
+  console.log(nodes)
 
   const relationships = graph.relationships.map(relationship =>
     new VisualEdge({
         relationship,
-        from: nodes[relationship.fromId],
-        to: nodes[relationship.toId]
+        from: nodes[asKey(relationship.fromId)],
+        to: nodes[asKey(relationship.toId)]
       },
       relConfig)
   )

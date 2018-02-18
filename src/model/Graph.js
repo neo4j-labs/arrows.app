@@ -1,6 +1,7 @@
 import Node from './Node'
 import Relationship from "./Relationship";
 import * as uuid from "uuid";
+import {syntheticId} from "./Id";
 /*
  * Graph data-structure that's intended to be used immutably: please remember not to modify any of the internal arrays;
  * make a new graph object instead.
@@ -20,32 +21,23 @@ export class Graph {
   createNodeAndRelationship(sourceNodeId, targetNodePosition) {
     const newNodes = this.nodes.slice();
     const newRelationships = this.relationships.slice();
-    const newNode = new Node({
-      type: 'SYNTHETIC',
-      value: uuid()
-    }, targetNodePosition)
+    const newNode = new Node(syntheticId(uuid()), targetNodePosition)
     newNodes.push(newNode)
     newRelationships.push(new Relationship({
-      id: {
-        type: 'SYNTHETIC',
-        value: uuid()
-      },
+      id: syntheticId(uuid()),
       type: '_RELATED',
       properties: {}
-    }, sourceNodeId.value, newNode.id.value))
+    }, sourceNodeId, newNode.id))
     return new Graph(newNodes, newRelationships)
   }
 
   connectNodes(sourceNodeId, targetNodeId) {
     const newRelationships = this.relationships.slice();
     newRelationships.push(new Relationship({
-      id: {
-        type: 'SYNTHETIC',
-        value: uuid()
-      },
+      id: syntheticId(uuid()),
       type: '_RELATED',
       properties: {}
-    }, sourceNodeId.value, targetNodeId.value))
+    }, sourceNodeId, targetNodeId))
     return new Graph(this.nodes, newRelationships)
   }
 

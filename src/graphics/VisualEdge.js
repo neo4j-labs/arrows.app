@@ -4,10 +4,12 @@ import {
   getPointAtRange
 } from "./geometryUtils";
 import { drawArrowEndpoint } from "./canvasRenderer";
+import {idsMatch} from "../model/Id";
 
 export default class VisualEdge {
   constructor(edgeData, options) {
     this.relationship = edgeData.relationship
+    this.id = this.relationship.id
     this.from = edgeData.from
     this.to = edgeData.to
     this.options = options
@@ -20,10 +22,6 @@ export default class VisualEdge {
     }
 
     this.edgeBundle = null
-  }
-
-  get id () {
-    return this.relationship.id
   }
 
   get deflection () {
@@ -361,7 +359,7 @@ export default class VisualEdge {
   _findBorderPositionBezier (nearNode, ctx, viaNode = this._getViaCoordinates()) {
     var node = this.to
     var isFrom = false
-    if (nearNode.id === this.from.id) {
+    if (idsMatch(nearNode.id, this.from.id)) {
       node = this.from
       isFrom = true
     }
