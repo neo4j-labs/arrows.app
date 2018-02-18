@@ -25,8 +25,6 @@ function drawGraph(ctx, graph, relConfig, displayOptions) {
     return nodes
   }, {})
 
-  console.log(nodes)
-
   const relationships = graph.relationships.map(relationship =>
     new VisualEdge({
         relationship,

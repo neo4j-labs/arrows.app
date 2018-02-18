@@ -129,7 +129,6 @@ export function fetchGraphFromDatabase() {
           const relId = neo4jId(neo4j.integer.toString(relationship.identity))
           const from = neo4jId(neo4j.integer.toString(relationship.start))
           const to = neo4jId(neo4j.integer.toString(relationship.end))
-          console.log(typeof from, to, asKey(from), asKey(to))
           const newRelationship = new Relationship({
             id: relId,
             type: relationship.type,
