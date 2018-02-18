@@ -43,7 +43,6 @@ const ringDraggedDisconnected = (sourceNodeId, position, guides) => {
 }
 
 const ringDraggedConnected = (sourceNodeId, targetNodeId, position) => {
-  console.log('connected', targetNodeId)
   return {
     type: 'RING_DRAGGED',
     sourceNodeId,

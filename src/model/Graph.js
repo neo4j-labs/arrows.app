@@ -12,13 +12,28 @@ export class Graph {
   }
 
   createNode() {
-    let newNodes = this.nodes.slice();
+    const newNodes = this.nodes.slice();
     newNodes.push(new Node())
     return new Graph(newNodes, this.relationships)
   }
 
   createNodeAndRelationship(sourceNodeId, targetNodePosition) {
-
+    const newNodes = this.nodes.slice();
+    const newRelationships = this.relationships.slice();
+    const newNode = new Node({
+      type: 'SYNTHETIC',
+      value: uuid()
+    }, targetNodePosition)
+    newNodes.push(newNode)
+    newRelationships.push(new Relationship({
+      id: {
+        type: 'SYNTHETIC',
+        value: uuid()
+      },
+      type: '_RELATED',
+      properties: {}
+    }, sourceNodeId.value, newNode.id.value))
+    return new Graph(newNodes, newRelationships)
   }
 
   connectNodes(sourceNodeId, targetNodeId) {

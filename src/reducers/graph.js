@@ -6,6 +6,9 @@ const graph = (state = new Graph(), action) => {
     case 'CREATE_NODE':
       return state.createNode();
 
+    case 'CREATE_NODE_AND_RELATIONSHIP':
+      return state.createNodeAndRelationship(action.sourceNodeId, action.targetNodePosition)
+
     case 'CONNECT_NODES':
       return state.connectNodes(action.sourceNodeId, action.targetNodeId)
 
