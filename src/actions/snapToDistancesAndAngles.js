@@ -1,10 +1,34 @@
 import {Point} from "../model/Point";
+import {idsMatch} from "../model/Id";
 
 const snapTolerance = 20
 
 const snapToDistancesAndAngles = (graph, snappingNodeId, naturalPosition) => {
   let x = naturalPosition.x, y = naturalPosition.y
   let columns = [], rows = [], rings = [];
+
+  const neighbours = [], relationshipDistances = []
+  graph.relationships.forEach((relationship) => {
+    if (idsMatch(relationship.fromId, snappingNodeId)) {
+      neighbours.push(graph.nodes.find((node) => node.idMatches(relationship.toId)))
+    } else if (idsMatch(relationship.toId, snappingNodeId)) {
+      neighbours.push(graph.nodes.find((node) => node.idMatches(relationship.fromId)))
+    } else {
+      const distance = graph.nodes.find((node) => node.idMatches(relationship.toId))
+        .position.vectorFrom(graph.nodes.find((node) => node.idMatches(relationship.fromId)).position)
+        .distance();
+      const similarDistance = relationshipDistances.find((entry) => Math.abs(entry.distance - distance) < 0.01);
+      if (similarDistance) {
+        similarDistance.relationships.push(relationship)
+      } else {
+        relationshipDistances.push({
+          relationships: [relationship],
+          distance
+        })
+      }
+    }
+  })
+
   graph.nodes.forEach((node) => {
     if (!node.idMatches(snappingNodeId)) {
       columns.push({
@@ -15,16 +39,17 @@ const snapToDistancesAndAngles = (graph, snappingNodeId, naturalPosition) => {
         y: node.position.y,
         error: Math.abs(naturalPosition.y - node.position.y)
       })
-      let distance = node.position.vectorFrom(naturalPosition).distance();
-      graph.nodes.forEach((neighbour) => {
-        if (!neighbour.idMatches(snappingNodeId)) {
-          let radius = node.position.vectorFrom(neighbour.position).distance();
-          rings.push({
-            node,
-            radius,
-            error: Math.abs(distance - radius)
-          })
-        }
+    }
+  })
+  neighbours.forEach((neighbour) => {
+    if (!neighbour.idMatches(snappingNodeId)) {
+      relationshipDistances.forEach((entry) => {
+        const distance = naturalPosition.vectorFrom(neighbour.position).distance();
+        rings.push({
+          node: neighbour,
+          radius: entry.distance,
+          error: Math.abs(distance - entry.distance)
+        })
       })
     }
   })
