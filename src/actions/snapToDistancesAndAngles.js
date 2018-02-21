@@ -2,11 +2,11 @@ import {Point} from "../model/Point";
 
 const snapTolerance = 20
 
-const snapToDistancesAndAngles = (graph, excludedNodeId, naturalPosition) => {
+const snapToDistancesAndAngles = (graph, snappingNodeId, naturalPosition) => {
   let x = naturalPosition.x, y = naturalPosition.y
   let columns = [], rows = [], rings = [];
   graph.nodes.forEach((node) => {
-    if (!node.idMatches(excludedNodeId)) {
+    if (!node.idMatches(snappingNodeId)) {
       columns.push({
         x: node.position.x,
         error: Math.abs(naturalPosition.x - node.position.x)
@@ -17,7 +17,7 @@ const snapToDistancesAndAngles = (graph, excludedNodeId, naturalPosition) => {
       })
       let distance = node.position.vectorFrom(naturalPosition).distance();
       graph.nodes.forEach((neighbour) => {
-        if (!neighbour.idMatches(excludedNodeId)) {
+        if (!neighbour.idMatches(snappingNodeId)) {
           let radius = node.position.vectorFrom(neighbour.position).distance();
           rings.push({
             node,
