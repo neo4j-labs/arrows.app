@@ -3,17 +3,27 @@ import {idsMatch} from "../model/Id";
 
 const snapTolerance = 20
 
-const snapToDistancesAndAngles = (graph, snappingNodeId, naturalPosition) => {
-  let x = naturalPosition.x, y = naturalPosition.y
-  let columns = [], rows = [], rings = [];
+export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, naturalPosition) => {
 
-  const neighbours = [], relationshipDistances = []
+  const neighbours = [];
   graph.relationships.forEach((relationship) => {
     if (idsMatch(relationship.fromId, snappingNodeId)) {
       neighbours.push(graph.nodes.find((node) => node.idMatches(relationship.toId)))
     } else if (idsMatch(relationship.toId, snappingNodeId)) {
       neighbours.push(graph.nodes.find((node) => node.idMatches(relationship.fromId)))
-    } else {
+    }
+  })
+
+  const includeNode = (nodeId) => !idsMatch(nodeId, snappingNodeId)
+
+  return snapToDistancesAndAngles(graph, neighbours, includeNode, naturalPosition)
+}
+
+export const snapToDistancesAndAngles = (graph, neighbours, includeNode, naturalPosition) => {
+
+  const relationshipDistances = [];
+  graph.relationships.forEach((relationship) => {
+    if (includeNode(relationship.fromId) && includeNode(relationship.toId)) {
       const distance = graph.nodes.find((node) => node.idMatches(relationship.toId))
         .position.vectorFrom(graph.nodes.find((node) => node.idMatches(relationship.fromId)).position)
         .distance();
@@ -29,8 +39,10 @@ const snapToDistancesAndAngles = (graph, snappingNodeId, naturalPosition) => {
     }
   })
 
+  let columns = [], rows = [], rings = [];
+
   graph.nodes.forEach((node) => {
-    if (!node.idMatches(snappingNodeId)) {
+    if (includeNode(node.id)) {
       columns.push({
         x: node.position.x,
         error: Math.abs(naturalPosition.x - node.position.x)
@@ -42,21 +54,21 @@ const snapToDistancesAndAngles = (graph, snappingNodeId, naturalPosition) => {
     }
   })
   neighbours.forEach((neighbour) => {
-    if (!neighbour.idMatches(snappingNodeId)) {
-      relationshipDistances.forEach((entry) => {
-        const distance = naturalPosition.vectorFrom(neighbour.position).distance();
-        rings.push({
-          node: neighbour,
-          radius: entry.distance,
-          error: Math.abs(distance - entry.distance)
-        })
+    relationshipDistances.forEach((entry) => {
+      const distance = naturalPosition.vectorFrom(neighbour.position).distance();
+      rings.push({
+        node: neighbour,
+        radius: entry.distance,
+        error: Math.abs(distance - entry.distance)
       })
-    }
+    })
   })
   const byAscendingError = (a, b) => a.error - b.error;
   columns.sort(byAscendingError)
   rows.sort(byAscendingError)
   rings.sort(byAscendingError)
+
+  let x = naturalPosition.x, y = naturalPosition.y
 
   let guidelines = []
   if (columns[0] && columns[0].error < snapTolerance) {
@@ -126,5 +138,3 @@ const snapToDistancesAndAngles = (graph, snappingNodeId, naturalPosition) => {
     snappedPosition: new Point(x, y)
   }
 }
-
-export default snapToDistancesAndAngles
