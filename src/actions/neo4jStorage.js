@@ -76,7 +76,7 @@ export function updateGraph() {
           }, '')
           
           txPromise = txPromise.then(() => session.writeTransaction((tx) => {
-            tx.run('MATCH (n) WHERE ID(n) = $nodeId SET n._x = $x, n._y = $y${setProperties}', {
+            tx.run(`MATCH (n) WHERE ID(n) = $nodeId SET n._x = $x, n._y = $y${setProperties}`, {
               nodeId: neo4j.int(node.id.value),
               x: node.position.x,
               y: node.position.y
@@ -92,6 +92,7 @@ export function updateGraph() {
     txPromise.then(() => {
       session.close();
       dispatch(updatingGraphSucceeded())
+      dispatch(fetchGraphFromDatabase())
     }, (error) => {
       console.log(error)
       dispatch(updatingGraphFailed())
@@ -122,7 +123,6 @@ export function fetchGraphFromDatabase() {
         result.records.forEach((record) => {
           let neo4jNode = record.get('n');
           let neo4jNodeId = neo4jId(neo4j.integer.toString(neo4jNode.identity))
-          let neo4jId = neo4jNode.identity.toString()
           const actualProperties = Object.keys(neo4jNode.properties).reduce((properties, propertyKey) => {
             if (!propertyKey.startsWith('_')) {
               properties[propertyKey] = neo4jNode.properties[propertyKey]
