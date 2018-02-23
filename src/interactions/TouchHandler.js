@@ -42,7 +42,7 @@ export default class TouchHandler {
   handleDoubleClick (evt) {
     const item = this.callbacks.nodeFinder.nodeAtPoint(this.eventPosition(evt))
     if (item) {
-      this.callbacks.nodeDoubleClicked()
+      this.callbacks.nodeDoubleClicked(item)
     }
     evt.preventDefault()
   }

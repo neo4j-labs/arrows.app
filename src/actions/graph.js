@@ -2,6 +2,7 @@ import snapToDistancesAndAngles from "./snapToDistancesAndAngles";
 import {Guides} from "../graphics/Guides";
 
 export const END_DRAG = 'END_DRAG'
+export const UPDATE_NODE_PROPERTIES = 'UPDATE_NODE_PROPERTIES'
 
 export const createNode = () => {
   return {
@@ -63,3 +64,9 @@ export const endDrag = () => {
     })
   }
 }
+
+export const updateNodeProperties = (nodeId, properties) => ({
+  type: UPDATE_NODE_PROPERTIES,
+  nodeId,
+  properties
+})

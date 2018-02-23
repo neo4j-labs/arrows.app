@@ -8,7 +8,8 @@ export default class Node {
     position = new Point(1000 * Math.random(), 1000 * Math.random()),
     caption = "",
     color = '#53acf3',
-    state = 'new'
+    state = 'new',
+    properties = {}
     ) {
     this.id = id
     this.position = position
@@ -16,6 +17,7 @@ export default class Node {
     this.caption = caption
     this.color = color
     this.state = state
+    this.properties = properties
   }
 
   idMatches(id) {
@@ -31,6 +33,12 @@ export default class Node {
   }
 
   moveTo(newPosition) {
-    return new Node(this.id, newPosition, this.caption, this.color, 'modified')
+    return new Node(this.id, newPosition, this.caption, this.color, 'modified', this.properties)
+  }
+
+  updateProperties (properties) {
+    const newNode = new Node(this.id, this.position, this.caption, this.color, 'modified', this.properties)
+    newNode.modifiedProperties = properties
+    return newNode
   }
 }

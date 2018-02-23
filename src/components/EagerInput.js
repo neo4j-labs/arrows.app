@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {Component} from 'react'
 
 const fireWhenIdle = (evt, onSave) => {
   const target = evt.target
@@ -8,9 +8,17 @@ const fireWhenIdle = (evt, onSave) => {
     if (timestamp === target.expires) {
       onSave(target.value)
     }
-  }, 2000)
+  }, 1000)
 }
 
-export default ({onSave, ...props}) => {
-  return <input {...props} onChange={(evt) => onSave && fireWhenIdle(evt, onSave)} />
+export default class EagerInput extends Component {
+  state = { value: this.props.value}
+  render() {
+    return (
+      <input value={this.state.value} onChange={(evt) => {
+        this.setState({ value: evt.target.value })
+        this.props.onSave && fireWhenIdle(evt, this.props.onSave)
+      }}/>
+    )
+  }
 }

@@ -21,14 +21,14 @@ class GraphDisplay extends Component {
   }
 
   drawVisuals() {
-    const { graph, gestures, guides, viewTransformation, canvasSize, pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged } = this.props
+    const { graph, gestures, guides, viewTransformation, canvasSize, pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged, editNode } = this.props
     this.touchHandler.viewTransformation = viewTransformation
     this.touchHandler.callbacks = {
       nodeFinder: graph,
       pan,
       canvasClicked: () => {},
       nodeClicked: (node) => {},
-      nodeDoubleClicked: (node) => {},
+      nodeDoubleClicked: editNode,
       nodeDragged: moveNode,
       endDrag,
       activateRing,

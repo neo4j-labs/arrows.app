@@ -4,12 +4,12 @@ import NodeEditor from './NodeEditor'
 
 class SidebarLeftPush extends Component {
   render() {
-    const { visible } = this.props
+    const { visible, item } = this.props
     return (
       <div>
         <Sidebar.Pushable as={Segment}>
           <Sidebar as={Menu} animation='push' width='wide' visible={visible} icon='labeled' vertical inverted>
-            <NodeEditor />
+            <NodeEditor item={item} />
           </Sidebar>
           <Sidebar.Pusher>
             <Segment basic>

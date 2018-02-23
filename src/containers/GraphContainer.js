@@ -6,6 +6,7 @@ import {pan, zoom} from "../actions/viewTransformation";
 import {endDrag, tryMoveNode} from "../actions/graph";
 import {activateRing, deactivateRing, tryDragRing} from "../actions/gestures";
 import { modifyGraph } from "../actions/neo4jStorage";
+import { editNode } from "../actions/sidebar";
 
 const mapStateToProps = state => {
   return {
@@ -26,7 +27,8 @@ const mapDispatchToProps = dispatch => {
     endDrag: () => dispatch(modifyGraph(endDrag())),
     activateRing: (nodeId) => dispatch(activateRing(nodeId)),
     deactivateRing: () => dispatch(deactivateRing()),
-    ringDragged: (nodeId, position) => dispatch(tryDragRing(nodeId, position))
+    ringDragged: (nodeId, position) => dispatch(tryDragRing(nodeId, position)),
+    editNode: (node) => dispatch(editNode(node))
   }
 }
 
