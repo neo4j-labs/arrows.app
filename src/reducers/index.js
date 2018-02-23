@@ -5,6 +5,7 @@ import storageStatus from "./storageStatus";
 import windowSize from "./windowSize";
 import viewTransformation from "./viewTransformation";
 import gestures from "./gestures";
+import sidebar from "./sidebar"
 
 const arrowsApp = combineReducers({
   graph,
@@ -12,7 +13,8 @@ const arrowsApp = combineReducers({
   guides,
   storageStatus,
   windowSize,
-  viewTransformation
+  viewTransformation,
+  sidebar
 })
 
 export default arrowsApp

@@ -1,5 +1,8 @@
 import React from 'react';
+import {connect} from 'react-redux'
 import {FETCHING_GRAPH, FETCHING_GRAPH_FAILED, UPDATING_GRAPH, UPDATING_GRAPH_FAILED} from "../state/storageStatus";
+import { Button,  Header as SemanticHeader } from 'semantic-ui-react'
+import { hideSidebar } from "../actions/sidebar";
 
 export const headerHeight = 50;
 
@@ -32,12 +35,18 @@ const Header = (props) => {
   }
 
   return (
-    <header style={headerStyle} className="App-header">
-      <button onClick={props.onPlusNodeClick}>+ Node</button>
-      <button onClick={props.onReloadGraphClick}>Reload graph</button>
+    <SemanticHeader style={headerStyle}>
+      {props.sidebarVisible ? <Button onClick={props.hideSidebar}>{'<'}</Button> : null}
+      <Button onClick={props.onPlusNodeClick}>+ Node</Button>
+      <Button onClick={props.onReloadGraphClick}>Reload graph</Button>
       {storageStatusMessage(props)}
-    </header>
+    </SemanticHeader>
   )
 }
 
-export default Header
+const mapDispatchToProps = dispatch => ({
+  hideSidebar: () => dispatch(hideSidebar())
+})
+
+
+export default connect(null, mapDispatchToProps)(Header)

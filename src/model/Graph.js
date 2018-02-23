@@ -65,4 +65,8 @@ export class Graph {
   nodeRingAtPoint(point) {
     return this.closestNode(point, (node, distance) => distance > node.radius && distance < node.radius + 10)
   }
+
+  updateNodeProperties ({nodeId, properties}) {
+    return new Graph(this.nodes.map((node) => node.idMatches(nodeId) ? node.updateProperties(properties) : node), this.relationships)
+  }
 }

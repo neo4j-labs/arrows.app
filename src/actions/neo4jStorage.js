@@ -69,8 +69,14 @@ export function updateGraph() {
           break
 
         case 'modified':
+          const setProperties = (node.modifiedProperties || []).reduce((setProps, property, indx) => {
+            const propValue = isNaN(property.value * 1) ? `'${property.value}'` : property.value
+            setProps += `, n.${property.key} = ${propValue} `
+            return setProps
+          }, '')
+          
           txPromise = txPromise.then(() => session.writeTransaction((tx) => {
-            tx.run('MATCH (n) WHERE ID(n) = $nodeId SET n._x = $x, n._y = $y', {
+            tx.run(`MATCH (n) WHERE ID(n) = $nodeId SET n._x = $x, n._y = $y${setProperties}`, {
               nodeId: neo4j.int(node.id.value),
               x: node.position.x,
               y: node.position.y
@@ -86,6 +92,7 @@ export function updateGraph() {
     txPromise.then(() => {
       session.close();
       dispatch(updatingGraphSucceeded())
+      dispatch(fetchGraphFromDatabase())
     }, (error) => {
       console.log(error)
       dispatch(updatingGraphFailed())
@@ -116,10 +123,16 @@ export function fetchGraphFromDatabase() {
         result.records.forEach((record) => {
           let neo4jNode = record.get('n');
           let neo4jNodeId = neo4jId(neo4j.integer.toString(neo4jNode.identity))
+          const actualProperties = Object.keys(neo4jNode.properties).reduce((properties, propertyKey) => {
+            if (!propertyKey.startsWith('_')) {
+              properties[propertyKey] = neo4jNode.properties[propertyKey]
+            }
+            return properties
+          }, {})
           nodes.push(new Node(
             neo4jNodeId,
             new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
-            neo4jNode.properties['_caption'], neo4jNode.properties['_color'], 'unmodified'))
+            neo4jNode.properties['_caption'], neo4jNode.properties['_color'], 'unmodified', actualProperties))
         })
         return session.readTransaction((tx) => tx.run("MATCH (:Diagram0)-[r]->(:Diagram0) RETURN r"))
       })
