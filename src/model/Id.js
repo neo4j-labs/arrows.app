@@ -1,21 +1,15 @@
-export function neo4jId(value) {
-  return {
-    type: 'NEO4J',
-    value: value
-  }
-}
-
-export function syntheticId(value) {
-  return {
-    type: 'SYNTHETIC',
-    value: value
-  }
-}
-
 export function asKey(id) {
-  return id.type + '_' + id.value
+  return id
 }
 
 export function idsMatch(a, b) {
-  return a && b && a.type === b.type && a.value === b.value
+  return a === b
+}
+
+export function nextAvailableId(entities) {
+  const currentIds = entities.map((entity) => entity.id)
+    .filter((id) => /n[0-9+]/.test(id))
+    .map((id) => parseInt(id.substring(1)))
+    .sort()
+  return 'n' + (currentIds.length > 0 ? currentIds.pop() + 1 : 0)
 }

@@ -1,6 +1,7 @@
 import snapToTargetNode from "./snapToTargetNode";
 import {snapToDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
+import {idsMatch} from "../model/Id";
 
 export const activateRing = (sourceNodeId) => {
   return {
@@ -24,7 +25,7 @@ export const tryDragRing = (sourceNodeId, position) => {
     } else {
       let snaps = snapToDistancesAndAngles(
         graph,
-        [graph.nodes.find((node) => node.idMatches(sourceNodeId))],
+        [graph.nodes.find((node) => idsMatch(node.id, sourceNodeId))],
         (nodeId) => true,
         position
       )

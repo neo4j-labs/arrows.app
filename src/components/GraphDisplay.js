@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import TouchHandler from "../interactions/TouchHandler";
 import { renderVisuals } from "../graphics/visualsRenderer";
+import {nodeAtPoint, nodeRingAtPoint} from "../model/Graph";
 
 class GraphDisplay extends Component {
 
@@ -24,7 +25,10 @@ class GraphDisplay extends Component {
     const { graph, gestures, guides, viewTransformation, canvasSize, pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged, editNode } = this.props
     this.touchHandler.viewTransformation = viewTransformation
     this.touchHandler.callbacks = {
-      nodeFinder: graph,
+      nodeFinder: {
+        nodeAtPoint: (point) => nodeAtPoint(graph, point),
+        nodeRingAtPoint: (point) => nodeRingAtPoint(graph, point)
+      },
       pan,
       canvasClicked: () => {},
       nodeClicked: (node) => {},

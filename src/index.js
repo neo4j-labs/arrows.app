@@ -9,12 +9,13 @@ import App from './App';
 import registerServiceWorker from './registerServiceWorker';
 import {fetchGraphFromDatabase} from "./actions/neo4jStorage";
 import 'semantic-ui-css/semantic.min.css'
+import {storageMiddleware} from "./storage/storageMiddleware";
 
 //noinspection JSUnresolvedVariable,JSUnresolvedFunction
 let store = createStore(
   reducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-  applyMiddleware(thunkMiddleware)
+  applyMiddleware(thunkMiddleware, storageMiddleware)
 )
 
 render(

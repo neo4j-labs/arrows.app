@@ -8,9 +8,9 @@ export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, natural
   const neighbours = [];
   graph.relationships.forEach((relationship) => {
     if (idsMatch(relationship.fromId, snappingNodeId)) {
-      neighbours.push(graph.nodes.find((node) => node.idMatches(relationship.toId)))
+      neighbours.push(graph.nodes.find((node) => idsMatch(node.id, relationship.toId)))
     } else if (idsMatch(relationship.toId, snappingNodeId)) {
-      neighbours.push(graph.nodes.find((node) => node.idMatches(relationship.fromId)))
+      neighbours.push(graph.nodes.find((node) => idsMatch(node.id, relationship.fromId)))
     }
   })
 
@@ -24,8 +24,8 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
   const relationshipDistances = [];
   graph.relationships.forEach((relationship) => {
     if (includeNode(relationship.fromId) && includeNode(relationship.toId)) {
-      const distance = graph.nodes.find((node) => node.idMatches(relationship.toId))
-        .position.vectorFrom(graph.nodes.find((node) => node.idMatches(relationship.fromId)).position)
+      const distance = graph.nodes.find((node) => idsMatch(node.id, relationship.toId))
+        .position.vectorFrom(graph.nodes.find((node) => idsMatch(node.id, relationship.fromId)).position)
         .distance();
       const similarDistance = relationshipDistances.find((entry) => Math.abs(entry.distance - distance) < 0.01);
       if (similarDistance) {

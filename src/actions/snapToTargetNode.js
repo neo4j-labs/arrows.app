@@ -1,6 +1,9 @@
+import {closestNode} from "../model/Graph";
+import {idsMatch} from "../model/Id";
+
 const snapToTargetNode = (graph, excludedNodeId, naturalPosition) => {
-  const targetNode = graph.closestNode(naturalPosition, (node, distance) => {
-    return !node.idMatches(excludedNodeId) && distance < node.radius
+  const targetNode = closestNode(graph, naturalPosition, (node, distance) => {
+    return !idsMatch(node.id, excludedNodeId) && distance < node.radius
   })
 
   return {

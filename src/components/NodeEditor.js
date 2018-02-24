@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Segment, Icon, Header, Divider } from 'semantic-ui-react'
 import EagerInput from './EagerInput'
-import { modifyGraph } from "../actions/neo4jStorage";
 import { connect } from "react-redux";
 import { updateNodeProperties } from "../actions/graph";
 import { editNode } from "../actions/sidebar";
@@ -118,7 +117,7 @@ class NodeEditor extends Component {
 const mapDispatchToProps = dispatch => {
   return {
     onSave: (nodeId, key, value) => {
-      dispatch(modifyGraph(updateNodeProperties(nodeId, [{ key, value }])))
+      dispatch(updateNodeProperties(nodeId, { key: value }))
     }
   }
 }

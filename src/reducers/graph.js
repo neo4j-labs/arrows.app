@@ -1,25 +1,68 @@
-import {Graph} from "../model/Graph";
+import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
-import { UPDATE_NODE_PROPERTIES } from "../actions/graph";
+import {moveTo, updateProperties} from "../model/Node";
+import {idsMatch} from "../model/Id";
 
-const graph = (state = new Graph(), action) => {
-  const { type, ...rest } = action
-  switch (type) {
-    case 'CREATE_NODE':
-      return state.createNode();
+const graph = (state = emptyGraph(), action) => {
+  switch (action.type) {
+    case 'CREATE_NODE': {
+      const newNodes = state.nodes.slice();
+      newNodes.push({
+        id: action.newNodeId,
+        position: action.newNodePosition,
+        radius: action.radius,
+        caption: action.caption,
+        color: action.color
+      })
+      return {nodes: newNodes, relationships: state.relationships}
+    }
 
-    case 'CREATE_NODE_AND_RELATIONSHIP':
-      return state.createNodeAndRelationship(action.sourceNodeId, action.targetNodePosition)
+    case 'CREATE_NODE_AND_RELATIONSHIP': {
+      const newNodes = state.nodes.slice();
+      const newRelationships = state.relationships.slice();
+      const newNode = {
+        id: action.targetNodeId,
+        position: action.targetNodePosition,
+        radius: action.radius,
+        caption: action.caption,
+        color: action.color,
+        properties: {}
+      }
+      newNodes.push(newNode)
+      newRelationships.push({
+        id: action.newRelationshipId,
+        type: '_RELATED',
+        properties: {},
+        fromId: action.sourceNodeId,
+        toId: newNode.id
+      })
+      return {nodes: newNodes, relationships: newRelationships}
+    }
 
-    case 'CONNECT_NODES':
-      return state.connectNodes(action.sourceNodeId, action.targetNodeId)
+    case 'CONNECT_NODES': {
+      const newRelationships = state.relationships.slice();
+      newRelationships.push({
+        id: action.newRelationshipId,
+        type: '_RELATED',
+        properties: {},
+        fromId: action.sourceNodeId,
+        toId: action.targetNodeId
+      })
+      return {nodes: state.nodes, relationships: newRelationships}
+    }
 
-    case UPDATE_NODE_PROPERTIES :
-      const g = state.updateNodeProperties(rest)
-      return g
-      
+    case 'UPDATE_NODE_PROPERTIES': {
+      return {
+        nodes: state.nodes.map((node) => idsMatch(node.id, action.nodeId) ? updateProperties(node, action.properties) : node),
+        relationships: state.relationships
+      }
+    }
+
     case 'MOVE_NODE':
-      return state.moveNode(action.nodeId, action.newPosition);
+      return {
+        nodes: state.nodes.map((node) => idsMatch(node.id, action.nodeId) ? moveTo(node, action.newPosition) : node),
+        relationships: state.relationships
+      }
 
     case FETCHING_GRAPH_SUCCEEDED:
       return action.storedGraph

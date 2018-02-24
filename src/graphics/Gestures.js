@@ -2,6 +2,7 @@ import { drawArrowEndpoint, drawRing, drawStraightArrow } from "./canvasRenderer
 import { defaultNewNodeRadius, defaultNodeRadius, ringMargin } from "./constants";
 import { Vector } from "../model/Vector";
 import { getArrowGeometryData, getPointAtRange } from "./geometryUtils";
+import {idsMatch} from "../model/Id";
 
 export default class Gestures {
   constructor (gestures, graph) {
@@ -14,7 +15,7 @@ export default class Gestures {
     const transform = (position) => displayOptions.viewTransformation.transform(position)
 
     if (gestures.sourceNodeId) {
-      const sourceNodeIdPosition = graph.nodes.find((node) => node.idMatches(gestures.sourceNodeId)).position;
+      const sourceNodeIdPosition = graph.nodes.find((node) => idsMatch(node.id, gestures.sourceNodeId)).position;
       if (gestures.newNodePosition) {
         const delta = gestures.newNodePosition.vectorFrom(sourceNodeIdPosition)
         let newNodePosition = sourceNodeIdPosition;
