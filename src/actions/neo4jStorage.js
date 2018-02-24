@@ -92,7 +92,7 @@ export function updateGraph() {
     txPromise.then(() => {
       session.close();
       dispatch(updatingGraphSucceeded())
-      dispatch(fetchGraphFromDatabase())
+      // dispatch(fetchGraphFromDatabase())
     }, (error) => {
       console.log(error)
       dispatch(updatingGraphFailed())
