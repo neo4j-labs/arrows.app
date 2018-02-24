@@ -8,9 +8,9 @@ import './App.css'
 class App extends Component {
   state = { sidebarVisible : false }
   render() {
-    const { sidebar } = this.props
+    const { sidebar, graph } = this.props
     return (
-        <Sidebar visible={sidebar.status === 'expanded'} item={sidebar.item}>
+        <Sidebar visible={sidebar.status === 'expanded'} itemId={sidebar.itemId} graph={graph}>
           <div className="App">
             <HeaderContainer sidebarVisible={sidebar.status === 'expanded'} toggleSidebar={() => this.setState({sidebarVisible: !this.state.sidebarVisible})}/>
             <GraphContainer/>
@@ -21,7 +21,8 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  sidebar: state.sidebar
+  sidebar: state.sidebar,
+  graph: state.graph
 })
 
 export default connect(mapStateToProps, null)(App)

@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
+import {Input} from 'semantic-ui-react'
 
-const fireWhenIdle = (evt, onSave) => {
+const fireWhenIdle = (evt, onSave, delay = 1000) => {
   const target = evt.target
   const timestamp = Date.now()
   target.expires = timestamp
@@ -8,17 +9,25 @@ const fireWhenIdle = (evt, onSave) => {
     if (timestamp === target.expires) {
       onSave(target.value)
     }
-  }, 1000)
+  }, delay)
 }
 
 export default class EagerInput extends Component {
   state = { value: this.props.value}
+  setValue (evt) {
+    const { onSave, delay } = this.props
+    this.setState({ value: evt.target.value })
+    onSave && fireWhenIdle(evt, onSave, delay)
+  }
   render() {
+    const { hidden, onSave, delay, ...rest } = this.props
+
+    if (hidden) {
+      return null
+    }
+
     return (
-      <input value={this.state.value} onChange={(evt) => {
-        this.setState({ value: evt.target.value })
-        this.props.onSave && fireWhenIdle(evt, this.props.onSave)
-      }}/>
+      <Input {...rest} value={this.state.value} onChange={this.setValue.bind(this)}/>
     )
   }
 }

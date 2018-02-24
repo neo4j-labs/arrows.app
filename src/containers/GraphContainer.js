@@ -28,7 +28,7 @@ const mapDispatchToProps = dispatch => {
     activateRing: (nodeId) => dispatch(activateRing(nodeId)),
     deactivateRing: () => dispatch(deactivateRing()),
     ringDragged: (nodeId, position) => dispatch(tryDragRing(nodeId, position)),
-    editNode: (node) => dispatch(editNode(node))
+    editNode: (node) => dispatch(editNode(node.id))
   }
 }
 

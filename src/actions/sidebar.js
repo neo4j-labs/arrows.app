@@ -1,9 +1,9 @@
 export const EDIT_NODE = 'EDIT_NODE'
 export const COLLAPSE_SIDEBAR = 'COLLAPSE_SIDEBAR'
 
-export const editNode = (node) => ({
+export const editNode = (nodeId) => ({
   type: EDIT_NODE,
-  node
+  nodeId
 })
 
 export const hideSidebar = () => ({

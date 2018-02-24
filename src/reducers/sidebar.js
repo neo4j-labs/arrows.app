@@ -6,7 +6,7 @@ const sidebar = (state = { state: 'collapsed' }, action) => {
       return {
         status: 'expanded',
         mode: 'edit-node',
-        item: action.node
+        itemId: action.nodeId
       }
     case COLLAPSE_SIDEBAR:
       return {
