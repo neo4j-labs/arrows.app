@@ -1,5 +1,5 @@
 import snapToTargetNode from "./snapToTargetNode";
-import snapToDistancesAndAngles from "./snapToDistancesAndAngles";
+import {snapToDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 
 export const activateRing = (sourceNodeId) => {
@@ -22,7 +22,12 @@ export const tryDragRing = (sourceNodeId, position) => {
     if (targetSnaps.snapped) {
       dispatch(ringDraggedConnected(sourceNodeId, targetSnaps.snappedNodeId, targetSnaps.snappedPosition))
     } else {
-      let snaps = snapToDistancesAndAngles(graph, sourceNodeId, position)
+      let snaps = snapToDistancesAndAngles(
+        graph,
+        [graph.nodes.find((node) => node.idMatches(sourceNodeId))],
+        (nodeId) => true,
+        position
+      )
       if (snaps.snapped) {
         dispatch(ringDraggedDisconnected(sourceNodeId, snaps.snappedPosition, new Guides(snaps.guidelines, position)))
       } else {
