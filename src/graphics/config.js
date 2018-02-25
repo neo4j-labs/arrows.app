@@ -11,6 +11,7 @@ export default {
   },
   font: {
     size: 10,
+    face: '"Open Sans", sans-serif',
     strokeWidth: 0,
     align: 'top',
     vadjust: 2
