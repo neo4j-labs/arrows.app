@@ -77,8 +77,14 @@ export const endDrag = () => {
   }
 }
 
-export const updateNodeProperties = (nodeId, properties) => ({
-  type: 'UPDATE_NODE_PROPERTIES',
+export const setNodeCaption = (nodeId, caption) => ({
+  type: 'SET_NODE_CAPTION',
   nodeId,
-  properties
+  caption
+})
+
+export const setNodeProperties = (nodeId, keyValuePairs) => ({
+  type: 'SET_NODE_PROPERTIES',
+  nodeId,
+  keyValuePairs
 })

@@ -1,6 +1,6 @@
 import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
-import {moveTo, updateProperties} from "../model/Node";
+import {moveTo, setProperties, setCaption} from "../model/Node";
 import {idsMatch} from "../model/Id";
 
 const graph = (state = emptyGraph(), action) => {
@@ -51,9 +51,16 @@ const graph = (state = emptyGraph(), action) => {
       return {nodes: state.nodes, relationships: newRelationships}
     }
 
-    case 'UPDATE_NODE_PROPERTIES': {
+    case 'SET_NODE_CAPTION': {
       return {
-        nodes: state.nodes.map((node) => idsMatch(node.id, action.nodeId) ? updateProperties(node, action.properties) : node),
+        nodes: state.nodes.map((node) => idsMatch(node.id, action.nodeId) ? setCaption(node, action.caption) : node),
+        relationships: state.relationships
+      }
+    }
+
+    case 'SET_NODE_PROPERTIES': {
+      return {
+        nodes: state.nodes.map((node) => idsMatch(node.id, action.nodeId) ? setProperties(node, action.keyValuePairs) : node),
         relationships: state.relationships
       }
     }

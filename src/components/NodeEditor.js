@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { Form, Segment, Icon, Header, Divider } from 'semantic-ui-react'
 import EagerInput from './EagerInput'
 import { connect } from "react-redux";
-import { updateNodeProperties } from "../actions/graph";
-import { editNode } from "../actions/sidebar";
+import { setNodeProperties, setNodeCaption } from "../actions/graph";
 
 class NodeEditor extends Component {
   constructor (props) {
@@ -38,7 +37,7 @@ class NodeEditor extends Component {
   savePropertyValue () {
     const { addProperty } = this.state
     if (addProperty.value) {
-      this.props.onSave(this.props.item.id, addProperty.key, addProperty.value)
+      this.props.onSaveProperty(this.props.item.id, addProperty.key, addProperty.value)
       this.newPropElementKey++
       this.setState({
         addProperty: {
@@ -52,7 +51,7 @@ class NodeEditor extends Component {
   }
 
   render() {
-    const { item, onSave } = this.props
+    const { item, onSaveCaption, onSaveProperty } = this.props
     const { addProperty } = this.state
     if (!item) {
       return null
@@ -91,7 +90,7 @@ class NodeEditor extends Component {
         <Form inverted style={{ 'textAlign': 'left' }}>
           <Form.Field key={nodeId.value + '_caption'}>
             <label>Caption</label>
-            <EagerInput value={item.caption} onSave={(value) => onSave(nodeId, '_caption', value)}
+            <EagerInput value={item.caption} onSave={(value) => onSaveCaption(nodeId, value)}
                         placeholder='Node Caption'/>
           </Form.Field>
           <Divider horizontal inverted>Properties</Divider>
@@ -102,7 +101,7 @@ class NodeEditor extends Component {
                 <EagerInput
                   placeholder={propertyKey}
                   value={item.properties[propertyKey]}
-                  onSave={(val) => onSave(nodeId, propertyKey, val)}/>
+                  onSave={(val) => onSaveProperty(nodeId, propertyKey, val)}/>
               </Form.Field>
             )
           }
@@ -116,8 +115,11 @@ class NodeEditor extends Component {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSave: (nodeId, key, value) => {
-      dispatch(updateNodeProperties(nodeId, { key: value }))
+    onSaveCaption: (nodeId, caption) => {
+      dispatch(setNodeCaption(nodeId, caption))
+    },
+    onSaveProperty: (nodeId, key, value) => {
+      dispatch(setNodeProperties(nodeId, [{ key, value }]))
     }
   }
 }

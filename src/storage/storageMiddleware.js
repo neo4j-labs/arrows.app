@@ -61,11 +61,24 @@ export const storageMiddleware = store => next => action => {
       break
     }
 
-    case 'UPDATE_NODE_PROPERTIES': {
+    case 'SET_NODE_CAPTION': {
+      runCypher('MATCH (n:Diagram0 {_id: $id}) ' +
+        'SET n._caption = $caption', {
+        id: action.nodeId,
+        caption: action.caption
+      })
+      break
+    }
+
+    case 'SET_NODE_PROPERTIES': {
+      const properties = {}
+      action.keyValuePairs.forEach((keyValuePair) => {
+        properties[keyValuePair.key] = keyValuePair.value
+      })
       runCypher('MATCH (n:Diagram0 {_id: $id}) ' +
         'SET n += $properties', {
         id: action.nodeId,
-        properties: action.properties
+        properties: properties
       })
       break
     }
