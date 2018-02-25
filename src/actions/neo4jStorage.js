@@ -79,7 +79,6 @@ export function fetchGraphFromDatabase() {
             radius: 50,
             caption: neo4jNode.properties['_caption'],
             color: neo4jNode.properties['_color'],
-            state: 'unmodified',
             properties: actualProperties
           })
         })

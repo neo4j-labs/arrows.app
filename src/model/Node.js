@@ -5,7 +5,6 @@ export const moveTo = (node, newPosition) => {
     radius: node.radius,
     caption: node.caption,
     color: node.color,
-    state: node.state,
     properties: node.properties
   }
 }
@@ -17,7 +16,6 @@ export const updateProperties = (node, properties) => {
     radius: node.radius,
     caption: node.caption,
     color: node.color,
-    state: node.state,
     properties: properties
   }
 }
