@@ -59,7 +59,7 @@ class NodeEditor extends Component {
     const nodeId = item.id
 
     const addPropertyKeyElement = (
-      <Form.Field key={nodeId.value + '_newPropKey' + this.newPropElementKey}>
+      <Form.Field key={nodeId + '_newPropKey' + this.newPropElementKey}>
         {addProperty.state === 'value'  ? <label>{addProperty.key}</label> : null}
         <EagerInput
           hidden={addProperty.state === 'value'}
@@ -88,7 +88,7 @@ class NodeEditor extends Component {
           Node Settings
         </Header>
         <Form inverted style={{ 'textAlign': 'left' }}>
-          <Form.Field key={nodeId.value + '_caption'}>
+          <Form.Field key={nodeId + '_caption'}>
             <label>Caption</label>
             <EagerInput value={item.caption} onSave={(value) => onSaveCaption(nodeId, value)}
                         placeholder='Node Caption'/>
@@ -96,7 +96,7 @@ class NodeEditor extends Component {
           <Divider horizontal inverted>Properties</Divider>
           {
             Object.keys(item.properties).map(propertyKey =>
-              <Form.Field key={nodeId.value + propertyKey}>
+              <Form.Field key={nodeId + propertyKey}>
                 <label>{propertyKey}</label>
                 <EagerInput
                   placeholder={propertyKey}
