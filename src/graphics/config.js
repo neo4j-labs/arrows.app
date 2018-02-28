@@ -23,7 +23,7 @@ export default {
   arrows: {
     to: {
       type: 'arrow',
-      scaleFactor: 1
+      scaleFactor: 0.35
     },
     from: {
       type: 'none',
@@ -33,9 +33,9 @@ export default {
   edgeTypePlugin: {
     arrows: {
       to: {
-        gap: 1,
+        gap: 3,
         type: 'arrow',
-        scaleFactor: 1
+        scaleFactor: 0.35
       },
       from: {
         gap: 0,

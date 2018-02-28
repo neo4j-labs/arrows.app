@@ -106,7 +106,7 @@ export const getCirclesCrossPoint = (node, x, y, low, high, direction, radius) =
   return pos
 }
 
-export const getArrowGeometryData = (from, to, viaNode, position = 'to') => {
+export const getArrowGeometryData = (from, fromPoint, to, toPoint, viaNode, position = 'to') => {
   const pixelRatio = (window.devicePixelRatio || 1)
   const lineWidth = 1 * pixelRatio
 
@@ -114,13 +114,13 @@ export const getArrowGeometryData = (from, to, viaNode, position = 'to') => {
   let arrowPoint
   let node1 = to
   let node2 = from
-  let guideOffset = -0.5
+  let guideOffset = -0.1
   let scaleFactor = 1
   let type = 'arrow'
 
   if (node1 !== node2) {
     arrowPoint = getBezierAndCircleCrossPoint(node1, from, to, position === 'from', viaNode)
-    var guidePos = getPointAtRange(Math.max(0.0, Math.min(1.0, arrowPoint.t + guideOffset)), from, to, viaNode)
+    var guidePos = getPointAtRange(Math.max(0.0, Math.min(1.0, arrowPoint.t + guideOffset)), fromPoint, toPoint, viaNode)
     angle = Math.atan2(arrowPoint.y - guidePos.y, arrowPoint.x - guidePos.x)
   } else {
     /*// draw circle (loop)
@@ -136,17 +136,13 @@ export const getArrowGeometryData = (from, to, viaNode, position = 'to') => {
 
   var length = 0
   if (!(position === 'from' && type === 'none')) {
-    length = 20 * scaleFactor * Math.sqrt(lineWidth)
+    length = 15 * scaleFactor * Math.sqrt(lineWidth)
   }
 
   let newPoint = {
-    x: arrowPoint.x + ((length + lineWidth) * 0.05) * Math.cos(angle),
-    y: arrowPoint.y + ((length + lineWidth) * 0.05) * Math.sin(angle)
+    x: arrowPoint.x + (length + lineWidth) * 0.05 * Math.cos(angle),
+    y: arrowPoint.y + (length + lineWidth) * 0.05 * Math.sin(angle)
   }
 
-  var xi = arrowPoint.x - length * 0.9 * Math.cos(angle)
-  var yi = arrowPoint.y - length * 0.9 * Math.sin(angle)
-  let arrowCore = { x: xi, y: yi }
-
-  return { point: newPoint, core: arrowCore, angle: angle, length: length, type: type }
+  return { point: newPoint, angle: angle, length: length, type: type }
 }

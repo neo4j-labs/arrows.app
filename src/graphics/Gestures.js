@@ -40,7 +40,7 @@ export default class Gestures {
         const sourceBorderPoint = sourcePoint.translate(unitVector.scale(defaultNodeRadius))
         const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(defaultNewNodeRadius))
 
-        const arrowData = getArrowGeometryData(sourcePoint, targetPoint)
+        const arrowData = getArrowGeometryData(sourcePoint, sourceBorderPoint, targetPoint, targetBorderPoint)
         drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)
 
 

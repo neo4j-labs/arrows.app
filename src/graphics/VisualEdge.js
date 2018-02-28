@@ -40,19 +40,18 @@ export default class VisualEdge {
     // get the via node from the edge type
     const viaCoordinates = this._getViaCoordinates()
 
-    //const dataFrom = getArrowGeometryData(this.from, this.to, viaCoordinates, 'from')
-    const dataTo = getArrowGeometryData(this.from, this.to, viaCoordinates)
+    const dataTo = getArrowGeometryData(this.from, this.fromPoint, this.to, this.toPoint, viaCoordinates)
 
     // Move back end point sligthly so line doesnt stick out of arrow head
     const pixelRatio = (window.devicePixelRatio || 1)
     const lineWidth = this._getOption('width') * pixelRatio
+
     this.toPoint.x -= Math.cos(dataTo.angle) * lineWidth
     this.toPoint.y -= Math.sin(dataTo.angle) * lineWidth
 
     // draw arrow
     this.drawLine(ctx, viaCoordinates, false, false)
-    //this.drawArrowHead(ctx, dataFrom, false, false)
-    this.drawArrowHead(ctx, dataTo, false, false)
+    this.drawArrowHead(ctx, dataTo)
 
     // draw label
     if (this._getOption('drawLabel')) {
@@ -85,91 +84,9 @@ export default class VisualEdge {
 
   drawArrowHead (ctx, arrowData) {
     let length = arrowData.length
-    let x = arrowData.point.x
-    let y = arrowData.point.y
-
-    // draw arrow at the end of the line
-    drawArrowEndpoint(ctx, x, y, arrowData.angle, length)
+    drawArrowEndpoint(ctx, this.toPoint.x, this.toPoint.y, arrowData.angle, length, 0.5)
 
     ctx.fill()
-  }
-
-  getArrowData (ctx, position, viaNode = this._getViaCoordinates()) {
-    const pixelRatio = (window.devicePixelRatio || 1)
-    const lineWidth = this._getOption('width') * pixelRatio
-
-    // set lets
-    let angle
-    let arrowPoint
-    let node1
-    let node2
-    let guideOffset
-    let scaleFactor
-    let type
-
-    if (position === 'from') {
-      node1 = this.from
-      node2 = this.to
-      guideOffset = 0.1
-      scaleFactor = this._getOption('arrows.from.scaleFactor')
-      type = this._getOption('arrows.from.type')
-    } else {
-      node1 = this.to
-      node2 = this.from
-      guideOffset = -0.1
-      scaleFactor = this._getOption('arrows.to.scaleFactor')
-      type = this._getOption('arrows.to.type')
-    }
-
-    var _getArrowPoint = this.getArrowPoint(node1, node2, position)
-    if (_getArrowPoint !== undefined) {
-      arrowPoint = _getArrowPoint[0]
-      angle = _getArrowPoint[1]
-    } else {
-      if (node1 !== node2) {
-        arrowPoint = this.findBorderPosition(node1, ctx, { via: viaNode })
-        var guidePos = getPointAtRange(Math.max(0.0, Math.min(1.0, arrowPoint.t + guideOffset)), this.from, this.to, viaNode)
-        angle = Math.atan2(arrowPoint.y - guidePos.y, arrowPoint.x - guidePos.x)
-      } else {
-        // draw circle
-        let [x, y] = this._getCircleData(ctx)
-        if (position === 'from') {
-          arrowPoint = this.findBorderPosition(this.from, ctx, { x, y, low: 0.25, high: 0.6, direction: -1 })
-          angle = arrowPoint.t * -2 * Math.PI + 1.5 * Math.PI + 0.1 * Math.PI
-        } else {
-          arrowPoint = this.findBorderPosition(this.from, ctx, { x, y, low: 0.6, high: 1.0, direction: 1 })
-          angle = arrowPoint.t * -2 * Math.PI + 1.5 * Math.PI - 1.1 * Math.PI
-        }
-      }
-    }
-
-    var length = 0
-    if (!(position === 'from' && type === 'none')) {
-      length = 20 * scaleFactor * Math.sqrt(lineWidth)
-    }
-
-    let newPoint = {
-      x: arrowPoint.x + (length * 0.3 + lineWidth * 0.5) * Math.cos(angle),
-      y: arrowPoint.y + (length * 0.3 + lineWidth * 0.5) * Math.sin(angle)
-    }
-
-    var xi = arrowPoint.x - length * 0.9 * Math.cos(angle)
-    var yi = arrowPoint.y - length * 0.9 * Math.sin(angle)
-    let arrowCore = { x: xi, y: yi }
-
-    return { point: newPoint, core: arrowCore, angle: angle, length: length, type: type }
-  }
-
-  getArrowPoint (node1, node2, position) {
-    if (node1 !== node2) {
-      return undefined
-    }
-
-    if (position === 'from') {
-      return [this.fromPoint, this.fromPoint.angle]
-    } else if (position === 'to') {
-      return [this.toPoint, this.toPoint.angle]
-    }
   }
 
   _line (ctx, viaNode, blur) {
@@ -364,7 +281,7 @@ export default class VisualEdge {
       isFrom = true
     }
 
-    return getBezierAndCircleCrossPoint(node, this.from, this.to, isFrom, viaNode)
+    return getBezierAndCircleCrossPoint(node, this.fromPoint, this.toPoint, isFrom, viaNode)
   }
 
   /**

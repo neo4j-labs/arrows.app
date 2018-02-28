@@ -1,6 +1,3 @@
-import {Vector} from "../model/Vector";
-import { arrowLength, arrowWidth } from "./constants";
-
 export function drawRing(ctx, position, color, size) {
   drawSolidCircle(ctx, position, color, size)
 }
@@ -28,7 +25,7 @@ export function drawStraightArrow(ctx, sourcePoint, targetPoint, arrowData) {
   let y = arrowData.point.y
 
   // draw arrow at the end of the line
-  drawArrowEndpoint(ctx, x, y, arrowData.angle, length)
+  drawArrowEndpoint(ctx, x, y, arrowData.angle, length, -0.1)
 
   ctx.fill()
 }
@@ -41,29 +38,6 @@ export function drawStraightLine(ctx, sourcePoint, targetPoint) {
   ctx.closePath()
 }
 
-function drawTriangle(ctx, points) {
-  ctx.beginPath();
-  ctx.fillStyle = ctx.strokeStyle
-  ctx.moveTo(points[0].x, points[0].y)
-  ctx.lineTo(points[1].x, points[1].y)
-  ctx.lineTo(points[2].x, points[2].y)
-  ctx.fill();
-  ctx.closePath()
-}
-
-const getArrowPoints = (sourcePoint, targetPoint) => {
-  const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
-  const unitVector = arrowVector.unit()
-  const perpendicular1 = unitVector.perpendicular()
-  const perpendicular2 = perpendicular1.invert()
-
-  const arrowCrossPoint = targetPoint.translate(unitVector.invert().scale(arrowLength))
-  const leftPoint = arrowCrossPoint.translate(perpendicular1.scale(arrowWidth))
-  const rightPoint = arrowCrossPoint.translate(perpendicular2.scale(arrowWidth))
-
-  return [targetPoint, leftPoint, rightPoint]
-}
-
 export const drawTextLine = (ctx, line, position) => {
   let lineWidth = ctx.measureText(line).width
   let xPos = -lineWidth / 2
@@ -71,11 +45,14 @@ export const drawTextLine = (ctx, line, position) => {
   return {lineWidth, xPos};
 }
 
-export const drawArrowEndpoint = (ctx, x, y, angle, length) => {
+export const drawArrowEndpoint = (ctx, xTo, yTo, angle, length, shiftRatio) => {
   ctx.fillStyle = ctx.strokeStyle
 
   const pixelRatio = (window.devicePixelRatio || 1)
   ctx.lineWidth *= pixelRatio
+
+  let x = shiftRatio ? xTo + Math.cos(angle) * length * shiftRatio : xTo
+  let y = shiftRatio ? yTo + Math.sin(angle) * length * shiftRatio : yTo
 
   // tail
   var xt = x - length * Math.cos(angle)
