@@ -18,8 +18,10 @@ export default class Gestures {
     let newNodeRadius = defaultNodeRadius + ringMargin;
 
     Object.keys(selection.selectedNodeIdMap).forEach(nodeId => {
-      const nodePosition = graph.nodes.find((node) => idsMatch(node.id, nodeId)).position;
-      drawRing(ctx, transform(nodePosition), green, defaultNodeRadius + ringMargin / 2)
+      if (!idsMatch(nodeId, dragging.sourceNodeId)) {
+        const nodePosition = graph.nodes.find((node) => idsMatch(node.id, nodeId)).position;
+        drawRing(ctx, transform(nodePosition), green, defaultNodeRadius + ringMargin / 2)
+      }
     })
 
     if (dragging.sourceNodeId) {
