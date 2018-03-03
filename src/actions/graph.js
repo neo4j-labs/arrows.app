@@ -2,6 +2,7 @@ import {snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId} from "../model/Id";
 import {Point} from "../model/Point";
+import { blueActive } from "../model/colors";
 
 export const END_DRAG = 'END_DRAG'
 
@@ -12,7 +13,7 @@ export const createNode = () => (dispatch, getState) => {
     newNodePosition: new Point(1000 * Math.random(), 1000 * Math.random()),
     radius: 50,
     caption: '',
-    color: '#53acf3'
+    color: blueActive
   })
 }
 
@@ -25,7 +26,7 @@ const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (dispatc
     targetNodePosition,
     radius: 50,
     caption: '',
-    color: '#53acf3'
+    color: blueActive
   })
 }
 

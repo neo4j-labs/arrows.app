@@ -3,6 +3,7 @@ import { defaultNewNodeRadius, defaultNodeRadius, ringMargin } from "./constants
 import { Vector } from "../model/Vector";
 import { getArrowGeometryData, getPointAtRange } from "./geometryUtils";
 import {idsMatch} from "../model/Id";
+import { green, blueGreen, purple } from "../model/colors";
 
 export default class Gestures {
   constructor (gestures, graph) {
