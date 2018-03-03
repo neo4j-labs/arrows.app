@@ -64,12 +64,12 @@ export const moveNode = (nodeId, newPosition, guides) => {
 
 export const endDrag = () => {
   return function (dispatch, getState) {
-    const gestures = getState().gestures;
-    if (gestures.sourceNodeId) {
-      if (gestures.targetNodeId) {
-        dispatch(connectNodes(gestures.sourceNodeId, gestures.targetNodeId))
+    const dragging = getState().gestures.dragging;
+    if (dragging.sourceNodeId) {
+      if (dragging.targetNodeId) {
+        dispatch(connectNodes(dragging.sourceNodeId, dragging.targetNodeId))
       } else {
-        dispatch(createNodeAndRelationship(gestures.sourceNodeId, gestures.newNodePosition))
+        dispatch(createNodeAndRelationship(dragging.sourceNodeId, dragging.newNodePosition))
       }
     }
     dispatch({

@@ -3,8 +3,8 @@ import GraphDisplay from '../components/GraphDisplay'
 import {headerHeight} from '../components/Header'
 import {windowResized} from "../actions/windowSize";
 import {pan, zoom} from "../actions/viewTransformation";
-import {endDrag, tryMoveNode} from "../actions/graph";
-import {activateRing, deactivateRing, tryDragRing} from "../actions/gestures";
+import { endDrag, tryMoveNode } from "../actions/graph";
+import {activateRing, deactivateRing, tryDragRing, toggleSelectionRing} from "../actions/gestures";
 import { editNode } from "../actions/sidebar";
 
 const mapStateToProps = state => {
@@ -27,7 +27,8 @@ const mapDispatchToProps = dispatch => {
     activateRing: (nodeId) => dispatch(activateRing(nodeId)),
     deactivateRing: () => dispatch(deactivateRing()),
     ringDragged: (nodeId, position) => dispatch(tryDragRing(nodeId, position)),
-    editNode: (node) => dispatch(editNode(node.id))
+    editNode: (node) => dispatch(editNode(node.id)),
+    toggleSelection: (nodeIds) => dispatch(toggleSelectionRing(nodeIds))
   }
 }
 

@@ -13,26 +13,32 @@ export default class Gestures {
 
   draw (ctx, displayOptions) {
     const { gestures, graph } = this
+    const { dragging, selection } = gestures
     const transform = (position) => displayOptions.viewTransformation.transform(position)
+    let newNodeRadius = defaultNodeRadius + ringMargin;
 
-    if (gestures.sourceNodeId) {
-      const sourceNodeIdPosition = graph.nodes.find((node) => idsMatch(node.id, gestures.sourceNodeId)).position;
-      if (gestures.newNodePosition) {
-        const delta = gestures.newNodePosition.vectorFrom(sourceNodeIdPosition)
+    Object.keys(selection.selectedNodeIdMap).forEach(nodeId => {
+      const nodePosition = graph.nodes.find((node) => idsMatch(node.id, nodeId)).position;
+      drawRing(ctx, transform(nodePosition), green, defaultNodeRadius + ringMargin / 2)
+    })
+
+    if (dragging.sourceNodeId) {
+      const sourceNodeIdPosition = graph.nodes.find((node) => idsMatch(node.id, dragging.sourceNodeId)).position;
+      if (dragging.newNodePosition) {
+        const delta = dragging.newNodePosition.vectorFrom(sourceNodeIdPosition)
         let newNodePosition = sourceNodeIdPosition;
-        let newNodeRadius = defaultNodeRadius + ringMargin;
         if (delta.distance() > defaultNodeRadius + ringMargin) {
           if (delta.distance() < defaultNodeRadius + defaultNewNodeRadius) {
             const ratio = (delta.distance() - defaultNodeRadius - ringMargin) / (defaultNewNodeRadius - ringMargin);
             newNodePosition = sourceNodeIdPosition.translate(delta.scale(ratio))
             newNodeRadius = defaultNodeRadius + ringMargin + (defaultNewNodeRadius - defaultNodeRadius - ringMargin) * ratio
           } else {
-            newNodePosition = gestures.newNodePosition
+            newNodePosition = dragging.newNodePosition
             newNodeRadius = defaultNewNodeRadius
           }
         }
 
-        drawRing(ctx, transform(newNodePosition), 'blue', newNodeRadius)
+        drawRing(ctx, transform(newNodePosition), blueGreen, newNodeRadius)
 
         const sourcePoint = transform(sourceNodeIdPosition)
         const targetPoint = transform(newNodePosition)
@@ -46,7 +52,7 @@ export default class Gestures {
 
 
       } else {
-        drawRing(ctx, transform(sourceNodeIdPosition), 'grey', defaultNodeRadius + ringMargin)
+        drawRing(ctx, transform(sourceNodeIdPosition), purple, defaultNodeRadius + ringMargin)
       }
     }
   }

@@ -3,6 +3,8 @@ import {snapToDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch} from "../model/Id";
 
+export const TOGGLE_SELECTION_RING = 'TOGGLE_SELECTION_RING'
+
 export const activateRing = (sourceNodeId) => {
   return {
     type: 'ACTIVATE_RING',
@@ -57,3 +59,8 @@ const ringDraggedConnected = (sourceNodeId, targetNodeId, position) => {
     guides: new Guides()
   }
 }
+
+export const toggleSelectionRing = (selectedNodeIds) => ({
+  type: TOGGLE_SELECTION_RING,
+  selectedNodeIds
+})
