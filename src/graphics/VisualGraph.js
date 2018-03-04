@@ -1,5 +1,7 @@
 import EdgeBundle from './EdgeBundle'
 import {asKey} from "../model/Id";
+import { getDistanceToBezierEdge } from "./geometryUtils";
+import { relationshipHitTolerance } from "./constants";
 
 export default class VisualGraph {
   constructor (nodes, edges) {
@@ -25,5 +27,24 @@ export default class VisualGraph {
     this.edgeBundles = edgeBundles
 
     this.edges.forEach(edge => edge.updateEndPoints())
+  }
+
+  relationshipAtPoint (graph, point) {
+    return this.closestRelationship(graph, point, (relationship, distance) => distance <= relationshipHitTolerance)
+  }
+
+  closestRelationship(graph, point, hitTest){
+    let minDistance = Number.POSITIVE_INFINITY
+    let closestRelationship = null
+    this.edges.forEach(relationship => {
+      const from = relationship.from
+      const to = relationship.to
+      const distance = getDistanceToBezierEdge(from.x, from.y, to.x, to.y, point.x, point.y, relationship.viaCoordinates)
+      if (distance < minDistance && hitTest(relationship, distance)) {
+        minDistance = distance
+        closestRelationship = relationship
+      }
+    })
+    return closestRelationship
   }
 }

@@ -29,7 +29,7 @@ export default class VisualEdge {
   }
 
   updateEndPoints () {
-    this._updateEndPointsWithGap(this._getViaCoordinates())
+    this._updateEndPointsWithGap(this.getViaCoordinates())
   }
 
   draw (ctx) {
@@ -38,9 +38,9 @@ export default class VisualEdge {
     }
 
     // get the via node from the edge type
-    const viaCoordinates = this._getViaCoordinates()
+    this.viaCoordinates = this.getViaCoordinates()
 
-    const dataTo = getArrowGeometryData(this.from, this.fromPoint, this.to, this.toPoint, viaCoordinates)
+    const dataTo = getArrowGeometryData(this.from, this.fromPoint, this.to, this.toPoint, this.viaCoordinates)
 
     // Move back end point sligthly so line doesnt stick out of arrow head
     const pixelRatio = (window.devicePixelRatio || 1)
@@ -50,7 +50,7 @@ export default class VisualEdge {
     this.toPoint.y -= Math.sin(dataTo.angle) * lineWidth
 
     // draw arrow
-    this.drawLine(ctx, viaCoordinates, false, false)
+    this.drawLine(ctx, this.viaCoordinates, false, false)
     this.drawArrowHead(ctx, dataTo)
 
     // draw label
@@ -157,7 +157,7 @@ export default class VisualEdge {
     return get(this.options, path)
   }
 
-  _getViaCoordinates () {
+  getViaCoordinates () {
     if (this.from === undefined || this.to === undefined) {
       return
     }
@@ -273,7 +273,7 @@ export default class VisualEdge {
    * @param ctx
    * @param viaNode
    */
-  _findBorderPositionBezier (nearNode, ctx, viaNode = this._getViaCoordinates()) {
+  _findBorderPositionBezier (nearNode, ctx, viaNode = this.getViaCoordinates()) {
     var node = this.to
     var isFrom = false
     if (idsMatch(nearNode.id, this.from.id)) {
@@ -317,7 +317,7 @@ export default class VisualEdge {
   }
 
   drawLabel (ctx) {
-    const viaNode = this.labelPosition || this._getViaCoordinates()
+    const viaNode = this.labelPosition || this.getViaCoordinates()
 
     const pixelRatio = (window.devicePixelRatio || 1)
     const label = this.relationship.type

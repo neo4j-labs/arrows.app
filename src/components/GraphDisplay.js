@@ -8,11 +8,11 @@ class GraphDisplay extends Component {
   componentDidMount() {
     window.addEventListener('resize', this.props.onWindowResized.bind(this))
     this.touchHandler = new TouchHandler(this.canvas)
-    this.drawVisuals();
+    this.visualGraph = this.drawVisuals();
   }
 
   componentDidUpdate() {
-    this.drawVisuals();
+    this.visualGraph = this.drawVisuals();
   }
 
   render() {
@@ -22,17 +22,22 @@ class GraphDisplay extends Component {
   }
 
   drawVisuals() {
-    const { graph, gestures, guides, viewTransformation, canvasSize, pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged, editNode, toggleSelection } = this.props
+    const { graph, gestures, guides, viewTransformation, canvasSize, pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged, editNode, toggleSelection, editRelationship } = this.props
     this.touchHandler.viewTransformation = viewTransformation
+    const visualGraph = this.visualGraph
     this.touchHandler.callbacks = {
       nodeFinder: {
         nodeAtPoint: (point) => nodeAtPoint(graph, point),
         nodeRingAtPoint: (point) => nodeRingAtPoint(graph, point)
       },
+      relationshipFinder: {
+        relationshipAtPoint: (point) => visualGraph.relationshipAtPoint(graph, point)
+      },
       pan,
       canvasClicked: () => {},
       nodeClicked: (node) => toggleSelection([node.id]),
       nodeDoubleClicked: editNode,
+      relationshipDoubleClicked: editRelationship,
       nodeDragged: moveNode,
       endDrag,
       activateRing,
@@ -40,7 +45,7 @@ class GraphDisplay extends Component {
       ringDragged
     }
 
-    renderVisuals({visuals: {graph, gestures, guides}, canvas: this.canvas, displayOptions: { canvasSize, viewTransformation }})
+    return renderVisuals({visuals: {graph, gestures, guides}, canvas: this.canvas, displayOptions: { canvasSize, viewTransformation }})
   }
 }
 

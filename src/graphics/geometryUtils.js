@@ -146,3 +146,50 @@ export const getArrowGeometryData = (from, fromPoint, to, toPoint, viaNode, posi
 
   return { point: newPoint, angle: angle, length: length, type: type }
 }
+
+export const getDistanceToLine = (x1, y1, x2, y2, x3, y3) => {
+  let px = x2 - x1
+  let py = y2 - y1
+  let something = px * px + py * py
+  let u = ((x3 - x1) * px + (y3 - y1) * py) / something
+
+  if (u > 1) {
+    u = 1
+  } else if (u < 0) {
+    u = 0
+  }
+
+  let x = x1 + u * px
+  let y = y1 + u * py
+  let dx = x - x3
+  let dy = y - y3
+
+  // # Note: If the actual distance does not matter,
+  // # if you only want to compare what this function
+  // # returns to other results of this function, you
+  // # can just return the squared distance instead
+  // # (i.e. remove the sqrt) to gain a little performance
+
+  return Math.sqrt(dx * dx + dy * dy)
+}
+
+export const getDistanceToBezierEdge = (x1, y1, x2, y2, x3, y3, via) => { // x3,y3 is the point
+  let minDistance = 1e9
+  let distance
+  let i, t, x, y
+  let lastX = x1
+  let lastY = y1
+  for (i = 1; i < 10; i++) {
+    t = 0.1 * i
+    x = Math.pow(1 - t, 2) * x1 + (2 * t * (1 - t)) * via.x + Math.pow(t, 2) * x2
+    y = Math.pow(1 - t, 2) * y1 + (2 * t * (1 - t)) * via.y + Math.pow(t, 2) * y2
+    if (i > 0) {
+      distance = getDistanceToLine(lastX, lastY, x, y, x3, y3)
+      minDistance = distance < minDistance ? distance : minDistance
+    }
+    lastX = x
+    lastY = y
+  }
+
+  return minDistance
+}
