@@ -2,6 +2,8 @@ import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setProperties, setCaption} from "../model/Node";
 import {idsMatch} from "../model/Id";
+import { SET_RELATIONSHIP_TYPE } from "../actions/graph";
+import { setType } from "../model/Relationship";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -70,6 +72,12 @@ const graph = (state = emptyGraph(), action) => {
         nodes: state.nodes.map((node) => idsMatch(node.id, action.nodeId) ? moveTo(node, action.newPosition) : node),
         relationships: state.relationships
       }
+
+    case SET_RELATIONSHIP_TYPE :
+      return {
+      nodes: state.nodes,
+      relationships: state.relationships.map(relationship => idsMatch(relationship.id, action.relationshipId) ? setType(relationship, action.relationshipType) : relationship)
+    }
 
     case FETCHING_GRAPH_SUCCEEDED:
       return action.storedGraph

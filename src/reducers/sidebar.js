@@ -1,4 +1,4 @@
-import { EDIT_NODE, COLLAPSE_SIDEBAR } from "../actions/sidebar";
+import { EDIT_NODE, COLLAPSE_SIDEBAR, EDIT_RELATIONSHIP } from "../actions/sidebar";
 
 const sidebar = (state = { state: 'collapsed' }, action) => {
   switch (action.type) {
@@ -7,6 +7,12 @@ const sidebar = (state = { state: 'collapsed' }, action) => {
         status: 'expanded',
         mode: 'edit-node',
         itemId: action.nodeId
+      }
+    case EDIT_RELATIONSHIP:
+      return {
+        status: 'expanded',
+        mode: 'edit-relationship',
+        itemId: action.relationshipId
       }
     case COLLAPSE_SIDEBAR:
       return {

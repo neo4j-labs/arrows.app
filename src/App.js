@@ -10,7 +10,7 @@ class App extends Component {
   render() {
     const { sidebar, graph } = this.props
     return (
-        <Sidebar visible={sidebar.status === 'expanded'} itemId={sidebar.itemId} graph={graph}>
+        <Sidebar visible={sidebar.status === 'expanded'} sidebarData={sidebar} graph={graph}>
           <div className="App">
             <HeaderContainer sidebarVisible={sidebar.status === 'expanded'} toggleSidebar={() => this.setState({sidebarVisible: !this.state.sidebarVisible})}/>
             <GraphContainer/>
