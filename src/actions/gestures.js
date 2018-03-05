@@ -4,6 +4,7 @@ import {Guides} from "../graphics/Guides";
 import {idsMatch} from "../model/Id";
 
 export const TOGGLE_SELECTION_RING = 'TOGGLE_SELECTION_RING'
+export const UPDATE_SELECTION_PATH = 'UPDATE_SELECTION_PATH'
 
 export const activateRing = (sourceNodeId) => {
   return {
@@ -63,4 +64,10 @@ const ringDraggedConnected = (sourceNodeId, targetNodeId, position) => {
 export const toggleSelectionRing = (selectedNodeIds) => ({
   type: TOGGLE_SELECTION_RING,
   selectedNodeIds
+})
+
+export const updateSelectionPath = (position, isDoubleClick) => ({
+  type: UPDATE_SELECTION_PATH,
+  position,
+  isDoubleClick
 })

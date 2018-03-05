@@ -1,4 +1,4 @@
-import { TOGGLE_SELECTION_RING } from "../actions/gestures";
+import { TOGGLE_SELECTION_RING, UPDATE_SELECTION_PATH } from "../actions/gestures";
 
 export default function gestures(state = {
   dragging : {
@@ -7,7 +7,8 @@ export default function gestures(state = {
     newNodePosition: null
   },
   selection: {
-    selectedNodeIdMap: {}
+    selectedNodeIdMap: {},
+    path: []
   }
 }, action) {
   switch (action.type) {
@@ -48,6 +49,15 @@ export default function gestures(state = {
       return {
         dragging: state.dragging,
         selection: { ...state.selection, selectedNodeIdMap: newSelectedNodeIdMap }
+      }
+    case UPDATE_SELECTION_PATH:
+      if (state.selection.path.length > 0 || action.isDoubleClick) {
+        return {
+          dragging: state.dragging,
+          selection: { ...state.selection, path: state.selection.path.concat([action.position]) }
+        }
+      } else {
+        return state
       }
     default:
       return state
