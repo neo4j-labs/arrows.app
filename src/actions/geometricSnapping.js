@@ -3,7 +3,7 @@ import {idsMatch} from "../model/Id";
 
 const snapTolerance = 20
 
-export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, naturalPosition) => {
+export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, naturalPosition, otherSelectedNodes) => {
 
   const neighbours = [];
   graph.relationships.forEach((relationship) => {
@@ -14,7 +14,7 @@ export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, natural
     }
   })
 
-  const includeNode = (nodeId) => !idsMatch(nodeId, snappingNodeId)
+  const includeNode = (nodeId) => !idsMatch(nodeId, snappingNodeId) && !otherSelectedNodes.includes(nodeId)
 
   return snapToDistancesAndAngles(graph, neighbours, includeNode, naturalPosition)
 }

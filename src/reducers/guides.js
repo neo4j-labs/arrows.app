@@ -2,7 +2,7 @@ import {Guides} from "../graphics/Guides"
 
 export default function guides(state = new Guides(), action) {
   switch (action.type) {
-    case 'MOVE_NODE':
+    case 'MOVE_NODES':
     case 'RING_DRAGGED':
       return action.guides
 

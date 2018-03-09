@@ -67,9 +67,16 @@ const graph = (state = emptyGraph(), action) => {
       }
     }
 
-    case 'MOVE_NODE':
+    case 'MOVE_NODES':
+      const nodeIdToNode = {}
+      state.nodes.forEach((node) => {
+        nodeIdToNode[node.id] = node
+      })
+      action.nodePositions.forEach((nodePosition) => {
+        nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
+      })
       return {
-        nodes: state.nodes.map((node) => idsMatch(node.id, action.nodeId) ? moveTo(node, action.newPosition) : node),
+        nodes: Object.values(nodeIdToNode),
         relationships: state.relationships
       }
 

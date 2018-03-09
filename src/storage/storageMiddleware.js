@@ -84,12 +84,14 @@ export const storageMiddleware = store => next => action => {
       break
     }
 
-    case 'MOVE_NODE': {
-      runCypher('MATCH (n:Diagram0 {_id: $id}) ' +
-        'SET n._x = $x, n._y = $y', {
-        id: action.nodeId,
-        x: action.newPosition.x,
-        y: action.newPosition.y
+    case 'MOVE_NODES': {
+      action.nodePositions.forEach((nodePosition) => {
+        runCypher('MATCH (n:Diagram0 {_id: $id}) ' +
+          'SET n._x = $x, n._y = $y', {
+          id: nodePosition.nodeId,
+          x: nodePosition.position.x,
+          y: nodePosition.position.y
+        })
       })
       break
     }

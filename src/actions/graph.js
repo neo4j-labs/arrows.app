@@ -42,22 +42,37 @@ const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState) => {
 export const tryMoveNode = (nodeId, vector) => {
   return function (dispatch, getState) {
     let graph = getState().graph;
-    let currentPosition = getState().guides.naturalPosition || graph.nodes.find((node) => idsMatch(node.id, nodeId)).position
+    const activelyMovedNode = graph.nodes.find((node) => idsMatch(node.id, nodeId))
+    const otherSelectedNodes = Object.keys(getState().gestures.selection.selectedNodeIdMap).filter((selectedNodeId) => selectedNodeId !== nodeId)
+    let currentPosition = getState().guides.naturalPosition || activelyMovedNode.position
     let naturalPosition = currentPosition.translate(vector)
-    let snaps = snapToNeighbourDistancesAndAngles(graph, nodeId, naturalPosition)
+    let snaps = snapToNeighbourDistancesAndAngles(graph, nodeId, naturalPosition, otherSelectedNodes)
+
+    let guides = new Guides()
+    let newPosition = naturalPosition
     if (snaps.snapped) {
-      dispatch(moveNode(nodeId, snaps.snappedPosition, new Guides(snaps.guidelines, naturalPosition)))
-    } else {
-      dispatch(moveNode(nodeId, naturalPosition, new Guides()))
+      guides = new Guides(snaps.guidelines, naturalPosition)
+      newPosition = snaps.snappedPosition
     }
+    const delta = newPosition.vectorFrom(activelyMovedNode.position)
+    const nodePositions = [{
+      nodeId,
+      position: newPosition
+    }]
+    otherSelectedNodes.forEach((otherNodeId) => {
+      nodePositions.push({
+        nodeId: otherNodeId,
+        position: graph.nodes.find((node) => idsMatch(node.id, otherNodeId)).position.translate(delta)
+      })
+    })
+    dispatch(moveNodes(nodePositions, guides))
   }
 }
 
-export const moveNode = (nodeId, newPosition, guides) => {
+export const moveNodes = (nodePositions, guides) => {
   return {
-    type: 'MOVE_NODE',
-    nodeId,
-    newPosition,
+    type: 'MOVE_NODES',
+    nodePositions,
     guides
   }
 }
