@@ -4,8 +4,13 @@ import {headerHeight} from '../components/Header'
 import {windowResized} from "../actions/windowSize";
 import {pan, zoom} from "../actions/viewTransformation";
 import { endDrag, tryMoveNode } from "../actions/graph";
-import {activateRing, deactivateRing, tryDragRing, toggleSelectionRing, tryUpdateSelectionPath} from "../actions/gestures";
+import {
+  activateRing, deactivateRing, tryDragRing, toggleSelectionRing, tryUpdateSelectionPath,
+  removeSelectionPath, REMOVE_SELECTION_PATH
+} from "../actions/gestures";
 import { editNode, editRelationship } from "../actions/sidebar";
+import { compose } from "recompose";
+import withKeyBindings from "../interactions/Keybindings";
 
 const mapStateToProps = state => {
   return {
@@ -30,13 +35,19 @@ const mapDispatchToProps = dispatch => {
     editNode: (node) => dispatch(editNode(node.id)),
     toggleSelection: (nodeIds) => dispatch(toggleSelectionRing(nodeIds)),
     editRelationship: (relationship) => dispatch(editRelationship(relationship.id)),
-    selectionPathUpdated: (position, isDoubleClick) => dispatch(tryUpdateSelectionPath(position, isDoubleClick))
+    selectionPathUpdated: (position, isDoubleClick) => dispatch(tryUpdateSelectionPath(position, isDoubleClick)),
+    removeSelectionPath: () => dispatch(removeSelectionPath())
   }
 }
 
-const GraphContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GraphDisplay)
+const keybindings = [
+  {
+    name: REMOVE_SELECTION_PATH,
+    handler: ({ removeSelectionPath }) => removeSelectionPath
+  }
+]
 
-export default GraphContainer
+export default compose(
+  connect(mapStateToProps, mapDispatchToProps),
+  withKeyBindings
+)(GraphDisplay)

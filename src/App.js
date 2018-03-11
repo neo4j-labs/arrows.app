@@ -4,8 +4,14 @@ import GraphContainer from "./containers/GraphContainer"
 import Sidebar from "./components/Sidebar"
 import {connect} from 'react-redux'
 import './App.css'
+import withKeybindings, { ignoreTarget } from './interactions/Keybindings'
+import { compose } from 'recompose'
 
 class App extends Component {
+  constructor (props) {
+    super(props)
+    window.onkeydown = this.fireKeyboardShortcutAction.bind(this)
+  }
   state = { sidebarVisible : false }
   render() {
     const { sidebar, graph } = this.props
@@ -18,6 +24,15 @@ class App extends Component {
         </Sidebar>
     );
   }
+  fireKeyboardShortcutAction (ev) {
+    if (ignoreTarget(ev)) return
+
+    const handled = this.props.fireAction(ev)
+    if (handled) {
+      ev.preventDefault()
+      ev.stopPropagation()
+    }
+  }
 }
 
 const mapStateToProps = (state) => ({
@@ -25,5 +40,7 @@ const mapStateToProps = (state) => ({
   graph: state.graph
 })
 
-export default connect(mapStateToProps, null)(App)
-
+export default compose(
+  connect(mapStateToProps, null),
+  withKeybindings
+)(App)

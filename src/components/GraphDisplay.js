@@ -2,8 +2,16 @@ import React, {Component} from 'react';
 import TouchHandler from "../interactions/TouchHandler";
 import { renderVisuals } from "../graphics/visualsRenderer";
 import {nodeAtPoint, nodeRingAtPoint} from "../model/Graph";
+import { REMOVE_SELECTION_PATH } from "../actions/gestures";
 
 class GraphDisplay extends Component {
+  constructor (props) {
+    super (props)
+    props.registerAction(
+      REMOVE_SELECTION_PATH,
+      () => this.props.removeSelectionPath()
+    )
+  }
 
   componentDidMount() {
     window.addEventListener('resize', this.props.onWindowResized.bind(this))
@@ -24,7 +32,7 @@ class GraphDisplay extends Component {
   drawVisuals() {
     const { graph, gestures, guides, viewTransformation, canvasSize,
       pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged,
-      editNode, toggleSelection, editRelationship, selectionPathUpdated } = this.props
+      editNode, toggleSelection, editRelationship, selectionPathUpdated, removeSelectionPath } = this.props
     this.touchHandler.viewTransformation = viewTransformation
     const visualGraph = this.visualGraph
     this.touchHandler.callbacks = {
