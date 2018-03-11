@@ -1,9 +1,9 @@
-import {drawArrowEndpoint, drawRing, drawStraightArrow, drawPolygon, drawCircle} from "./canvasRenderer";
+import { drawRing, drawStraightArrow, drawPolygon, drawCircle} from "./canvasRenderer";
 import { defaultNewNodeRadius, defaultNodeRadius, ringMargin } from "./constants";
 import { Vector } from "../model/Vector";
-import { getArrowGeometryData, getPointAtRange } from "./geometryUtils";
+import { getArrowGeometryData } from "./geometryUtils";
 import {idsMatch} from "../model/Id";
-import { green, blueGreen, purple, shadowGray } from "../model/colors";
+import { green, blueGreen, purple } from "../model/colors";
 
 export default class Gestures {
   constructor (gestures, graph) {
