@@ -4,7 +4,7 @@ import {headerHeight} from '../components/Header'
 import {windowResized} from "../actions/windowSize";
 import {pan, zoom} from "../actions/viewTransformation";
 import { endDrag, tryMoveNode } from "../actions/graph";
-import {activateRing, deactivateRing, tryDragRing, toggleSelectionRing, updateSelectionPath} from "../actions/gestures";
+import {activateRing, deactivateRing, tryDragRing, toggleSelectionRing, tryUpdateSelectionPath} from "../actions/gestures";
 import { editNode, editRelationship } from "../actions/sidebar";
 
 const mapStateToProps = state => {
@@ -30,7 +30,7 @@ const mapDispatchToProps = dispatch => {
     editNode: (node) => dispatch(editNode(node.id)),
     toggleSelection: (nodeIds) => dispatch(toggleSelectionRing(nodeIds)),
     editRelationship: (relationship) => dispatch(editRelationship(relationship.id)),
-    selectionPathUpdated: (position, isDoubleClick) => dispatch(updateSelectionPath(position, isDoubleClick))
+    selectionPathUpdated: (position, isDoubleClick) => dispatch(tryUpdateSelectionPath(position, isDoubleClick))
   }
 }
 

@@ -2,9 +2,13 @@ import snapToTargetNode from "./snapToTargetNode";
 import {snapToDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch} from "../model/Id";
+import { nodesInsidePolygon } from "../model/Graph";
 
 export const TOGGLE_SELECTION_RING = 'TOGGLE_SELECTION_RING'
+export const ENSURE_SELECTION_RING = 'TOGGLE_SELECTION_RING'
 export const UPDATE_SELECTION_PATH = 'UPDATE_SELECTION_PATH'
+export const REMOVE_SELECTION_PATH = 'REMOVE_SELECTION_PATH'
+export const CLEAR_SELECTION_RINGS = 'CLEAR_SELECTION_RINGS'
 
 export const activateRing = (sourceNodeId) => {
   return {
@@ -66,8 +70,42 @@ export const toggleSelectionRing = (selectedNodeIds) => ({
   selectedNodeIds
 })
 
-export const updateSelectionPath = (position, isDoubleClick) => ({
-  type: UPDATE_SELECTION_PATH,
-  position,
-  isDoubleClick
+export const ensureSelectionRing = (selectedNodeIds) => ({
+  type: ENSURE_SELECTION_RING,
+  selectedNodeIds
 })
+
+export const clearSelectionRings = () => ({
+  type: CLEAR_SELECTION_RINGS,
+})
+
+export const updateSelectionPath = (position) => ({
+  type: UPDATE_SELECTION_PATH,
+  position
+})
+
+export const removeSelectionPath = () => ({
+  type: REMOVE_SELECTION_PATH
+})
+
+export const tryUpdateSelectionPath = (position, isDoubleClick) => {
+  return function (dispatch, getState) {
+    const { graph, gestures } = getState()
+
+    if (isDoubleClick) {
+      if (gestures.selection.path.length === 0) {
+        dispatch(updateSelectionPath(position))
+      } else {
+        const selectedNodeIds = nodesInsidePolygon(graph, gestures.selection.path)
+        if (selectedNodeIds.length > 0) {
+          dispatch(ensureSelectionRing(selectedNodeIds))
+        }
+        dispatch(removeSelectionPath())
+      }
+    } else if (gestures.selection.path.length > 0) {
+      dispatch(updateSelectionPath(position))
+    } else {
+      dispatch(clearSelectionRings())
+    }
+  }
+}

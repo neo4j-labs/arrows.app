@@ -18,7 +18,7 @@ export default class Gestures {
     let newNodeRadius = defaultNodeRadius + ringMargin;
 
     if (selection.path.length > 0) {
-      drawPolygon(ctx, selection.path, shadowGray)
+      drawPolygon(ctx, selection.path, green)
       selection.path.forEach(point => drawCircle(ctx, point, 3, true))
     }
 
