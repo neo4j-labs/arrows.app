@@ -79,3 +79,12 @@ export const drawArrowEndpoint = (ctx, xTo, yTo, angle, length, shiftRatio) => {
 
   ctx.lineWidth /= pixelRatio
 }
+
+export const drawPolygon = (ctx, points, color) => {
+  ctx.fillStyle = color || 'none'
+  ctx.beginPath()
+  ctx.moveTo(points[0].x, points[0].y)
+  points.forEach(point => ctx.lineTo(point.x, point.y))
+  ctx.closePath()
+  ctx.fill()
+}

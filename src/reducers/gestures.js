@@ -1,4 +1,8 @@
-import { TOGGLE_SELECTION_RING } from "../actions/gestures";
+import {
+  CLEAR_SELECTION_RINGS,
+  ENSURE_SELECTION_RING, REMOVE_SELECTION_PATH, TOGGLE_SELECTION_RING,
+  UPDATE_SELECTION_PATH
+} from "../actions/gestures";
 
 export default function gestures(state = {
   dragging : {
@@ -7,7 +11,8 @@ export default function gestures(state = {
     newNodePosition: null
   },
   selection: {
-    selectedNodeIdMap: {}
+    selectedNodeIdMap: {},
+    path: []
   }
 }, action) {
   switch (action.type) {
@@ -48,6 +53,28 @@ export default function gestures(state = {
       return {
         dragging: state.dragging,
         selection: { ...state.selection, selectedNodeIdMap: newSelectedNodeIdMap }
+      }
+    case ENSURE_SELECTION_RING:
+      const selectedNodeIdMap = { ...state.selection.selectedNodeIdMap }
+      action.selectedNodeIds.forEach(nodeId => selectedNodeIdMap[nodeId] = true)
+      return {
+        dragging: state.dragging,
+        selection: { ...state.selection, selectedNodeIdMap }
+      }
+    case CLEAR_SELECTION_RINGS:
+      return {
+        dragging: state.dragging,
+        selection: { ...state.selection, selectedNodeIdMap: {} }
+      }
+    case UPDATE_SELECTION_PATH:
+      return {
+        dragging: state.dragging,
+        selection: { ...state.selection, path: state.selection.path.concat([action.position]) }
+      }
+    case REMOVE_SELECTION_PATH:
+      return {
+        dragging: state.dragging,
+        selection: { ...state.selection, path: [] }
       }
     default:
       return state

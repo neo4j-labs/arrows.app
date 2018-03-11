@@ -1,7 +1,7 @@
-import { drawArrowEndpoint, drawRing, drawStraightArrow } from "./canvasRenderer";
+import { drawRing, drawStraightArrow, drawPolygon, drawCircle} from "./canvasRenderer";
 import { defaultNewNodeRadius, defaultNodeRadius, ringMargin } from "./constants";
 import { Vector } from "../model/Vector";
-import { getArrowGeometryData, getPointAtRange } from "./geometryUtils";
+import { getArrowGeometryData } from "./geometryUtils";
 import {idsMatch} from "../model/Id";
 import { green, blueGreen, purple } from "../model/colors";
 
@@ -16,6 +16,11 @@ export default class Gestures {
     const { dragging, selection } = gestures
     const transform = (position) => displayOptions.viewTransformation.transform(position)
     let newNodeRadius = defaultNodeRadius + ringMargin;
+
+    if (selection.path.length > 0) {
+      drawPolygon(ctx, selection.path, green)
+      selection.path.forEach(point => drawCircle(ctx, point, 3, true))
+    }
 
     Object.keys(selection.selectedNodeIdMap).forEach(nodeId => {
       if (!idsMatch(nodeId, dragging.sourceNodeId)) {

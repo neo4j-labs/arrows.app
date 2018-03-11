@@ -1,3 +1,5 @@
+import { isPointInPolygon } from "../graphics/geometryUtils";
+
 export const emptyGraph = () => {
   return {nodes: [], relationships: []}
 }
@@ -22,3 +24,7 @@ export const nodeAtPoint = (graph, point) => {
 export const nodeRingAtPoint = (graph, point) => {
   return closestNode(graph, point, (node, distance) => distance > node.radius && distance < node.radius + 10)
 }
+
+export const nodesInsidePolygon = (graph, path) => graph.nodes
+  .filter(node => isPointInPolygon(node.position, path))
+  .map(node => node.id)

@@ -12,6 +12,7 @@ export default class TouchHandler {
     this.mouseDownNode = null
     this.sourceNodeId = null
     this._mouseDownOnCanvas = false
+    this.doubleClickOnCanvas = false
     this.itemBeingDragged = {
       id: 0,
       pinned: true
@@ -33,7 +34,7 @@ export default class TouchHandler {
       if (item) {
         this.callbacks.nodeClicked(item)
       } else {
-        this.callbacks.canvasClicked()
+        this.callbacks.canvasClicked(this.eventPosition(evt))
       }
     }
     evt.preventDefault()
@@ -47,6 +48,9 @@ export default class TouchHandler {
       item = this.callbacks.relationshipFinder.relationshipAtPoint(this.eventPosition(evt))
       if (item) {
         this.callbacks.relationshipDoubleClicked(item)
+      } else {
+        this.doubleClickOnCanvas = !this.doubleClickOnCanvas
+        this.callbacks.canvasDoubleClicked(this.eventPosition(evt))
       }
     }
 
