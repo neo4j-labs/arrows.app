@@ -1,5 +1,4 @@
 import {updatingGraph, updatingGraphFailed, updatingGraphSucceeded} from "../actions/neo4jStorage";
-import { SET_RELATIONSHIP_TYPE } from "../actions/graph";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
@@ -96,7 +95,7 @@ export const storageMiddleware = store => next => action => {
       break
     }
 
-    case SET_RELATIONSHIP_TYPE: {
+    case 'SET_RELATIONSHIP_TYPE': {
       runCypher(`MATCH (n)-[r]->(m)
           WHERE r._id = $id
           CREATE (n)-[r2:${action.relationshipType}]->(m)

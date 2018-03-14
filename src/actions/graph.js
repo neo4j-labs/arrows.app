@@ -3,8 +3,6 @@ import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId} from "../model/Id";
 import {Point} from "../model/Point";
 import { blueActive } from "../model/colors";
-export const END_DRAG = 'END_DRAG'
-export const SET_RELATIONSHIP_TYPE = 'SET_RELATIONSHIP_TYPE'
 
 export const createNode = () => (dispatch, getState) => {
   dispatch({
@@ -106,7 +104,7 @@ export const setNodeProperties = (nodeId, keyValuePairs) => ({
 })
 
 export const setRelationshipType = (relationshipId, relationshipType) => ({
-  type: SET_RELATIONSHIP_TYPE,
+  type: 'SET_RELATIONSHIP_TYPE',
   relationshipId,
   relationshipType
 })

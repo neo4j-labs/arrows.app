@@ -2,7 +2,6 @@ import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setProperties, setCaption} from "../model/Node";
 import {idsMatch} from "../model/Id";
-import { SET_RELATIONSHIP_TYPE } from "../actions/graph";
 import { setType } from "../model/Relationship";
 
 const graph = (state = emptyGraph(), action) => {
@@ -80,7 +79,7 @@ const graph = (state = emptyGraph(), action) => {
         relationships: state.relationships
       }
 
-    case SET_RELATIONSHIP_TYPE :
+    case 'SET_RELATIONSHIP_TYPE' :
       return {
       nodes: state.nodes,
       relationships: state.relationships.map(relationship => idsMatch(relationship.id, action.relationshipId) ? setType(relationship, action.relationshipType) : relationship)
