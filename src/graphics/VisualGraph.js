@@ -1,6 +1,6 @@
 import EdgeBundle from './EdgeBundle'
 import {asKey} from "../model/Id";
-import { getDistanceToBezierEdge } from "./geometryUtils";
+import { getDistanceToBezierEdge } from "./utils/geometryUtils";
 import { relationshipHitTolerance } from "./constants";
 
 export default class VisualGraph {

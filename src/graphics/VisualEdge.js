@@ -2,7 +2,7 @@ import get from 'lodash.get'
 import {
   getArrowGeometryData, getBezierAndCircleCrossPoint, getCirclesCrossPoint,
   getPointAtRange
-} from "./geometryUtils";
+} from "./utils/geometryUtils";
 import { drawArrowEndpoint } from "./canvasRenderer";
 import {idsMatch} from "../model/Id";
 

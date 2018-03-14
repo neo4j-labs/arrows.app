@@ -1,7 +1,7 @@
 import { drawRing, drawStraightArrow, drawPolygon, drawCircle} from "./canvasRenderer";
 import { defaultNewNodeRadius, defaultNodeRadius, ringMargin } from "./constants";
 import { Vector } from "../model/Vector";
-import { getArrowGeometryData } from "./geometryUtils";
+import { getArrowGeometryData } from "./utils/geometryUtils";
 import {idsMatch} from "../model/Id";
 import { green, blueGreen, purple } from "../model/colors";
 

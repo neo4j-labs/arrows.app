@@ -1,4 +1,4 @@
-import { defaultNewNodeRadius } from "./constants";
+import { defaultNewNodeRadius } from "../constants";
 
 export const pointOnCircle = (x, y, radius, percentage) => {
   let angle = percentage * 2 * Math.PI
