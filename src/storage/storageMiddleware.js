@@ -4,6 +4,8 @@ const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
 const driver = neo4j.driver(host, neo4j.auth.basic("neo4j", "a"))
 
+let pendingMoveNodeActions = {}
+
 export const storageMiddleware = store => next => action => {
   const runInSession = (work) => {
     store.dispatch(updatingGraph())
@@ -83,18 +85,29 @@ export const storageMiddleware = store => next => action => {
     }
 
     case 'MOVE_NODES': {
-      runInSession((session) => {
-        let result = session
-        action.nodePositions.forEach((nodePosition) => {
-          result = session.run('MATCH (n:Diagram0 {_id: $id}) ' +
-            'SET n._x = $x, n._y = $y', {
-            id: nodePosition.nodeId,
-            x: nodePosition.position.x,
-            y: nodePosition.position.y
-          })
-        })
-        return result
+      action.nodePositions.forEach((nodePosition) => {
+        pendingMoveNodeActions[nodePosition.nodeId] = nodePosition.position
       })
+      break
+    }
+
+    case 'END_DRAG': {
+      if (Object.keys(pendingMoveNodeActions).length !== 0) {
+        runInSession((session) => {
+          let result = session
+          Object.keys(pendingMoveNodeActions).forEach((nodeId) => {
+            const position = pendingMoveNodeActions[nodeId]
+            result = session.run('MATCH (n:Diagram0 {_id: $id}) ' +
+              'SET n._x = $x, n._y = $y', {
+              id: nodeId,
+              x: position.x,
+              y: position.y
+            })
+          })
+          return result
+        })
+        pendingMoveNodeActions = {}
+      }
       break
     }
 
