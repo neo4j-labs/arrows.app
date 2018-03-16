@@ -30,12 +30,8 @@ export default class TouchHandler {
 
   handleClick (evt) {
     const item = this.callbacks.nodeFinder.nodeAtPoint(this.eventPosition(evt))
-    if (!this._hasDragged) {
-      if (item) {
-        this.callbacks.nodeClicked(item)
-      } else {
-        this.callbacks.canvasClicked(this.eventPosition(evt))
-      }
+    if (!this._hasDragged && item === null) {
+      this.callbacks.canvasClicked(this.eventPosition(evt))
     }
     evt.preventDefault()
   }
@@ -106,7 +102,7 @@ export default class TouchHandler {
     const ringUnderCursor = this.callbacks.nodeFinder.nodeRingAtPoint(cursorPosition)
 
     if (nodeUnderCursor) {
-      // Do not drag or select until figure out users' intention
+      this.callbacks.nodeMouseDown(nodeUnderCursor, evt.metaKey)
       this.mouseDownNode = nodeUnderCursor
       this.itemBeingDragged = nodeUnderCursor
     } else if (ringUnderCursor) {

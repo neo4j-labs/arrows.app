@@ -5,7 +5,7 @@ import {windowResized} from "../actions/windowSize";
 import {pan, zoom} from "../actions/viewTransformation";
 import { endDrag, tryMoveNode } from "../actions/graph";
 import {
-  activateRing, deactivateRing, tryDragRing, toggleSelectionRing, tryUpdateSelectionPath,
+  activateRing, deactivateRing, tryDragRing, toggleSelection, tryUpdateSelectionPath,
   removeSelectionPath, REMOVE_SELECTION_PATH
 } from "../actions/gestures";
 import { editNode, editRelationship } from "../actions/sidebar";
@@ -33,7 +33,7 @@ const mapDispatchToProps = dispatch => {
     deactivateRing: () => dispatch(deactivateRing()),
     ringDragged: (nodeId, position) => dispatch(tryDragRing(nodeId, position)),
     editNode: (node) => dispatch(editNode(node.id)),
-    toggleSelection: (nodeIds) => dispatch(toggleSelectionRing(nodeIds)),
+    toggleSelection: (nodeId, addative) => dispatch(toggleSelection(nodeId, addative)),
     editRelationship: (relationship) => dispatch(editRelationship(relationship.id)),
     selectionPathUpdated: (position, isDoubleClick) => dispatch(tryUpdateSelectionPath(position, isDoubleClick)),
     removeSelectionPath: () => dispatch(removeSelectionPath())

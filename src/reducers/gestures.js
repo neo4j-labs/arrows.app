@@ -40,20 +40,31 @@ export default function gestures(state = {
         dragging: { sourceNodeId: null, targetNodeId: null, newNodePosition: null },
         selection: state.selection
       }
-    case TOGGLE_SELECTION_RING:
-      const newSelectedNodeIdMap = { ...state.selection.selectedNodeIdMap }
-      action.selectedNodeIds.forEach(nodeId => {
-        if (newSelectedNodeIdMap[nodeId]) {
-          delete newSelectedNodeIdMap[nodeId]
+    case 'TOGGLE_SELECTION':
+      if (action.addative) {
+        const newSelectedNodeIdMap = { ...state.selection.selectedNodeIdMap }
+        if (newSelectedNodeIdMap[action.nodeId]) {
+          delete newSelectedNodeIdMap[action.nodeId]
         } else {
-          newSelectedNodeIdMap[nodeId] = true
+          newSelectedNodeIdMap[action.nodeId] = true
         }
-      })
-
-      return {
-        dragging: state.dragging,
-        selection: { ...state.selection, selectedNodeIdMap: newSelectedNodeIdMap }
+        return {
+          dragging: state.dragging,
+          selection: { ...state.selection, selectedNodeIdMap: newSelectedNodeIdMap }
+        }
+      } else {
+        if (!state.selection.selectedNodeIdMap[action.nodeId]) {
+          const newSelectedNodeIdMap = {};
+          newSelectedNodeIdMap[action.nodeId] = true
+          return {
+            dragging: state.dragging,
+            selection: { ...state.selection, selectedNodeIdMap: newSelectedNodeIdMap }
+          }
+        } else {
+          return state
+        }
       }
+
     case ENSURE_SELECTION_RING:
       const selectedNodeIdMap = { ...state.selection.selectedNodeIdMap }
       action.selectedNodeIds.forEach(nodeId => selectedNodeIdMap[nodeId] = true)

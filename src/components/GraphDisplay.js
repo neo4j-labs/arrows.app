@@ -46,7 +46,7 @@ class GraphDisplay extends Component {
       pan,
       canvasClicked: position => selectionPathUpdated(position, false),
       canvasDoubleClicked: position => selectionPathUpdated(position, true),
-      nodeClicked: (node) => toggleSelection([node.id]),
+      nodeMouseDown: (node, metaKey) => toggleSelection(node.id, metaKey),
       nodeDoubleClicked: editNode,
       relationshipDoubleClicked: editRelationship,
       nodeDragged: moveNode,

@@ -5,7 +5,7 @@ import {idsMatch} from "../model/Id";
 import { nodesInsidePolygon } from "../model/Graph";
 
 export const TOGGLE_SELECTION_RING = 'TOGGLE_SELECTION_RING'
-export const ENSURE_SELECTION_RING = 'TOGGLE_SELECTION_RING'
+export const ENSURE_SELECTION_RING = 'ENSURE_SELECTION_RING'
 export const UPDATE_SELECTION_PATH = 'UPDATE_SELECTION_PATH'
 export const REMOVE_SELECTION_PATH = 'REMOVE_SELECTION_PATH'
 export const CLEAR_SELECTION_RINGS = 'CLEAR_SELECTION_RINGS'
@@ -65,9 +65,10 @@ const ringDraggedConnected = (sourceNodeId, targetNodeId, position) => {
   }
 }
 
-export const toggleSelectionRing = (selectedNodeIds) => ({
-  type: TOGGLE_SELECTION_RING,
-  selectedNodeIds
+export const toggleSelection = (nodeId, addative) => ({
+  type: 'TOGGLE_SELECTION',
+  nodeId,
+  addative
 })
 
 export const ensureSelectionRing = (selectedNodeIds) => ({
