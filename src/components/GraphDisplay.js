@@ -53,7 +53,8 @@ class GraphDisplay extends Component {
       endDrag,
       activateRing,
       deactivateRing,
-      ringDragged
+      ringDragged,
+      marqueeDragged: (from, to) => console.log('MARQUEE', from, to)
     }
 
     return renderVisuals({visuals: {graph, gestures, guides}, canvas: this.canvas, displayOptions: { canvasSize, viewTransformation }})

@@ -1,5 +1,6 @@
-import DragStateMachine, {StateDragging} from './DragStateMachine'
+import DragStateMachine, { StateDragging, StatePressed } from './DragStateMachine'
 import {Point} from "../model/Point";
+const LongpressTime = 300
 
 export default class TouchHandler {
   constructor(canvas) {
@@ -17,6 +18,8 @@ export default class TouchHandler {
       id: 0,
       pinned: true
     }
+    this.marqueeActive = false
+    this.mouseDownTime = 0
   }
 
   _registerTouchEvents () {
@@ -57,6 +60,7 @@ export default class TouchHandler {
     if (evt.button !== 0) {
       return
     }
+    let prevState = this._dragMachine.state
 
     if (this.mouseDownNode) {
       this._dragMachine.update(evt)
@@ -69,7 +73,18 @@ export default class TouchHandler {
     } else if (this._mouseDownOnCanvas) {
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
-        this.callbacks.pan(this._dragMachine.delta)
+        if (prevState === StatePressed) {
+          this.marqueeActive = Date.now() - this.mouseDownTime > LongpressTime
+         /* if (this.marqueeActive && !this._modiferDown) {
+            this.parentHandler.callIfRegistered('clearSelection')
+          }*/
+        }
+        if (this.marqueeActive) {
+          this.callbacks.marqueeDragged(this._dragMachine.startPosition, this.eventPosition(evt))
+          //this._marquee.draw(this._dragMachine.mouseDownX, this._dragMachine.mouseDownY, evt.clientX, evt.clientY)
+        } else {
+          this.callbacks.pan(this._dragMachine.delta)
+        }
       }
     } else {
       const ringUnderCursor = this.callbacks.nodeFinder.nodeRingAtPoint(this.eventPosition(evt))

@@ -38,5 +38,6 @@ function drawGraph(ctx, graph, relConfig, displayOptions) {
   visualGraph.constructEdgeBundles()
   visualGraph.edges.forEach(edge => edge.draw(ctx))
   Object.values(visualGraph.nodes).forEach(node => node.draw(ctx))
+  visualGraph.getVoronoi()
   return visualGraph
 }
