@@ -67,10 +67,11 @@ const ringDraggedConnected = (sourceNodeId, targetNodeId, position) => {
   }
 }
 
-export const toggleSelection = (nodeId, addative) => ({
+export const toggleSelection = (entity, additive) => ({
   type: 'TOGGLE_SELECTION',
-  nodeId,
-  addative
+  entityType: entity.entityType,
+  id: entity.id,
+  additive
 })
 
 export const ensureSelectionRing = (selectedNodeIds) => ({

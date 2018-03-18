@@ -8,7 +8,7 @@ import {
   activateRing, deactivateRing, tryDragRing, toggleSelection, tryUpdateSelectionPath,
   removeSelectionPath, REMOVE_SELECTION_PATH, updateMarquee, endMarquee
 } from "../actions/gestures";
-import { editNode, editRelationship } from "../actions/sidebar";
+import { toggleInspector } from "../actions/sidebar";
 import { compose } from "recompose";
 import withKeyBindings from "../interactions/Keybindings";
 
@@ -32,9 +32,8 @@ const mapDispatchToProps = dispatch => {
     activateRing: (nodeId) => dispatch(activateRing(nodeId)),
     deactivateRing: () => dispatch(deactivateRing()),
     ringDragged: (nodeId, position) => dispatch(tryDragRing(nodeId, position)),
-    editNode: (node) => dispatch(editNode(node.id)),
-    toggleSelection: (nodeId, addative) => dispatch(toggleSelection(nodeId, addative)),
-    editRelationship: (relationship) => dispatch(editRelationship(relationship.id)),
+    toggleInspector: (node) => dispatch(toggleInspector(node.id)),
+    toggleSelection: (entity, additive) => dispatch(toggleSelection(entity, additive)),
     selectionPathUpdated: (position, isDoubleClick) => dispatch(tryUpdateSelectionPath(position, isDoubleClick)),
     removeSelectionPath: () => dispatch(removeSelectionPath()),
     marqueeDragged: (from, to) => dispatch(updateMarquee(from, to)),

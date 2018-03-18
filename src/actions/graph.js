@@ -91,9 +91,9 @@ export const endDrag = () => {
   }
 }
 
-export const setNodeCaption = (nodeId, caption) => ({
+export const setNodeCaption = (selection, caption) => ({
   type: 'SET_NODE_CAPTION',
-  nodeId,
+  selection,
   caption
 })
 

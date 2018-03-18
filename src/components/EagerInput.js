@@ -15,6 +15,7 @@ const fireWhenIdle = (evt, onSave, delay = 1000) => {
 export default class EagerInput extends Component {
   state = { value: this.props.value}
   setValue (evt) {
+    console.log('setValue')
     const { onSave, delay } = this.props
     this.setState({ value: evt.target.value })
     onSave && fireWhenIdle(evt, onSave, delay)

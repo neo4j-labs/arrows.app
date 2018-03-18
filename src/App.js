@@ -14,11 +14,10 @@ class App extends Component {
   }
   state = { sidebarVisible : false }
   render() {
-    const { sidebar, graph } = this.props
     return (
-        <Sidebar visible={sidebar.status === 'expanded'} sidebarData={sidebar} graph={graph}>
+        <Sidebar visible={this.props.sidebar.status === 'expanded'}>
           <div className="App">
-            <HeaderContainer sidebarVisible={sidebar.status === 'expanded'} toggleSidebar={() => this.setState({sidebarVisible: !this.state.sidebarVisible})}/>
+            <HeaderContainer/>
             <GraphContainer/>
           </div>
         </Sidebar>
@@ -36,8 +35,7 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  sidebar: state.sidebar,
-  graph: state.graph
+  sidebar: state.sidebar
 })
 
 export default compose(

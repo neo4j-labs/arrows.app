@@ -32,7 +32,7 @@ export default class TouchHandler {
   }
 
   handleClick (evt) {
-    const item = this.callbacks.nodeFinder.nodeAtPoint(this.eventPosition(evt))
+    const item = this.callbacks.entityAtPoint(this.eventPosition(evt))
     if (!this._hasDragged && item === null) {
       this.callbacks.canvasClicked(this.eventPosition(evt))
     }
@@ -40,17 +40,12 @@ export default class TouchHandler {
   }
 
   handleDoubleClick (evt) {
-    let item = this.callbacks.nodeFinder.nodeAtPoint(this.eventPosition(evt))
+    const item = this.callbacks.entityAtPoint(this.eventPosition(evt))
     if (item) {
-      this.callbacks.nodeDoubleClicked(item)
+      this.callbacks.entityDoubleClicked(item)
     } else {
-      item = this.callbacks.relationshipFinder.relationshipAtPoint(this.eventPosition(evt))
-      if (item) {
-        this.callbacks.relationshipDoubleClicked(item)
-      } else {
-        this.doubleClickOnCanvas = !this.doubleClickOnCanvas
-        this.callbacks.canvasDoubleClicked(this.eventPosition(evt))
-      }
+      this.doubleClickOnCanvas = !this.doubleClickOnCanvas
+      this.callbacks.canvasDoubleClicked(this.eventPosition(evt))
     }
 
     evt.preventDefault()
@@ -83,11 +78,11 @@ export default class TouchHandler {
         }
       }
     } else {
-      const ringUnderCursor = this.callbacks.nodeFinder.nodeRingAtPoint(this.eventPosition(evt))
-      if (ringUnderCursor) {
-        if (this.sourceNodeId === null || (this.sourceNodeId && ringUnderCursor !== this.sourceNodeId)) {
-          this.sourceNodeId = ringUnderCursor
-          this.callbacks.activateRing(ringUnderCursor.id)
+      const entityUnderCursor = this.callbacks.entityAtPoint(this.eventPosition(evt))
+      if (entityUnderCursor && entityUnderCursor.entityType === 'nodeRing') {
+        if (this.sourceNodeId === null || (this.sourceNodeId && entityUnderCursor.id !== this.sourceNodeId)) {
+          this.sourceNodeId = entityUnderCursor.id
+          this.callbacks.activateRing(entityUnderCursor.id)
         }
       } else {
         if (this.sourceNodeId !== null) {
@@ -109,16 +104,19 @@ export default class TouchHandler {
 
     let cursorPosition = this.eventPosition(evt);
 
-    const nodeUnderCursor = this.callbacks.nodeFinder.nodeAtPoint(cursorPosition)
-    const ringUnderCursor = this.callbacks.nodeFinder.nodeRingAtPoint(cursorPosition)
+    const entityUnderCursor = this.callbacks.entityAtPoint(this.eventPosition(evt))
 
-    if (nodeUnderCursor) {
-      this.callbacks.nodeMouseDown(nodeUnderCursor, evt.metaKey)
-      this.mouseDownNode = nodeUnderCursor
-      this.itemBeingDragged = nodeUnderCursor
-    } else if (ringUnderCursor) {
-      this.mouseDownRing = ringUnderCursor
-      this.callbacks.ringDragged(ringUnderCursor.id, cursorPosition)
+    if (entityUnderCursor) {
+      if (entityUnderCursor.entityType === 'node') {
+        this.callbacks.entityMouseDown(entityUnderCursor, evt.metaKey)
+        this.mouseDownNode = entityUnderCursor
+        this.itemBeingDragged = entityUnderCursor
+      } else if (entityUnderCursor.entityType === 'relationship') {
+        this.callbacks.entityMouseDown(entityUnderCursor, evt.metaKey)
+      } else if (entityUnderCursor.entityType === 'nodeRing') {
+        this.mouseDownRing = entityUnderCursor
+        this.callbacks.ringDragged(entityUnderCursor.id, cursorPosition)
+      }
     } else {
       this._mouseDownOnCanvas = true
       this.mouseDownTime = Date.now()

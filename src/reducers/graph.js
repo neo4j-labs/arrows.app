@@ -54,7 +54,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'SET_NODE_CAPTION': {
       return {
-        nodes: state.nodes.map((node) => idsMatch(node.id, action.nodeId) ? setCaption(node, action.caption) : node),
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setCaption(node, action.caption) : node),
         relationships: state.relationships
       }
     }

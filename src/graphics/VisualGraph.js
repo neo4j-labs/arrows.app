@@ -2,10 +2,11 @@ import EdgeBundle from './EdgeBundle'
 import {asKey} from "../model/Id";
 import { getDistanceToBezierEdge } from "./utils/geometryUtils";
 import { relationshipHitTolerance } from "./constants";
-import Voronoi from './utils/voronoi'
+import {nodeAtPoint, nodeRingAtPoint} from "../model/Graph";
 
 export default class VisualGraph {
-  constructor (nodes, edges) {
+  constructor(graph, nodes, edges) {
+    this.graph = graph
     this.nodes = nodes
     this.edges = edges
     VisualGraph.constructEdgeBundles(this.edges)
@@ -25,6 +26,19 @@ export default class VisualGraph {
       return edgeBundleList
     }, {})
     edges.forEach(edge => edge.updateEndPoints())
+  }
+
+  entityAtPoint(point) {
+    const node = nodeAtPoint(this.graph, point)
+    if (node) return { ...node, entityType: 'node' }
+
+    const nodeRing = nodeRingAtPoint(this.graph, point)
+    if (nodeRing) return { ...nodeRing, entityType: 'nodeRing' }
+
+    const relationship = this.relationshipAtPoint(point)
+    if (relationship) return { ...relationship, entityType: 'relationship' }
+
+    return null
   }
 
   relationshipAtPoint(point) {

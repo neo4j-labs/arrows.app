@@ -1,22 +1,8 @@
-import { EDIT_NODE, COLLAPSE_SIDEBAR, EDIT_RELATIONSHIP } from "../actions/sidebar";
-
-const sidebar = (state = { state: 'collapsed' }, action) => {
+const sidebar = (state = { status: 'expanded' }, action) => {
   switch (action.type) {
-    case EDIT_NODE:
+    case 'TOGGLE_INSPECTOR':
       return {
-        status: 'expanded',
-        mode: 'edit-node',
-        itemId: action.nodeId
-      }
-    case EDIT_RELATIONSHIP:
-      return {
-        status: 'expanded',
-        mode: 'edit-relationship',
-        itemId: action.relationshipId
-      }
-    case COLLAPSE_SIDEBAR:
-      return {
-        status: 'collapsed'
+        status: state.status === 'expanded' ? 'collapsed' : 'expanded',
       }
     default:
       return state

@@ -63,9 +63,9 @@ export const storageMiddleware = store => next => action => {
     }
 
     case 'SET_NODE_CAPTION': {
-      runInSession((session) => session.run('MATCH (n:Diagram0 {_id: $id}) ' +
+      runInSession((session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
         'SET n._caption = $caption', {
-        id: action.nodeId,
+        ids: Object.keys(action.selection.selectedNodeIdMap),
         caption: action.caption
       }))
       break

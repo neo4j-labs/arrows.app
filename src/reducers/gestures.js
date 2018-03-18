@@ -42,21 +42,21 @@ export default function gestures(state = {
         selection: state.selection
       }
     case 'TOGGLE_SELECTION':
-      if (action.addative) {
+      if (action.additive) {
         const newSelectedNodeIdMap = { ...state.selection.selectedNodeIdMap }
-        if (newSelectedNodeIdMap[action.nodeId]) {
-          delete newSelectedNodeIdMap[action.nodeId]
+        if (newSelectedNodeIdMap[action.id]) {
+          delete newSelectedNodeIdMap[action.id]
         } else {
-          newSelectedNodeIdMap[action.nodeId] = true
+          newSelectedNodeIdMap[action.id] = true
         }
         return {
           dragging: state.dragging,
           selection: { ...state.selection, selectedNodeIdMap: newSelectedNodeIdMap }
         }
       } else {
-        if (!state.selection.selectedNodeIdMap[action.nodeId]) {
+        if (!state.selection.selectedNodeIdMap[action.id]) {
           const newSelectedNodeIdMap = {};
-          newSelectedNodeIdMap[action.nodeId] = true
+          newSelectedNodeIdMap[action.id] = true
           return {
             dragging: state.dragging,
             selection: { ...state.selection, selectedNodeIdMap: newSelectedNodeIdMap }

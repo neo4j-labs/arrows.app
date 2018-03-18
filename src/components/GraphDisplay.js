@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import TouchHandler from "../interactions/TouchHandler";
 import { renderVisuals } from "../graphics/visualsRenderer";
-import {nodeAtPoint, nodeRingAtPoint} from "../model/Graph";
 import { REMOVE_SELECTION_PATH } from "../actions/gestures";
 
 class GraphDisplay extends Component {
@@ -32,8 +31,9 @@ class GraphDisplay extends Component {
   drawVisuals() {
     const { graph, gestures, guides, viewTransformation, canvasSize,
       pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged,
-      editNode, toggleSelection, editRelationship, selectionPathUpdated,
-      removeSelectionPath, marqueeDragged, marqueeEnded } = this.props
+      editNode, toggleSelection, editRelationship,
+      removeSelectionPath, marqueeDragged, marqueeEnded,
+      toggleInspector, toggleSelection, selectionPathUpdated } = this.props
     this.touchHandler.viewTransformation = viewTransformation
     const visualGraph = renderVisuals({
       visuals: {graph, gestures, guides},
@@ -42,19 +42,12 @@ class GraphDisplay extends Component {
     })
 
     this.touchHandler.callbacks = {
-      nodeFinder: {
-        nodeAtPoint: (point) => nodeAtPoint(graph, point),
-        nodeRingAtPoint: (point) => nodeRingAtPoint(graph, point)
-      },
-      relationshipFinder: {
-        relationshipAtPoint: (point) => visualGraph.relationshipAtPoint(point)
-      },
+      entityAtPoint: (point) => visualGraph.entityAtPoint(point),
       pan,
       canvasClicked: position => selectionPathUpdated(position, false),
       canvasDoubleClicked: position => selectionPathUpdated(position, true),
-      nodeMouseDown: (node, metaKey) => toggleSelection(node.id, metaKey),
-      nodeDoubleClicked: editNode,
-      relationshipDoubleClicked: editRelationship,
+      entityMouseDown: (entity, metaKey) => toggleSelection(entity, metaKey),
+      entityDoubleClicked: toggleInspector,
       nodeDragged: moveNode,
       endDrag,
       activateRing,
