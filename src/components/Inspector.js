@@ -4,7 +4,7 @@ import EagerInput from './EagerInput'
 import { connect } from "react-redux";
 import {setNodeProperties, setNodeCaption, setRelationshipType} from "../actions/graph";
 import {commonValue} from "../model/values";
-import {selectedNodes, selectedRelationships} from "../model/selection";
+import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
 
 class Inspector extends Component {
   constructor (props) {
@@ -72,13 +72,13 @@ class Inspector extends Component {
     }
 
     if (relationships.length > 0 && nodes.length === 0) {
-      const commonType = commonValue(relationships.map((relationship) => relationship.type)) || ''
+      const commonType = commonValue(relationships.map((relationship) => relationship.type))
       fields.push(
         <Form.Field key='_type'>
-          <label>Caption</label>
-          <Input value={commonType}
+          <label>Type</label>
+          <Input value={commonType || ''}
                  onChange={(event) => onSaveType(selection, event.target.value)}
-                 placeholder='<multiple types>'/>
+                 placeholder={commonType === undefined ? '<multiple types>' : null}/>
         </Form.Field>
       )
     }
@@ -90,7 +90,7 @@ class Inspector extends Component {
           Inspector
         </Header>
         <p>
-          Selection: {nodes.length} nodes.
+          {describeSelection(selection)}
         </p>
         <Form inverted style={{ 'textAlign': 'left' }}>
           {fields}
