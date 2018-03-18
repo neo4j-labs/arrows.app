@@ -3,6 +3,7 @@ import {
   UPDATING_GRAPH, UPDATING_GRAPH_FAILED, UPDATING_GRAPH_SUCCEEDED
 } from "../state/storageStatus";
 import {Point} from "../model/Point";
+import {databaseTypeToStringType} from "../model/Relationship";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
@@ -93,7 +94,7 @@ export function fetchGraphFromDatabase() {
           const to = record.get('target._id')
           const newRelationship = {
             id: relId,
-            type: relationship.type,
+            type: databaseTypeToStringType(relationship.type),
             properties: relationship.properties,
             fromId: from,
             toId: to

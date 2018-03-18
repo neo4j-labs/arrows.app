@@ -32,7 +32,7 @@ const graph = (state = emptyGraph(), action) => {
       newNodes.push(newNode)
       newRelationships.push({
         id: action.newRelationshipId,
-        type: '_RELATED',
+        type: '',
         properties: {},
         fromId: action.sourceNodeId,
         toId: newNode.id
@@ -82,7 +82,7 @@ const graph = (state = emptyGraph(), action) => {
     case 'SET_RELATIONSHIP_TYPE' :
       return {
       nodes: state.nodes,
-      relationships: state.relationships.map(relationship => idsMatch(relationship.id, action.relationshipId) ? setType(relationship, action.relationshipType) : relationship)
+      relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? setType(relationship, action.relationshipType) : relationship)
     }
 
     case FETCHING_GRAPH_SUCCEEDED:

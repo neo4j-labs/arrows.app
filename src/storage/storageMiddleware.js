@@ -1,4 +1,5 @@
 import {updatingGraph, updatingGraphFailed, updatingGraphSucceeded} from "../actions/neo4jStorage";
+import {stringTypeToDatabaseType} from "../model/Relationship";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
@@ -112,14 +113,21 @@ export const storageMiddleware = store => next => action => {
     }
 
     case 'SET_RELATIONSHIP_TYPE': {
-      runInSession((session) => session.run(`MATCH (n)-[r]->(m)
-          WHERE r._id = $id
-          CREATE (n)-[r2:${action.relationshipType}]->(m)
-          SET r2 = r
-          WITH r
-          DELETE r`, {
-        id: action.relationshipId
-      }))
+      const newType = stringTypeToDatabaseType(action.relationshipType)
+      runInSession((session) => {
+        let result = session
+        Object.keys(action.selection.selectedRelationshipIdMap).forEach((relationshipId) => {
+          result = session.run(`MATCH (n)-[r]->(m)
+            WHERE r._id = $id
+            CREATE (n)-[r2:\`${newType}\`]->(m)
+            SET r2 = r
+            WITH r
+            DELETE r`, {
+            id: relationshipId
+          });
+        })
+        return result;
+      })
       break
     }
 

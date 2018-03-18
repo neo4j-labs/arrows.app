@@ -103,8 +103,8 @@ export const setNodeProperties = (nodeId, keyValuePairs) => ({
   keyValuePairs
 })
 
-export const setRelationshipType = (relationshipId, relationshipType) => ({
+export const setRelationshipType = (selection, relationshipType) => ({
   type: 'SET_RELATIONSHIP_TYPE',
-  relationshipId,
+  selection,
   relationshipType
 })

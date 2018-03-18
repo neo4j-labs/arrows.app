@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { Form, Input, Segment, Icon, Header, Divider } from 'semantic-ui-react'
 import EagerInput from './EagerInput'
 import { connect } from "react-redux";
-import { setNodeProperties, setNodeCaption } from "../actions/graph";
+import {setNodeProperties, setNodeCaption, setRelationshipType} from "../actions/graph";
 import {commonValue} from "../model/values";
-import {selectedNodes} from "../model/selection";
+import {selectedNodes, selectedRelationships} from "../model/selection";
 
 class Inspector extends Component {
   constructor (props) {
@@ -53,9 +53,35 @@ class Inspector extends Component {
   }
 
   render() {
-    const { selection, graph, onSaveCaption } = this.props
+    const { selection, graph, onSaveCaption, onSaveType } = this.props
+    const fields = []
 
-    const commonCaption = commonValue(selectedNodes(graph, selection).map((node) => node.caption)) || ''
+    const nodes = selectedNodes(graph, selection);
+    const relationships = selectedRelationships(graph, selection);
+
+    if (nodes.length > 0 && relationships.length === 0) {
+      const commonCaption = commonValue(nodes.map((node) => node.caption)) || ''
+      fields.push(
+        <Form.Field key='_caption'>
+          <label>Caption</label>
+          <Input value={commonCaption}
+                 onChange={(event) => onSaveCaption(selection, event.target.value)}
+                 placeholder='<multiple values>'/>
+        </Form.Field>
+      )
+    }
+
+    if (relationships.length > 0 && nodes.length === 0) {
+      const commonType = commonValue(relationships.map((relationship) => relationship.type)) || ''
+      fields.push(
+        <Form.Field key='_type'>
+          <label>Caption</label>
+          <Input value={commonType}
+                 onChange={(event) => onSaveType(selection, event.target.value)}
+                 placeholder='<multiple types>'/>
+        </Form.Field>
+      )
+    }
 
     return (
       <Segment inverted>
@@ -64,15 +90,10 @@ class Inspector extends Component {
           Inspector
         </Header>
         <p>
-          Selection: {Object.keys(this.props.selection.selectedNodeIdMap).length} nodes.
+          Selection: {nodes.length} nodes.
         </p>
         <Form inverted style={{ 'textAlign': 'left' }}>
-          <Form.Field key='_caption'>
-            <label>Caption</label>
-            <Input value={commonCaption}
-                   onChange={(event) => onSaveCaption(selection, event.target.value)}
-                   placeholder='Node Caption'/>
-          </Form.Field>
+          {fields}
         </Form>
       </Segment>
     )
@@ -148,6 +169,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onSaveCaption: (selection, caption) => {
       dispatch(setNodeCaption(selection, caption))
+    },
+    onSaveType: (selection, type) => {
+      dispatch(setRelationshipType(selection, type))
     },
     onSaveProperty: (selection, key, value) => {
       dispatch(setNodeProperties(selection, [{ key, value }]))
