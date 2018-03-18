@@ -6,27 +6,37 @@ import {
 
 export default function selection(state = {
   selectedNodeIdMap: {},
+  selectedRelationshipIdMap: {},
   path: []
 }, action) {
   switch (action.type) {
     case 'TOGGLE_SELECTION':
-      if (action.additive) {
-        const newSelectedNodeIdMap = {...state.selectedNodeIdMap}
-        if (newSelectedNodeIdMap[action.id]) {
-          delete newSelectedNodeIdMap[action.id]
+      const newState = {...state}
+      const entitySelection = {
+        'node': 'selectedNodeIdMap',
+        'relationship': 'selectedRelationshipIdMap'
+      }[action.entityType]
+
+      if (entitySelection) {
+        if (action.additive) {
+          const newSelection = {...state[entitySelection]}
+          if (newSelection[action.id]) {
+            delete newSelection[action.id]
+          } else {
+            newSelection[action.id] = true
+          }
+          newState[entitySelection] = newSelection
         } else {
-          newSelectedNodeIdMap[action.id] = true
-        }
-        return {...state, selectedNodeIdMap: newSelectedNodeIdMap}
-      } else {
-        if (!state.selectedNodeIdMap[action.id]) {
-          const newSelectedNodeIdMap = {};
-          newSelectedNodeIdMap[action.id] = true
-          return {...state, selectedNodeIdMap: newSelectedNodeIdMap}
-        } else {
-          return state
+          if (!state[entitySelection][action.id]) {
+            newState.selectedNodeIdMap = {}
+            newState.selectedRelationshipIdMap = {}
+            const newSelection = {};
+            newSelection[action.id] = true
+            newState[entitySelection] = newSelection
+          }
         }
       }
+      return newState
 
     case ENSURE_SELECTION_RING:
       const selectedNodeIdMap = {...state.selectedNodeIdMap}

@@ -16,10 +16,10 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const visualGestures = new Gestures(gestures, graph)
   visualGestures.draw(ctx, displayOptions)
 
-  return drawGraph(ctx, graph, config, displayOptions, gestures.selection.marquee)
+  return drawGraph(ctx, graph, gestures.selection, config, displayOptions)
 }
 
-function drawGraph(ctx, graph, relConfig, displayOptions) {
+function drawGraph(ctx, graph, selection, relConfig, displayOptions) {
   const nodes = graph.nodes.reduce((nodes, node) => {
     nodes[asKey(node.id)] = new VisualNode(node, displayOptions.viewTransformation)
     return nodes
@@ -31,7 +31,8 @@ function drawGraph(ctx, graph, relConfig, displayOptions) {
         from: nodes[asKey(relationship.fromId)],
         to: nodes[asKey(relationship.toId)]
       },
-      relConfig)
+      relConfig,
+      selection.selectedRelationshipIdMap[relationship.id])
   )
 
   const visualGraph = new VisualGraph(graph, nodes, relationships)

@@ -7,12 +7,13 @@ import { drawArrowEndpoint } from "./canvasRenderer";
 import {idsMatch} from "../model/Id";
 
 export default class VisualEdge {
-  constructor(edgeData, options) {
+  constructor(edgeData, options, selected) {
     this.relationship = edgeData.relationship
     this.id = this.relationship.id
     this.from = edgeData.from
     this.to = edgeData.to
     this.options = options
+    this.selected = selected
 
     if (this.relationship.fromId === this.relationship.toId) {
       this.from.addEdge(this, DIRECTION.LOOP)
@@ -60,14 +61,12 @@ export default class VisualEdge {
   }
 
   drawLine (ctx, viaNode, outline, blur) {
-    const selected = this._getOption('selected')
-
     if (outline) {
       ctx.strokeStyle = this._getOption('edgeTypePlugin.color.outlineSelected')
       ctx.lineWidth = 3 * this._getOption('edgeTypePlugin.outlineWidth')
     } else {
       ctx.strokeStyle = this._getOption('color.fill')
-      ctx.lineWidth = selected ? 1.5 : 1
+      ctx.lineWidth = this.selected ? 1.5 : 1
     }
 
     const pixelRatio = (window.devicePixelRatio || 1)
@@ -325,8 +324,7 @@ export default class VisualEdge {
     const fontSize = this._getOption('font.size') * pixelRatio
     const fontFace = this._getOption('font.face')
     const radius = this._getOption('selfReferenceSize') * pixelRatio
-    const selected = this._getOption('selected')
-    const fontWeight = selected ? 'bold ' : 'normal '
+    const fontWeight = 'normal '
 
     if (label !== undefined) {
       // set style
