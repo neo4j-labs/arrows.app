@@ -75,13 +75,9 @@ export default class TouchHandler {
       if (this._dragMachine.state === StateDragging) {
         if (prevState === StatePressed) {
           this.marqueeActive = Date.now() - this.mouseDownTime > LongpressTime
-         /* if (this.marqueeActive && !this._modiferDown) {
-            this.parentHandler.callIfRegistered('clearSelection')
-          }*/
         }
         if (this.marqueeActive) {
-          this.callbacks.marqueeDragged(this._dragMachine.startPosition, this.eventPosition(evt))
-          //this._marquee.draw(this._dragMachine.mouseDownX, this._dragMachine.mouseDownY, evt.clientX, evt.clientY)
+          this.callbacks.marqueeDragged(this.adjustPosition(this._dragMachine.startPosition), this.eventPosition(evt))
         } else {
           this.callbacks.pan(this._dragMachine.delta)
         }
@@ -125,6 +121,7 @@ export default class TouchHandler {
       this.callbacks.ringDragged(ringUnderCursor.id, cursorPosition)
     } else {
       this._mouseDownOnCanvas = true
+      this.mouseDownTime = Date.now()
     }
     this._hasDragged = false
 
@@ -137,6 +134,11 @@ export default class TouchHandler {
     if (evt.button !== 0) {
       return
     }
+
+    if (this.marqueeActive) {
+      this.callbacks.marqueeEnded(this.adjustPosition(this._dragMachine.startPosition), this.eventPosition(evt))
+    }
+
     this.endMouseEvents()
     evt.preventDefault()
   }
@@ -151,14 +153,20 @@ export default class TouchHandler {
     this.mouseDownNode = null
     this.mouseDownRing = null
     this._mouseDownOnCanvas = false
+    this.marqueeActive = false
+    this.mouseDownTime = 0
     this._dragMachine.reset()
   }
 
   eventPosition(event) {
+    return this.adjustPosition({ x:event.clientX, y: event.clientY })
+  }
+
+  adjustPosition ({x, y}) {
     let rect = this.canvas.getBoundingClientRect()
     let canvasPosition = new Point(
-      event.clientX - rect.left,
-      event.clientY - rect.top
+      x - rect.left,
+      y - rect.top
     )
 
     return this.viewTransformation.inverse(canvasPosition)

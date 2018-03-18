@@ -16,7 +16,7 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const visualGestures = new Gestures(gestures, graph)
   visualGestures.draw(ctx, displayOptions)
 
-  return drawGraph(ctx, graph, config, displayOptions)
+  return drawGraph(ctx, graph, config, displayOptions, gestures.selection.marquee)
 }
 
 function drawGraph(ctx, graph, relConfig, displayOptions) {
@@ -38,6 +38,5 @@ function drawGraph(ctx, graph, relConfig, displayOptions) {
   visualGraph.constructEdgeBundles()
   visualGraph.edges.forEach(edge => edge.draw(ctx))
   Object.values(visualGraph.nodes).forEach(node => node.draw(ctx))
-  visualGraph.getVoronoi()
   return visualGraph
 }

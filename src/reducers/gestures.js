@@ -1,6 +1,6 @@
 import {
   CLEAR_SELECTION_RINGS,
-  ENSURE_SELECTION_RING, REMOVE_SELECTION_PATH, TOGGLE_SELECTION_RING,
+  ENSURE_SELECTION_RING, REMOVE_MARQUEE, REMOVE_SELECTION_PATH, SET_MARQUEE, TOGGLE_SELECTION_RING,
   UPDATE_SELECTION_PATH
 } from "../actions/gestures";
 
@@ -12,7 +12,8 @@ export default function gestures(state = {
   },
   selection: {
     selectedNodeIdMap: {},
-    path: []
+    path: [],
+    marquee: null
   }
 }, action) {
   switch (action.type) {
@@ -86,6 +87,16 @@ export default function gestures(state = {
       return {
         dragging: state.dragging,
         selection: { ...state.selection, path: [] }
+      }
+    case SET_MARQUEE:
+      return {
+        dragging: state.dragging,
+        selection: { ...state.selection, marquee: action.marquee }
+      }
+    case REMOVE_MARQUEE:
+      return {
+        dragging: state.dragging,
+        selection: { ...state.selection, marquee: null }
       }
     default:
       return state
