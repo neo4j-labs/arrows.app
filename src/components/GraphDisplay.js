@@ -16,11 +16,11 @@ class GraphDisplay extends Component {
   componentDidMount() {
     window.addEventListener('resize', this.props.onWindowResized.bind(this))
     this.touchHandler = new TouchHandler(this.canvas)
-    this.visualGraph = this.drawVisuals();
+    this.drawVisuals();
   }
 
   componentDidUpdate() {
-    this.visualGraph = this.drawVisuals();
+    this.drawVisuals();
   }
 
   render() {
@@ -35,7 +35,12 @@ class GraphDisplay extends Component {
       editNode, toggleSelection, editRelationship, selectionPathUpdated,
       removeSelectionPath, marqueeDragged, marqueeEnded } = this.props
     this.touchHandler.viewTransformation = viewTransformation
-    const visualGraph = this.visualGraph
+    const visualGraph = renderVisuals({
+      visuals: {graph, gestures, guides},
+      canvas: this.canvas,
+      displayOptions: { canvasSize, viewTransformation }
+    })
+
     this.touchHandler.callbacks = {
       nodeFinder: {
         nodeAtPoint: (point) => nodeAtPoint(graph, point),
@@ -58,8 +63,6 @@ class GraphDisplay extends Component {
       marqueeDragged,
       marqueeEnded
     }
-
-    return renderVisuals({visuals: {graph, gestures, guides}, canvas: this.canvas, displayOptions: { canvasSize, viewTransformation }})
   }
 }
 
