@@ -42,7 +42,7 @@ class GraphDisplay extends Component {
         nodeRingAtPoint: (point) => nodeRingAtPoint(graph, point)
       },
       relationshipFinder: {
-        relationshipAtPoint: (point) => visualGraph.relationshipAtPoint(graph, point)
+        relationshipAtPoint: (point) => visualGraph.relationshipAtPoint(point)
       },
       pan,
       canvasClicked: position => selectionPathUpdated(position, false),

@@ -8,11 +8,11 @@ export default class VisualGraph {
   constructor (nodes, edges) {
     this.nodes = nodes
     this.edges = edges
-    this.constructEdgeBundles()
+    VisualGraph.constructEdgeBundles(this.edges)
   }
 
-  constructEdgeBundles () {
-    const edgeBundles = this.edges.reduce((edgeBundleList, edge) => {
+  static constructEdgeBundles(edges) {
+    edges.reduce((edgeBundleList, edge) => {
       let edgeBundle = edgeBundleList[`${asKey(edge.from.id)}-${asKey(edge.to.id)}`]
         || edgeBundleList[`${asKey(edge.to.id)}-${asKey(edge.from.id)}`]
       if (!edgeBundle) {
@@ -24,17 +24,14 @@ export default class VisualGraph {
       edge.edgeBundle = edgeBundle
       return edgeBundleList
     }, {})
-
-    this.edgeBundles = edgeBundles
-
-    this.edges.forEach(edge => edge.updateEndPoints())
+    edges.forEach(edge => edge.updateEndPoints())
   }
 
-  relationshipAtPoint (graph, point) {
-    return this.closestRelationship(graph, point, (relationship, distance) => distance <= relationshipHitTolerance)
+  relationshipAtPoint(point) {
+    return this.closestRelationship(point, (relationship, distance) => distance <= relationshipHitTolerance)
   }
 
-  closestRelationship(graph, point, hitTest){
+  closestRelationship(point, hitTest) {
     let minDistance = Number.POSITIVE_INFINITY
     let closestRelationship = null
     this.edges.forEach(relationship => {
