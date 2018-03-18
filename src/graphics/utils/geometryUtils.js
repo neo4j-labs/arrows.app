@@ -1,4 +1,5 @@
-import { defaultNewNodeRadius } from "./constants";
+import { defaultNewNodeRadius } from "../constants";
+import Voronoi from "./voronoi";
 
 export const pointOnCircle = (x, y, radius, percentage) => {
   let angle = percentage * 2 * Math.PI
@@ -213,4 +214,45 @@ export const isPointInPolygon = (point, vertices) => {
   }
 
   return inside
+}
+
+export const getVoronoi = (nodes, bbox = {xl: 0, xr: 1000, yt: 0, yb: 800}) => {
+  const voronoi = new Voronoi();
+  if (nodes.length > 0) {
+    this.voronoi = voronoi.compute(nodes, bbox);
+    return this.voronoi
+  } else {
+    return null
+  }
+}
+
+export const sortPoints = (points) => {
+  points = points.splice(0);
+  const p0 = {}
+
+  p0.y = Math.min.apply(null, points.map(p => p.y))
+  p0.x = Math.max.apply(null, points.filter(p => p.y === p0.y).map(p => p.x))
+  points.sort((a,b) => angleCompare(p0, a, b))
+
+  return points
+}
+
+const angleCompare = (p0, a, b) => {
+  const left = isLeft(p0, a, b)
+
+  if (left === 0)  {
+    return distCompare(p0, a, b)
+  }
+
+  return left
+}
+
+const isLeft = (p0, a, b) => {
+  return (a.x - p0.x) * (b.y - p0.y) - (b.x - p0.x) * (a.y - p0.y)
+}
+
+const distCompare = (p0, a, b) => {
+  var distA = (p0.x - a.x) * (p0.x - a.x) + (p0.y - a.y) * (p0.y - a.y)
+  var distB = (p0.x - b.x) * (p0.x - b.x) + (p0.y - b.y) * (p0.y - b.y)
+  return distA - distB
 }

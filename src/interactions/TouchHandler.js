@@ -1,5 +1,6 @@
-import DragStateMachine, {StateDragging} from './DragStateMachine'
+import DragStateMachine, { StateDragging, StatePressed } from './DragStateMachine'
 import {Point} from "../model/Point";
+const LongpressTime = 300
 
 export default class TouchHandler {
   constructor(canvas) {
@@ -17,6 +18,8 @@ export default class TouchHandler {
       id: 0,
       pinned: true
     }
+    this.marqueeActive = false
+    this.mouseDownTime = 0
   }
 
   _registerTouchEvents () {
@@ -57,6 +60,7 @@ export default class TouchHandler {
     if (evt.button !== 0) {
       return
     }
+    let prevState = this._dragMachine.state
 
     if (this.mouseDownNode) {
       this._dragMachine.update(evt)
@@ -69,7 +73,14 @@ export default class TouchHandler {
     } else if (this._mouseDownOnCanvas) {
       this._dragMachine.update(evt)
       if (this._dragMachine.state === StateDragging) {
-        this.callbacks.pan(this._dragMachine.delta)
+        if (prevState === StatePressed) {
+          this.marqueeActive = Date.now() - this.mouseDownTime > LongpressTime
+        }
+        if (this.marqueeActive) {
+          this.callbacks.marqueeDragged(this.adjustPosition(this._dragMachine.startPosition), this.eventPosition(evt))
+        } else {
+          this.callbacks.pan(this._dragMachine.delta)
+        }
       }
     } else {
       const ringUnderCursor = this.callbacks.nodeFinder.nodeRingAtPoint(this.eventPosition(evt))
@@ -110,6 +121,7 @@ export default class TouchHandler {
       this.callbacks.ringDragged(ringUnderCursor.id, cursorPosition)
     } else {
       this._mouseDownOnCanvas = true
+      this.mouseDownTime = Date.now()
     }
     this._hasDragged = false
 
@@ -122,6 +134,11 @@ export default class TouchHandler {
     if (evt.button !== 0) {
       return
     }
+
+    if (this.marqueeActive) {
+      this.callbacks.marqueeEnded(this.adjustPosition(this._dragMachine.startPosition), this.eventPosition(evt))
+    }
+
     this.endMouseEvents()
     evt.preventDefault()
   }
@@ -136,14 +153,20 @@ export default class TouchHandler {
     this.mouseDownNode = null
     this.mouseDownRing = null
     this._mouseDownOnCanvas = false
+    this.marqueeActive = false
+    this.mouseDownTime = 0
     this._dragMachine.reset()
   }
 
   eventPosition(event) {
+    return this.adjustPosition({ x:event.clientX, y: event.clientY })
+  }
+
+  adjustPosition ({x, y}) {
     let rect = this.canvas.getBoundingClientRect()
     let canvasPosition = new Point(
-      event.clientX - rect.left,
-      event.clientY - rect.top
+      x - rect.left,
+      y - rect.top
     )
 
     return this.viewTransformation.inverse(canvasPosition)

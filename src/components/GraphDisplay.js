@@ -32,7 +32,8 @@ class GraphDisplay extends Component {
   drawVisuals() {
     const { graph, gestures, guides, viewTransformation, canvasSize,
       pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged,
-      editNode, toggleSelection, editRelationship, selectionPathUpdated, removeSelectionPath } = this.props
+      editNode, toggleSelection, editRelationship, selectionPathUpdated,
+      removeSelectionPath, marqueeDragged, marqueeEnded } = this.props
     this.touchHandler.viewTransformation = viewTransformation
     const visualGraph = this.visualGraph
     this.touchHandler.callbacks = {
@@ -53,7 +54,9 @@ class GraphDisplay extends Component {
       endDrag,
       activateRing,
       deactivateRing,
-      ringDragged
+      ringDragged,
+      marqueeDragged,
+      marqueeEnded
     }
 
     return renderVisuals({visuals: {graph, gestures, guides}, canvas: this.canvas, displayOptions: { canvasSize, viewTransformation }})

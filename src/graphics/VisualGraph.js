@@ -1,7 +1,8 @@
 import EdgeBundle from './EdgeBundle'
 import {asKey} from "../model/Id";
-import { getDistanceToBezierEdge } from "./geometryUtils";
+import { getDistanceToBezierEdge } from "./utils/geometryUtils";
 import { relationshipHitTolerance } from "./constants";
+import Voronoi from './utils/voronoi'
 
 export default class VisualGraph {
   constructor (nodes, edges) {

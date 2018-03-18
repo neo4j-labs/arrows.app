@@ -9,6 +9,8 @@ export const ENSURE_SELECTION_RING = 'ENSURE_SELECTION_RING'
 export const UPDATE_SELECTION_PATH = 'UPDATE_SELECTION_PATH'
 export const REMOVE_SELECTION_PATH = 'REMOVE_SELECTION_PATH'
 export const CLEAR_SELECTION_RINGS = 'CLEAR_SELECTION_RINGS'
+export const SET_MARQUEE = 'SET_MARQUEE'
+export const REMOVE_MARQUEE = 'REMOVE_MARQUEE'
 
 export const activateRing = (sourceNodeId) => {
   return {
@@ -110,3 +112,51 @@ export const tryUpdateSelectionPath = (position, isDoubleClick) => {
     }
   }
 }
+
+export const setMarquee = (from, to) => ({
+  type: SET_MARQUEE,
+  marquee: {from, to}
+})
+
+
+
+export const removeMarquee = () => ({
+  type: REMOVE_MARQUEE,
+  marquee: null
+})
+
+export const updateMarquee = (from, to) => {
+  return function (dispatch, getState) {
+    const { graph } = getState()
+    const bBox = getBboxFromCorners(from, to)
+    const selectedNodeIds = nodesInsidePolygon(graph, bBox)
+    if (selectedNodeIds.length > 0) {
+      dispatch(ensureSelectionRing(selectedNodeIds))
+    }
+    dispatch(setMarquee(from, to))
+  }
+}
+
+export const endMarquee = (from, to) => {
+  return function (dispatch, getState) {
+    const { graph } = getState()
+    const bBox = getBboxFromCorners(from, to)
+    const selectedNodeIds = nodesInsidePolygon(graph, bBox)
+    if (selectedNodeIds.length > 0) {
+      dispatch(ensureSelectionRing(selectedNodeIds))
+    }
+    dispatch(removeMarquee())
+  }
+}
+
+const getBboxFromCorners = (from, to) => [
+  from, {
+    x: to.x,
+    y: from.y
+  },
+  to, {
+    x: from.x,
+    y: to.y
+  },
+  from
+]

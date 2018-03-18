@@ -1,4 +1,4 @@
-import { isPointInPolygon } from "../graphics/geometryUtils";
+import { isPointInPolygon } from "../graphics/utils/geometryUtils";
 
 export const emptyGraph = () => {
   return {nodes: [], relationships: []}
