@@ -33,7 +33,7 @@ class GraphDisplay extends Component {
       pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged,
       editNode, toggleSelection, editRelationship,
       removeSelectionPath, marqueeDragged, marqueeEnded,
-      toggleInspector, toggleSelection, selectionPathUpdated } = this.props
+      toggleInspector, selectionPathUpdated } = this.props
     this.touchHandler.viewTransformation = viewTransformation
     const visualGraph = renderVisuals({
       visuals: {graph, gestures, guides},
