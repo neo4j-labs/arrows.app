@@ -10,6 +10,7 @@ export const DISMISS_UNSELECTED = 'DISMISS_UNSELECTED'
 export const INSPECT = 'INSPECT'
 export const ZOOM_IN = 'ZOOM_IN'
 export const ZOOM_OUT = 'ZOOM_OUT'
+export const DELETE_SELECTION = 'DELETE_SELECTION'
 
 const KeyBindings = {
   [SELECT_ALL_NODES]: { metaKey: true, code: 65 },
@@ -20,7 +21,8 @@ const KeyBindings = {
   [INSPECT]: { metaKey: true, code: 73 },
   [ZOOM_IN]: { metaKey: true, code: 187 },
   [ZOOM_OUT]: { metaKey: true, code: 189 },
-  [REMOVE_SELECTION_PATH]: { metaKey: false, code: 27 }
+  [REMOVE_SELECTION_PATH]: { metaKey: false, code: 27 },
+  [DELETE_SELECTION]: { metaKey: false, code: 46 }
 }
 
 const actions = {}

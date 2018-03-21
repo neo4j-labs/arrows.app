@@ -3,10 +3,10 @@ import GraphDisplay from '../components/GraphDisplay'
 import {headerHeight} from '../components/Header'
 import {windowResized} from "../actions/windowSize";
 import {pan, zoom} from "../actions/viewTransformation";
-import { endDrag, tryMoveNode } from "../actions/graph";
+import { deleteSelection, endDrag, tryMoveNode } from "../actions/graph";
 import {
   activateRing, deactivateRing, tryDragRing, toggleSelection, tryUpdateSelectionPath,
-  removeSelectionPath, REMOVE_SELECTION_PATH, updateMarquee, endMarquee
+  removeSelectionPath, updateMarquee, endMarquee
 } from "../actions/gestures";
 import { toggleInspector } from "../actions/sidebar";
 import { compose } from "recompose";
@@ -38,15 +38,9 @@ const mapDispatchToProps = dispatch => {
     removeSelectionPath: () => dispatch(removeSelectionPath()),
     marqueeDragged: (from, to) => dispatch(updateMarquee(from, to)),
     marqueeEnded: (from, to) => dispatch(endMarquee(from, to)),
+    deleteSelection: () => dispatch(deleteSelection())
   }
 }
-
-const keybindings = [
-  {
-    name: REMOVE_SELECTION_PATH,
-    handler: ({ removeSelectionPath }) => removeSelectionPath
-  }
-]
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

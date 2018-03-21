@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import TouchHandler from "../interactions/TouchHandler";
 import { renderVisuals } from "../graphics/visualsRenderer";
 import { REMOVE_SELECTION_PATH } from "../actions/gestures";
+import { DELETE_SELECTION } from "../interactions/Keybindings";
 
 class GraphDisplay extends Component {
   constructor (props) {
@@ -9,6 +10,10 @@ class GraphDisplay extends Component {
     props.registerAction(
       REMOVE_SELECTION_PATH,
       () => this.props.removeSelectionPath()
+    )
+    props.registerAction(
+      DELETE_SELECTION,
+      () => this.props.deleteSelection()
     )
   }
 

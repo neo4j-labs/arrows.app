@@ -108,3 +108,18 @@ export const setRelationshipType = (selection, relationshipType) => ({
   selection,
   relationshipType
 })
+
+export const deleteNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
+  type: 'DELETE_NODES_AND_RELATIONSHIPS',
+  nodeIdMap,
+  relationshipIdMap
+})
+
+export const deleteSelection = () => {
+  return function (dispatch, getState) {
+    const selection = getState().gestures.selection
+    const selectedNodeIdMap = {...selection.selectedNodeIdMap}
+    const selectedRelationshipIdMap = {...selection.selectedRelationshipIdMap}
+    dispatch(deleteNodesAndRelationships(selectedNodeIdMap, selectedRelationshipIdMap))
+  }
+}

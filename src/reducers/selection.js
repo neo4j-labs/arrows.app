@@ -70,6 +70,22 @@ export default function selection(state = {
         ...state,
         marquee: null
       }
+    case 'DELETE_NODES_AND_RELATIONSHIPS' :
+      return {
+        ...state,
+        selectedNodeIdMap: Object.keys(state.selectedNodeIdMap).reduce((newMap, nodeId) => {
+          if (!action.nodeIdMap[nodeId]) {
+            newMap[nodeId] = true
+          }
+          return newMap
+        }, {}),
+        selectedRelationshipIdMap: Object.keys(state.selectedRelationshipIdMap).reduce((newMap, relId) => {
+          if (!action.relationshipIdMap[relId]) {
+            newMap[relId] = true
+          }
+          return newMap
+        }, {})
+      }
     default:
       return state
   }

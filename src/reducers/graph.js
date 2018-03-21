@@ -85,6 +85,12 @@ const graph = (state = emptyGraph(), action) => {
       relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? setType(relationship, action.relationshipType) : relationship)
     }
 
+    case 'DELETE_NODES_AND_RELATIONSHIPS' :
+      return {
+        nodes: state.nodes.filter(node => !action.nodeIdMap[node.id]),
+        relationships: state.relationships.filter(relationship => !action.relationshipIdMap[relationship.id])
+      }
+
     case FETCHING_GRAPH_SUCCEEDED:
       return action.storedGraph
 

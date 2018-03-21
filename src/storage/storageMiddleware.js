@@ -124,11 +124,36 @@ export const storageMiddleware = store => next => action => {
             WITH r
             DELETE r`, {
             id: relationshipId
-          });
+          })
         })
-        return result;
+        return result
       })
       break
+    }
+
+    case 'DELETE_NODES_AND_RELATIONSHIPS': {
+      const nodeIds = Object.keys(action.nodeIdMap)
+      const relIds = Object.keys(action.relationshipIdMap)
+      runInSession(session => {
+        let result = session
+        if (relIds.length > 0) {
+          result = session.run(`match(d:Diagram0)-[r]-()
+          where r._id in $ids
+          delete r`, {
+              ids: relIds
+            }
+          )
+        }
+        if (nodeIds.length > 0) {
+          result = session.run(`match(d:Diagram0)
+          where d._id in $ids
+          delete d`, {
+              ids: nodeIds
+            }
+          )
+        }
+        return result
+      })
     }
 
     default:
