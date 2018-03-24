@@ -85,36 +85,37 @@ export default class Gestures {
     })
 
     if (dragging.sourceNodeId) {
-      const sourceNodeIdPosition = graph.nodes.find((node) => idsMatch(node.id, dragging.sourceNodeId)).position;
-      if (dragging.newNodePosition) {
-        const delta = dragging.newNodePosition.vectorFrom(sourceNodeIdPosition)
-        let newNodePosition = sourceNodeIdPosition;
-        if (delta.distance() > defaultNodeRadius + ringMargin) {
-          if (delta.distance() < defaultNodeRadius + defaultNewNodeRadius) {
-            const ratio = (delta.distance() - defaultNodeRadius - ringMargin) / (defaultNewNodeRadius - ringMargin);
-            newNodePosition = sourceNodeIdPosition.translate(delta.scale(ratio))
-            newNodeRadius = defaultNodeRadius + ringMargin + (defaultNewNodeRadius - defaultNodeRadius - ringMargin) * ratio
-          } else {
-            newNodePosition = dragging.newNodePosition
-            newNodeRadius = defaultNewNodeRadius
+      const sourceNode = graph.nodes.find((node) => idsMatch(node.id, dragging.sourceNodeId))
+      if (sourceNode) {
+        const sourceNodeIdPosition = sourceNode.position
+        if (dragging.newNodePosition) {
+          const delta = dragging.newNodePosition.vectorFrom(sourceNodeIdPosition)
+          let newNodePosition = sourceNodeIdPosition;
+          if (delta.distance() > defaultNodeRadius + ringMargin) {
+            if (delta.distance() < defaultNodeRadius + defaultNewNodeRadius) {
+              const ratio = (delta.distance() - defaultNodeRadius - ringMargin) / (defaultNewNodeRadius - ringMargin);
+              newNodePosition = sourceNodeIdPosition.translate(delta.scale(ratio))
+              newNodeRadius = defaultNodeRadius + ringMargin + (defaultNewNodeRadius - defaultNodeRadius - ringMargin) * ratio
+            } else {
+              newNodePosition = dragging.newNodePosition
+              newNodeRadius = defaultNewNodeRadius
+            }
           }
+
+          drawRing(ctx, transform(newNodePosition), blueGreen, newNodeRadius)
+
+          const sourcePoint = transform(sourceNodeIdPosition)
+          const targetPoint = transform(newNodePosition)
+          const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
+          const unitVector = arrowVector.unit()
+          const sourceBorderPoint = sourcePoint.translate(unitVector.scale(defaultNodeRadius))
+          const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(defaultNewNodeRadius))
+
+          const arrowData = getArrowGeometryData(sourcePoint, sourceBorderPoint, targetPoint, targetBorderPoint)
+          drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)
+        } else {
+          drawRing(ctx, transform(sourceNodeIdPosition), purple, defaultNodeRadius + ringMargin)
         }
-
-        drawRing(ctx, transform(newNodePosition), blueGreen, newNodeRadius)
-
-        const sourcePoint = transform(sourceNodeIdPosition)
-        const targetPoint = transform(newNodePosition)
-        const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
-        const unitVector = arrowVector.unit()
-        const sourceBorderPoint = sourcePoint.translate(unitVector.scale(defaultNodeRadius))
-        const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(defaultNewNodeRadius))
-
-        const arrowData = getArrowGeometryData(sourcePoint, sourceBorderPoint, targetPoint, targetBorderPoint)
-        drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)
-
-
-      } else {
-        drawRing(ctx, transform(sourceNodeIdPosition), purple, defaultNodeRadius + ringMargin)
       }
     }
   }

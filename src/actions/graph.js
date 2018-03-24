@@ -118,8 +118,17 @@ export const deleteNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
 export const deleteSelection = () => {
   return function (dispatch, getState) {
     const selection = getState().gestures.selection
-    const selectedNodeIdMap = {...selection.selectedNodeIdMap}
-    const selectedRelationshipIdMap = {...selection.selectedRelationshipIdMap}
-    dispatch(deleteNodesAndRelationships(selectedNodeIdMap, selectedRelationshipIdMap))
+    const relationships = getState().graph.relationships
+
+    const nodeIdMap = {...selection.selectedNodeIdMap}
+    const relationshipIdMap = {...selection.selectedRelationshipIdMap}
+
+    relationships.forEach(relationship => {
+      if (!relationshipIdMap[relationship.id] && (nodeIdMap[relationship.fromId] || nodeIdMap[relationship.toId])) {
+        relationshipIdMap[relationship.id] = true
+      }
+    })
+
+    dispatch(deleteNodesAndRelationships(nodeIdMap, relationshipIdMap))
   }
 }
