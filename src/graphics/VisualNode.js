@@ -62,8 +62,9 @@ export default class VisualNode {
   }
 
   drawCaption(ctx, position, label, maxWidth, config) {
-    const pixelRatio = (window.devicePixelRatio || 1)
-    const fontSize = get(config, 'font.size') * pixelRatio
+    //const pixelRatio = (window.devicePixelRatio || 1)
+    ctx.save()
+    const fontSize = get(config, 'font.size')// * pixelRatio
     const fontColor = get(config, 'color.fill')
     const fontFace = get(config, 'font.face')
 
@@ -80,5 +81,6 @@ export default class VisualNode {
       drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
       yPos += lineDistance
     }
+    ctx.restore()
   }
 }

@@ -38,9 +38,9 @@ export function drawStraightLine(ctx, sourcePoint, targetPoint) {
   ctx.closePath()
 }
 
-export const drawTextLine = (ctx, line, position) => {
+export const drawTextLine = (ctx, line, position, centered = true) => {
   let lineWidth = ctx.measureText(line).width
-  let xPos = -lineWidth / 2
+  let xPos = centered ? -lineWidth / 2 : 0
   ctx.fillText(line, position.x + xPos, position.y)
   return {lineWidth, xPos};
 }

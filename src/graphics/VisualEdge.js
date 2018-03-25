@@ -324,7 +324,7 @@ export default class VisualEdge {
     const fontSize = this._getOption('font.size') * pixelRatio
     const fontFace = this._getOption('font.face')
     const radius = this._getOption('selfReferenceSize') * pixelRatio
-    const fontWeight = 'normal '
+    const fontWeight = 'normal'
 
     if (label !== undefined) {
       // set style
@@ -342,7 +342,14 @@ export default class VisualEdge {
 
         ctx.translate(point.x, point.y)
         this._rotateForLabelAlignment(ctx)
-        ctx.fillText(label, -width / 2, -height / 2)
+
+        let textX = -width / 2
+        let textY = -height / 2
+        if (this.edgeBundle.edges.length > 1) {
+          //textY -= 5
+        }
+
+        ctx.fillText(label, textX, textY)
 
         ctx.restore()
       } else {

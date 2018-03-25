@@ -4,6 +4,7 @@ import VisualNode from "./VisualNode";
 import VisualEdge from "./VisualEdge";
 import VisualGraph from "./VisualGraph";
 import {asKey} from "../model/Id";
+import annotation from "./Annotation";
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const { graph, gestures, guides } = visuals
@@ -37,6 +38,11 @@ function drawGraph(ctx, graph, selection, relConfig, displayOptions) {
 
   const visualGraph = new VisualGraph(graph, nodes, relationships)
   visualGraph.edges.forEach(edge => edge.draw(ctx))
-  Object.values(visualGraph.nodes).forEach(node => node.draw(ctx))
+  Object.values(visualGraph.nodes).forEach(visualNode => {
+    visualNode.draw(ctx)
+    if (visualNode.node.properties) {
+      annotation(visualNode).draw(ctx)
+    }
+  })
   return visualGraph
 }
