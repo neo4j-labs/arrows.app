@@ -1,5 +1,6 @@
 export const combineProperties = (entities) => {
   const properties = {}
+  let firstKey = true;
   entities.forEach((entity) => {
     Object.keys(entity.properties).forEach((key) => {
       const currentEntry = properties[key];
@@ -8,7 +9,11 @@ export const combineProperties = (entities) => {
           properties[key] = {status: 'INCONSISTENT'}
         }
       } else {
-        properties[key] = {status: 'CONSISTENT', value: entity.properties[key]}
+        if (firstKey) {
+          properties[key] = {status: 'CONSISTENT', value: entity.properties[key]}
+        } else {
+          properties[key] = {status: 'PARTIAL'}
+        }
       }
     })
     Object.keys(properties).forEach((key) => {
@@ -16,6 +21,7 @@ export const combineProperties = (entities) => {
         properties[key] = {status: 'PARTIAL'}
       }
     })
+    firstKey = false
   })
   return properties
 }
