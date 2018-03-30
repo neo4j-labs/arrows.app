@@ -36,3 +36,29 @@ export const propertiesFromDatabaseEntity = (entity) => {
     return properties
   }, {})
 }
+
+export const renameProperty = (entity, oldPropertyKey, newPropertyKey) => {
+  const properties = {}
+  Object.keys(entity.properties).forEach((key) => {
+    if (key === oldPropertyKey) {
+      properties[newPropertyKey] = entity.properties[oldPropertyKey]
+    } else {
+      properties[key] = entity.properties[key]
+    }
+  })
+  return {
+    ...entity,
+    properties
+  }
+}
+
+export const setProperties = (entity, keyValuePairs) => {
+  const properties = {...entity.properties}
+  keyValuePairs.forEach((keyValuePair) => {
+    properties[keyValuePair.key] = keyValuePair.value
+  })
+  return {
+    ...entity,
+    properties
+  }
+}

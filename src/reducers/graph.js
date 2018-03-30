@@ -1,7 +1,8 @@
 import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
-import {moveTo, setNodeProperties, setCaption, renameNodeProperty} from "../model/Node";
+import {moveTo, setCaption} from "../model/Node";
 import { setType } from "../model/Relationship";
+import {renameProperty, setProperties} from "../model/properties";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -60,15 +61,15 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'RENAME_PROPERTY': {
       return {
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? renameNodeProperty(node, action.oldPropertyKey, action.newPropertyKey) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? renameNodeProperty(relationship, action.oldPropertyKey, action.newPropertyKey) : relationship)
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? renameProperty(node, action.oldPropertyKey, action.newPropertyKey) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? renameProperty(relationship, action.oldPropertyKey, action.newPropertyKey) : relationship)
       }
     }
 
     case 'SET_PROPERTIES': {
       return {
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setNodeProperties(node, action.keyValuePairs) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setNodeProperties(relationship, action.keyValuePairs) : relationship)
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setProperties(node, action.keyValuePairs) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setProperties(relationship, action.keyValuePairs) : relationship)
       }
     }
 

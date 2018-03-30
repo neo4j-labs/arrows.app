@@ -77,12 +77,12 @@ export const storageMiddleware = store => next => action => {
       runInSession((session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'SET n.`' + stringKeyToDatabaseKey(action.newPropertyKey) + '` = n.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
-          'REMOVE n.`' + stringKeyToDatabaseKey(action.oldPropertyKey) +'`', {
+          'REMOVE n.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '`', {
           ids: Object.keys(action.selection.selectedNodeIdMap)
         });
         return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
           'SET r.`' + stringKeyToDatabaseKey(action.newPropertyKey) + '` = r.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
-          'REMOVE r.`' + stringKeyToDatabaseKey(action.oldPropertyKey) +'`', {
+          'REMOVE r.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '`', {
           ids: Object.keys(action.selection.selectedRelationshipIdMap)
         });
       })
