@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Form, Segment, Icon, Header, Divider } from 'semantic-ui-react'
 import EagerInput from './EagerInput'
 import { connect } from "react-redux";
-import { setNodeProperties, setNodeCaption } from "../actions/graph";
+import { setProperties, setNodeCaption } from "../actions/graph";
 
 class NodeEditor extends Component {
   constructor (props) {
@@ -37,7 +37,7 @@ class NodeEditor extends Component {
   savePropertyValue () {
     const { addProperty } = this.state
     if (addProperty.value) {
-      this.props.onSaveProperty(this.props.item.id, addProperty.key, addProperty.value)
+      this.props.onSavePropertyValue(this.props.item.id, addProperty.key, addProperty.value)
       this.newPropElementKey++
       this.setState({
         addProperty: {
@@ -118,8 +118,8 @@ const mapDispatchToProps = dispatch => {
     onSaveCaption: (nodeId, caption) => {
       dispatch(setNodeCaption(nodeId, caption))
     },
-    onSaveProperty: (nodeId, key, value) => {
-      dispatch(setNodeProperties(nodeId, [{ key, value }]))
+    onSavePropertyValue: (nodeId, key, value) => {
+      dispatch(setProperties(nodeId, [{ key, value }]))
     }
   }
 }

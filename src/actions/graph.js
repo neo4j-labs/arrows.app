@@ -97,9 +97,16 @@ export const setNodeCaption = (selection, caption) => ({
   caption
 })
 
-export const setNodeProperties = (nodeId, keyValuePairs) => ({
-  type: 'SET_NODE_PROPERTIES',
-  nodeId,
+export const renameProperties = (selection, oldPropertyKey, newPropertyKey) => ({
+  type: 'RENAME_PROPERTY',
+  selection,
+  oldPropertyKey,
+  newPropertyKey
+})
+
+export const setProperties = (selection, keyValuePairs) => ({
+  type: 'SET_PROPERTIES',
+  selection,
   keyValuePairs
 })
 

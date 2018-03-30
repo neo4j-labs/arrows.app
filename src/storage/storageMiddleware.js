@@ -1,5 +1,6 @@
 import {updatingGraph, updatingGraphFailed, updatingGraphSucceeded} from "../actions/neo4jStorage";
 import {stringTypeToDatabaseType} from "../model/Relationship";
+import {stringKeyToDatabaseKey} from "../model/properties";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
@@ -72,16 +73,39 @@ export const storageMiddleware = store => next => action => {
       break
     }
 
-    case 'SET_NODE_PROPERTIES': {
+    case 'RENAME_PROPERTY': {
+      runInSession((session) => {
+        session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
+          'SET n.`' + stringKeyToDatabaseKey(action.newPropertyKey) + '` = n.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
+          'REMOVE n.`' + stringKeyToDatabaseKey(action.oldPropertyKey) +'`', {
+          ids: Object.keys(action.selection.selectedNodeIdMap)
+        });
+        return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
+          'SET r.`' + stringKeyToDatabaseKey(action.newPropertyKey) + '` = r.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
+          'REMOVE r.`' + stringKeyToDatabaseKey(action.oldPropertyKey) +'`', {
+          ids: Object.keys(action.selection.selectedRelationshipIdMap)
+        });
+      })
+      break
+    }
+
+    case 'SET_PROPERTIES': {
       const properties = {}
       action.keyValuePairs.forEach((keyValuePair) => {
-        properties[keyValuePair.key] = keyValuePair.value
+        properties[stringKeyToDatabaseKey(keyValuePair.key)] = keyValuePair.value
       })
-      runInSession((session) => session.run('MATCH (n:Diagram0 {_id: $id}) ' +
-        'SET n += $properties', {
-        id: action.nodeId,
-        properties: properties
-      }))
+      runInSession((session) => {
+        session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
+          'SET n += $properties', {
+          ids: Object.keys(action.selection.selectedNodeIdMap),
+          properties: properties
+        });
+        return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
+          'SET r += $properties', {
+          ids: Object.keys(action.selection.selectedRelationshipIdMap),
+          properties: properties
+        });
+      })
       break
     }
 
@@ -154,6 +178,7 @@ export const storageMiddleware = store => next => action => {
         }
         return result
       })
+      break
     }
 
     default:

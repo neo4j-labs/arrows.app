@@ -4,6 +4,7 @@ import {
 } from "../state/storageStatus";
 import {Point} from "../model/Point";
 import {databaseTypeToStringType} from "../model/Relationship";
+import {propertiesFromDatabaseEntity} from "../model/properties";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
@@ -68,19 +69,13 @@ export function fetchGraphFromDatabase() {
       .then((result) => {
         result.records.forEach((record) => {
           let neo4jNode = record.get('n');
-          const actualProperties = Object.keys(neo4jNode.properties).reduce((properties, propertyKey) => {
-            if (!propertyKey.startsWith('_')) {
-              properties[propertyKey] = neo4jNode.properties[propertyKey]
-            }
-            return properties
-          }, {})
           nodes.push({
             id: neo4jNode.properties['_id'],
             position: new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
             radius: 50,
             caption: neo4jNode.properties['_caption'],
             color: neo4jNode.properties['_color'],
-            properties: actualProperties
+            properties: propertiesFromDatabaseEntity(neo4jNode)
           })
         })
         return session.readTransaction((tx) => tx.run("MATCH (source:Diagram0)-[r]->(target:Diagram0) " +
@@ -95,7 +90,7 @@ export function fetchGraphFromDatabase() {
           const newRelationship = {
             id: relId,
             type: databaseTypeToStringType(relationship.type),
-            properties: relationship.properties,
+            properties: propertiesFromDatabaseEntity(relationship),
             fromId: from,
             toId: to
           }

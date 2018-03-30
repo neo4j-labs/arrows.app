@@ -1,7 +1,6 @@
 import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
-import {moveTo, setProperties, setCaption} from "../model/Node";
-import {idsMatch} from "../model/Id";
+import {moveTo, setNodeProperties, setCaption, renameNodeProperty} from "../model/Node";
 import { setType } from "../model/Relationship";
 
 const graph = (state = emptyGraph(), action) => {
@@ -59,10 +58,17 @@ const graph = (state = emptyGraph(), action) => {
       }
     }
 
-    case 'SET_NODE_PROPERTIES': {
+    case 'RENAME_PROPERTY': {
       return {
-        nodes: state.nodes.map((node) => idsMatch(node.id, action.nodeId) ? setProperties(node, action.keyValuePairs) : node),
-        relationships: state.relationships
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? renameNodeProperty(node, action.oldPropertyKey, action.newPropertyKey) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? renameNodeProperty(relationship, action.oldPropertyKey, action.newPropertyKey) : relationship)
+      }
+    }
+
+    case 'SET_PROPERTIES': {
+      return {
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setNodeProperties(node, action.keyValuePairs) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setNodeProperties(relationship, action.keyValuePairs) : relationship)
       }
     }
 
