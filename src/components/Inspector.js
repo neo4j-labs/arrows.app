@@ -47,6 +47,13 @@ class Inspector extends Component {
       )
     }
 
+    if (nodes.length > 0 || relationships.length > 0) {
+      fields.push(this.propertyTable(properties))
+      fields.push((
+        <Button onClick={(event) => onSavePropertyValue(selection, '', '')}>+ Property</Button>
+      ))
+    }
+
     return (
       <Segment inverted>
         <Header as='h2'>
@@ -58,8 +65,6 @@ class Inspector extends Component {
         </p>
         <Form inverted style={{ 'textAlign': 'left' }}>
           {fields}
-          {this.propertyTable(properties)}
-          <Button onClick={(event) => onSavePropertyValue(selection, '', '')}>+ Property</Button>
         </Form>
       </Segment>
     )
