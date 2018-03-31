@@ -7,3 +7,7 @@ html, body {
   padding: 20px;
   color: white;
 }
+
+.ui.input.property-key input {
+  text-align: right;
+}

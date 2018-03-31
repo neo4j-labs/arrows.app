@@ -92,9 +92,13 @@ class Inspector extends Component {
       const {valueFieldValue, valueFieldPlaceHolder} = this.propertyInput(properties[key])
       return (
         <Form.Group widths='equal'>
-          <Form.Input fluid value={key} onChange={onKeyChange}/>
-          <Form.Input fluid value={valueFieldValue} placeholder={valueFieldPlaceHolder} onChange={onValueChange}
+          <Form.Field>
+            <Input fluid value={key} onChange={onKeyChange} label=':' labelPosition='right' className={'property-key'}/>
+          </Form.Field>
+          <Form.Field>
+            <Input fluid value={valueFieldValue} placeholder={valueFieldPlaceHolder} onChange={onValueChange}
                       action={{icon: 'close', onClick: onDeleteProperty}}/>
+          </Form.Field>
         </Form.Group>
       )
     })
