@@ -89,7 +89,8 @@ export const storageMiddleware = store => next => action => {
       break
     }
 
-    case 'SET_PROPERTIES': {
+    case 'SET_PROPERTIES':
+    case 'SET_ARROWS_PROPERTIES': {
       const properties = {}
       action.keyValuePairs.forEach((keyValuePair) => {
         properties[stringKeyToDatabaseKey(keyValuePair.key)] = keyValuePair.value

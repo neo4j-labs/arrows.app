@@ -110,6 +110,12 @@ export const setProperties = (selection, keyValuePairs) => ({
   keyValuePairs
 })
 
+export const setArrowsProperties = (selection, keyValuePairs) => ({
+  type: 'SET_ARROWS_PROPERTIES',
+  selection,
+  keyValuePairs
+})
+
 export const removeProperty = (selection, key) => ({
   type: 'REMOVE_PROPERTY',
   selection,

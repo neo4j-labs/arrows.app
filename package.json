@@ -14,7 +14,8 @@
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
     "semantic-ui-css": "^2.2.14",
-    "semantic-ui-react": "^0.78.2"
+    "semantic-ui-react": "^0.78.2",
+    "react-color": "^2.14.0"
   },
   "scripts": {
     "start": "react-scripts start",

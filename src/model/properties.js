@@ -69,6 +69,18 @@ export const setProperties = (entity, keyValuePairs) => {
   }
 }
 
+export const setArrowsProperties = (entity, keyValuePairs) => {
+  const properties = {...entity.properties}
+  keyValuePairs.forEach((keyValuePair) => {
+    properties[keyValuePair.key] = keyValuePair.value
+    entity[keyValuePair.key.replace(/_/g, '')] = keyValuePair.value
+  })
+  return {
+    ...entity,
+    properties
+  }
+}
+
 export const removeProperty = (entity, keyToRemove) => {
   const properties = {}
   Object.keys(entity.properties).forEach((key) => {

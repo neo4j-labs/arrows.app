@@ -74,7 +74,7 @@ export function fetchGraphFromDatabase() {
             position: new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
             radius: 50,
             caption: neo4jNode.properties['_caption'],
-            color: neo4jNode.properties['_color'],
+            color: neo4jNode.properties['__color'] || neo4jNode.properties['_color'],
             properties: propertiesFromDatabaseEntity(neo4jNode)
           })
         })
