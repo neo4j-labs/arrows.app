@@ -51,7 +51,7 @@ class Inspector extends Component {
     if (nodes.length > 0 || relationships.length > 0) {
       fields.push(this.propertyTable(properties))
       fields.push((
-        <Button onClick={(event) => onSavePropertyValue(selection, '', '')}>+ Property</Button>
+        <Button key='saveButton' onClick={(event) => onSavePropertyValue(selection, '', '')}>+ Property</Button>
       ))
     }
 
@@ -85,13 +85,13 @@ class Inspector extends Component {
   }
 
   propertyTable(properties) {
-    const rows = Object.keys(properties).map((key) => {
+    const rows = Object.keys(properties).map((key, index) => {
       const onKeyChange = (event) => this.props.onSavePropertyKey(this.props.selection, key, event.target.value);
       const onValueChange = (event) => this.props.onSavePropertyValue(this.props.selection, key, event.target.value)
       const onDeleteProperty = (event) => this.props.onDeleteProperty(this.props.selection, key)
       const {valueFieldValue, valueFieldPlaceHolder} = this.propertyInput(properties[key])
       return (
-        <Form.Group widths='equal'>
+        <Form.Group widths='equal' key={'form-group-'+ index}>
           <Form.Field>
             <Input fluid value={key} onChange={onKeyChange} label=':' labelPosition='right' className={'property-key'}/>
           </Form.Field>
@@ -103,7 +103,7 @@ class Inspector extends Component {
       )
     })
     return (
-      <div>
+      <div key='propertiesTable'>
         <Form.Field>
           <label>Properties</label>
         </Form.Field>
