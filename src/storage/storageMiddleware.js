@@ -109,6 +109,20 @@ export const storageMiddleware = store => next => action => {
       break
     }
 
+    case 'REMOVE_PROPERTY': {
+      runInSession((session) => {
+        session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
+          'REMOVE n.`' + stringKeyToDatabaseKey(action.key) + '`', {
+          ids: Object.keys(action.selection.selectedNodeIdMap)
+        });
+        return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
+          'REMOVE r.`' + stringKeyToDatabaseKey(action.key) + '`', {
+          ids: Object.keys(action.selection.selectedRelationshipIdMap)
+        });
+      })
+      break
+    }
+
     case 'MOVE_NODES': {
       action.nodePositions.forEach((nodePosition) => {
         pendingMoveNodeActions[nodePosition.nodeId] = nodePosition.position

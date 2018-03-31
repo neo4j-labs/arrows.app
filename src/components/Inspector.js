@@ -1,22 +1,23 @@
-import React, { Component } from 'react'
-import { Form, Input, Segment, Icon, Header, Button, Table } from 'semantic-ui-react'
-import { connect } from "react-redux";
-import {setProperties, setNodeCaption, setRelationshipType, renameProperties} from "../actions/graph";
+import React, {Component} from 'react'
+import {Form, Input, Segment, Icon, Header, Button} from 'semantic-ui-react'
+import {connect} from "react-redux";
+import {setProperties, setNodeCaption, setRelationshipType, renameProperties, removeProperty} from "../actions/graph";
 import {commonValue} from "../model/values";
 import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
 import {combineProperties} from "../model/properties";
 
 class Inspector extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.newPropElementKey = 1
   }
+
   state = {
-    addProperty: { state: 'empty', key: '', value: '' }
+    addProperty: {state: 'empty', key: '', value: ''}
   }
 
   render() {
-    const { selection, graph, onSaveCaption, onSaveType, onSavePropertyValue } = this.props
+    const {selection, graph, onSaveCaption, onSaveType, onSavePropertyValue} = this.props
     const fields = []
 
     const nodes = selectedNodes(graph, selection)
@@ -63,54 +64,47 @@ class Inspector extends Component {
         <p>
           {describeSelection(selection)}
         </p>
-        <Form inverted style={{ 'textAlign': 'left' }}>
+        <Form inverted style={{'textAlign': 'left'}}>
           {fields}
         </Form>
       </Segment>
     )
   }
 
-  propertyInput(key, property) {
-    const onChange = (event) => this.props.onSavePropertyValue(this.props.selection, key, event.target.value)
-    switch(property.status) {
+  propertyInput(property) {
+    switch (property.status) {
       case 'CONSISTENT':
-        return (
-          <Input value={property.value} onChange={onChange}/>
-        )
+        return {valueFieldValue: property.value, valueFieldPlaceHolder: null}
 
       case 'INCONSISTENT':
-        return (
-          <Input value={''} placeholder="<multiple values>" onChange={onChange}/>
-        )
+        return {valueFieldValue: '', valueFieldPlaceHolder: '<multiple values>'}
 
       default:
-        return (
-          <Input value={''} placeholder="<partially present>" onChange={onChange}/>
-        )
+        return {valueFieldValue: '', valueFieldPlaceHolder: '<partially present>'}
     }
   }
 
   propertyTable(properties) {
     const rows = Object.keys(properties).map((key) => {
+      const onKeyChange = (event) => this.props.onSavePropertyKey(this.props.selection, key, event.target.value);
+      const onValueChange = (event) => this.props.onSavePropertyValue(this.props.selection, key, event.target.value)
+      const onDeleteProperty = (event) => this.props.onDeleteProperty(this.props.selection, key)
+      const {valueFieldValue, valueFieldPlaceHolder} = this.propertyInput(properties[key])
       return (
-        <Table.Row>
-          <Table.Cell><Input value={key} onChange={(event) => this.props.onSavePropertyKey(this.props.selection, key, event.target.value)}/></Table.Cell>
-          <Table.Cell>{this.propertyInput(key, properties[key])}</Table.Cell>
-        </Table.Row>
+        <Form.Group widths='equal'>
+          <Form.Input fluid value={key} onChange={onKeyChange}/>
+          <Form.Input fluid value={valueFieldValue} placeholder={valueFieldPlaceHolder} onChange={onValueChange}
+                      action={{icon: 'close', onClick: onDeleteProperty}}/>
+        </Form.Group>
       )
     })
     return (
-      <Table inverted>
-        <Table.Header>
-          <Table.Row>
-            <Table.HeaderCell textAlign='right'>Key</Table.HeaderCell>
-            <Table.HeaderCell>Value</Table.HeaderCell>
-          </Table.Row>
-        </Table.Header>
-        <Table.Body>
-          {rows}
-        </Table.Body>
-      </Table>
+      <div>
+        <Form.Field>
+          <label>Properties</label>
+        </Form.Field>
+        {rows}
+      </div>
     )
   }
 }
@@ -134,7 +128,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(renameProperties(selection, oldPropertyKey, newPropertyKey))
     },
     onSavePropertyValue: (selection, key, value) => {
-      dispatch(setProperties(selection, [{ key, value }]))
+      dispatch(setProperties(selection, [{key, value}]))
+    },
+    onDeleteProperty: (selection, key) => {
+      dispatch(removeProperty(selection, key))
     }
   }
 }

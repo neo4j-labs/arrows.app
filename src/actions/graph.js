@@ -110,6 +110,12 @@ export const setProperties = (selection, keyValuePairs) => ({
   keyValuePairs
 })
 
+export const removeProperty = (selection, key) => ({
+  type: 'REMOVE_PROPERTY',
+  selection,
+  key
+})
+
 export const setRelationshipType = (selection, relationshipType) => ({
   type: 'SET_RELATIONSHIP_TYPE',
   selection,

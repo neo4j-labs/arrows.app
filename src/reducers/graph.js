@@ -2,7 +2,7 @@ import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setCaption} from "../model/Node";
 import { setType } from "../model/Relationship";
-import {renameProperty, setProperties} from "../model/properties";
+import {removeProperty, renameProperty, setProperties} from "../model/properties";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -70,6 +70,13 @@ const graph = (state = emptyGraph(), action) => {
       return {
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setProperties(node, action.keyValuePairs) : node),
         relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setProperties(relationship, action.keyValuePairs) : relationship)
+      }
+    }
+
+    case 'REMOVE_PROPERTY': {
+      return {
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeProperty(node, action.key) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? removeProperty(relationship, action.key) : relationship)
       }
     }
 

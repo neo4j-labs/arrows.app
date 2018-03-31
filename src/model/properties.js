@@ -68,3 +68,16 @@ export const setProperties = (entity, keyValuePairs) => {
     properties
   }
 }
+
+export const removeProperty = (entity, keyToRemove) => {
+  const properties = {}
+  Object.keys(entity.properties).forEach((key) => {
+    if (key !== keyToRemove) {
+      properties[key] = entity.properties[key]
+    }
+  })
+  return {
+    ...entity,
+    properties
+  }
+}
