@@ -1,6 +1,6 @@
 import {updatingGraph, updatingGraphFailed, updatingGraphSucceeded} from "../actions/neo4jStorage";
 import {stringTypeToDatabaseType} from "../model/Relationship";
-import {stringKeyToDatabaseKey} from "../model/properties";
+import {propertyKeyToDatabaseKey, styleKeyToDatabaseKey} from "../model/properties";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
@@ -25,23 +25,33 @@ export const storageMiddleware = store => next => action => {
 
   switch (action.type) {
     case 'CREATE_NODE': {
-      runInSession((session) => session.run('CREATE (:Diagram0 {_id: $id, _x: $x, _y: $y, _radius: $radius, ' +
-        '_caption: $caption, _color: $color})', {
+      const styleProperties = {}
+      Object.keys(action.style).forEach((key) => {
+        styleProperties[styleKeyToDatabaseKey(key)] = action.style[key]
+      })
+
+      runInSession((session) => session.run('CREATE (n:Diagram0 {_id: $id, _x: $x, _y: $y, _radius: $radius, ' +
+        '_caption: $caption}) SET n += $style', {
         id: action.newNodeId,
         x: action.newNodePosition.x,
         y: action.newNodePosition.y,
         radius: action.radius,
         caption: action.caption,
-        color: action.color
+        style: styleProperties
       }))
       break
     }
 
     case 'CREATE_NODE_AND_RELATIONSHIP': {
+      const styleProperties = {}
+      Object.keys(action.style).forEach((key) => {
+        styleProperties[styleKeyToDatabaseKey(key)] = action.style[key]
+      })
+
       runInSession((session) => session.run('MATCH (n:Diagram0 {_id: $sourceNodeId}) ' +
         'CREATE (n)-[:_RELATED {_id: $newRelationshipId}]->' +
-        '(:Diagram0 {_id: $targetNodeId, _x: $x, _y: $y, _radius: $radius, ' +
-        '_caption: $caption, _color: $color})', {
+        '(t:Diagram0 {_id: $targetNodeId, _x: $x, _y: $y, _radius: $radius, ' +
+        '_caption: $caption}) SET t += $style', {
         sourceNodeId: action.sourceNodeId,
         newRelationshipId: action.newRelationshipId,
         targetNodeId: action.targetNodeId,
@@ -49,7 +59,7 @@ export const storageMiddleware = store => next => action => {
         y: action.targetNodePosition.y,
         radius: action.radius,
         caption: action.caption,
-        color: action.color
+        style: styleProperties
       }))
       break
     }
@@ -76,24 +86,23 @@ export const storageMiddleware = store => next => action => {
     case 'RENAME_PROPERTY': {
       runInSession((session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
-          'SET n.`' + stringKeyToDatabaseKey(action.newPropertyKey) + '` = n.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
-          'REMOVE n.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '`', {
+          'SET n.`' + propertyKeyToDatabaseKey(action.newPropertyKey) + '` = n.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
+          'REMOVE n.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '`', {
           ids: Object.keys(action.selection.selectedNodeIdMap)
         });
         return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
-          'SET r.`' + stringKeyToDatabaseKey(action.newPropertyKey) + '` = r.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
-          'REMOVE r.`' + stringKeyToDatabaseKey(action.oldPropertyKey) + '`', {
+          'SET r.`' + propertyKeyToDatabaseKey(action.newPropertyKey) + '` = r.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
+          'REMOVE r.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '`', {
           ids: Object.keys(action.selection.selectedRelationshipIdMap)
         });
       })
       break
     }
 
-    case 'SET_PROPERTIES':
-    case 'SET_ARROWS_PROPERTIES': {
+    case 'SET_PROPERTIES': {
       const properties = {}
       action.keyValuePairs.forEach((keyValuePair) => {
-        properties[stringKeyToDatabaseKey(keyValuePair.key)] = keyValuePair.value
+        properties[propertyKeyToDatabaseKey(keyValuePair.key)] = keyValuePair.value
       })
       runInSession((session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
@@ -110,14 +119,34 @@ export const storageMiddleware = store => next => action => {
       break
     }
 
+    case 'SET_ARROWS_PROPERTIES': {
+      const styleProperties = {}
+      action.keyValuePairs.forEach((keyValuePair) => {
+        styleProperties[styleKeyToDatabaseKey(keyValuePair.key)] = keyValuePair.value
+      })
+      runInSession((session) => {
+        session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
+          'SET n += $properties', {
+          ids: Object.keys(action.selection.selectedNodeIdMap),
+          properties: styleProperties
+        });
+        return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
+          'SET r += $properties', {
+          ids: Object.keys(action.selection.selectedRelationshipIdMap),
+          properties: styleProperties
+        });
+      })
+      break
+    }
+
     case 'REMOVE_PROPERTY': {
       runInSession((session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
-          'REMOVE n.`' + stringKeyToDatabaseKey(action.key) + '`', {
+          'REMOVE n.`' + propertyKeyToDatabaseKey(action.key) + '`', {
           ids: Object.keys(action.selection.selectedNodeIdMap)
         });
         return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
-          'REMOVE r.`' + stringKeyToDatabaseKey(action.key) + '`', {
+          'REMOVE r.`' + propertyKeyToDatabaseKey(action.key) + '`', {
           ids: Object.keys(action.selection.selectedRelationshipIdMap)
         });
       })

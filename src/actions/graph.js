@@ -11,7 +11,7 @@ export const createNode = () => (dispatch, getState) => {
     newNodePosition: new Point(1000 * Math.random(), 1000 * Math.random()),
     radius: 50,
     caption: '',
-    color: blueActive
+    style: { color: blueActive }
   })
 }
 
@@ -24,7 +24,7 @@ const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (dispatc
     targetNodePosition,
     radius: 50,
     caption: '',
-    color: blueActive
+    style: { color: blueActive }
   })
 }
 

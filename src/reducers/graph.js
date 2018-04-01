@@ -13,7 +13,8 @@ const graph = (state = emptyGraph(), action) => {
         position: action.newNodePosition,
         radius: action.radius,
         caption: action.caption,
-        color: action.color
+        style: action.style,
+        properties: {}
       })
       return {nodes: newNodes, relationships: state.relationships}
     }
@@ -26,7 +27,7 @@ const graph = (state = emptyGraph(), action) => {
         position: action.targetNodePosition,
         radius: action.radius,
         caption: action.caption,
-        color: action.color,
+        style: action.style,
         properties: {}
       }
       newNodes.push(newNode)

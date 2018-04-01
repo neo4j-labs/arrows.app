@@ -7,7 +7,7 @@ import {
 } from "../actions/graph";
 import {commonValue} from "../model/values";
 import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
-import {combineProperties} from "../model/properties";
+import {combineProperties, combineStyle} from "../model/properties";
 import { SketchPicker } from 'react-color'
 
 class Inspector extends Component {
@@ -80,7 +80,7 @@ class Inspector extends Component {
             color={currentColor}
             onChangeComplete={color => {
               this.setState({ displayColorPicker: false })
-              this.props.onSaveArrowsPropertyValue(this.props.selection, '_color', color.hex)
+              this.props.onSaveArrowsPropertyValue(this.props.selection, 'color', color.hex)
             }}
           /> : null
         }
@@ -91,7 +91,6 @@ class Inspector extends Component {
   render() {
     const {selection, graph, onSaveCaption, onSaveType, onSavePropertyValue} = this.props
     const fields = []
-    let styleElements
 
     const nodes = selectedNodes(graph, selection)
     const relationships = selectedRelationships(graph, selection)
@@ -129,14 +128,14 @@ class Inspector extends Component {
     }
 
     if (nodes.length > 0) {
-      const combinedColorProp = combineProperties(nodes.map(node => ({ properties: { color: node.color } })))
+      const style = combineStyle(nodes)
       fields.push(
         <div key='styling' style={{ marginTop: '1em' }}>
           <Form.Field>
             <label>Styling</label>
           </Form.Field>
           <Form.Field>
-            {this.stylingSection(combinedColorProp)}
+            {this.stylingSection(style)}
           </Form.Field>
         </div>
       )
