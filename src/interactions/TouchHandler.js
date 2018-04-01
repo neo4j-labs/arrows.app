@@ -56,23 +56,25 @@ export default class TouchHandler {
       return
     }
     let prevState = this._dragMachine.state
+    let pixelRatio = window.devicePixelRatio || 1
+    const eventPosition = new Point(evt.clientX * pixelRatio, evt.clientY * pixelRatio);
 
     if (this.mouseDownNode) {
-      this._dragMachine.update(evt)
+      this._dragMachine.update(eventPosition)
       if (this._dragMachine.state === StateDragging) {
         this.callbacks.nodeDragged(this.itemBeingDragged.id, this._dragMachine.delta)
       }
     } else if (this.mouseDownRing) {
-      this._dragMachine.update(evt)
+      this._dragMachine.update(eventPosition)
       this.callbacks.ringDragged(this.mouseDownRing.id, this.eventPosition(evt))
     } else if (this._mouseDownOnCanvas) {
-      this._dragMachine.update(evt)
+      this._dragMachine.update(eventPosition)
       if (this._dragMachine.state === StateDragging) {
         if (prevState === StatePressed) {
           this.marqueeActive = Date.now() - this.mouseDownTime > LongpressTime
         }
         if (this.marqueeActive) {
-          this.callbacks.marqueeDragged(this.adjustPosition(this._dragMachine.startPosition), this.eventPosition(evt))
+          this.callbacks.marqueeDragged(this.adjustPosition(this._dragMachine.startPosition, false), this.eventPosition(evt))
         } else {
           this.callbacks.pan(this._dragMachine.delta)
         }
@@ -103,6 +105,8 @@ export default class TouchHandler {
     }
 
     let cursorPosition = this.eventPosition(evt);
+    let pixelRatio = window.devicePixelRatio || 1
+    const eventPosition = new Point(evt.clientX * pixelRatio, evt.clientY * pixelRatio);
 
     const entityUnderCursor = this.callbacks.entityAtPoint(this.eventPosition(evt))
 
@@ -123,7 +127,7 @@ export default class TouchHandler {
     }
     this._hasDragged = false
 
-    this._dragMachine.update(evt)
+    this._dragMachine.update(eventPosition)
 
     evt.preventDefault()
   }
@@ -160,11 +164,12 @@ export default class TouchHandler {
     return this.adjustPosition({ x:event.clientX, y: event.clientY })
   }
 
-  adjustPosition ({x, y}) {
+  adjustPosition ({x, y}, adjustRatio = true) {
     let rect = this.canvas.getBoundingClientRect()
+    let pixelRatio = window.devicePixelRatio || 1
     let canvasPosition = new Point(
-      x - rect.left,
-      y - rect.top
+      (x - rect.left) * (adjustRatio ? pixelRatio : 1),
+      (y - rect.top) * (adjustRatio ? pixelRatio : 1)
     )
 
     return this.viewTransformation.inverse(canvasPosition)

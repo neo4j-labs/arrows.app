@@ -46,7 +46,8 @@ export default class VisualNode {
   }
 
   get radius () {
-    return this.node.radius
+    const pixelRatio = (window.devicePixelRatio || 1)
+    return this.node.radius * pixelRatio
   }
 
   distanceToBorder () {
@@ -54,17 +55,17 @@ export default class VisualNode {
   }
 
   draw(ctx) {
-    const { style, radius, caption } = this.node
-    drawSolidCircle(ctx, this.position, style.color, radius)
+    const { style, caption } = this.node
+    drawSolidCircle(ctx, this.position, style.color, this.radius)
     if (caption) {
-      this.drawCaption(ctx, this.position, caption, radius * 2, config)
+      this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
     }
   }
 
   drawCaption(ctx, position, label, maxWidth, config) {
-    //const pixelRatio = (window.devicePixelRatio || 1)
+    const pixelRatio = (window.devicePixelRatio || 1)
     ctx.save()
-    const fontSize = get(config, 'font.size')// * pixelRatio
+    const fontSize = get(config, 'font.size') * pixelRatio
     const fontColor = get(config, 'color.fill')
     const fontFace = get(config, 'font.face')
 
