@@ -4,7 +4,7 @@ import {
 } from "../state/storageStatus";
 import {Point} from "../model/Point";
 import {databaseTypeToStringType} from "../model/Relationship";
-import {propertiesFromDatabaseEntity} from "../model/properties";
+import {propertiesFromDatabaseEntity, styleFromDatabaseEntity} from "../model/properties";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
@@ -74,7 +74,7 @@ export function fetchGraphFromDatabase() {
             position: new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
             radius: 50,
             caption: neo4jNode.properties['_caption'],
-            color: neo4jNode.properties['_color'],
+            style: styleFromDatabaseEntity(neo4jNode),
             properties: propertiesFromDatabaseEntity(neo4jNode)
           })
         })

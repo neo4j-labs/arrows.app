@@ -2,7 +2,7 @@ import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setCaption} from "../model/Node";
 import { setType } from "../model/Relationship";
-import {removeProperty, renameProperty, setProperties} from "../model/properties";
+import { removeProperty, renameProperty, setArrowsProperties, setProperties } from "../model/properties";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -13,7 +13,8 @@ const graph = (state = emptyGraph(), action) => {
         position: action.newNodePosition,
         radius: action.radius,
         caption: action.caption,
-        color: action.color
+        style: action.style,
+        properties: {}
       })
       return {nodes: newNodes, relationships: state.relationships}
     }
@@ -26,7 +27,7 @@ const graph = (state = emptyGraph(), action) => {
         position: action.targetNodePosition,
         radius: action.radius,
         caption: action.caption,
-        color: action.color,
+        style: action.style,
         properties: {}
       }
       newNodes.push(newNode)
@@ -70,6 +71,13 @@ const graph = (state = emptyGraph(), action) => {
       return {
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setProperties(node, action.keyValuePairs) : node),
         relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setProperties(relationship, action.keyValuePairs) : relationship)
+      }
+    }
+
+    case 'SET_ARROWS_PROPERTIES': {
+      return {
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setArrowsProperties(node, action.keyValuePairs) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setArrowsProperties(relationship, action.keyValuePairs) : relationship)
       }
     }
 

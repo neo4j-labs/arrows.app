@@ -26,20 +26,65 @@ export const combineProperties = (entities) => {
   return properties
 }
 
-export const stringKeyToDatabaseKey = (stringKey) => {
-  return stringKey === '' ? '_EMPTY_KEY' : stringKey.replace(/_/g, '__')
+export const combineStyle = (entities) => {
+  const style = {}
+  let firstKey = true;
+  entities.forEach((entity) => {
+    Object.keys(entity.style).forEach((key) => {
+      const currentEntry = style[key];
+      if (currentEntry) {
+        if (currentEntry.status === 'CONSISTENT' && currentEntry.value !== entity.style[key]) {
+          style[key] = {status: 'INCONSISTENT'}
+        }
+      } else {
+        if (firstKey) {
+          style[key] = {status: 'CONSISTENT', value: entity.style[key]}
+        } else {
+          style[key] = {status: 'PARTIAL'}
+        }
+      }
+    })
+    Object.keys(style).forEach((key) => {
+      if (!entity.style.hasOwnProperty(key)) {
+        style[key] = {status: 'PARTIAL'}
+      }
+    })
+    firstKey = false
+  })
+  return style
 }
 
-const databaseKeyToStringKey = (databaseKey) => {
+export const propertyKeyToDatabaseKey = (propertyKey) => {
+  return propertyKey === '' ? '_EMPTY_KEY' : propertyKey.replace(/_/g, '__')
+}
+
+const databaseKeyToPropertyKey = (databaseKey) => {
   return databaseKey === '_EMPTY_KEY' ? '' : databaseKey.replace(/__/g, '_')
+}
+
+export const styleKeyToDatabaseKey = (styleKey) => {
+  return '_style-' + styleKey;
+}
+
+const databaseKeyToStyleyKey = (databaseKey) => {
+  return databaseKey.replace(/^_style-/, '')
 }
 
 export const propertiesFromDatabaseEntity = (entity) => {
   return Object.keys(entity.properties).reduce((properties, propertyKey) => {
     if (!propertyKey.startsWith('_') || propertyKey.startsWith('__')) {
-      properties[databaseKeyToStringKey(propertyKey)] = entity.properties[propertyKey]
+      properties[databaseKeyToPropertyKey(propertyKey)] = entity.properties[propertyKey]
     }
     return properties
+  }, {})
+}
+
+export const styleFromDatabaseEntity = (entity) => {
+  return Object.keys(entity.properties).reduce((style, propertyKey) => {
+    if (propertyKey.startsWith('_style-')) {
+      style[databaseKeyToStyleyKey(propertyKey)] = entity.properties[propertyKey]
+    }
+    return style
   }, {})
 }
 
@@ -66,6 +111,17 @@ export const setProperties = (entity, keyValuePairs) => {
   return {
     ...entity,
     properties
+  }
+}
+
+export const setArrowsProperties = (entity, keyValuePairs) => {
+  const style = {...entity.style}
+  keyValuePairs.forEach((keyValuePair) => {
+    style[keyValuePair.key] = keyValuePair.value
+  })
+  return {
+    ...entity,
+    style
   }
 }
 

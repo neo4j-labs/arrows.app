@@ -1,4 +1,4 @@
-const sidebar = (state = { status: 'expanded' }, action) => {
+const sidebar = (state = { status: 'collapsed' }, action) => {
   switch (action.type) {
     case 'TOGGLE_INSPECTOR':
       return {

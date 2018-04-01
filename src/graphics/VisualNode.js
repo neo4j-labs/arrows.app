@@ -54,8 +54,8 @@ export default class VisualNode {
   }
 
   draw(ctx) {
-    const { color, radius, caption } = this.node
-    drawSolidCircle(ctx, this.position, color, radius)
+    const { style, radius, caption } = this.node
+    drawSolidCircle(ctx, this.position, style.color, radius)
     if (caption) {
       this.drawCaption(ctx, this.position, caption, radius * 2, config)
     }
