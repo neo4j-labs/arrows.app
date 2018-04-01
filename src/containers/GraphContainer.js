@@ -17,14 +17,14 @@ const mapStateToProps = state => {
     graph: state.graph,
     gestures: state.gestures,
     guides: state.guides,
-    canvasSize: state.windowSize.relative(0, -headerHeight),
+    canvasSize: state.windowSize,
     viewTransformation: state.viewTransformation
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight)),
+    onWindowResized: (width, height) => dispatch(windowResized(width, height)),
     zoom: (scale) => dispatch(zoom(scale)),
     pan: (offset) => dispatch(pan(offset)),
     moveNode: (nodeId, vector) => dispatch(tryMoveNode(nodeId, vector)),

@@ -17,19 +17,38 @@ class GraphDisplay extends Component {
     )
   }
 
+  onWindowResized () {
+    const parent = this.canvas.parentElement
+    const rect = parent.getBoundingClientRect()
+    this.props.onWindowResized(rect.width, rect.height)
+  }
+
+  fitCanvasSize () {
+    let width = this.props.canvasSize.width
+    let height = this.props.canvasSize.height
+    let devicePixelRatio = window.devicePixelRatio || 1
+
+    this.canvas.width = width * devicePixelRatio
+    this.canvas.height = height * devicePixelRatio
+    this.canvas.style.width = width + 'px'
+    this.canvas.style.height = height + 'px'
+  }
+
   componentDidMount() {
-    window.addEventListener('resize', this.props.onWindowResized.bind(this))
+    window.addEventListener('resize', this.onWindowResized.bind(this))
     this.touchHandler = new TouchHandler(this.canvas)
+    this.fitCanvasSize()
     this.drawVisuals();
   }
 
   componentDidUpdate() {
+    this.fitCanvasSize()
     this.drawVisuals();
   }
 
   render() {
     return (
-      <canvas width={this.props.canvasSize.width} height={this.props.canvasSize.height} ref={(elm) => this.canvas = elm} />
+      <canvas ref={(elm) => this.canvas = elm} />
     )
   }
 
