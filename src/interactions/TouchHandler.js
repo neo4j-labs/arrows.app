@@ -56,8 +56,7 @@ export default class TouchHandler {
       return
     }
     let prevState = this._dragMachine.state
-    let pixelRatio = window.devicePixelRatio || 1
-    const eventPosition = new Point(evt.clientX * pixelRatio, evt.clientY * pixelRatio);
+    const eventPosition = new Point(evt.clientX, evt.clientY);
 
     if (this.mouseDownNode) {
       this._dragMachine.update(eventPosition)
@@ -105,8 +104,7 @@ export default class TouchHandler {
     }
 
     let cursorPosition = this.eventPosition(evt);
-    let pixelRatio = window.devicePixelRatio || 1
-    const eventPosition = new Point(evt.clientX * pixelRatio, evt.clientY * pixelRatio);
+    const eventPosition = new Point(evt.clientX, evt.clientY);
 
     const entityUnderCursor = this.callbacks.entityAtPoint(this.eventPosition(evt))
 
@@ -164,12 +162,11 @@ export default class TouchHandler {
     return this.adjustPosition({ x:event.clientX, y: event.clientY })
   }
 
-  adjustPosition ({x, y}, adjustRatio = true) {
+  adjustPosition ({x, y}) {
     let rect = this.canvas.getBoundingClientRect()
-    let pixelRatio = window.devicePixelRatio || 1
     let canvasPosition = new Point(
-      (x - rect.left) * (adjustRatio ? pixelRatio : 1),
-      (y - rect.top) * (adjustRatio ? pixelRatio : 1)
+      x - rect.left,
+      y - rect.top
     )
 
     return this.viewTransformation.inverse(canvasPosition)

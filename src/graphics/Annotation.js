@@ -10,8 +10,7 @@ export default (visualNode) => {
   let orientation = null
   let textStart = null
   let textSide = null
-  const pixelRatio = window.devicePixelRatio || 1
-  const fontSize = get(config, 'font.size') * (4 / 5) * pixelRatio
+  const fontSize = get(config, 'font.size') * (4 / 5)
   const lineHeight = fontSize * 2
 
   if (visualNode.edges.length === 1) {
@@ -118,9 +117,9 @@ export default (visualNode) => {
     }
   }
 
-  const maxLineWidth = 100 * pixelRatio
-  const boxHeight = (lineHeight * noOfLines + 5) / pixelRatio
-  const boxWidth = Math.min(maxPropertyValueLength * 5 * pixelRatio, maxLineWidth)
+  const maxLineWidth = 100
+  const boxHeight = (lineHeight * noOfLines + 5)
+  const boxWidth = Math.min(maxPropertyValueLength * 5, maxLineWidth)
 
   const start = attachedAt.translate(boxVector.scale(visualNode.radius / 2))
   const end = start.translate(new Vector(orientation === 'vertical' ? 0 : (textStart === 'start' ? boxWidth : - boxWidth),
@@ -146,11 +145,9 @@ export default (visualNode) => {
 }
 
 const drawProperty = (ctx, position, property, maxWidth, boxWidth, align = 'left') => {
-  const pixelRatio = (window.devicePixelRatio || 1)
-
   ctx.save()
 
-  const fontSize = get(config, 'font.size') * (4/5) * pixelRatio
+  const fontSize = get(config, 'font.size') * (4/5)
   const fontColor = get(config, 'color.fill')
   const fontFace = get(config, 'font.face')
 

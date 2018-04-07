@@ -46,8 +46,7 @@ export default class VisualNode {
   }
 
   get radius () {
-    const pixelRatio = (window.devicePixelRatio || 1)
-    return this.node.radius * pixelRatio
+    return this.node.radius
   }
 
   distanceToBorder () {
@@ -63,9 +62,8 @@ export default class VisualNode {
   }
 
   drawCaption(ctx, position, label, maxWidth, config) {
-    const pixelRatio = (window.devicePixelRatio || 1)
     ctx.save()
-    const fontSize = get(config, 'font.size') * pixelRatio
+    const fontSize = get(config, 'font.size')
     const fontColor = get(config, 'color.fill')
     const fontFace = get(config, 'font.face')
 

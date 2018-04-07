@@ -1,7 +1,6 @@
 import { isPointInPolygon } from "../graphics/utils/geometryUtils";
 
-const pixelRatio = window.devicePixelRatio || 1
-const ringLength =  10 * pixelRatio
+const ringLength =  10
 
 export const emptyGraph = () => {
   return {nodes: [], relationships: []}
@@ -26,7 +25,7 @@ export const nodeAtPoint = (graph, point) => {
 
 export const nodeRingAtPoint = (graph, point) => {
   return closestNode(graph, point, (node, distance) => {
-    return distance > node.radius * pixelRatio && distance < node.radius * pixelRatio + ringLength
+    return distance > node.radius && distance < node.radius + ringLength
   })
 }
 

@@ -108,9 +108,7 @@ export const getCirclesCrossPoint = (node, x, y, low, high, direction, radius) =
 }
 
 export const getArrowGeometryData = (from, fromPoint, to, toPoint, viaNode, position = 'to') => {
-  const pixelRatio = (window.devicePixelRatio || 1)
-  const lineWidth = 1 * pixelRatio
-
+  const lineWidth = 1
   let angle
   let arrowPoint
   let node1 = to
