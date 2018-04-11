@@ -13,8 +13,7 @@ export default class DragStateMachine {
     this.delta = new Vector(0, 0)
   }
 
-  update (evt) {
-    let eventPosition = new Point(evt.clientX, evt.clientY);
+  update (eventPosition) {
     switch (this.state) {
       case StateIdle:
         this.startPosition = eventPosition

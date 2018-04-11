@@ -48,9 +48,6 @@ export const drawTextLine = (ctx, line, position, centered = true) => {
 export const drawArrowEndpoint = (ctx, xTo, yTo, angle, length, shiftRatio) => {
   ctx.fillStyle = ctx.strokeStyle
 
-  const pixelRatio = (window.devicePixelRatio || 1)
-  ctx.lineWidth *= pixelRatio
-
   let x = shiftRatio ? xTo + Math.cos(angle) * length * shiftRatio : xTo
   let y = shiftRatio ? yTo + Math.sin(angle) * length * shiftRatio : yTo
 
@@ -76,8 +73,6 @@ export const drawArrowEndpoint = (ctx, xTo, yTo, angle, length, shiftRatio) => {
   ctx.lineTo(xi, yi)
   ctx.lineTo(xr, yr)
   ctx.closePath()
-
-  ctx.lineWidth /= pixelRatio
 }
 
 export const drawPolygon = (ctx, points, fill, stroke) => {

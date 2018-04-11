@@ -56,23 +56,24 @@ export default class TouchHandler {
       return
     }
     let prevState = this._dragMachine.state
+    const eventPosition = new Point(evt.clientX, evt.clientY);
 
     if (this.mouseDownNode) {
-      this._dragMachine.update(evt)
+      this._dragMachine.update(eventPosition)
       if (this._dragMachine.state === StateDragging) {
         this.callbacks.nodeDragged(this.itemBeingDragged.id, this._dragMachine.delta)
       }
     } else if (this.mouseDownRing) {
-      this._dragMachine.update(evt)
+      this._dragMachine.update(eventPosition)
       this.callbacks.ringDragged(this.mouseDownRing.id, this.eventPosition(evt))
     } else if (this._mouseDownOnCanvas) {
-      this._dragMachine.update(evt)
+      this._dragMachine.update(eventPosition)
       if (this._dragMachine.state === StateDragging) {
         if (prevState === StatePressed) {
           this.marqueeActive = Date.now() - this.mouseDownTime > LongpressTime
         }
         if (this.marqueeActive) {
-          this.callbacks.marqueeDragged(this.adjustPosition(this._dragMachine.startPosition), this.eventPosition(evt))
+          this.callbacks.marqueeDragged(this.adjustPosition(this._dragMachine.startPosition, false), this.eventPosition(evt))
         } else {
           this.callbacks.pan(this._dragMachine.delta)
         }
@@ -103,6 +104,7 @@ export default class TouchHandler {
     }
 
     let cursorPosition = this.eventPosition(evt);
+    const eventPosition = new Point(evt.clientX, evt.clientY);
 
     const entityUnderCursor = this.callbacks.entityAtPoint(this.eventPosition(evt))
 
@@ -123,7 +125,7 @@ export default class TouchHandler {
     }
     this._hasDragged = false
 
-    this._dragMachine.update(evt)
+    this._dragMachine.update(eventPosition)
 
     evt.preventDefault()
   }

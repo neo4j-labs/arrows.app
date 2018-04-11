@@ -44,8 +44,7 @@ export default class VisualEdge {
     const dataTo = getArrowGeometryData(this.from, this.fromPoint, this.to, this.toPoint, this.viaCoordinates)
 
     // Move back end point sligthly so line doesnt stick out of arrow head
-    const pixelRatio = (window.devicePixelRatio || 1)
-    const lineWidth = this._getOption('width') * pixelRatio
+    const lineWidth = this._getOption('width')
 
     this.toPoint.x -= Math.cos(dataTo.angle) * lineWidth
     this.toPoint.y -= Math.sin(dataTo.angle) * lineWidth
@@ -68,9 +67,6 @@ export default class VisualEdge {
       ctx.strokeStyle = this._getOption('color.fill')
       ctx.lineWidth = this.selected ? 1.5 : 1
     }
-
-    const pixelRatio = (window.devicePixelRatio || 1)
-    ctx.lineWidth *= pixelRatio
 
     if (this.from !== this.to) {
       // draw line
@@ -134,8 +130,7 @@ export default class VisualEdge {
   _getCircleData (ctx) {
     let x, y
     const node = this.from
-    const pixelRatio = (window.devicePixelRatio || 1)
-    const radius = this._getOption('selfReferenceSize') * pixelRatio
+    const radius = this._getOption('selfReferenceSize')
 
     if (node.width === undefined) {
       node.resize(ctx)
@@ -161,10 +156,9 @@ export default class VisualEdge {
       return
     }
 
-    const pixelRatio = (window.devicePixelRatio || 1)
-    const fromArrowGap = this._getOption('edgeTypePlugin.arrows.from.gap') * pixelRatio
-    const toArrowGap = this._getOption('edgeTypePlugin.arrows.to.gap') * pixelRatio
-    const bundleSpacing = this._getOption('edgeTypePlugin.bundleSpacing') * pixelRatio
+    const fromArrowGap = this._getOption('edgeTypePlugin.arrows.from.gap')
+    const toArrowGap = this._getOption('edgeTypePlugin.arrows.to.gap')
+    const bundleSpacing = this._getOption('edgeTypePlugin.bundleSpacing')
 
     let xVia
     let yVia
@@ -211,10 +205,9 @@ export default class VisualEdge {
       return
     }
 
-    const pixelRatio = (window.devicePixelRatio || 1)
-    const width = this._getOption('width') * pixelRatio
-    const fromArrowGap = this._getOption('edgeTypePlugin.arrows.from.gap') * pixelRatio
-    const toArrowGap = this._getOption('edgeTypePlugin.arrows.to.gap') * pixelRatio
+    const width = this._getOption('width')
+    const fromArrowGap = this._getOption('edgeTypePlugin.arrows.from.gap')
+    const toArrowGap = this._getOption('edgeTypePlugin.arrows.to.gap')
 
     // For the From Node
     let deltaFromVia = {
@@ -318,12 +311,11 @@ export default class VisualEdge {
   drawLabel (ctx) {
     const viaNode = this.labelPosition || this.getViaCoordinates()
 
-    const pixelRatio = (window.devicePixelRatio || 1)
     const label = this.relationship.type
     const fontColor = this._getOption('font.color')
-    const fontSize = this._getOption('font.size') * pixelRatio
+    const fontSize = this._getOption('font.size')
     const fontFace = this._getOption('font.face')
-    const radius = this._getOption('selfReferenceSize') * pixelRatio
+    const radius = this._getOption('selfReferenceSize')
     const fontWeight = 'normal'
 
     if (label !== undefined) {
@@ -364,7 +356,7 @@ export default class VisualEdge {
           const point = this.labelPosition
           ctx.save()
 
-          let width = ctx.measureText(label).width * pixelRatio
+          let width = ctx.measureText(label).width
           let height = fontSize
 
           ctx.translate(point.x, point.y)
