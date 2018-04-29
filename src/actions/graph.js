@@ -3,15 +3,15 @@ import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId} from "../model/Id";
 import {Point} from "../model/Point";
 import { blueActive } from "../model/colors";
+import { defaultNodeRadius } from "../graphics/constants";
 
 export const createNode = () => (dispatch, getState) => {
   dispatch({
     type: 'CREATE_NODE',
     newNodeId: nextAvailableId(getState().graph.nodes),
     newNodePosition: new Point(1000 * Math.random(), 1000 * Math.random()),
-    radius: 50,
     caption: '',
-    style: { color: blueActive }
+    style: { radius: 50, color: blueActive }
   })
 }
 
@@ -22,9 +22,8 @@ const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (dispatc
     newRelationshipId: nextAvailableId(getState().graph.relationships),
     targetNodeId: nextAvailableId(getState().graph.nodes),
     targetNodePosition,
-    radius: 50,
     caption: '',
-    style: { color: blueActive }
+    style: { radius: 50, color: blueActive }
   })
 }
 

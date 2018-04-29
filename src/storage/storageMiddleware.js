@@ -30,12 +30,11 @@ export const storageMiddleware = store => next => action => {
         styleProperties[styleKeyToDatabaseKey(key)] = action.style[key]
       })
 
-      runInSession((session) => session.run('CREATE (n:Diagram0 {_id: $id, _x: $x, _y: $y, _radius: $radius, ' +
+      runInSession((session) => session.run('CREATE (n:Diagram0 {_id: $id, _x: $x, _y: $y, ' +
         '_caption: $caption}) SET n += $style', {
         id: action.newNodeId,
         x: action.newNodePosition.x,
         y: action.newNodePosition.y,
-        radius: action.radius,
         caption: action.caption,
         style: styleProperties
       }))
@@ -50,14 +49,13 @@ export const storageMiddleware = store => next => action => {
 
       runInSession((session) => session.run('MATCH (n:Diagram0 {_id: $sourceNodeId}) ' +
         'CREATE (n)-[:_RELATED {_id: $newRelationshipId}]->' +
-        '(t:Diagram0 {_id: $targetNodeId, _x: $x, _y: $y, _radius: $radius, ' +
+        '(t:Diagram0 {_id: $targetNodeId, _x: $x, _y: $y, ' +
         '_caption: $caption}) SET t += $style', {
         sourceNodeId: action.sourceNodeId,
         newRelationshipId: action.newRelationshipId,
         targetNodeId: action.targetNodeId,
         x: action.targetNodePosition.x,
         y: action.targetNodePosition.y,
-        radius: action.radius,
         caption: action.caption,
         style: styleProperties
       }))

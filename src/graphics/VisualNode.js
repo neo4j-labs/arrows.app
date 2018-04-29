@@ -4,6 +4,7 @@ import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
 import {asKey} from "../model/Id";
+import { defaultNodeRadius } from "./constants";
 
 export default class VisualNode {
   constructor(node, viewTransformation) {
@@ -46,7 +47,11 @@ export default class VisualNode {
   }
 
   get radius () {
-    return this.node.radius
+    return this.node.style.radius || defaultNodeRadius
+  }
+
+  get color () {
+    return this.node.style.color
   }
 
   distanceToBorder () {
@@ -54,8 +59,8 @@ export default class VisualNode {
   }
 
   draw(ctx) {
-    const { style, caption } = this.node
-    drawSolidCircle(ctx, this.position, style.color, this.radius)
+    const { caption } = this.node
+    drawSolidCircle(ctx, this.position, this.color, this.radius)
     if (caption) {
       this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
     }

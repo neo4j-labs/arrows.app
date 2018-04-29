@@ -5,6 +5,7 @@ import {
 import {Point} from "../model/Point";
 import {databaseTypeToStringType} from "../model/Relationship";
 import {propertiesFromDatabaseEntity, styleFromDatabaseEntity} from "../model/properties";
+import { defaultNodeRadius } from "../graphics/constants";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
@@ -72,10 +73,12 @@ export function fetchGraphFromDatabase() {
           nodes.push({
             id: neo4jNode.properties['_id'],
             position: new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
-            radius: 50,
             caption: neo4jNode.properties['_caption'],
             style: styleFromDatabaseEntity(neo4jNode),
-            properties: propertiesFromDatabaseEntity(neo4jNode)
+            properties: propertiesFromDatabaseEntity(neo4jNode),
+            get radius() {
+              return this.style.radius || defaultNodeRadius
+            }
           })
         })
         return session.readTransaction((tx) => tx.run("MATCH (source:Diagram0)-[r]->(target:Diagram0) " +
