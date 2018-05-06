@@ -5,9 +5,10 @@ export const zoom = (scale) => {
   }
 }
 
-export const pan = (offset) => {
+export const pan = (oldMousePosition, newMousePosition) => {
   return {
     type: 'PAN',
-    offset
+    oldMousePosition,
+    newMousePosition
   }
 }

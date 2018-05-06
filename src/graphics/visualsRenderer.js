@@ -1,42 +1,21 @@
-import config from './config'
 import Gestures from "./Gestures";
-import VisualNode from "./VisualNode";
-import VisualEdge from "./VisualEdge";
-import VisualGraph from "./VisualGraph";
-import {asKey} from "../model/Id";
 import annotation from "./Annotation";
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
-  const { graph, gestures, guides } = visuals
+  const { visualGraph, gestures, guides } = visuals
 
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
 
   guides.draw(ctx, displayOptions)
 
-  const visualGestures = new Gestures(gestures, graph)
+  const visualGestures = new Gestures(gestures, visualGraph.graph)
   visualGestures.draw(ctx, displayOptions)
 
-  return drawGraph(ctx, graph, gestures.selection, config, displayOptions)
+  drawGraph(ctx, visualGraph)
 }
 
-function drawGraph(ctx, graph, selection, relConfig, displayOptions) {
-  const nodes = graph.nodes.reduce((nodes, node) => {
-    nodes[asKey(node.id)] = new VisualNode(node, displayOptions.viewTransformation)
-    return nodes
-  }, {})
-
-  const relationships = graph.relationships.map(relationship =>
-    new VisualEdge({
-        relationship,
-        from: nodes[asKey(relationship.fromId)],
-        to: nodes[asKey(relationship.toId)]
-      },
-      relConfig,
-      selection.selectedRelationshipIdMap[relationship.id])
-  )
-
-  const visualGraph = new VisualGraph(graph, nodes, relationships)
+function drawGraph(ctx, visualGraph) {
   visualGraph.edges.forEach(edge => edge.draw(ctx))
   Object.values(visualGraph.nodes).forEach(visualNode => {
     visualNode.draw(ctx)
@@ -44,5 +23,4 @@ function drawGraph(ctx, graph, selection, relConfig, displayOptions) {
       annotation(visualNode).draw(ctx)
     }
   })
-  return visualGraph
 }

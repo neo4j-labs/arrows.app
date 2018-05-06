@@ -23,6 +23,9 @@ export default class VisualEdge {
     }
 
     this.edgeBundle = null
+
+    // get the via node from the edge type
+    this.viaCoordinates = this.getViaCoordinates()
   }
 
   get deflection () {
@@ -31,6 +34,14 @@ export default class VisualEdge {
 
   updateEndPoints () {
     this._updateEndPointsWithGap(this.getViaCoordinates())
+
+    this.dataTo = getArrowGeometryData(this.from, this.fromPoint, this.to, this.toPoint, this.viaCoordinates)
+
+    // Move back end point slightly so line doesn't stick out of arrow head
+    const lineWidth = this._getOption('width')
+
+    this.toPoint.x -= Math.cos(this.dataTo.angle) * lineWidth
+    this.toPoint.y -= Math.sin(this.dataTo.angle) * lineWidth
   }
 
   draw (ctx) {
@@ -38,20 +49,9 @@ export default class VisualEdge {
       return
     }
 
-    // get the via node from the edge type
-    this.viaCoordinates = this.getViaCoordinates()
-
-    const dataTo = getArrowGeometryData(this.from, this.fromPoint, this.to, this.toPoint, this.viaCoordinates)
-
-    // Move back end point sligthly so line doesnt stick out of arrow head
-    const lineWidth = this._getOption('width')
-
-    this.toPoint.x -= Math.cos(dataTo.angle) * lineWidth
-    this.toPoint.y -= Math.sin(dataTo.angle) * lineWidth
-
     // draw arrow
     this.drawLine(ctx, this.viaCoordinates, false, false)
-    this.drawArrowHead(ctx, dataTo)
+    this.drawArrowHead(ctx, this.dataTo)
 
     // draw label
     if (this._getOption('drawLabel')) {

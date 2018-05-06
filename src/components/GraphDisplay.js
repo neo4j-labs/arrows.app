@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
-import TouchHandler from "../interactions/TouchHandler";
 import { renderVisuals } from "../graphics/visualsRenderer";
 import { REMOVE_SELECTION_PATH } from "../actions/gestures";
 import { DELETE_SELECTION } from "../interactions/Keybindings";
+import MouseHandler from "../interactions/MouseHandler";
 
 class GraphDisplay extends Component {
   constructor (props) {
@@ -25,7 +25,7 @@ class GraphDisplay extends Component {
 
   componentDidMount() {
     window.addEventListener('resize', this.onWindowResized.bind(this))
-    this.touchHandler = new TouchHandler(this.canvas)
+    this.touchHandler = new MouseHandler(this.canvas)
     this.fitCanvasSize(this.canvas, this.props.canvasSize.width, this.props.canvasSize.height)
     this.drawVisuals();
   }
@@ -74,33 +74,14 @@ class GraphDisplay extends Component {
   }
 
   drawVisuals() {
-    const { graph, gestures, guides, viewTransformation, canvasSize,
-      pan, moveNode, endDrag, activateRing, deactivateRing, ringDragged,
-      editNode, toggleSelection, editRelationship,
-      removeSelectionPath, marqueeDragged, marqueeEnded,
-      toggleInspector, selectionPathUpdated } = this.props
-    this.touchHandler.viewTransformation = viewTransformation
-    const visualGraph = renderVisuals({
-      visuals: {graph, gestures, guides},
+    const { visualGraph, gestures, guides, viewTransformation, canvasSize } = this.props
+    renderVisuals({
+      visuals: {visualGraph, gestures, guides},
       canvas: this.canvas,
       displayOptions: { canvasSize, viewTransformation }
     })
 
-    this.touchHandler.callbacks = {
-      entityAtPoint: (point) => visualGraph.entityAtPoint(point),
-      pan,
-      canvasClicked: position => selectionPathUpdated(position, false),
-      canvasDoubleClicked: position => selectionPathUpdated(position, true),
-      entityMouseDown: (entity, metaKey) => toggleSelection(entity, metaKey),
-      entityDoubleClicked: toggleInspector,
-      nodeDragged: moveNode,
-      endDrag,
-      activateRing,
-      deactivateRing,
-      ringDragged,
-      marqueeDragged,
-      marqueeEnded
-    }
+    this.touchHandler.setDispatch(this.props.dispatch)
   }
 }
 

@@ -37,9 +37,10 @@ const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState) => {
   })
 }
 
-export const tryMoveNode = (nodeId, vector) => {
+export const tryMoveNode = (nodeId, oldMousePosition, newMousePosition) => {
   return function (dispatch, getState) {
-    let graph = getState().graph;
+    const vector = newMousePosition.vectorFrom(oldMousePosition)
+    const graph = getState().graph;
     const activelyMovedNode = graph.nodes.find((node) => idsMatch(node.id, nodeId))
     const otherSelectedNodes = Object.keys(getState().gestures.selection.selectedNodeIdMap).filter((selectedNodeId) => selectedNodeId !== nodeId)
     let currentPosition = getState().guides.naturalPosition || activelyMovedNode.position
@@ -63,13 +64,15 @@ export const tryMoveNode = (nodeId, vector) => {
         position: graph.nodes.find((node) => idsMatch(node.id, otherNodeId)).position.translate(delta)
       })
     })
-    dispatch(moveNodes(nodePositions, guides))
+    dispatch(moveNodes(oldMousePosition, newMousePosition, nodePositions, guides))
   }
 }
 
-export const moveNodes = (nodePositions, guides) => {
+export const moveNodes = (oldMousePosition, newMousePosition, nodePositions, guides) => {
   return {
     type: 'MOVE_NODES',
+    oldMousePosition,
+    newMousePosition,
     nodePositions,
     guides
   }

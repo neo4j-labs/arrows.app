@@ -1,20 +1,13 @@
-import {connect} from 'react-redux'
-import GraphDisplay from '../components/GraphDisplay'
-import {headerHeight} from '../components/Header'
-import {windowResized} from "../actions/windowSize";
-import {pan, zoom} from "../actions/viewTransformation";
-import { deleteSelection, endDrag, tryMoveNode } from "../actions/graph";
-import {
-  activateRing, deactivateRing, tryDragRing, toggleSelection, tryUpdateSelectionPath,
-  removeSelectionPath, updateMarquee, endMarquee
-} from "../actions/gestures";
-import { toggleInspector } from "../actions/sidebar";
-import { compose } from "recompose";
+import {connect} from "react-redux";
+import GraphDisplay from "../components/GraphDisplay";
+import {compose} from "recompose";
 import withKeyBindings from "../interactions/Keybindings";
+import {windowResized} from "../actions/windowSize";
+import {getVisualGraph} from "../selectors/index";
 
 const mapStateToProps = state => {
   return {
-    graph: state.graph,
+    visualGraph: getVisualGraph(state),
     gestures: state.gestures,
     guides: state.guides,
     canvasSize: state.windowSize,
@@ -25,20 +18,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onWindowResized: (width, height) => dispatch(windowResized(width, height)),
-    zoom: (scale) => dispatch(zoom(scale)),
-    pan: (offset) => dispatch(pan(offset)),
-    moveNode: (nodeId, vector) => dispatch(tryMoveNode(nodeId, vector)),
-    endDrag: () => dispatch(endDrag()),
-    activateRing: (nodeId) => dispatch(activateRing(nodeId)),
-    deactivateRing: () => dispatch(deactivateRing()),
-    ringDragged: (nodeId, position) => dispatch(tryDragRing(nodeId, position)),
-    toggleInspector: (node) => dispatch(toggleInspector(node.id)),
-    toggleSelection: (entity, additive) => dispatch(toggleSelection(entity, additive)),
-    selectionPathUpdated: (position, isDoubleClick) => dispatch(tryUpdateSelectionPath(position, isDoubleClick)),
-    removeSelectionPath: () => dispatch(removeSelectionPath()),
-    marqueeDragged: (from, to) => dispatch(updateMarquee(from, to)),
-    marqueeEnded: (from, to) => dispatch(endMarquee(from, to)),
-    deleteSelection: () => dispatch(deleteSelection())
+    dispatch: dispatch
   }
 }
 

@@ -1,5 +1,5 @@
 import {
-  CLEAR_SELECTION_RINGS,
+  CLEAR_SELECTION,
   ENSURE_SELECTION_RING, REMOVE_MARQUEE, REMOVE_SELECTION_PATH, SET_MARQUEE,
   UPDATE_SELECTION_PATH
 } from "../actions/gestures";
@@ -45,7 +45,7 @@ export default function selection(state = {
         ...state,
         selectedNodeIdMap
       }
-    case CLEAR_SELECTION_RINGS:
+    case CLEAR_SELECTION:
       return {
         ...state,
         selectedNodeIdMap: {}
