@@ -47,7 +47,7 @@ export default class VisualNode {
   }
 
   get radius () {
-    return this.node.style.radius || defaultNodeRadius
+    return this.node.radius
   }
 
   get color () {
