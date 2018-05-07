@@ -4,6 +4,8 @@ import {compose} from "recompose";
 import withKeyBindings from "../interactions/Keybindings";
 import {windowResized} from "../actions/windowSize";
 import {getVisualGraph} from "../selectors/index";
+import {deleteSelection} from "../actions/graph";
+import {removeSelectionPath} from "../actions/gestures";
 
 const mapStateToProps = state => {
   return {
@@ -18,6 +20,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     onWindowResized: (width, height) => dispatch(windowResized(width, height)),
+    removeSelectionPath: () => dispatch(removeSelectionPath()),
+    deleteSelection: () => dispatch(deleteSelection()),
     dispatch: dispatch
   }
 }
