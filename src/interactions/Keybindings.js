@@ -13,27 +13,29 @@ export const ZOOM_OUT = 'ZOOM_OUT'
 export const DELETE_SELECTION = 'DELETE_SELECTION'
 
 const KeyBindings = {
-  [SELECT_ALL_NODES]: { metaKey: true, code: 65 },
-  [DESELECT_ALL_NODES]: { metaKey: true, shiftKey: true, code: 65 },
-  [INVERT_SELECTION]: { metaKey: true, altKey: true, code: 65 },
-  [DISMISS_SELECTION]: { metaKey: true, code: 68 },
-  [DISMISS_UNSELECTED]: { metaKey: true, shiftKey: true, code: 68 },
-  [INSPECT]: { metaKey: true, code: 73 },
-  [ZOOM_IN]: { metaKey: true, code: 187 },
-  [ZOOM_OUT]: { metaKey: true, code: 189 },
-  [REMOVE_SELECTION_PATH]: { metaKey: false, code: 27 },
-  [DELETE_SELECTION]: { metaKey: false, code: 46 }
+  [SELECT_ALL_NODES]: [{ metaKey: true, code: 65 }],
+  [DESELECT_ALL_NODES]: [{ metaKey: true, shiftKey: true, code: 65 }],
+  [INVERT_SELECTION]: [{ metaKey: true, altKey: true, code: 65 }],
+  [DISMISS_SELECTION]: [{ metaKey: true, code: 68 }],
+  [DISMISS_UNSELECTED]: [{ metaKey: true, shiftKey: true, code: 68 }],
+  [INSPECT]: [{ metaKey: true, code: 73 }],
+  [ZOOM_IN]: [{ metaKey: true, code: 187 }],
+  [ZOOM_OUT]: [{ metaKey: true, code: 189 }],
+  [REMOVE_SELECTION_PATH]: [{ metaKey: false, code: 27 }],
+  [DELETE_SELECTION]: [{ metaKey: false, code: 46 }, { metaKey: false, code: 8 }]
 }
 
 const actions = {}
 
 const findAction = ({ altKey, ctrlKey, metaKey, shiftKey, keyCode }) =>
-  find(actions, ({ bindings }) =>
-    keyCode === bindings.code &&
-    altKey === !!bindings.altKey &&
-    ctrlKey === !!bindings.ctrlKey &&
-    metaKey === !!bindings.metaKey &&
-    shiftKey === !!bindings.shiftKey
+  find(actions, ({bindings}) =>
+    find(bindings, (binding) =>
+      keyCode === binding.code &&
+      altKey === !!binding.altKey &&
+      ctrlKey === !!binding.ctrlKey &&
+      metaKey === !!binding.metaKey &&
+      shiftKey === !!binding.shiftKey
+    )
   )
 
 const hocProps = {
