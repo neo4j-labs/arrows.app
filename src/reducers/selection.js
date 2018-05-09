@@ -70,6 +70,33 @@ export default function selection(state = {
         ...state,
         marquee: null
       }
+    case 'CREATE_NODE': {
+      const oneNodeSelected = {}
+      oneNodeSelected[action.newNodeId] = true
+      return {
+        ...state,
+        selectedNodeIdMap: oneNodeSelected,
+        selectedRelationshipIdMap: {}
+      }
+    }
+    case 'CREATE_NODE_AND_RELATIONSHIP': {
+      const oneNodeSelected = {}
+      oneNodeSelected[action.targetNodeId] = true
+      return {
+        ...state,
+        selectedNodeIdMap: oneNodeSelected,
+        selectedRelationshipIdMap: {}
+      }
+    }
+    case 'CONNECT_NODES': {
+      const oneRelationshipSelected = {}
+      oneRelationshipSelected[action.newRelationshipId] = true
+      return {
+        ...state,
+        selectedNodeIdMap: {},
+        selectedRelationshipIdMap: oneRelationshipSelected
+      }
+    }
     case 'DELETE_NODES_AND_RELATIONSHIPS' :
       return {
         ...state,
