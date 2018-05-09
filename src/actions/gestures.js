@@ -4,7 +4,6 @@ import {Guides} from "../graphics/Guides";
 import {idsMatch} from "../model/Id";
 import {nodesInsidePolygon} from "../model/Graph";
 
-export const ENSURE_SELECTION_RING = 'ENSURE_SELECTION_RING'
 export const UPDATE_SELECTION_PATH = 'UPDATE_SELECTION_PATH'
 export const REMOVE_SELECTION_PATH = 'REMOVE_SELECTION_PATH'
 export const CLEAR_SELECTION = 'CLEAR_SELECTION'
@@ -90,8 +89,8 @@ export const toggleSelection = (entity, additive) => ({
   additive
 })
 
-export const ensureSelectionRing = (selectedNodeIds) => ({
-  type: ENSURE_SELECTION_RING,
+export const ensureSelected = (selectedNodeIds) => ({
+  type: 'ENSURE_SELECTED',
   selectedNodeIds
 })
 
@@ -118,7 +117,7 @@ export const tryUpdateSelectionPath = (position, isDoubleClick) => {
       } else {
         const selectedNodeIds = nodesInsidePolygon(graph, gestures.selection.path)
         if (selectedNodeIds.length > 0) {
-          dispatch(ensureSelectionRing(selectedNodeIds))
+          dispatch(ensureSelected(selectedNodeIds))
         }
         dispatch(removeSelectionPath())
       }
@@ -147,7 +146,7 @@ export const endMarquee = () => {
       const bBox = getBboxFromCorners(marquee)
       const selectedNodeIds = nodesInsidePolygon(graph, bBox)
       if (selectedNodeIds.length > 0) {
-        dispatch(ensureSelectionRing(selectedNodeIds))
+        dispatch(ensureSelected(selectedNodeIds))
       }
       dispatch(removeMarquee())
     }

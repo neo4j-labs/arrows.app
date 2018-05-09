@@ -1,6 +1,6 @@
 import {
   CLEAR_SELECTION,
-  ENSURE_SELECTION_RING, REMOVE_MARQUEE, REMOVE_SELECTION_PATH, SET_MARQUEE,
+  REMOVE_MARQUEE, REMOVE_SELECTION_PATH, SET_MARQUEE,
   UPDATE_SELECTION_PATH
 } from "../actions/gestures";
 
@@ -38,7 +38,7 @@ export default function selection(state = {
       }
       return newState
 
-    case ENSURE_SELECTION_RING:
+    case 'ENSURE_SELECTED':
       const selectedNodeIdMap = {...state.selectedNodeIdMap}
       action.selectedNodeIds.forEach(nodeId => selectedNodeIdMap[nodeId] = true)
       return {
