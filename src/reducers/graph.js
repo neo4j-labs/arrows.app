@@ -45,7 +45,7 @@ const graph = (state = emptyGraph(), action) => {
       const newRelationships = state.relationships.slice();
       newRelationships.push({
         id: action.newRelationshipId,
-        type: '_RELATED',
+        type: '',
         properties: {},
         fromId: action.sourceNodeId,
         toId: action.targetNodeId
