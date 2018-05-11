@@ -42,7 +42,7 @@ export const tryMoveNode = (nodeId, oldMousePosition, newMousePosition) => {
     const vector = newMousePosition.vectorFrom(oldMousePosition)
     const graph = getState().graph;
     const activelyMovedNode = graph.nodes.find((node) => idsMatch(node.id, nodeId))
-    const otherSelectedNodes = Object.keys(getState().gestures.selection.selectedNodeIdMap).filter((selectedNodeId) => selectedNodeId !== nodeId)
+    const otherSelectedNodes = Object.keys(getState().selection.selectedNodeIdMap).filter((selectedNodeId) => selectedNodeId !== nodeId)
     let currentPosition = getState().guides.naturalPosition || activelyMovedNode.position
     let naturalPosition = currentPosition.translate(vector)
     let snaps = snapToNeighbourDistancesAndAngles(graph, nodeId, naturalPosition, otherSelectedNodes)
@@ -80,7 +80,7 @@ export const moveNodes = (oldMousePosition, newMousePosition, nodePositions, gui
 
 export const endDrag = () => {
   return function (dispatch, getState) {
-    const dragging = getState().gestures.dragging;
+    const dragging = getState().gestures.dragToCreate;
     if (dragging.sourceNodeId) {
       if (dragging.targetNodeId) {
         dispatch(connectNodes(dragging.sourceNodeId, dragging.targetNodeId))
@@ -139,7 +139,7 @@ export const deleteNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
 
 export const deleteSelection = () => {
   return function (dispatch, getState) {
-    const selection = getState().gestures.selection
+    const selection = getState().selection
     const relationships = getState().graph.relationships
 
     const nodeIdMap = {...selection.selectedNodeIdMap}

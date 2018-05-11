@@ -1,10 +1,12 @@
 import { combineReducers } from 'redux'
-import dragging from "./dragging";
-import selection from "./selection";
+import dragToCreate from "./dragToCreate";
+import selectionPath from "./selectionPath";
+import selectionMarquee from "./selectionMarquee";
 
 const gestures = combineReducers({
-  dragging,
-  selection
+  dragToCreate,
+  selectionPath,
+  selectionMarquee
 })
 
 export default gestures

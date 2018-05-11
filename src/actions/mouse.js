@@ -1,11 +1,11 @@
-import {getVisualGraph} from "../selectors/";
-import {
-  activateRing, clearSelection, deactivateRing, endMarquee, setMarquee, toggleSelection, tryDragRing,
-  tryUpdateSelectionPath
-} from "./gestures";
-import {toggleInspector} from "./sidebar";
-import {endDrag, tryMoveNode} from "./graph";
-import {pan} from "./viewTransformation";
+import {getVisualGraph} from "../selectors/"
+import {clearSelection, toggleSelection} from "./selection"
+import {toggleInspector} from "./sidebar"
+import {endDrag, tryMoveNode} from "./graph"
+import {pan} from "./viewTransformation"
+import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
+import {tryUpdateSelectionPath} from "./selectionPath"
+import {endMarquee, setMarquee} from "./selectionMarquee"
 
 const LongPressTime = 300
 
@@ -98,7 +98,7 @@ export const mouseMove = (canvasPosition) => {
     const state = getState();
     const visualGraph = getVisualGraph(state)
     const graphPosition = toGraphPosition(state, canvasPosition)
-    const dragging = state.gestures.dragging
+    const dragging = state.gestures.dragToCreate
     const mouse = state.mouse
     const previousPosition = mouse.mousePosition
 

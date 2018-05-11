@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import { renderVisuals } from "../graphics/visualsRenderer";
-import { REMOVE_SELECTION_PATH } from "../actions/gestures";
 import { DELETE_SELECTION } from "../interactions/Keybindings";
 import MouseHandler from "../interactions/MouseHandler";
 
@@ -8,7 +7,7 @@ class GraphDisplay extends Component {
   constructor (props) {
     super (props)
     props.registerAction(
-      REMOVE_SELECTION_PATH,
+      'REMOVE_SELECTION_PATH',
       () => this.props.removeSelectionPath()
     )
     props.registerAction(
@@ -74,9 +73,9 @@ class GraphDisplay extends Component {
   }
 
   drawVisuals() {
-    const { visualGraph, gestures, guides, viewTransformation, canvasSize } = this.props
+    const { visualGraph, selection, gestures, guides, viewTransformation, canvasSize } = this.props
     renderVisuals({
-      visuals: {visualGraph, gestures, guides},
+      visuals: {visualGraph, selection, gestures, guides},
       canvas: this.canvas,
       displayOptions: { canvasSize, viewTransformation }
     })

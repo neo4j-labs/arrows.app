@@ -7,14 +7,15 @@ import { green, blueGreen, purple } from "../model/colors";
 import { Point } from "../model/Point";
 
 export default class Gestures {
-  constructor (gestures, graph) {
-    this.gestures = gestures
+  constructor(graph, selection, gestures) {
     this.graph = graph
+    this.selection = selection
+    this.gestures = gestures
   }
 
   draw (ctx, displayOptions) {
-    const { gestures, graph } = this
-    const { dragging, selection } = gestures
+    const { graph, selection, gestures } = this
+    const { dragToCreate, selectionPath, selectionMarquee } = gestures
     const transform = (position) => displayOptions.viewTransformation.transform(position)
     const getBbox = (from, to) => [
       from, {
@@ -30,10 +31,9 @@ export default class Gestures {
 
     let newNodeRadius = defaultNodeRadius + ringMargin;
 
-    if (selection.marquee && graph.nodes.length > 0) {
-      const marquee = selection.marquee
-      const marqueeScreen = {from: transform(selection.marquee.from), to: transform(selection.marquee.to)}
-      const bBox = getBbox(marquee.from, marquee.to)
+    if (selectionMarquee && graph.nodes.length > 0) {
+      const marqueeScreen = {from: transform(selectionMarquee.from), to: transform(selectionMarquee.to)}
+      const bBox = getBbox(selectionMarquee.from, selectionMarquee.to)
       const bBoxScreen = getBbox(marqueeScreen.from, marqueeScreen.to)
 
       drawPolygon(ctx, bBoxScreen, null, 'black')
@@ -41,11 +41,11 @@ export default class Gestures {
       const points = graph.nodes.map(node => node.position)
         .filter(point => isPointInPolygon(point, bBox))
       const voronoi = getVoronoi(points,
-        marquee ? {
-          xl: Math.min(marquee.from.x, marquee.to.x),
-          xr: Math.max(marquee.from.x, marquee.to.x),
-          yt: Math.min(marquee.from.y, marquee.to.y),
-          yb: Math.max(marquee.from.y, marquee.to.y),
+        selectionMarquee ? {
+          xl: Math.min(selectionMarquee.from.x, selectionMarquee.to.x),
+          xr: Math.max(selectionMarquee.from.x, selectionMarquee.to.x),
+          yt: Math.min(selectionMarquee.from.y, selectionMarquee.to.y),
+          yb: Math.max(selectionMarquee.from.y, selectionMarquee.to.y),
         } : { xl: 0, xr: 0, yt: 0, yb: 0}
       )
 
@@ -71,25 +71,25 @@ export default class Gestures {
       }
     }
 
-    if (selection.path.length > 0) {
-      const points = sortPoints(selection.path.slice(0)).map(point => transform(new Point(point.x, point.y)))
+    if (selectionPath.length > 0) {
+      const points = sortPoints(selectionPath.slice(0)).map(point => transform(new Point(point.x, point.y)))
       drawPolygon(ctx, points, green)
       points.forEach(point => drawCircle(ctx, point, 3, true))
     }
 
     Object.keys(selection.selectedNodeIdMap).forEach(nodeId => {
-      if (!idsMatch(nodeId, dragging.sourceNodeId)) {
+      if (!idsMatch(nodeId, dragToCreate.sourceNodeId)) {
         const nodePosition = graph.nodes.find((node) => idsMatch(node.id, nodeId)).position;
         drawRing(ctx, transform(nodePosition), green, defaultNodeRadius + ringMargin / 2)
       }
     })
 
-    if (dragging.sourceNodeId) {
-      const sourceNode = graph.nodes.find((node) => idsMatch(node.id, dragging.sourceNodeId))
+    if (dragToCreate.sourceNodeId) {
+      const sourceNode = graph.nodes.find((node) => idsMatch(node.id, dragToCreate.sourceNodeId))
       if (sourceNode) {
         const sourceNodeIdPosition = sourceNode.position
-        if (dragging.newNodePosition) {
-          const delta = dragging.newNodePosition.vectorFrom(sourceNodeIdPosition)
+        if (dragToCreate.newNodePosition) {
+          const delta = dragToCreate.newNodePosition.vectorFrom(sourceNodeIdPosition)
           let newNodePosition = sourceNodeIdPosition;
           if (delta.distance() > defaultNodeRadius + ringMargin) {
             if (delta.distance() < defaultNodeRadius + defaultNewNodeRadius) {
@@ -97,7 +97,7 @@ export default class Gestures {
               newNodePosition = sourceNodeIdPosition.translate(delta.scale(ratio))
               newNodeRadius = defaultNodeRadius + ringMargin + (defaultNewNodeRadius - defaultNodeRadius - ringMargin) * ratio
             } else {
-              newNodePosition = dragging.newNodePosition
+              newNodePosition = dragToCreate.newNodePosition
               newNodeRadius = defaultNewNodeRadius
             }
           }

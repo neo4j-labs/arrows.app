@@ -162,7 +162,7 @@ class Inspector extends Component {
 const mapStateToProps = state => {
   return {
     graph: state.graph,
-    selection: state.gestures.selection
+    selection: state.selection
   }
 }
 

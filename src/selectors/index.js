@@ -5,7 +5,7 @@ import VisualEdge from "../graphics/VisualEdge";
 import VisualGraph from "../graphics/VisualGraph";
 
 const getGraph = (state) => state.graph
-const getSelection = (state) => state.gestures.selection
+const getSelection = (state) => state.selection
 const getViewTransformation = (state) => state.viewTransformation
 
 export const getVisualGraph = createSelector(

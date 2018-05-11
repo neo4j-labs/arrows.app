@@ -1,6 +1,5 @@
 import find from 'lodash.find'
 import { withProps } from 'recompose'
-import { REMOVE_SELECTION_PATH } from "../actions/gestures";
 
 export const SELECT_ALL_NODES = 'SELECT_ALL_NODES'
 export const DESELECT_ALL_NODES = 'DESELECT_ALL_NODES'
@@ -21,7 +20,7 @@ const KeyBindings = {
   [INSPECT]: [{ metaKey: true, code: 73 }],
   [ZOOM_IN]: [{ metaKey: true, code: 187 }],
   [ZOOM_OUT]: [{ metaKey: true, code: 189 }],
-  [REMOVE_SELECTION_PATH]: [{ metaKey: false, code: 27 }],
+  ['REMOVE_SELECTION_PATH']: [{ metaKey: false, code: 27 }],
   [DELETE_SELECTION]: [{ metaKey: false, code: 46 }, { metaKey: false, code: 8 }]
 }
 

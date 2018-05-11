@@ -1,13 +1,6 @@
-import {
-  CLEAR_SELECTION,
-  REMOVE_MARQUEE, REMOVE_SELECTION_PATH, SET_MARQUEE,
-  UPDATE_SELECTION_PATH
-} from "../actions/gestures";
-
 export default function selection(state = {
   selectedNodeIdMap: {},
-  selectedRelationshipIdMap: {},
-  path: []
+  selectedRelationshipIdMap: {}
 }, action) {
   switch (action.type) {
     case 'TOGGLE_SELECTION':
@@ -45,30 +38,10 @@ export default function selection(state = {
         ...state,
         selectedNodeIdMap
       }
-    case CLEAR_SELECTION:
+    case 'CLEAR_SELECTION':
       return {
         ...state,
         selectedNodeIdMap: {}
-      }
-    case UPDATE_SELECTION_PATH:
-      return {
-        ...state,
-        path: state.path.concat([action.position])
-      }
-    case REMOVE_SELECTION_PATH:
-      return {
-        ...state,
-        path: []
-      }
-    case SET_MARQUEE:
-      return {
-        ...state,
-        marquee: action.marquee
-      }
-    case REMOVE_MARQUEE:
-      return {
-        ...state,
-        marquee: null
       }
     case 'CREATE_NODE': {
       const oneNodeSelected = {}
