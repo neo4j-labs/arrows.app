@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "graph-app-kit": "^1.0.1",
     "lodash.find": "^4.6.0",
     "lodash.get": "^4.4.2",
     "neo4j-driver": "^1.5.1",
