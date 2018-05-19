@@ -126,19 +126,6 @@ export const setArrowsProperties = (entity, keyValuePairs) => {
       }
     })
   })
-/*
-  const newEntity = {
-    ...entity,
-    style
-  }*/
-/*
-  Object.keys(style).forEach(key => {
-    Object.defineProperty(newEntity, key, {
-      get: function () {
-        return this.style[key]
-      }
-    })
-  })*/
 
   return newEntity
 }

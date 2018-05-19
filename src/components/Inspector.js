@@ -65,6 +65,8 @@ class Inspector extends Component {
   stylingSection ({color, radius}, onSaveArrowsPropertyValue) {
     const displayColorPicker = this.state.displayColorPicker
     const currentColor = color.status === 'CONSISTENT' ? color.value : '#e0e1e2'
+    const currentRadius = radius.status === 'CONSISTENT' ? radius.value : ''
+    const saveRadius = evt => onSaveArrowsPropertyValue(this.props.selection, 'radius', Number(evt.target.value))
     return (
       <React.Fragment>
         <Form.Group widths='equal' key={'form-group-style-color'}>
@@ -96,9 +98,8 @@ class Inspector extends Component {
             <label>Radius</label>
           </Form.Field>
           <Form.Field>
-            <Label>{radius ? radius.value : ''}</Label>
-            <input type='range' min="20" max="100" step='5' value={radius ? radius.value : ''}
-                   onChange={(evt) => onSaveArrowsPropertyValue(this.props.selection, 'radius', Number(evt.target.value))}/>
+            <Input size='mini' style={{width: '45px'}} value={currentRadius} onChange={saveRadius}/>
+            <input type='range' min="20" max="100" step='5' value={currentRadius} onChange={saveRadius}/>
           </Form.Field>
         </Form.Group>
       </React.Fragment>
