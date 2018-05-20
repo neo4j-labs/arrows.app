@@ -62,29 +62,47 @@ class Inspector extends Component {
     )
   }
 
-  stylingSection ({color}) {
+  stylingSection ({color, radius}, onSaveArrowsPropertyValue) {
     const displayColorPicker = this.state.displayColorPicker
     const currentColor = color.status === 'CONSISTENT' ? color.value : '#e0e1e2'
+    const currentRadius = radius.status === 'CONSISTENT' ? radius.value : ''
+    const saveRadius = evt => onSaveArrowsPropertyValue(this.props.selection, 'radius', Number(evt.target.value))
     return (
-      <div>
-        <div>
-          <Label style={{background : currentColor}} onClick={()=>this.setState({displayColorPicker: !this.state.displayColorPicker})}>
-            <span >
-              Color
-            </span>
-            <Label.Detail><Icon name={displayColorPicker ? "chevron up" : "chevron down"}/></Label.Detail>
-          </Label>
-        </div>
-        {displayColorPicker ?
-          <SketchPicker
-            color={currentColor}
-            onChangeComplete={color => {
-              this.setState({ displayColorPicker: false })
-              this.props.onSaveArrowsPropertyValue(this.props.selection, 'color', color.hex)
-            }}
-          /> : null
-        }
-      </div>
+      <React.Fragment>
+        <Form.Group widths='equal' key={'form-group-style-color'}>
+          <Form.Field>
+            <label>Color</label>
+          </Form.Field>
+          <Form.Field>
+            <div>
+              <div>
+                <Label style={{background : currentColor}} onClick={()=>this.setState({displayColorPicker: !this.state.displayColorPicker})}>
+              <span>{color.hex}</span>
+                  <Label.Detail><Icon name={displayColorPicker ? "chevron up" : "chevron down"}/></Label.Detail>
+                </Label>
+              </div>
+              {displayColorPicker ?
+                <SketchPicker
+                  color={currentColor}
+                  onChangeComplete={color => {
+                    this.setState({ displayColorPicker: false })
+                    onSaveArrowsPropertyValue(this.props.selection, 'color', color.hex)
+                  }}
+                /> : null
+              }
+            </div>
+          </Form.Field>
+        </Form.Group>
+        <Form.Group widths='equal' key={'form-group-style-radius'}>
+          <Form.Field>
+            <label>Radius</label>
+          </Form.Field>
+          <Form.Field>
+            <Input size='mini' style={{width: '45px'}} value={currentRadius} onChange={saveRadius}/>
+            <input type='range' min="20" max="100" step='5' value={currentRadius} onChange={saveRadius}/>
+          </Form.Field>
+        </Form.Group>
+      </React.Fragment>
     )
   }
 
@@ -134,9 +152,7 @@ class Inspector extends Component {
           <Form.Field>
             <label>Styling</label>
           </Form.Field>
-          <Form.Field>
-            {this.stylingSection(style)}
-          </Form.Field>
+          {this.stylingSection(style, this.props.onSaveArrowsPropertyValue)}
         </div>
       )
     }

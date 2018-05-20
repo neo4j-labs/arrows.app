@@ -79,23 +79,25 @@ export default class Gestures {
 
     Object.keys(selection.selectedNodeIdMap).forEach(nodeId => {
       if (!idsMatch(nodeId, dragToCreate.sourceNodeId)) {
-        const nodePosition = graph.nodes.find((node) => idsMatch(node.id, nodeId)).position;
-        drawRing(ctx, transform(nodePosition), green, defaultNodeRadius + ringMargin / 2)
+        const node = graph.nodes.find((node) => idsMatch(node.id, nodeId));
+        drawRing(ctx, transform(node.position), green, node.radius + ringMargin / 2)
       }
     })
 
     if (dragToCreate.sourceNodeId) {
       const sourceNode = graph.nodes.find((node) => idsMatch(node.id, dragToCreate.sourceNodeId))
       if (sourceNode) {
+        const radius = sourceNode.radius
+        const outerRadius = radius + ringMargin
         const sourceNodeIdPosition = sourceNode.position
         if (dragToCreate.newNodePosition) {
           const delta = dragToCreate.newNodePosition.vectorFrom(sourceNodeIdPosition)
           let newNodePosition = sourceNodeIdPosition;
-          if (delta.distance() > defaultNodeRadius + ringMargin) {
-            if (delta.distance() < defaultNodeRadius + defaultNewNodeRadius) {
-              const ratio = (delta.distance() - defaultNodeRadius - ringMargin) / (defaultNewNodeRadius - ringMargin);
+          if (delta.distance() > outerRadius) {
+            if (delta.distance() < radius + outerRadius) {
+              const ratio = (delta.distance() - radius - ringMargin) / radius
               newNodePosition = sourceNodeIdPosition.translate(delta.scale(ratio))
-              newNodeRadius = defaultNodeRadius + ringMargin + (defaultNewNodeRadius - defaultNodeRadius - ringMargin) * ratio
+              newNodeRadius *= ratio
             } else {
               newNodePosition = dragToCreate.newNodePosition
               newNodeRadius = defaultNewNodeRadius
@@ -108,13 +110,13 @@ export default class Gestures {
           const targetPoint = transform(newNodePosition)
           const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
           const unitVector = arrowVector.unit()
-          const sourceBorderPoint = sourcePoint.translate(unitVector.scale(defaultNodeRadius))
+          const sourceBorderPoint = sourcePoint.translate(unitVector.scale(radius))
           const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(defaultNewNodeRadius))
 
           const arrowData = getArrowGeometryData(sourcePoint, sourceBorderPoint, targetPoint, targetBorderPoint)
           drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)
         } else {
-          drawRing(ctx, transform(sourceNodeIdPosition), purple, defaultNodeRadius + ringMargin)
+          drawRing(ctx, transform(sourceNodeIdPosition), purple, outerRadius)
         }
       }
     }

@@ -1,3 +1,5 @@
+import { defaultNodeRadius } from "../graphics/constants";
+
 export const combineProperties = (entities) => {
   const properties = {}
   let firstKey = true;
@@ -115,14 +117,17 @@ export const setProperties = (entity, keyValuePairs) => {
 }
 
 export const setArrowsProperties = (entity, keyValuePairs) => {
-  const style = {...entity.style}
-  keyValuePairs.forEach((keyValuePair) => {
-    style[keyValuePair.key] = keyValuePair.value
+  const newEntity = { ...entity }
+  keyValuePairs.forEach(keyValuePair => {
+    newEntity.style[keyValuePair.key] = keyValuePair.value
+    Object.defineProperty(newEntity, keyValuePair.key, {
+      get: function () {
+        return this.style[keyValuePair.key]
+      }
+    })
   })
-  return {
-    ...entity,
-    style
-  }
+
+  return newEntity
 }
 
 export const removeProperty = (entity, keyToRemove) => {

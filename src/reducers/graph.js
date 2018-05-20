@@ -3,6 +3,7 @@ import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setCaption} from "../model/Node";
 import { setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperties, setProperties } from "../model/properties";
+import { defaultNodeRadius } from "../graphics/constants";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -11,10 +12,12 @@ const graph = (state = emptyGraph(), action) => {
       newNodes.push({
         id: action.newNodeId,
         position: action.newNodePosition,
-        radius: action.radius,
         caption: action.caption,
         style: action.style,
-        properties: {}
+        properties: {},
+        get radius() {
+          return this.style.radius || defaultNodeRadius
+        }
       })
       return {nodes: newNodes, relationships: state.relationships}
     }
@@ -25,10 +28,12 @@ const graph = (state = emptyGraph(), action) => {
       const newNode = {
         id: action.targetNodeId,
         position: action.targetNodePosition,
-        radius: action.radius,
         caption: action.caption,
         style: action.style,
-        properties: {}
+        properties: {},
+        get radius() {
+          return this.style.radius || defaultNodeRadius
+        }
       }
       newNodes.push(newNode)
       newRelationships.push({
