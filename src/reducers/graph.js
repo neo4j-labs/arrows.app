@@ -19,7 +19,7 @@ const graph = (state = emptyGraph(), action) => {
           return this.style.radius || defaultNodeRadius
         }
       })
-      return {nodes: newNodes, relationships: state.relationships}
+      return {style: state.style, nodes: newNodes, relationships: state.relationships}
     }
 
     case 'CREATE_NODE_AND_RELATIONSHIP': {
@@ -43,7 +43,7 @@ const graph = (state = emptyGraph(), action) => {
         fromId: action.sourceNodeId,
         toId: newNode.id
       })
-      return {nodes: newNodes, relationships: newRelationships}
+      return {style: state.style, nodes: newNodes, relationships: newRelationships}
     }
 
     case 'CONNECT_NODES': {
@@ -55,11 +55,12 @@ const graph = (state = emptyGraph(), action) => {
         fromId: action.sourceNodeId,
         toId: action.targetNodeId
       })
-      return {nodes: state.nodes, relationships: newRelationships}
+      return {style: state.style, nodes: state.nodes, relationships: newRelationships}
     }
 
     case 'SET_NODE_CAPTION': {
       return {
+        style: state.style,
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setCaption(node, action.caption) : node),
         relationships: state.relationships
       }
@@ -67,6 +68,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'RENAME_PROPERTY': {
       return {
+        style: state.style,
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? renameProperty(node, action.oldPropertyKey, action.newPropertyKey) : node),
         relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? renameProperty(relationship, action.oldPropertyKey, action.newPropertyKey) : relationship)
       }
@@ -74,6 +76,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'SET_PROPERTIES': {
       return {
+        style: state.style,
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setProperties(node, action.keyValuePairs) : node),
         relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setProperties(relationship, action.keyValuePairs) : relationship)
       }
@@ -81,6 +84,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'SET_ARROWS_PROPERTIES': {
       return {
+        style: state.style,
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setArrowsProperties(node, action.keyValuePairs) : node),
         relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setArrowsProperties(relationship, action.keyValuePairs) : relationship)
       }
@@ -88,6 +92,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'REMOVE_PROPERTY': {
       return {
+        style: state.style,
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeProperty(node, action.key) : node),
         relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? removeProperty(relationship, action.key) : relationship)
       }
@@ -102,18 +107,21 @@ const graph = (state = emptyGraph(), action) => {
         nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
       })
       return {
+        style: state.style,
         nodes: Object.values(nodeIdToNode),
         relationships: state.relationships
       }
 
     case 'SET_RELATIONSHIP_TYPE' :
       return {
-      nodes: state.nodes,
-      relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? setType(relationship, action.relationshipType) : relationship)
-    }
+        style: state.style,
+        nodes: state.nodes,
+        relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? setType(relationship, action.relationshipType) : relationship)
+      }
 
     case 'DELETE_NODES_AND_RELATIONSHIPS' :
       return {
+        style: state.style,
         nodes: state.nodes.filter(node => !action.nodeIdMap[node.id]),
         relationships: state.relationships.filter(relationship => !action.relationshipIdMap[relationship.id])
       }

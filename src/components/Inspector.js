@@ -8,7 +8,8 @@ import {
 import {commonValue} from "../model/values";
 import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
 import {combineProperties, combineStyle} from "../model/properties";
-import { SketchPicker } from 'react-color'
+import Slider from './editors/Slider'
+import ColorPicker from './editors/ColorPicker'
 
 class Inspector extends Component {
   constructor(props) {
@@ -69,7 +70,16 @@ class Inspector extends Component {
     const saveRadius = evt => onSaveArrowsPropertyValue(this.props.selection, 'radius', Number(evt.target.value))
     return (
       <React.Fragment>
-        <Form.Group widths='equal' key={'form-group-style-color'}>
+        <ColorPicker
+          value={currentColor}
+          expanded={displayColorPicker}
+          onToggle={() => this.setState({displayColorPicker: !this.state.displayColorPicker})}
+          onValueChanged={color => {
+            this.setState({ displayColorPicker: false })
+            onSaveArrowsPropertyValue(this.props.selection, 'color', color)
+          }}
+        />
+        {/*<Form.Group widths='equal' key={'form-group-style-color'}>
           <Form.Field>
             <label>Color</label>
           </Form.Field>
@@ -77,7 +87,7 @@ class Inspector extends Component {
             <div>
               <div>
                 <Label style={{background : currentColor}} onClick={()=>this.setState({displayColorPicker: !this.state.displayColorPicker})}>
-              <span>{color.hex}</span>
+              <span>{currentColor}</span>
                   <Label.Detail><Icon name={displayColorPicker ? "chevron up" : "chevron down"}/></Label.Detail>
                 </Label>
               </div>
@@ -92,16 +102,8 @@ class Inspector extends Component {
               }
             </div>
           </Form.Field>
-        </Form.Group>
-        <Form.Group widths='equal' key={'form-group-style-radius'}>
-          <Form.Field>
-            <label>Radius</label>
-          </Form.Field>
-          <Form.Field>
-            <Input size='mini' style={{width: '45px'}} value={currentRadius} onChange={saveRadius}/>
-            <input type='range' min="20" max="100" step='5' value={currentRadius} onChange={saveRadius}/>
-          </Form.Field>
-        </Form.Group>
+        </Form.Group>*/}
+        <Slider caption='Radius' min={20} value={currentRadius} onValueChanged={saveRadius} />
       </React.Fragment>
     )
   }

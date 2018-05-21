@@ -1,5 +1,3 @@
-import { defaultNodeRadius } from "../graphics/constants";
-
 export const combineProperties = (entities) => {
   const properties = {}
   let firstKey = true;

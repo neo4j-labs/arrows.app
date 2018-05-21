@@ -4,7 +4,7 @@ import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
 import {asKey} from "../model/Id";
-import { defaultNodeRadius } from "./constants";
+import { getStyleSelector } from "../selectors/style";
 
 export default class VisualNode {
   constructor(node, viewTransformation) {
@@ -58,9 +58,10 @@ export default class VisualNode {
     return this.radius
   }
 
-  draw(ctx) {
+  draw(ctx, state) {
     const { caption } = this.node
-    drawSolidCircle(ctx, this.position, this.color, this.radius)
+    const radius = getStyleSelector(this.node, 'radius')(state)
+    drawSolidCircle(ctx, this.position, this.color, radius)
     if (caption) {
       this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
     }

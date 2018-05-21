@@ -18,7 +18,7 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
 function drawGraph(ctx, visualGraph) {
   visualGraph.edges.forEach(edge => edge.draw(ctx))
   Object.values(visualGraph.nodes).forEach(visualNode => {
-    visualNode.draw(ctx)
+    visualNode.draw(ctx, visualGraph)
     if (visualNode.node.properties) {
       annotation(visualNode).draw(ctx)
     }

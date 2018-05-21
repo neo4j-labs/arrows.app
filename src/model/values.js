@@ -1,3 +1,5 @@
+import { defaultNodeRadius } from "../graphics/constants";
+
 export const commonValue = (array) => {
   return array.reduce((values, value) => {
     if (values.length === 0) {

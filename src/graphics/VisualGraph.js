@@ -12,6 +12,10 @@ export default class VisualGraph {
     VisualGraph.constructEdgeBundles(this.edges)
   }
 
+  get style () {
+    return this.graph.style
+  }
+
   static constructEdgeBundles(edges) {
     edges.reduce((edgeBundleList, edge) => {
       let edgeBundle = edgeBundleList[`${asKey(edge.from.id)}-${asKey(edge.to.id)}`]

@@ -11,7 +11,7 @@ export const createNode = () => (dispatch, getState) => {
     newNodeId: nextAvailableId(getState().graph.nodes),
     newNodePosition: new Point(1000 * Math.random(), 1000 * Math.random()),
     caption: '',
-    style: { radius: defaultNodeRadius, color: blueActive }
+    //style: { radius: defaultNodeRadius, color: blueActive }
   })
 }
 
@@ -23,7 +23,7 @@ const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (dispatc
     targetNodeId: nextAvailableId(getState().graph.nodes),
     targetNodePosition,
     caption: '',
-    style: { radius: defaultNodeRadius, color: blueActive }
+    //style: { radius: defaultNodeRadius, color: blueActive }
   })
 }
 
