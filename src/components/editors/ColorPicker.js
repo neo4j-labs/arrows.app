@@ -3,8 +3,13 @@ import {Form, Icon, Label} from 'semantic-ui-react'
 import { SketchPicker } from 'react-color'
 
 export default class extends Component {
+  state = {
+    expanded: false
+  }
+
   render () {
-    const { caption='Color', value, onValueChanged, expanded=false, onToggle } = this.props
+    const { caption='Color', value, onChange } = this.props
+    const { expanded } = this.state
     return <Form.Group widths='equal' key={'form-group-style-color'}>
       <Form.Field>
         <label>{caption}</label>
@@ -12,7 +17,7 @@ export default class extends Component {
       <Form.Field>
         <div>
           <div>
-            <Label style={{background : value}} onClick={onToggle}>
+            <Label style={{background : value}} onClick={() => this.setState({expanded: !this.state.expanded})}>
               <span>{value}</span>
               <Label.Detail><Icon name={expanded ? "chevron up" : "chevron down"}/></Label.Detail>
             </Label>
@@ -20,7 +25,10 @@ export default class extends Component {
           {expanded ?
             <SketchPicker
               color={value}
-              onChangeComplete={color => onValueChanged(color.hex)}
+              onChangeComplete={color => {
+                onChange(color.hex)
+                this.setState({expanded: false})
+              }}
             /> : null
           }
         </div>

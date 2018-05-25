@@ -6,6 +6,7 @@ import {Point} from "../model/Point";
 import {databaseTypeToStringType} from "../model/Relationship";
 import {propertiesFromDatabaseEntity, styleFromDatabaseEntity} from "../model/properties";
 import { defaultNodeRadius } from "../graphics/constants";
+import { emptyGraph } from "../model/Graph";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
@@ -100,7 +101,7 @@ export function fetchGraphFromDatabase() {
           relationships.push(newRelationship)
         })
         session.close();
-        dispatch(fetchingGraphSucceeded({nodes, relationships}))
+        dispatch(fetchingGraphSucceeded({nodes, relationships, style: emptyGraph().style}))
       }, (error) => {
         console.log(error)
         dispatch(fetchingGraphFailed())

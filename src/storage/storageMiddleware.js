@@ -26,9 +26,11 @@ export const storageMiddleware = store => next => action => {
   switch (action.type) {
     case 'CREATE_NODE': {
       const styleProperties = {}
-      Object.keys(action.style).forEach((key) => {
-        styleProperties[styleKeyToDatabaseKey(key)] = action.style[key]
-      })
+      if (action.style) {
+        Object.keys(action.style).forEach((key) => {
+          styleProperties[styleKeyToDatabaseKey(key)] = action.style[key]
+        })
+      }
 
       runInSession((session) => session.run('CREATE (n:Diagram0 {_id: $id, _x: $x, _y: $y, ' +
         '_caption: $caption}) SET n += $style', {

@@ -124,6 +124,13 @@ export const removeProperty = (selection, key) => ({
   key
 })
 
+export const removeArrowsProperties = (selection, keys) => ({
+  type: 'REMOVE_ARROWS_PROPERTIES',
+  selection,
+  keys
+})
+
+
 export const setRelationshipType = (selection, relationshipType) => ({
   type: 'SET_RELATIONSHIP_TYPE',
   selection,

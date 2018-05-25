@@ -2,7 +2,7 @@ import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setCaption} from "../model/Node";
 import { setType } from "../model/Relationship";
-import { removeProperty, renameProperty, setArrowsProperties, setProperties } from "../model/properties";
+import { removeProperty, renameProperty, setArrowsProperties, setProperties, removeArrowsProperties } from "../model/properties";
 import { defaultNodeRadius } from "../graphics/constants";
 
 const graph = (state = emptyGraph(), action) => {
@@ -95,6 +95,14 @@ const graph = (state = emptyGraph(), action) => {
         style: state.style,
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeProperty(node, action.key) : node),
         relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? removeProperty(relationship, action.key) : relationship)
+      }
+    }
+
+    case 'REMOVE_ARROWS_PROPERTIES': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeArrowsProperties(node, action.keys) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? removeArrowsProperties(relationship, action.keys) : relationship)
       }
     }
 

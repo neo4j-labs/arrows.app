@@ -1,6 +1,6 @@
 import {createSelector} from "reselect";
 
-const graphStyleSelector = (graph) => graph.style
+const graphStyleSelector = graph => graph.style || {}
 
 export const getStyleSelector = (entity, styleKey) =>
   createSelector(
