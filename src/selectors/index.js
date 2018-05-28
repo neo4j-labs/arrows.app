@@ -12,7 +12,7 @@ export const getVisualGraph = createSelector(
   [getGraph, getSelection, getViewTransformation],
   (graph, selection, viewTransformation) => {
     const nodes = graph.nodes.reduce((nodes, node) => {
-      nodes[node.id] = new VisualNode(node, viewTransformation)
+      nodes[node.id] = new VisualNode(node, viewTransformation, graph)
       return nodes
     }, {})
 

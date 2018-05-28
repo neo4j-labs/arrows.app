@@ -4,14 +4,19 @@ import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
 import {asKey} from "../model/Id";
-import { defaultNodeRadius } from "./constants";
+import { getStyleSelector } from "../selectors/style";
+import { nodeStyleAttributes } from "../model/styling";
 
 export default class VisualNode {
-  constructor(node, viewTransformation) {
+  constructor(node, viewTransformation, graph) {
     this.node = node
     this.viewTransformation = viewTransformation
     this.edges = []
     this.edgeMap = {}
+
+    nodeStyleAttributes.forEach(styleAttribute => {
+      this[styleAttribute] = getStyleSelector(node, styleAttribute)(graph)
+    })
   }
 
   addEdge (edge, direction) {
@@ -46,19 +51,11 @@ export default class VisualNode {
     return this.viewTransformation.transform(this.node.position)
   }
 
-  get radius () {
-    return this.node.radius
-  }
-
-  get color () {
-    return this.node.style.color
-  }
-
   distanceToBorder () {
     return this.radius
   }
 
-  draw(ctx) {
+  draw(ctx, state) {
     const { caption } = this.node
     drawSolidCircle(ctx, this.position, this.color, this.radius)
     if (caption) {

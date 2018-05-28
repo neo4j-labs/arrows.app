@@ -1,14 +1,15 @@
 import React, {Component} from 'react'
-import {Form, Input, Segment, Icon, Header, Button, Label} from 'semantic-ui-react'
+import {Form, Input, Segment, Icon, Header, Button, Dropdown, Divider} from 'semantic-ui-react'
 import {connect} from "react-redux";
 import {
   setProperties, setNodeCaption, setRelationshipType, renameProperties, removeProperty,
-  setArrowsProperties
+  setArrowsProperties, removeArrowsProperties
 } from "../actions/graph";
 import {commonValue} from "../model/values";
 import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
 import {combineProperties, combineStyle} from "../model/properties";
-import { SketchPicker } from 'react-color'
+import { nodeStyleAttributes } from "../model/styling";
+import { getStyleEditorComponent } from "./editors/editorFactory";
 
 class Inspector extends Component {
   constructor(props) {
@@ -54,60 +55,58 @@ class Inspector extends Component {
     })
     return (
       <div key='propertiesTable'>
-        <Form.Field>
-          <label>Properties</label>
-        </Form.Field>
+        <Divider inverted horizontal>Properties</Divider>
         {rows}
       </div>
     )
   }
 
-  stylingSection ({color, radius}, onSaveArrowsPropertyValue) {
-    const displayColorPicker = this.state.displayColorPicker
-    const currentColor = color.status === 'CONSISTENT' ? color.value : '#e0e1e2'
-    const currentRadius = radius.status === 'CONSISTENT' ? radius.value : ''
-    const saveRadius = evt => onSaveArrowsPropertyValue(this.props.selection, 'radius', Number(evt.target.value))
+  stylingSection (style, onSaveArrowsPropertyValue, onDeleteArrowsProperty, graphStyle) {
+    const existingStyleAttributes = Object.keys(style)
+    const availableStyleAttributes = nodeStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
+    const styleElements = []
+
+    const styleOptions = availableStyleAttributes.map(styleAttribute => ({
+      text: styleAttribute,
+      value: styleAttribute
+    }))
+
+    const getStyleValueChangeHandler = styleAttribute => value => onSaveArrowsPropertyValue(this.props.selection, styleAttribute, value)
+    const getStyleValueRemoveHandler = styleAttribute => () => onDeleteArrowsProperty(this.props.selection, styleAttribute)
+
+    Object.keys(style).sort().forEach(styleAttribute => {
+      const currentValue = style[styleAttribute].status === 'CONSISTENT' ?  style[styleAttribute].value : graphStyle[styleAttribute]
+      const editorComponent = getStyleEditorComponent(styleAttribute, currentValue, getStyleValueChangeHandler(styleAttribute), getStyleValueRemoveHandler(styleAttribute))
+      styleElements.push(editorComponent)
+    })
+
+    const changeStyleElement = styleOptions.length > 0 ? (
+      <Form.Group widths='equal' key={'form-group-changeStyle'}>
+        <Form.Field>
+          <Dropdown
+            button
+            selectOnBlur={false}
+            placeholder='+ Style'
+            options={styleOptions}
+            onChange={(evt, data) => getStyleValueChangeHandler(data.value)(graphStyle[data.value])}
+            key={availableStyleAttributes.join('-')}
+          />
+        </Form.Field>
+        <Form.Field></Form.Field>
+      </Form.Group>
+    )
+      : null
+
     return (
       <React.Fragment>
-        <Form.Group widths='equal' key={'form-group-style-color'}>
-          <Form.Field>
-            <label>Color</label>
-          </Form.Field>
-          <Form.Field>
-            <div>
-              <div>
-                <Label style={{background : currentColor}} onClick={()=>this.setState({displayColorPicker: !this.state.displayColorPicker})}>
-              <span>{color.hex}</span>
-                  <Label.Detail><Icon name={displayColorPicker ? "chevron up" : "chevron down"}/></Label.Detail>
-                </Label>
-              </div>
-              {displayColorPicker ?
-                <SketchPicker
-                  color={currentColor}
-                  onChangeComplete={color => {
-                    this.setState({ displayColorPicker: false })
-                    onSaveArrowsPropertyValue(this.props.selection, 'color', color.hex)
-                  }}
-                /> : null
-              }
-            </div>
-          </Form.Field>
-        </Form.Group>
-        <Form.Group widths='equal' key={'form-group-style-radius'}>
-          <Form.Field>
-            <label>Radius</label>
-          </Form.Field>
-          <Form.Field>
-            <Input size='mini' style={{width: '45px'}} value={currentRadius} onChange={saveRadius}/>
-            <input type='range' min="20" max="100" step='5' value={currentRadius} onChange={saveRadius}/>
-          </Form.Field>
-        </Form.Group>
+        {changeStyleElement}
+        {styleElements}
       </React.Fragment>
     )
   }
 
   render() {
-    const {selection, graph, onSaveCaption, onSaveType, onSavePropertyValue} = this.props
+    const {selection, graph, onSaveCaption, onSaveType, onSavePropertyValue, onDeleteArrowsProperty} = this.props
     const fields = []
 
     const nodes = selectedNodes(graph, selection)
@@ -149,10 +148,8 @@ class Inspector extends Component {
       const style = combineStyle(nodes)
       fields.push(
         <div key='styling' style={{ marginTop: '1em' }}>
-          <Form.Field>
-            <label>Styling</label>
-          </Form.Field>
-          {this.stylingSection(style, this.props.onSaveArrowsPropertyValue)}
+          <Divider inverted horizontal>Styling</Divider>
+          {this.stylingSection(style, this.props.onSaveArrowsPropertyValue, onDeleteArrowsProperty, graph.style)}
         </div>
       )
     }
@@ -202,6 +199,9 @@ const mapDispatchToProps = dispatch => {
     onDeleteProperty: (selection, key) => {
       dispatch(removeProperty(selection, key))
     },
+    onDeleteArrowsProperty: (selection, key) => {
+      dispatch(removeArrowsProperties(selection, [key]))
+    }
   }
 }
 

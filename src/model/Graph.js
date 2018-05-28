@@ -1,9 +1,19 @@
 import { isPointInPolygon } from "../graphics/utils/geometryUtils";
+import { defaultNodeRadius } from "../graphics/constants";
+import { blueActive } from "./colors";
+import { getStyleSelector } from "../selectors/style";
 
 const ringLength =  10
 
 export const emptyGraph = () => {
-  return {nodes: [], relationships: []}
+  return {
+    nodes: [],
+    relationships: [],
+    style: {
+      radius: defaultNodeRadius,
+      color: blueActive
+    }
+  }
 }
 
 export const closestNode = (graph, point, nodeTest) => {
@@ -20,12 +30,13 @@ export const closestNode = (graph, point, nodeTest) => {
 }
 
 export const nodeAtPoint = (graph, point) => {
-  return closestNode(graph, point, (node, distance) => distance < node.radius)
+  return closestNode(graph, point, (node, distance) => distance < getStyleSelector(node, 'radius')(graph))
 }
 
 export const nodeRingAtPoint = (graph, point) => {
   return closestNode(graph, point, (node, distance) => {
-    return distance > node.radius && distance < node.radius + ringLength
+    const nodeRadius = getStyleSelector(node, 'radius')(graph)
+    return distance > nodeRadius && distance < nodeRadius + ringLength
   })
 }
 

@@ -10,8 +10,7 @@ export const createNode = () => (dispatch, getState) => {
     type: 'CREATE_NODE',
     newNodeId: nextAvailableId(getState().graph.nodes),
     newNodePosition: new Point(1000 * Math.random(), 1000 * Math.random()),
-    caption: '',
-    style: { radius: defaultNodeRadius, color: blueActive }
+    caption: ''
   })
 }
 
@@ -22,8 +21,7 @@ const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (dispatc
     newRelationshipId: nextAvailableId(getState().graph.relationships),
     targetNodeId: nextAvailableId(getState().graph.nodes),
     targetNodePosition,
-    caption: '',
-    style: { radius: defaultNodeRadius, color: blueActive }
+    caption: ''
   })
 }
 
@@ -123,6 +121,13 @@ export const removeProperty = (selection, key) => ({
   selection,
   key
 })
+
+export const removeArrowsProperties = (selection, keys) => ({
+  type: 'REMOVE_ARROWS_PROPERTIES',
+  selection,
+  keys
+})
+
 
 export const setRelationshipType = (selection, relationshipType) => ({
   type: 'SET_RELATIONSHIP_TYPE',
