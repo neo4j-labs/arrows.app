@@ -1,10 +1,11 @@
 import { drawRing, drawStraightArrow, drawPolygon, drawCircle} from "./canvasRenderer";
-import { defaultNewNodeRadius, defaultNodeRadius, ringMargin } from "./constants";
+import { ringMargin } from "./constants";
 import { Vector } from "../model/Vector";
 import { getArrowGeometryData, getVoronoi, isPointInPolygon, sortPoints } from "./utils/geometryUtils";
 import {idsMatch} from "../model/Id";
 import { green, blueGreen, purple } from "../model/colors";
 import { Point } from "../model/Point";
+import { getStyleSelector } from "../selectors/style";
 
 export default class Gestures {
   constructor(graph, selection, gestures) {
@@ -29,7 +30,7 @@ export default class Gestures {
       from
     ]
 
-    let newNodeRadius = defaultNodeRadius + ringMargin;
+    let newNodeRadius = graph.style.radius + ringMargin;
 
     if (selectionMarquee && graph.nodes.length > 0) {
       const marqueeScreen = {from: transform(selectionMarquee.from), to: transform(selectionMarquee.to)}
@@ -77,17 +78,19 @@ export default class Gestures {
       points.forEach(point => drawCircle(ctx, point, 3, true))
     }
 
+
     Object.keys(selection.selectedNodeIdMap).forEach(nodeId => {
       if (!idsMatch(nodeId, dragToCreate.sourceNodeId)) {
-        const node = graph.nodes.find((node) => idsMatch(node.id, nodeId));
-        drawRing(ctx, transform(node.position), green, node.radius + ringMargin / 2)
+        const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
+        const nodeRadius = getStyleSelector(node, 'radius')(graph)
+        drawRing(ctx, transform(node.position), green, nodeRadius + ringMargin / 2)
       }
     })
 
     if (dragToCreate.sourceNodeId) {
       const sourceNode = graph.nodes.find((node) => idsMatch(node.id, dragToCreate.sourceNodeId))
       if (sourceNode) {
-        const radius = sourceNode.radius
+        const radius = getStyleSelector(sourceNode, 'radius')(graph)
         const outerRadius = radius + ringMargin
         const sourceNodeIdPosition = sourceNode.position
         if (dragToCreate.newNodePosition) {
@@ -100,7 +103,7 @@ export default class Gestures {
               newNodeRadius *= ratio
             } else {
               newNodePosition = dragToCreate.newNodePosition
-              newNodeRadius = defaultNewNodeRadius
+              newNodeRadius = newNodeRadius
             }
           }
 
@@ -111,7 +114,7 @@ export default class Gestures {
           const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
           const unitVector = arrowVector.unit()
           const sourceBorderPoint = sourcePoint.translate(unitVector.scale(radius))
-          const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(defaultNewNodeRadius))
+          const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(newNodeRadius))
 
           const arrowData = getArrowGeometryData(sourcePoint, sourceBorderPoint, targetPoint, targetBorderPoint)
           drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)

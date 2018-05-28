@@ -45,9 +45,11 @@ export const storageMiddleware = store => next => action => {
 
     case 'CREATE_NODE_AND_RELATIONSHIP': {
       const styleProperties = {}
-      Object.keys(action.style).forEach((key) => {
-        styleProperties[styleKeyToDatabaseKey(key)] = action.style[key]
-      })
+      if (action.style) {
+        Object.keys(action.style).forEach((key) => {
+          styleProperties[styleKeyToDatabaseKey(key)] = action.style[key]
+        })
+      }
 
       runInSession((session) => session.run('MATCH (n:Diagram0 {_id: $sourceNodeId}) ' +
         'CREATE (n)-[:_RELATED {_id: $newRelationshipId}]->' +

@@ -14,10 +14,7 @@ const graph = (state = emptyGraph(), action) => {
         position: action.newNodePosition,
         caption: action.caption,
         style: action.style,
-        properties: {},
-        get radius() {
-          return this.style.radius || defaultNodeRadius
-        }
+        properties: {}
       })
       return {style: state.style, nodes: newNodes, relationships: state.relationships}
     }
@@ -30,10 +27,7 @@ const graph = (state = emptyGraph(), action) => {
         position: action.targetNodePosition,
         caption: action.caption,
         style: action.style,
-        properties: {},
-        get radius() {
-          return this.style.radius || defaultNodeRadius
-        }
+        properties: {}
       }
       newNodes.push(newNode)
       newRelationships.push({
