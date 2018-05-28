@@ -21,7 +21,7 @@ export default class extends Component {
             <Input
               size='small'
               value={value}
-              style={{ 'width': '5em', background: value, borderTopLeftRadius: '0.286em', borderBottomLeftRadius: '0.286em', paddingLeft: '0.1em' }}
+              style={{ 'width': '5em', background: value, borderTopLeftRadius: '0.286em', borderBottomLeftRadius: '0.286em', paddingLeft: '0.5em' }}
               transparent
               onChange={evt => onChange(evt.target.value)}>
               <input />

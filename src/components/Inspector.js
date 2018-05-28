@@ -90,10 +90,8 @@ class Inspector extends Component {
         <Form.Field>
           <Dropdown
             button
-            compact
-            selection
             selectOnBlur={false}
-            placeholder='Change style'
+            placeholder='+ Style'
             options={styleOptions}
             onChange={(evt, data) => getStyleValueChangeHandler(data.value)(graphStyle[data.value])}
             key={availableStyleAttributes.join('-')}
