@@ -118,6 +118,11 @@ export const setProperties = (entity, keyValuePairs) => {
 
 export const setArrowsProperties = (entity, keyValuePairs) => {
   const newEntity = { ...entity }
+
+  if (!newEntity.style) {
+    newEntity.style = {}
+  }
+
   keyValuePairs.forEach(keyValuePair => {
     newEntity.style[keyValuePair.key] = keyValuePair.value
     Object.defineProperty(newEntity, keyValuePair.key, {

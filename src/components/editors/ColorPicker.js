@@ -26,7 +26,7 @@ export default class extends Component {
               onChange={evt => onChange(evt.target.value)}>
               <input />
               <Button
-                style={{ borderRadius: '0', marginRight: '0', }}
+                style={{ borderRadius: '0', marginRight: '0' }}
                 icon={this.state.expanded ? 'chevron up' : 'chevron down'}
                 onClick={() => this.setState({ expanded: !this.state.expanded })}
               />

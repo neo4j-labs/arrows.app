@@ -95,10 +95,7 @@ class Inspector extends Component {
             selectOnBlur={false}
             placeholder='Change style'
             options={styleOptions}
-            onChange={(evt, data) => {
-              console.log(data)
-              getStyleValueChangeHandler(data.value)(graphStyle[data.value])
-            }}
+            onChange={(evt, data) => getStyleValueChangeHandler(data.value)(graphStyle[data.value])}
             key={availableStyleAttributes.join('-')}
           />
         </Form.Field>
