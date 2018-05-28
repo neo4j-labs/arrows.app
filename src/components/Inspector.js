@@ -63,12 +63,7 @@ class Inspector extends Component {
 
   stylingSection (style, onSaveArrowsPropertyValue, onDeleteArrowsProperty, graphStyle) {
     const existingStyleAttributes = Object.keys(style)
-   /* if (existingStyleAttributes.length === 0) {
-      return null
-    }*/
-
     const availableStyleAttributes = nodeStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
-
     const styleElements = []
 
     const styleOptions = availableStyleAttributes.map(styleAttribute => ({

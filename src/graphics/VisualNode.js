@@ -51,14 +51,6 @@ export default class VisualNode {
     return this.viewTransformation.transform(this.node.position)
   }
 
-  /*get radius () {
-    return this.node.radius
-  }
-
-  get color () {
-    return this.node.style.color
-  }*/
-
   distanceToBorder () {
     return this.radius
   }
