@@ -79,19 +79,42 @@ export const moveNodes = (oldMousePosition, newMousePosition, nodePositions, gui
   }
 }
 
+export const moveNodesEndDrag = (nodePositions) => {
+  return {
+    category: 'GRAPH',
+    type: 'MOVE_NODES_END_DRAG',
+    nodePositions
+  }
+}
+
 export const endDrag = () => {
   return function (dispatch, getState) {
     const state = getState();
     const mouse = state.mouse
-    if (mouse.dragType === 'NODE_RING') {
-      const dragToCreate = state.gestures.dragToCreate;
-      if (dragToCreate.sourceNodeId) {
-        if (dragToCreate.targetNodeId) {
-          dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
-        } else {
-          dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
+    switch (mouse.dragType) {
+      case 'NODE':
+        const graph = state.graph
+        const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
+        const nodePositions = []
+        selectedNodes.forEach((nodeId) => {
+          nodePositions.push({
+            nodeId: nodeId,
+            position: graph.nodes.find((node) => idsMatch(node.id, nodeId)).position
+          })
+        })
+        dispatch(moveNodesEndDrag(nodePositions))
+        break
+
+      case 'NODE_RING':
+        const dragToCreate = state.gestures.dragToCreate;
+        if (dragToCreate.sourceNodeId) {
+          if (dragToCreate.targetNodeId) {
+            dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
+          } else {
+            dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
+          }
         }
-      }
+        break
     }
     dispatch({
       category: 'GRAPH',

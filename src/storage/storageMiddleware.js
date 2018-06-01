@@ -7,7 +7,6 @@ const host = "bolt://localhost:7687"
 const driver = neo4j.driver(host, neo4j.auth.basic("neo4j", "a"))
 
 let updateQueue = []
-let pendingMoveNodeActions = {}
 
 const drainUpdateQueue = (store) => {
 
@@ -166,19 +165,11 @@ const applyUpdate = (action) => {
       }
     }
 
-    case 'MOVE_NODES': {
-      action.nodePositions.forEach((nodePosition) => {
-        pendingMoveNodeActions[nodePosition.nodeId] = nodePosition.position
-      })
-      return () => Promise.resolve("Nothing to do")
-    }
-
-    case 'END_DRAG': {
-      if (Object.keys(pendingMoveNodeActions).length !== 0) {
+    case 'MOVE_NODES_END_DRAG': {
+      if (action.nodePositions.length !== 0) {
         return (session) => {
           let result = session
-          Object.keys(pendingMoveNodeActions).forEach((nodeId) => {
-            const position = pendingMoveNodeActions[nodeId]
+          action.nodePositions.forEach(({nodeId, position}) => {
             result = session.run('MATCH (n:Diagram0 {_id: $id}) ' +
               'SET n._x = $x, n._y = $y', {
               id: nodeId,
@@ -186,7 +177,6 @@ const applyUpdate = (action) => {
               y: position.y
             })
           })
-          pendingMoveNodeActions = {}
           return result
         }
       }
