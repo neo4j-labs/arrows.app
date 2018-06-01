@@ -6,22 +6,41 @@ const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const host = "bolt://localhost:7687"
 const driver = neo4j.driver(host, neo4j.auth.basic("neo4j", "a"))
 
+let updateQueue = []
 let pendingMoveNodeActions = {}
 
-export const storageMiddleware = store => next => action => {
-  const runInSession = (work) => {
-    store.dispatch(updatingGraph())
-    const session = driver.session()
-    work(session)
-      .then(() => {
-        session.close()
-        store.dispatch(updatingGraphSucceeded())
-      })
-      .catch((error) => {
-        console.log(error)
-        store.dispatch(updatingGraphFailed())
-      })
+const drainUpdateQueue = (store) => {
+
+  const applyHead = () => {
+    if (updateQueue.length > 0) {
+      const action = updateQueue[0]
+      const work = applyUpdate(action)
+      const session = driver.session()
+      work(session)
+        .then(() => {
+          session.close()
+          updateQueue.shift()
+          applyHead()
+        })
+        .catch((error) => {
+          session.close()
+          console.log(error)
+        })
+    }
   }
+
+  applyHead()
+}
+
+export const storageMiddleware = store => next => action => {
+  if (action.category === 'GRAPH') {
+    updateQueue.push(action)
+    drainUpdateQueue(store)
+  }
+  return next(action)
+}
+
+const applyUpdate = (action) => {
 
   switch (action.type) {
     case 'CREATE_NODE': {
@@ -32,15 +51,14 @@ export const storageMiddleware = store => next => action => {
         })
       }
 
-      runInSession((session) => session.run('CREATE (n:Diagram0 {_id: $id, _x: $x, _y: $y, ' +
+      return (session) => session.run('CREATE (n:Diagram0 {_id: $id, _x: $x, _y: $y, ' +
         '_caption: $caption}) SET n += $style', {
         id: action.newNodeId,
         x: action.newNodePosition.x,
         y: action.newNodePosition.y,
         caption: action.caption,
         style: styleProperties
-      }))
-      break
+      })
     }
 
     case 'CREATE_NODE_AND_RELATIONSHIP': {
@@ -51,7 +69,7 @@ export const storageMiddleware = store => next => action => {
         })
       }
 
-      runInSession((session) => session.run('MATCH (n:Diagram0 {_id: $sourceNodeId}) ' +
+      return (session) => session.run('MATCH (n:Diagram0 {_id: $sourceNodeId}) ' +
         'CREATE (n)-[:_RELATED {_id: $newRelationshipId}]->' +
         '(t:Diagram0 {_id: $targetNodeId, _x: $x, _y: $y, ' +
         '_caption: $caption}) SET t += $style', {
@@ -62,31 +80,28 @@ export const storageMiddleware = store => next => action => {
         y: action.targetNodePosition.y,
         caption: action.caption,
         style: styleProperties
-      }))
-      break
+      })
     }
 
     case 'CONNECT_NODES': {
-      runInSession((session) => session.run('MATCH (source:Diagram0 {_id: $sourceNodeId}), (target:Diagram0 {_id: $targetNodeId}) ' +
+      return (session) => session.run('MATCH (source:Diagram0 {_id: $sourceNodeId}), (target:Diagram0 {_id: $targetNodeId}) ' +
         'CREATE (source)-[:_RELATED {_id: $newRelationshipId}]->(target)', {
         sourceNodeId: action.sourceNodeId,
         newRelationshipId: action.newRelationshipId,
         targetNodeId: action.targetNodeId
-      }))
-      break
+      })
     }
 
     case 'SET_NODE_CAPTION': {
-      runInSession((session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
+      return (session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
         'SET n._caption = $caption', {
         ids: Object.keys(action.selection.selectedNodeIdMap),
         caption: action.caption
-      }))
-      break
+      })
     }
 
     case 'RENAME_PROPERTY': {
-      runInSession((session) => {
+      return (session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'SET n.`' + propertyKeyToDatabaseKey(action.newPropertyKey) + '` = n.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
           'REMOVE n.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '`', {
@@ -97,8 +112,7 @@ export const storageMiddleware = store => next => action => {
           'REMOVE r.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '`', {
           ids: Object.keys(action.selection.selectedRelationshipIdMap)
         });
-      })
-      break
+      }
     }
 
     case 'SET_PROPERTIES': {
@@ -106,7 +120,7 @@ export const storageMiddleware = store => next => action => {
       action.keyValuePairs.forEach((keyValuePair) => {
         properties[propertyKeyToDatabaseKey(keyValuePair.key)] = keyValuePair.value
       })
-      runInSession((session) => {
+      return (session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'SET n += $properties', {
           ids: Object.keys(action.selection.selectedNodeIdMap),
@@ -117,8 +131,7 @@ export const storageMiddleware = store => next => action => {
           ids: Object.keys(action.selection.selectedRelationshipIdMap),
           properties: properties
         });
-      })
-      break
+      }
     }
 
     case 'SET_ARROWS_PROPERTIES': {
@@ -126,7 +139,7 @@ export const storageMiddleware = store => next => action => {
       action.keyValuePairs.forEach((keyValuePair) => {
         styleProperties[styleKeyToDatabaseKey(keyValuePair.key)] = keyValuePair.value
       })
-      runInSession((session) => {
+      return (session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'SET n += $properties', {
           ids: Object.keys(action.selection.selectedNodeIdMap),
@@ -137,12 +150,11 @@ export const storageMiddleware = store => next => action => {
           ids: Object.keys(action.selection.selectedRelationshipIdMap),
           properties: styleProperties
         });
-      })
-      break
+      }
     }
 
     case 'REMOVE_PROPERTY': {
-      runInSession((session) => {
+      return (session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'REMOVE n.`' + propertyKeyToDatabaseKey(action.key) + '`', {
           ids: Object.keys(action.selection.selectedNodeIdMap)
@@ -151,20 +163,19 @@ export const storageMiddleware = store => next => action => {
           'REMOVE r.`' + propertyKeyToDatabaseKey(action.key) + '`', {
           ids: Object.keys(action.selection.selectedRelationshipIdMap)
         });
-      })
-      break
+      }
     }
 
     case 'MOVE_NODES': {
       action.nodePositions.forEach((nodePosition) => {
         pendingMoveNodeActions[nodePosition.nodeId] = nodePosition.position
       })
-      break
+      return () => Promise.resolve("Nothing to do")
     }
 
     case 'END_DRAG': {
       if (Object.keys(pendingMoveNodeActions).length !== 0) {
-        runInSession((session) => {
+        return (session) => {
           let result = session
           Object.keys(pendingMoveNodeActions).forEach((nodeId) => {
             const position = pendingMoveNodeActions[nodeId]
@@ -175,16 +186,16 @@ export const storageMiddleware = store => next => action => {
               y: position.y
             })
           })
+          pendingMoveNodeActions = {}
           return result
-        })
-        pendingMoveNodeActions = {}
+        }
       }
-      break
+      return () => Promise.resolve("Nothing to do")
     }
 
     case 'SET_RELATIONSHIP_TYPE': {
       const newType = stringTypeToDatabaseType(action.relationshipType)
-      runInSession((session) => {
+      return (session) => {
         let result = session
         Object.keys(action.selection.selectedRelationshipIdMap).forEach((relationshipId) => {
           result = session.run(`MATCH (n)-[r]->(m)
@@ -197,14 +208,13 @@ export const storageMiddleware = store => next => action => {
           })
         })
         return result
-      })
-      break
+      }
     }
 
     case 'DELETE_NODES_AND_RELATIONSHIPS': {
       const nodeIds = Object.keys(action.nodeIdMap)
       const relIds = Object.keys(action.relationshipIdMap)
-      runInSession(session => {
+      return session => {
         let result = session
         if (relIds.length > 0) {
           result = session.run(`match(d:Diagram0)-[r]-()
@@ -223,13 +233,10 @@ export const storageMiddleware = store => next => action => {
           )
         }
         return result
-      })
-      break
+      }
     }
 
     default:
-      // other actions do not need to be stored
+      return () => Promise.resolve("Nothing to do")
   }
-
-  return next(action)
 }

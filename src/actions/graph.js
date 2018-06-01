@@ -7,6 +7,7 @@ import { defaultNodeRadius } from "../graphics/constants";
 
 export const createNode = () => (dispatch, getState) => {
   dispatch({
+    category: 'GRAPH',
     type: 'CREATE_NODE',
     newNodeId: nextAvailableId(getState().graph.nodes),
     newNodePosition: new Point(1000 * Math.random(), 1000 * Math.random()),
@@ -16,6 +17,7 @@ export const createNode = () => (dispatch, getState) => {
 
 const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (dispatch, getState) => {
   dispatch({
+    category: 'GRAPH',
     type: 'CREATE_NODE_AND_RELATIONSHIP',
     sourceNodeId,
     newRelationshipId: nextAvailableId(getState().graph.relationships),
@@ -27,6 +29,7 @@ const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (dispatc
 
 const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState) => {
   dispatch({
+    category: 'GRAPH',
     type: 'CONNECT_NODES',
     sourceNodeId,
     newRelationshipId: nextAvailableId(getState().graph.relationships),
@@ -67,6 +70,7 @@ export const tryMoveNode = (nodeId, oldMousePosition, newMousePosition) => {
 
 export const moveNodes = (oldMousePosition, newMousePosition, nodePositions, guides) => {
   return {
+    category: 'GRAPH',
     type: 'MOVE_NODES',
     oldMousePosition,
     newMousePosition,
@@ -77,27 +81,34 @@ export const moveNodes = (oldMousePosition, newMousePosition, nodePositions, gui
 
 export const endDrag = () => {
   return function (dispatch, getState) {
-    const dragging = getState().gestures.dragToCreate;
-    if (dragging.sourceNodeId) {
-      if (dragging.targetNodeId) {
-        dispatch(connectNodes(dragging.sourceNodeId, dragging.targetNodeId))
-      } else {
-        dispatch(createNodeAndRelationship(dragging.sourceNodeId, dragging.newNodePosition))
+    const state = getState();
+    const mouse = state.mouse
+    if (mouse.dragType === 'NODE_RING') {
+      const dragToCreate = state.gestures.dragToCreate;
+      if (dragToCreate.sourceNodeId) {
+        if (dragToCreate.targetNodeId) {
+          dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
+        } else {
+          dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
+        }
       }
     }
     dispatch({
+      category: 'GRAPH',
       type: 'END_DRAG'
     })
   }
 }
 
 export const setNodeCaption = (selection, caption) => ({
+  category: 'GRAPH',
   type: 'SET_NODE_CAPTION',
   selection,
   caption
 })
 
 export const renameProperties = (selection, oldPropertyKey, newPropertyKey) => ({
+  category: 'GRAPH',
   type: 'RENAME_PROPERTY',
   selection,
   oldPropertyKey,
@@ -105,18 +116,21 @@ export const renameProperties = (selection, oldPropertyKey, newPropertyKey) => (
 })
 
 export const setProperties = (selection, keyValuePairs) => ({
+  category: 'GRAPH',
   type: 'SET_PROPERTIES',
   selection,
   keyValuePairs
 })
 
 export const setArrowsProperties = (selection, keyValuePairs) => ({
+  category: 'GRAPH',
   type: 'SET_ARROWS_PROPERTIES',
   selection,
   keyValuePairs
 })
 
 export const removeProperty = (selection, key) => ({
+  category: 'GRAPH',
   type: 'REMOVE_PROPERTY',
   selection,
   key
@@ -130,12 +144,14 @@ export const removeArrowsProperties = (selection, keys) => ({
 
 
 export const setRelationshipType = (selection, relationshipType) => ({
+  category: 'GRAPH',
   type: 'SET_RELATIONSHIP_TYPE',
   selection,
   relationshipType
 })
 
 export const deleteNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
+  category: 'GRAPH',
   type: 'DELETE_NODES_AND_RELATIONSHIPS',
   nodeIdMap,
   relationshipIdMap
