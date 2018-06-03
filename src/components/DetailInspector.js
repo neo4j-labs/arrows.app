@@ -11,7 +11,7 @@ import {combineProperties, combineStyle} from "../model/properties";
 import { nodeStyleAttributes } from "../model/styling";
 import { getStyleEditorComponent } from "./editors/editorFactory";
 
-class Inspector extends Component {
+class DetailInspector extends Component {
   constructor(props) {
     super(props)
     this.newPropElementKey = 1
@@ -55,7 +55,7 @@ class Inspector extends Component {
     })
     return (
       <div key='propertiesTable'>
-        <Divider inverted horizontal>Properties</Divider>
+        <Divider horizontal>Properties</Divider>
         {rows}
       </div>
     )
@@ -148,25 +148,21 @@ class Inspector extends Component {
       const style = combineStyle(nodes)
       fields.push(
         <div key='styling' style={{ marginTop: '1em' }}>
-          <Divider inverted horizontal>Styling</Divider>
+          <Divider horizontal>Styling</Divider>
           {this.stylingSection(style, this.props.onSaveArrowsPropertyValue, onDeleteArrowsProperty, graph.style)}
         </div>
       )
     }
 
     return (
-      <Segment inverted>
-        <Header as='h2'>
-          <Icon name='edit'/>
-          Inspector
-        </Header>
+      <React.Fragment>
         <p>
           {describeSelection(selection)}
         </p>
-        <Form inverted style={{'textAlign': 'left'}}>
+        <Form style={{'textAlign': 'left'}}>
           {fields}
         </Form>
-      </Segment>
+      </React.Fragment>
     )
   }
 
@@ -208,4 +204,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Inspector)
+)(DetailInspector)

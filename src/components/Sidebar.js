@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Sidebar, Segment, Menu } from 'semantic-ui-react'
-import Inspector from "./Inspector";
+import Inspector from "./DetailInspector";
 
 class SidebarLeftPush extends Component {
   render() {
