@@ -1,7 +1,7 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import {FETCHING_GRAPH, FETCHING_GRAPH_FAILED, UPDATING_GRAPH, UPDATING_GRAPH_FAILED} from "../state/storageStatus";
-import { Button,  Header as SemanticHeader } from 'semantic-ui-react'
+import { Icon, Menu } from 'semantic-ui-react'
 
 export const headerHeight = 50;
 
@@ -28,18 +28,16 @@ const storageStatusMessage = (props) => {
   }
 }
 
-const Header = (props) => {
-  const headerStyle = {
-    height: headerHeight
-  }
-
-  return (
-    <SemanticHeader style={headerStyle}>
-      <Button onClick={props.onPlusNodeClick}>+ Node</Button>
-      <Button onClick={props.onReloadGraphClick}>Reload graph</Button>
-      {storageStatusMessage(props)}
-    </SemanticHeader>
-  )
-}
+const Header = (props) => (
+  <Menu color='grey' inverted style={{borderRadius: 0}}>
+    <Menu.Item onClick={props.onPlusNodeClick}>
+      <Icon name='add'/>Node
+    </Menu.Item>
+    <Menu.Item onClick={props.onReloadGraphClick}>
+      <Icon name='refresh'/>Graph
+    </Menu.Item>
+    {storageStatusMessage(props)}
+  </Menu>
+)
 
 export default connect(null, null)(Header)
