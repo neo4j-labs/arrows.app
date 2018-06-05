@@ -23,6 +23,7 @@ class DetailInspector extends Component {
   }
 
   propertyInput(property) {
+    console.log(property)
     switch (property.status) {
       case 'CONSISTENT':
         return {valueFieldValue: property.value, valueFieldPlaceHolder: null}
@@ -114,13 +115,15 @@ class DetailInspector extends Component {
     const properties = combineProperties([...nodes, ...relationships])
 
     if (nodes.length > 0 && relationships.length === 0) {
-      const commonCaption = commonValue(nodes.map((node) => node.caption)) || ''
+      const value = commonValue(nodes.map((node) => node.caption));
+      const fieldValue = value || ''
+      const placeholder = value === undefined ? '<multiple values>' : null
       fields.push(
         <Form.Field key='_caption'>
           <label>Caption</label>
-          <Input value={commonCaption}
+          <Input value={fieldValue}
                  onChange={(event) => onSaveCaption(selection, event.target.value)}
-                 placeholder='<multiple values>'/>
+                 placeholder={placeholder}/>
         </Form.Field>
       )
     }
