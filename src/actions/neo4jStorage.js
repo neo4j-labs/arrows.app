@@ -92,6 +92,7 @@ export function fetchGraphFromDatabase() {
             id: relId,
             type: databaseTypeToStringType(relationship.type),
             properties: propertiesFromDatabaseEntity(relationship),
+            style: styleFromDatabaseEntity(relationship),
             fromId: from,
             toId: to
           }

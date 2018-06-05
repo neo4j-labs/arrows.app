@@ -144,10 +144,8 @@ class DetailInspector extends Component {
       fields.push((
         <Button key='saveButton' onClick={(event) => onSavePropertyValue(selection, '', '')}>+ Property</Button>
       ))
-    }
 
-    if (nodes.length > 0) {
-      const style = combineStyle(nodes)
+      const style = combineStyle([...nodes, ...relationships])
       fields.push(
         <div key='styling' style={{ marginTop: '1em' }}>
           <Divider horizontal>Styling</Divider>
