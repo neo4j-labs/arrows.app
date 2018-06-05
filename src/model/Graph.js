@@ -13,7 +13,8 @@ export const emptyGraph = () => {
       radius: defaultNodeRadius,
       'node-color': blueActive,
       'caption-color': '#ffffff',
-      'caption-font-size': defaultFontSize
+      'caption-font-size': defaultFontSize,
+      'property-font-size': defaultFontSize * (4/5)
     }
   }
 }
