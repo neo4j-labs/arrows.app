@@ -10,7 +10,9 @@ export default (visualNode) => {
   let orientation = null
   let textStart = null
   let textSide = null
-  const fontSize = get(config, 'font.size') * (4 / 5)
+  const fontSize = visualNode['caption-font-size'] * (4/5)
+  const fontColor = get(config, 'color.fill')
+  const fontFace = get(config, 'font.face')
   const lineHeight = fontSize * 2
 
   if (visualNode.edges.length === 1) {
@@ -137,19 +139,15 @@ export default (visualNode) => {
         const textAlignment = (textSide === 'left' && orientation === 'vertical')
           || (textSide === 'right' && orientation === 'horizontal') ? 'right' : 'left'
         properties.forEach((property, index) => {
-          drawProperty(ctx, topTextPoint.translate(new Vector(5, (lineHeight * index) + 5)), property, maxLineWidth, boxWidth, textAlignment)
+          drawProperty(ctx, fontSize, fontColor, fontFace, topTextPoint.translate(new Vector(5, (lineHeight * index) + 5)), property, maxLineWidth, boxWidth, textAlignment)
         })
       }
     }
   }
 }
 
-const drawProperty = (ctx, position, property, maxWidth, boxWidth, align = 'left') => {
+const drawProperty = (ctx, fontSize, fontColor, fontFace, position, property, maxWidth, boxWidth, align = 'left') => {
   ctx.save()
-
-  const fontSize = get(config, 'font.size') * (4/5)
-  const fontColor = get(config, 'color.fill')
-  const fontFace = get(config, 'font.face')
 
   let lines = getLines(ctx, `${property.key}: ${property.value}`, fontFace, fontSize, maxWidth, false)
 
