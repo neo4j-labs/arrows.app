@@ -11,7 +11,6 @@ export const selectNodesInMarquee = () => {
   return function (dispatch, getState) {
     const {graph, gestures} = getState()
     const marquee = gestures.selectionMarquee
-    console.log(marquee)
     if (marquee) {
       const bBox = getBBoxFromCorners(marquee)
       const selectedNodeIds = nodesInsidePolygon(graph, bBox)
