@@ -41,12 +41,14 @@ export const getEditorComponent = ({ key, value, type='string', onChange, onKeyC
 export const getStyleEditorComponent = (styleAttribute, value, onChange, onDelete) => {
   switch (styleAttribute) {
     case 'radius':
-      return getEditorComponent({ key: 'radius', value, type:'size', onChange, onDelete })
+      return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
     case 'node-color':
-      return getEditorComponent({ key: 'node-color', value, type:'color', onChange, onDelete })
+      return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })
+    case 'caption-color':
+      return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })
     case 'caption-font-size':
-      return getEditorComponent({ key: 'caption-font-size', value, type:'size', onChange, onDelete })
+      return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
     default:
-      return getEditorComponent({ key:styleAttribute, value, onChange, onDelete })
+      return getEditorComponent({ key: styleAttribute, value, onChange, onDelete })
   }
 }

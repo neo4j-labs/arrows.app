@@ -12,6 +12,7 @@ export const emptyGraph = () => {
     style: {
       radius: defaultNodeRadius,
       'node-color': blueActive,
+      'caption-color': '#ffffff',
       'caption-font-size': defaultFontSize
     }
   }
