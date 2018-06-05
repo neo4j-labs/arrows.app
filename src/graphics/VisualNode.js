@@ -86,10 +86,10 @@ export default class VisualNode {
     ctx.fillStyle = fontColor
     let fontWeight = 'normal' // this.boldText ? 'bold ' : 'normal '
     ctx.font = fontWeight + fontSize + 'px ' + fontFace
+    ctx.textBaseline = 'middle'
 
-    const lineDistance = 1 + fontSize
-    const totalHeight = (lines.length - 2) * lineDistance
-    let yPos = -totalHeight / 2
+    const lineDistance = fontSize
+    let yPos = -((lines.length - 1) * lineDistance) / 2
     for (let line of lines) {
       drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
       yPos += lineDistance
