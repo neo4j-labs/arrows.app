@@ -65,7 +65,7 @@ export default class VisualNode {
 
   drawCaption(ctx, position, label, maxWidth, config) {
     ctx.save()
-    const fontSize = get(config, 'font.size')
+    const fontSize = this['caption-font-size']
     const fontColor = get(config, 'color.fill')
     const fontFace = get(config, 'font.face')
 

@@ -5,10 +5,10 @@ import Slider from './Slider'
 
 export const getEditorComponent = ({ key, value, type='string', onChange, onKeyChange, onDelete, placeholder = key }) => {
   switch (type) {
-    case 'radius':
+    case 'size':
       return (<Slider
         key={'form-group-'+ key}
-        caption='radius'
+        caption={key}
         value={value}
         onChange={onChange}
         onDelete={onDelete}
@@ -41,9 +41,11 @@ export const getEditorComponent = ({ key, value, type='string', onChange, onKeyC
 export const getStyleEditorComponent = (styleAttribute, value, onChange, onDelete) => {
   switch (styleAttribute) {
     case 'radius':
-      return getEditorComponent({ key: 'radius', value, type:'radius', onChange, onDelete })
+      return getEditorComponent({ key: 'radius', value, type:'size', onChange, onDelete })
     case 'color':
       return getEditorComponent({ key: 'color', value, type:'color', onChange, onDelete })
+    case 'caption-font-size':
+      return getEditorComponent({ key: 'caption-font-size', value, type:'size', onChange, onDelete })
     default:
       return getEditorComponent({ key:styleAttribute, value, onChange, onDelete })
   }

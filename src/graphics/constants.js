@@ -4,3 +4,4 @@ export const ringMargin = 10
 export const arrowLength = 10
 export const arrowWidth = 7
 export const relationshipHitTolerance = 20
+export const defaultFontSize = 10

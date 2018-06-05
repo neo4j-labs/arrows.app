@@ -1,5 +1,5 @@
 import { isPointInPolygon } from "../graphics/utils/geometryUtils";
-import { defaultNodeRadius } from "../graphics/constants";
+import { defaultNodeRadius, defaultFontSize } from "../graphics/constants";
 import { blueActive } from "./colors";
 import { getStyleSelector } from "../selectors/style";
 
@@ -11,7 +11,8 @@ export const emptyGraph = () => {
     relationships: [],
     style: {
       radius: defaultNodeRadius,
-      color: blueActive
+      color: blueActive,
+      'caption-font-size': defaultFontSize
     }
   }
 }
