@@ -11,7 +11,7 @@ export default (visualNode) => {
   let textStart = null
   let textSide = null
   const fontSize = visualNode['property-font-size']
-  const fontColor = get(config, 'color.fill')
+  const fontColor = visualNode['property-color']
   const fontFace = get(config, 'font.face')
   const lineHeight = fontSize * 2
 

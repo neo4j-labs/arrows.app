@@ -14,6 +14,7 @@ export const emptyGraph = () => {
       'node-color': blueActive,
       'caption-color': '#ffffff',
       'caption-font-size': defaultFontSize,
+      'property-color': '#000000',
       'property-font-size': defaultFontSize * (4/5)
     }
   }
