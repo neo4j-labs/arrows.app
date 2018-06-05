@@ -11,7 +11,7 @@ export const emptyGraph = () => {
     relationships: [],
     style: {
       radius: defaultNodeRadius,
-      color: blueActive,
+      'node-color': blueActive,
       'caption-font-size': defaultFontSize
     }
   }

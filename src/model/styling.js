@@ -1,5 +1,5 @@
 export const nodeStyleAttributes = [
   'radius',
-  'color',
+  'node-color',
   'caption-font-size'
 ]
