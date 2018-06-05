@@ -23,7 +23,6 @@ class DetailInspector extends Component {
   }
 
   propertyInput(property) {
-    console.log(property)
     switch (property.status) {
       case 'CONSISTENT':
         return {valueFieldValue: property.value, valueFieldPlaceHolder: null}
