@@ -57,7 +57,6 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
       }
 
     case 'END_DRAG':
-    case 'REMOVE_MARQUEE':
       return {
         dragType: 'NONE'
       }

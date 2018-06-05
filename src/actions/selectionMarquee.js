@@ -7,7 +7,7 @@ export const setMarquee = (from, to) => ({
   newMousePosition: to
 })
 
-export const endMarquee = () => {
+export const selectNodesInMarquee = () => {
   return function (dispatch, getState) {
     const {graph, gestures} = getState()
     const marquee = gestures.selectionMarquee
@@ -18,14 +18,9 @@ export const endMarquee = () => {
       if (selectedNodeIds.length > 0) {
         dispatch(ensureSelected(selectedNodeIds))
       }
-      dispatch(removeMarquee())
     }
   }
 }
-
-export const removeMarquee = () => ({
-  type: 'REMOVE_MARQUEE'
-})
 
 const getBBoxFromCorners = ({from, to}) => [
   from, {

@@ -8,16 +8,13 @@ export default function dragging(state = {
       return {
         sourceNodeId: action.sourceNodeId, targetNodeId: null, newNodePosition: null
       }
-    case 'DEACTIVATE_RING':
-      return {
-       sourceNodeId: null, targetNodeId: null, newNodePosition: null
-      }
     case 'RING_DRAGGED':
       return {
           sourceNodeId: action.sourceNodeId,
           targetNodeId: action.targetNodeId,
           newNodePosition: action.position
       }
+    case 'DEACTIVATE_RING':
     case 'END_DRAG':
       return {
         sourceNodeId: null, targetNodeId: null, newNodePosition: null

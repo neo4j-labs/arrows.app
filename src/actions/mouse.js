@@ -1,11 +1,12 @@
 import {getVisualGraph} from "../selectors/"
 import {clearSelection, toggleSelection} from "./selection"
 import {toggleInspector} from "./sidebar"
-import {endDrag, tryMoveNode} from "./graph"
+import {connectNodes, createNodeAndRelationship, moveNodesEndDrag, tryMoveNode} from "./graph"
 import {pan} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {tryUpdateSelectionPath} from "./selectionPath"
-import {endMarquee, setMarquee} from "./selectionMarquee"
+import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
+import {idsMatch} from "../model/Id";
 
 const LongPressTime = 300
 
@@ -154,28 +155,40 @@ export const mouseUp = () => {
 
     switch (mouse.dragType) {
       case 'MARQUEE':
-        dispatch(endMarquee())
+        dispatch(selectNodesInMarquee())
         break
 
-      default:
-        dispatch(endDrag())
+      case 'NODE':
+        const graph = state.graph
+        const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
+        const nodePositions = []
+        selectedNodes.forEach((nodeId) => {
+          nodePositions.push({
+            nodeId: nodeId,
+            position: graph.nodes.find((node) => idsMatch(node.id, nodeId)).position
+          })
+        })
+        dispatch(moveNodesEndDrag(nodePositions))
+        break
+
+      case 'NODE_RING':
+        const dragToCreate = state.gestures.dragToCreate;
+        if (dragToCreate.sourceNodeId) {
+          if (dragToCreate.targetNodeId) {
+            dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
+          } else {
+            dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
+          }
+        }
+        break
     }
+    dispatch(endDrag())
   }
 }
 
-export const mouseLeave = () => {
-  return function (dispatch, getState) {
-    const state = getState();
-    const mouse = state.mouse
-
-    switch (mouse.dragType) {
-      case 'MARQUEE':
-        dispatch(endMarquee())
-        break
-
-      default:
-        dispatch(endDrag())
-    }
+export const endDrag = () => {
+  return {
+    type: 'END_DRAG'
   }
 }
 

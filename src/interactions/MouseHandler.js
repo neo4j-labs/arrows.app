@@ -1,5 +1,5 @@
 import {Point} from "../model/Point";
-import {click, doubleClick, mouseDown, mouseLeave, mouseMove, mouseUp} from "../actions/mouse";
+import {click, doubleClick, endDrag, mouseDown, mouseMove, mouseUp} from "../actions/mouse";
 
 export default class MouseHandler {
   constructor(canvas) {
@@ -54,7 +54,7 @@ export default class MouseHandler {
   }
 
   handleMouseLeave (evt) {
-    this.dispatch(mouseLeave())
+    this.dispatch(endDrag())
     evt.preventDefault()
   }
 
