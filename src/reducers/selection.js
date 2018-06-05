@@ -41,7 +41,8 @@ export default function selection(state = {
     case 'CLEAR_SELECTION':
       return {
         ...state,
-        selectedNodeIdMap: {}
+        selectedNodeIdMap: {},
+        selectedRelationshipIdMap: {}
       }
     case 'CREATE_NODE': {
       const oneNodeSelected = {}
