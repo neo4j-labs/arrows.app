@@ -8,7 +8,7 @@ export default class extends Component {
   }
 
   render () {
-    const { caption = 'color', value, onChange, onDelete } = this.props
+    const { caption, value, onChange, onDelete } = this.props
     const { expanded } = this.state
 
     return (

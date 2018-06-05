@@ -17,6 +17,7 @@ export const getEditorComponent = ({ key, value, type='string', onChange, onKeyC
       return (
         <ColorPicker
           key={'form-group-'+ key}
+          caption={key}
           value={value}
           onChange={onChange}
           onDelete={onDelete}
@@ -43,6 +44,10 @@ export const getStyleEditorComponent = (styleAttribute, value, onChange, onDelet
     case 'radius':
       return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
     case 'node-color':
+      return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })
+    case 'border-width':
+      return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
+    case 'border-color':
       return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })
     case 'caption-color':
       return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })

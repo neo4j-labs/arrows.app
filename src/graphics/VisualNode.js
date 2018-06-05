@@ -1,4 +1,4 @@
-import {drawCaption, drawSolidCircle, drawTextLine} from "./canvasRenderer";
+import {drawCaption, drawCircle, drawSolidCircle, drawTextLine} from "./canvasRenderer";
 import {getLines} from "./utils/wordwrap";
 import config from './config'
 import get from 'lodash.get'
@@ -58,9 +58,21 @@ export default class VisualNode {
   draw(ctx, state) {
     const { caption } = this.node
     drawSolidCircle(ctx, this.position, this['node-color'], this.radius)
+    if (this['border-width'] > 0) {
+      this.drawBorder(ctx)
+    }
     if (caption) {
       this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
     }
+  }
+
+  drawBorder(ctx) {
+    const strokeWidth = this['border-width']
+    ctx.save()
+    ctx.strokeStyle = this['border-color']
+    ctx.lineWidth = strokeWidth
+    drawCircle(ctx, this.position, this.radius - strokeWidth / 2, true)
+    ctx.restore()
   }
 
   drawCaption(ctx, position, label, maxWidth, config) {
