@@ -1,7 +1,7 @@
 import find from 'lodash.find'
 import { withProps } from 'recompose'
 
-export const SELECT_ALL_NODES = 'SELECT_ALL_NODES'
+export const SELECT_ALL = 'SELECT_ALL'
 export const DESELECT_ALL_NODES = 'DESELECT_ALL_NODES'
 export const INVERT_SELECTION = 'INVERT_SELECTION'
 export const DISMISS_SELECTION = 'DISMISS_SELECTION'
@@ -12,7 +12,7 @@ export const ZOOM_OUT = 'ZOOM_OUT'
 export const DELETE_SELECTION = 'DELETE_SELECTION'
 
 const KeyBindings = {
-  [SELECT_ALL_NODES]: [{ metaKey: true, code: 65 }],
+  [SELECT_ALL]: [{ metaKey: true, code: 65 }],
   [DESELECT_ALL_NODES]: [{ metaKey: true, shiftKey: true, code: 65 }],
   [INVERT_SELECTION]: [{ metaKey: true, altKey: true, code: 65 }],
   [DISMISS_SELECTION]: [{ metaKey: true, code: 68 }],

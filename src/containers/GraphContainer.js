@@ -6,6 +6,7 @@ import {windowResized} from "../actions/windowSize"
 import {getVisualGraph} from "../selectors/index"
 import {deleteSelection} from "../actions/graph"
 import {removeSelectionPath} from "../actions/selectionPath"
+import {selectAll} from "../actions/selection";
 
 const mapStateToProps = state => {
   return {
@@ -23,6 +24,7 @@ const mapDispatchToProps = dispatch => {
     onWindowResized: (width, height) => dispatch(windowResized(width, height)),
     removeSelectionPath: () => dispatch(removeSelectionPath()),
     deleteSelection: () => dispatch(deleteSelection()),
+    selectAll: () => dispatch(selectAll()),
     dispatch: dispatch
   }
 }

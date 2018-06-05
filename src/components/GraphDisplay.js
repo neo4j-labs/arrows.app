@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { renderVisuals } from "../graphics/visualsRenderer";
-import { DELETE_SELECTION } from "../interactions/Keybindings";
+import {DELETE_SELECTION, SELECT_ALL} from "../interactions/Keybindings";
 import MouseHandler from "../interactions/MouseHandler";
 
 class GraphDisplay extends Component {
@@ -13,6 +13,10 @@ class GraphDisplay extends Component {
     props.registerAction(
       DELETE_SELECTION,
       () => this.props.deleteSelection()
+    )
+    props.registerAction(
+      SELECT_ALL,
+      () => this.props.selectAll()
     )
   }
 

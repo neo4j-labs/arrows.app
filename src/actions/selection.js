@@ -10,6 +10,13 @@ export const ensureSelected = (selectedNodeIds) => ({
   selectedNodeIds
 })
 
+export const selectAll = () => {
+  return function (dispatch, getState) {
+    const graph = getState().graph
+    dispatch(ensureSelected(graph.nodes.map(node => node.id)))
+  }
+}
+
 export const clearSelection = () => ({
   type: 'CLEAR_SELECTION',
 })
