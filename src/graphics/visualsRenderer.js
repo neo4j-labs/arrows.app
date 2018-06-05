@@ -1,5 +1,5 @@
 import Gestures from "./Gestures";
-import annotation from "./Annotation";
+import {drawAnnotation} from "./Annotation";
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const { visualGraph, selection, gestures, guides } = visuals
@@ -20,7 +20,7 @@ function drawGraph(ctx, visualGraph) {
   Object.values(visualGraph.nodes).forEach(visualNode => {
     visualNode.draw(ctx, visualGraph)
     if (visualNode.node.properties) {
-      annotation(visualNode).draw(ctx)
+      drawAnnotation(ctx, visualNode)
     }
   })
 }

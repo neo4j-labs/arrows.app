@@ -1,10 +1,10 @@
-import { Vector } from "../model/Vector";
-import { drawStraightLine, drawTextLine } from "./canvasRenderer";
-import { getLines } from "./utils/wordwrap";
+import {Vector} from "../model/Vector";
+import {drawStraightLine, drawTextLine} from "./canvasRenderer";
+import {getLines} from "./utils/wordwrap";
 import config from './config'
 import get from 'lodash.get'
 
-export default (visualNode) => {
+export const drawAnnotation = (ctx, visualNode) => {
   const position = visualNode.position
   let boxAngle = 0
   let orientation = null
@@ -13,7 +13,8 @@ export default (visualNode) => {
   const fontSize = visualNode['property-font-size']
   const fontColor = visualNode['property-color']
   const fontFace = get(config, 'font.face')
-  const lineHeight = fontSize * 2
+  const lineHeight = fontSize
+  const maxLineWidth = lineHeight * 10
 
   if (visualNode.edges.length === 1) {
     const edgeAngle = Math.atan2(visualNode.edges[0].fromPoint.y - position.y, visualNode.edges[0].fromPoint.x - position.x)
@@ -48,7 +49,7 @@ export default (visualNode) => {
 
       if (angle > maxAngle) {
         maxAngle = angle
-        maxArc = { start: point1, end: point2, arcAngle: angle }
+        maxArc = {start: point1, end: point2, arcAngle: angle}
       }
     }
 
@@ -79,7 +80,7 @@ export default (visualNode) => {
     textStart = 'end'
     textSide = 'left'
   } else if (Math.abs(boxAngle + Math.PI / 2) < snapThreshold) {
-    boxAngle = - Math.PI / 2
+    boxAngle = -Math.PI / 2
     orientation = 'vertical'
     textStart = 'end'
     textSide = 'right'
@@ -88,18 +89,16 @@ export default (visualNode) => {
   let boxVector = new Vector(Math.cos(boxAngle), Math.sin(boxAngle)).unit()
 
   const properties = Object.keys(visualNode.node.properties).map(key => ({key, value: visualNode.node.properties[key]}))
-  let maxPropertyValueLength = 0
+
+  const lines = []
   properties.forEach(property => {
-    const length = `${property.key}: ${property.value}`.length
-    if (length > maxPropertyValueLength) {
-      maxPropertyValueLength = length
-    }
+    const singlePropertyLines = getLines(ctx, `${property.key}: ${property.value}`, fontFace, fontSize, maxLineWidth, false)
+    singlePropertyLines.forEach(line => lines.push(line))
   })
 
-  const noOfLines = properties.length
   const attachedAt = position.translate(boxVector.scale(visualNode.radius))
 
-  if(!orientation || !textStart) {
+  if (!orientation || !textStart) {
     if (0 <= boxAngle && boxAngle < Math.PI / 2) {
       orientation = 'vertical'
       textStart = 'start'
@@ -119,50 +118,42 @@ export default (visualNode) => {
     }
   }
 
-  const maxLineWidth = 100
-  const boxHeight = (lineHeight * noOfLines + 5)
-  const boxWidth = Math.min(maxPropertyValueLength * 5, maxLineWidth)
+  const boxHeight = (lineHeight * lines.length)
+  const boxWidth = maxLineWidth
 
   const start = attachedAt.translate(boxVector.scale(visualNode.radius / 2))
-  const end = start.translate(new Vector(orientation === 'vertical' ? 0 : (textStart === 'start' ? boxWidth : - boxWidth),
-    orientation === 'vertical' ? (textStart === 'start' ? boxHeight : - boxHeight) : 0))
+  const end = start.translate(new Vector(orientation === 'vertical' ? 0 : (textStart === 'start' ? boxWidth : -boxWidth),
+    orientation === 'vertical' ? (textStart === 'start' ? boxHeight : -boxHeight) : 0))
 
   const topTextPoint = (textStart === 'start' ? start : end)
-    .translate(new Vector((textSide === 'left' && orientation === 'vertical') ? - boxWidth : 0, 5))
+    .translate(new Vector((textSide === 'left' && orientation === 'vertical') ? -boxWidth : 0, 0))
 
-  return {
-    draw: (ctx) => {
-      if (noOfLines > 0) {
-        drawStraightLine(ctx, attachedAt, start)
-        drawStraightLine(ctx, start, end)
+  if (lines.length > 0) {
+    drawStraightLine(ctx, attachedAt, start)
+    drawStraightLine(ctx, start, end)
 
-        const textAlignment = (textSide === 'left' && orientation === 'vertical')
-          || (textSide === 'right' && orientation === 'horizontal') ? 'right' : 'left'
-        properties.forEach((property, index) => {
-          drawProperty(ctx, fontSize, fontColor, fontFace, topTextPoint.translate(new Vector(5, (lineHeight * index) + 5)), property, maxLineWidth, boxWidth, textAlignment)
-        })
-      }
-    }
+    const textAlignment = (textSide === 'left' && orientation === 'vertical')
+    || (textSide === 'right' && orientation === 'horizontal') ? 'right' : 'left'
+
+
+    lines.forEach((line, index) => {
+      const dx = textAlignment === 'left' ? fontSize / 5 : -fontSize / 5
+      const dy = (lineHeight * (index + .5))
+      drawPropertyLine(ctx, fontSize, fontColor, fontFace, topTextPoint.translate(new Vector(dx, dy)), line, boxWidth, textAlignment)
+    })
   }
 }
 
-const drawProperty = (ctx, fontSize, fontColor, fontFace, position, property, maxWidth, boxWidth, align = 'left') => {
+const drawPropertyLine = (ctx, fontSize, fontColor, fontFace, position, line, boxWidth, align = 'left') => {
   ctx.save()
-
-  let lines = getLines(ctx, `${property.key}: ${property.value}`, fontFace, fontSize, maxWidth, false)
 
   ctx.fillStyle = fontColor
   let fontWeight = 'normal' // this.boldText ? 'bold ' : 'normal '
   ctx.font = fontWeight + fontSize + 'px ' + fontFace
+  ctx.textBaseline = 'middle'
 
-  const lineDistance = 1 + fontSize
-  const totalHeight = (lines.length - 2) * lineDistance
-  let offsetY = -totalHeight / 2
-  for (let line of lines) {
-    const offsetX = align === 'left' ? 0 : (boxWidth - ctx.measureText(line).width - 10)
-    drawTextLine(ctx, line, position.translate(new Vector(offsetX, offsetY)), false)
-    offsetY += lineDistance
-  }
+  const offsetX = align === 'left' ? 0 : (boxWidth - ctx.measureText(line).width)
+  drawTextLine(ctx, line, position.translate(new Vector(offsetX, 0)), false)
 
   ctx.restore()
 }
