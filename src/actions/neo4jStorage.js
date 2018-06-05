@@ -77,9 +77,6 @@ export function fetchGraphFromDatabase() {
             caption: neo4jNode.properties['_caption'],
             style: styleFromDatabaseEntity(neo4jNode),
             properties: propertiesFromDatabaseEntity(neo4jNode),
-            get radius() {
-              return this.style.radius || defaultNodeRadius
-            }
           })
         })
         return session.readTransaction((tx) => tx.run("MATCH (source:Diagram0)-[r]->(target:Diagram0) " +
