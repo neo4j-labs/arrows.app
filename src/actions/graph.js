@@ -117,7 +117,6 @@ export const endDrag = () => {
         break
     }
     dispatch({
-      category: 'GRAPH',
       type: 'END_DRAG'
     })
   }
