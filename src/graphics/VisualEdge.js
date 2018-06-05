@@ -5,9 +5,11 @@ import {
 } from "./utils/geometryUtils";
 import { drawArrowEndpoint } from "./canvasRenderer";
 import {idsMatch} from "../model/Id";
+import {getStyleSelector} from "../selectors/style";
+import { relationshipStyleAttributes } from "../model/styling";
 
 export default class VisualEdge {
-  constructor(edgeData, options, selected) {
+  constructor(edgeData, options, selected, graph) {
     this.relationship = edgeData.relationship
     this.id = this.relationship.id
     this.from = edgeData.from
@@ -26,6 +28,10 @@ export default class VisualEdge {
 
     // get the via node from the edge type
     this.viaCoordinates = this.getViaCoordinates()
+
+    relationshipStyleAttributes.forEach(styleAttribute => {
+      this[styleAttribute] = getStyleSelector(this.relationship, styleAttribute)(graph)
+    })
   }
 
   get deflection () {
@@ -33,15 +39,14 @@ export default class VisualEdge {
   }
 
   updateEndPoints () {
-    this._updateEndPointsWithGap(this.getViaCoordinates())
+    this._updateEndPointsWithGap(this.getViaCoordinates(), this['arrow-width'])
 
-    this.dataTo = getArrowGeometryData(this.from, this.fromPoint, this.to, this.toPoint, this.viaCoordinates)
+    this.arrowHeadShape = getArrowGeometryData(this.from, this.fromPoint, this.to, this.toPoint, this.viaCoordinates, this['arrow-width'])
 
     // Move back end point slightly so line doesn't stick out of arrow head
-    const lineWidth = this._getOption('width')
 
-    this.toPoint.x -= Math.cos(this.dataTo.angle) * lineWidth
-    this.toPoint.y -= Math.sin(this.dataTo.angle) * lineWidth
+    this.toPoint.x -= Math.cos(this.arrowHeadShape.angle) * this['arrow-width']
+    this.toPoint.y -= Math.sin(this.arrowHeadShape.angle) * this['arrow-width']
   }
 
   draw (ctx) {
@@ -51,7 +56,7 @@ export default class VisualEdge {
 
     // draw arrow
     this.drawLine(ctx, this.viaCoordinates, false, false)
-    this.drawArrowHead(ctx, this.dataTo)
+    this.drawArrowHead(ctx, this.arrowHeadShape)
 
     // draw label
     if (this._getOption('drawLabel')) {
@@ -60,13 +65,9 @@ export default class VisualEdge {
   }
 
   drawLine (ctx, viaNode, outline, blur) {
-    if (outline) {
-      ctx.strokeStyle = this._getOption('edgeTypePlugin.color.outlineSelected')
-      ctx.lineWidth = 3 * this._getOption('edgeTypePlugin.outlineWidth')
-    } else {
-      ctx.strokeStyle = this._getOption('color.fill')
-      ctx.lineWidth = this.selected ? 1.5 : 1
-    }
+    ctx.save()
+    ctx.strokeStyle = this._getOption('color.fill')
+    ctx.lineWidth = this['arrow-width'] * (this.selected ? 1.5 : 1)
 
     if (this.from !== this.to) {
       // draw line
@@ -75,11 +76,12 @@ export default class VisualEdge {
       let [x, y, radius] = this._getCircleData(ctx)
       this._circle(ctx, x, y, radius, blur)
     }
+    ctx.restore()
   }
 
-  drawArrowHead (ctx, arrowData) {
-    let length = arrowData.length
-    drawArrowEndpoint(ctx, this.toPoint.x, this.toPoint.y, arrowData.angle, length, 0.5)
+  drawArrowHead (ctx, arrowHeadShape) {
+    let length = arrowHeadShape.length
+    drawArrowEndpoint(ctx, this.toPoint.x, this.toPoint.y, arrowHeadShape.angle, length, 0.5)
 
     ctx.fill()
   }
@@ -200,12 +202,11 @@ export default class VisualEdge {
     return {x: xVia, y: yVia}
   }
 
-  _updateEndPointsWithGap (viaNode) {
+  _updateEndPointsWithGap (viaNode, width) {
     if (!this.from || !this.to || this.from === this.to) {
       return
     }
 
-    const width = this._getOption('width')
     const fromArrowGap = this._getOption('edgeTypePlugin.arrows.from.gap')
     const toArrowGap = this._getOption('edgeTypePlugin.arrows.to.gap')
 

@@ -8,7 +8,7 @@ import {
 import {commonValue} from "../model/values";
 import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
 import {combineProperties, combineStyle} from "../model/properties";
-import { nodeStyleAttributes } from "../model/styling";
+import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
 import { getStyleEditorComponent } from "./editors/editorFactory";
 
 class DetailInspector extends Component {
@@ -61,9 +61,13 @@ class DetailInspector extends Component {
     )
   }
 
-  stylingSection (style, onSaveArrowsPropertyValue, onDeleteArrowsProperty, graphStyle) {
+  stylingSection (style, selectionIncludes, onSaveArrowsPropertyValue, onDeleteArrowsProperty, graphStyle) {
     const existingStyleAttributes = Object.keys(style)
-    const availableStyleAttributes = nodeStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
+    const possibleStyleAttributes = []
+      .concat(selectionIncludes.nodes ? nodeStyleAttributes : [])
+      .concat(selectionIncludes.relationships ? relationshipStyleAttributes : [])
+
+    const availableStyleAttributes = possibleStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
     const styleElements = []
 
     const styleOptions = availableStyleAttributes.map(styleAttribute => ({
@@ -111,9 +115,14 @@ class DetailInspector extends Component {
 
     const nodes = selectedNodes(graph, selection)
     const relationships = selectedRelationships(graph, selection)
-    const properties = combineProperties([...nodes, ...relationships])
+    const entities = [...nodes, ...relationships];
+    const selectionIncludes = {
+      nodes: nodes.length > 0,
+      relationships: relationships.length > 0
+    }
+    const properties = combineProperties(entities)
 
-    if (nodes.length > 0 && relationships.length === 0) {
+    if (selectionIncludes.nodes && !selectionIncludes.relationships) {
       const value = commonValue(nodes.map((node) => node.caption));
       const fieldValue = value || ''
       const placeholder = value === undefined ? '<multiple values>' : null
@@ -127,7 +136,7 @@ class DetailInspector extends Component {
       )
     }
 
-    if (relationships.length > 0 && nodes.length === 0) {
+    if (selectionIncludes.relationships && !selectionIncludes.nodes) {
       const commonType = commonValue(relationships.map((relationship) => relationship.type))
       fields.push(
         <Form.Field key='_type'>
@@ -139,17 +148,17 @@ class DetailInspector extends Component {
       )
     }
 
-    if (nodes.length > 0 || relationships.length > 0) {
+    if (selectionIncludes.relationships || selectionIncludes.nodes) {
       fields.push(this.propertyTable(properties))
       fields.push((
         <Button key='saveButton' onClick={(event) => onSavePropertyValue(selection, '', '')}>+ Property</Button>
       ))
 
-      const style = combineStyle([...nodes, ...relationships])
+      const style = combineStyle(entities)
       fields.push(
         <div key='styling' style={{ marginTop: '1em' }}>
           <Divider horizontal>Styling</Divider>
-          {this.stylingSection(style, this.props.onSaveArrowsPropertyValue, onDeleteArrowsProperty, graph.style)}
+          {this.stylingSection(style, selectionIncludes, this.props.onSaveArrowsPropertyValue, onDeleteArrowsProperty, graph.style)}
         </div>
       )
     }

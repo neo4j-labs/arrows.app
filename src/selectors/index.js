@@ -23,7 +23,8 @@ export const getVisualGraph = createSelector(
           to: nodes[relationship.toId]
         },
         config,
-        selection.selectedRelationshipIdMap[relationship.id])
+        selection.selectedRelationshipIdMap[relationship.id],
+        graph),
     )
 
     return new VisualGraph(graph, nodes, relationships)

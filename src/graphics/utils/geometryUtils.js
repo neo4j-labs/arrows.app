@@ -107,8 +107,7 @@ export const getCirclesCrossPoint = (node, x, y, low, high, direction, radius) =
   return pos
 }
 
-export const getArrowGeometryData = (from, fromPoint, to, toPoint, viaNode, position = 'to') => {
-  const lineWidth = 1
+export const getArrowGeometryData = (from, fromPoint, to, toPoint, viaNode, lineWidth) => {
   let angle
   let arrowPoint
   let node1 = to
@@ -118,7 +117,7 @@ export const getArrowGeometryData = (from, fromPoint, to, toPoint, viaNode, posi
   let type = 'arrow'
 
   if (node1 !== node2) {
-    arrowPoint = getBezierAndCircleCrossPoint(node1, from, to, position === 'from', viaNode)
+    arrowPoint = getBezierAndCircleCrossPoint(node1, from, to, false, viaNode)
     var guidePos = getPointAtRange(Math.max(0.0, Math.min(1.0, arrowPoint.t + guideOffset)), fromPoint, toPoint, viaNode)
     angle = Math.atan2(arrowPoint.y - guidePos.y, arrowPoint.x - guidePos.x)
   } else {
@@ -134,7 +133,7 @@ export const getArrowGeometryData = (from, fromPoint, to, toPoint, viaNode, posi
   }
 
   var length = 0
-  if (!(position === 'from' && type === 'none')) {
+  if (!(type === 'none')) {
     length = 15 * scaleFactor * Math.sqrt(lineWidth)
   }
 

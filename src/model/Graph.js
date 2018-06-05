@@ -17,7 +17,8 @@ export const emptyGraph = () => {
       'caption-color': '#ffffff',
       'caption-font-size': defaultFontSize,
       'property-color': '#000000',
-      'property-font-size': defaultFontSize * (4/5)
+      'property-font-size': defaultFontSize * (4/5),
+      'arrow-width': 1
     }
   }
 }

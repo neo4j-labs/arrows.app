@@ -57,6 +57,8 @@ export const getStyleEditorComponent = (styleAttribute, value, onChange, onDelet
       return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })
     case 'property-font-size':
       return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
+    case 'arrow-width':
+      return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
     default:
       return getEditorComponent({ key: styleAttribute, value, onChange, onDelete })
   }

@@ -8,3 +8,7 @@ export const nodeStyleAttributes = [
   'property-color',
   'property-font-size'
 ]
+
+export const relationshipStyleAttributes = [
+  'arrow-width'
+]
