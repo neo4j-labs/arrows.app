@@ -11,6 +11,6 @@ export function nextAvailableId(entities) {
     .filter((id) => /^n[0-9]+$/.test(id))
     .map((id) => parseInt(id.substring(1)))
     .sort((x, y) => x-y)
-  
+
   return 'n' + (currentIds.length > 0 ? currentIds.pop() + 1 : 0)
 }

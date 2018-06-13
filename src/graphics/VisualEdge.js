@@ -39,7 +39,8 @@ export default class VisualEdge {
   }
 
   updateEndPoints () {
-    this._updateEndPointsWithGap(this.getViaCoordinates(), this['arrow-width'])
+    this.viaCoordinates = this.getViaCoordinates()
+    this._updateEndPointsWithGap(this.viaCoordinates, this['arrow-width'])
 
     this.arrowHeadShape = getArrowGeometryData(this.from, this.fromPoint, this.to, this.toPoint, this.viaCoordinates, this['arrow-width'])
 
