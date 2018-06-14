@@ -114,11 +114,9 @@ const applyUpdate = (action) => {
       }
     }
 
-    case 'SET_PROPERTIES': {
+    case 'SET_PROPERTY': {
       const properties = {}
-      action.keyValuePairs.forEach((keyValuePair) => {
-        properties[propertyKeyToDatabaseKey(keyValuePair.key)] = keyValuePair.value
-      })
+      properties[propertyKeyToDatabaseKey(action.key)] = action.value
       return (session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'SET n += $properties', {
@@ -133,11 +131,9 @@ const applyUpdate = (action) => {
       }
     }
 
-    case 'SET_ARROWS_PROPERTIES': {
+    case 'SET_ARROWS_PROPERTY': {
       const styleProperties = {}
-      action.keyValuePairs.forEach((keyValuePair) => {
-        styleProperties[styleKeyToDatabaseKey(keyValuePair.key)] = keyValuePair.value
-      })
+      styleProperties[styleKeyToDatabaseKey(action.key)] = action.value
       return (session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'SET n += $properties', {
@@ -148,6 +144,19 @@ const applyUpdate = (action) => {
           'SET r += $properties', {
           ids: Object.keys(action.selection.selectedRelationshipIdMap),
           properties: styleProperties
+        });
+      }
+    }
+
+    case 'REMOVE_ARROWS_PROPERTY': {
+      return (session) => {
+        session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
+          'REMOVE n.`' + styleKeyToDatabaseKey(action.key) + '`', {
+          ids: Object.keys(action.selection.selectedNodeIdMap)
+        });
+        return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
+          'REMOVE r.`' + styleKeyToDatabaseKey(action.key) + '`', {
+          ids: Object.keys(action.selection.selectedRelationshipIdMap)
         });
       }
     }

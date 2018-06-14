@@ -2,7 +2,7 @@ import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setCaption} from "../model/Node";
 import { setType } from "../model/Relationship";
-import { removeProperty, renameProperty, setArrowsProperties, setProperties, removeArrowsProperties } from "../model/properties";
+import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
 import { defaultNodeRadius } from "../graphics/constants";
 
 const graph = (state = emptyGraph(), action) => {
@@ -68,19 +68,19 @@ const graph = (state = emptyGraph(), action) => {
       }
     }
 
-    case 'SET_PROPERTIES': {
+    case 'SET_PROPERTY': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setProperties(node, action.keyValuePairs) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setProperties(relationship, action.keyValuePairs) : relationship)
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setProperty(node, action.key, action.value) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setProperty(relationship, action.key, action.value) : relationship)
       }
     }
 
-    case 'SET_ARROWS_PROPERTIES': {
+    case 'SET_ARROWS_PROPERTY': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setArrowsProperties(node, action.keyValuePairs) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setArrowsProperties(relationship, action.keyValuePairs) : relationship)
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setArrowsProperty(node, action.key, action.value) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setArrowsProperty(relationship, action.key, action.value) : relationship)
       }
     }
 
@@ -92,11 +92,11 @@ const graph = (state = emptyGraph(), action) => {
       }
     }
 
-    case 'REMOVE_ARROWS_PROPERTIES': {
+    case 'REMOVE_ARROWS_PROPERTY': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeArrowsProperties(node, action.keys) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? removeArrowsProperties(relationship, action.keys) : relationship)
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeArrowsProperty(node, action.key) : node),
+        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? removeArrowsProperty(relationship, action.key) : relationship)
       }
     }
 

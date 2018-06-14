@@ -105,31 +105,27 @@ export const renameProperty = (entity, oldPropertyKey, newPropertyKey) => {
   }
 }
 
-export const setProperties = (entity, keyValuePairs) => {
+export const setProperty = (entity, key, value) => {
   const properties = {...entity.properties}
-  keyValuePairs.forEach((keyValuePair) => {
-    properties[keyValuePair.key] = keyValuePair.value
-  })
+  properties[key] = value
   return {
     ...entity,
     properties
   }
 }
 
-export const setArrowsProperties = (entity, keyValuePairs) => {
+export const setArrowsProperty = (entity, key, value) => {
   const newEntity = { ...entity }
 
   if (!newEntity.style) {
     newEntity.style = {}
   }
 
-  keyValuePairs.forEach(keyValuePair => {
-    newEntity.style[keyValuePair.key] = keyValuePair.value
-    Object.defineProperty(newEntity, keyValuePair.key, {
-      get: function () {
-        return this.style[keyValuePair.key]
-      }
-    })
+  newEntity.style[key] = value
+  Object.defineProperty(newEntity, key, {
+    get: function () {
+      return this.style[key]
+    }
   })
 
   return newEntity
@@ -148,14 +144,11 @@ export const removeProperty = (entity, keyToRemove) => {
   }
 }
 
-export const removeArrowsProperties = (entity, keys) => {
-  const newEntity = { ...entity }
-  console.log('NEW ENTITY', newEntity)
-  Object.keys(newEntity.style).forEach(key => {
-    if (keys.includes(key)) {
-      delete newEntity.style[key]
-    }
-  })
-
-  return newEntity
+export const removeArrowsProperty = (entity, keyToRemove) => {
+  const style = { ...entity.style }
+  delete style[keyToRemove]
+  return {
+    ...entity,
+    style
+  }
 }

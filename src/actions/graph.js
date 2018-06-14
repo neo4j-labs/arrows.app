@@ -94,7 +94,7 @@ export const setNodeCaption = (selection, caption) => ({
   caption
 })
 
-export const renameProperties = (selection, oldPropertyKey, newPropertyKey) => ({
+export const renameProperty = (selection, oldPropertyKey, newPropertyKey) => ({
   category: 'GRAPH',
   type: 'RENAME_PROPERTY',
   selection,
@@ -102,18 +102,20 @@ export const renameProperties = (selection, oldPropertyKey, newPropertyKey) => (
   newPropertyKey
 })
 
-export const setProperties = (selection, keyValuePairs) => ({
+export const setProperty = (selection, key, value) => ({
   category: 'GRAPH',
-  type: 'SET_PROPERTIES',
+  type: 'SET_PROPERTY',
   selection,
-  keyValuePairs
+  key,
+  value
 })
 
-export const setArrowsProperties = (selection, keyValuePairs) => ({
+export const setArrowsProperty = (selection, key, value) => ({
   category: 'GRAPH',
-  type: 'SET_ARROWS_PROPERTIES',
+  type: 'SET_ARROWS_PROPERTY',
   selection,
-  keyValuePairs
+  key,
+  value
 })
 
 export const removeProperty = (selection, key) => ({
@@ -123,10 +125,11 @@ export const removeProperty = (selection, key) => ({
   key
 })
 
-export const removeArrowsProperties = (selection, keys) => ({
-  type: 'REMOVE_ARROWS_PROPERTIES',
+export const removeArrowsProperty = (selection, key) => ({
+  category: 'GRAPH',
+  type: 'REMOVE_ARROWS_PROPERTY',
   selection,
-  keys
+  key
 })
 
 
