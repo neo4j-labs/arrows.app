@@ -19,7 +19,7 @@ export const click = (canvasPosition) => {
     const visualGraph = getVisualGraph(state)
     const graphPosition = toGraphPosition(state, canvasPosition)
 
-    const item = visualGraph.entityAtPoint(graphPosition)
+    const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
     if (!mouse.dragging && item === null) {
       dispatch(tryUpdateSelectionPath(canvasPosition, false))
     }
@@ -28,9 +28,10 @@ export const click = (canvasPosition) => {
 
 export const doubleClick = (canvasPosition) => {
   return function (dispatch, getState) {
-    const visualGraph = getVisualGraph(getState())
-
-    const item = visualGraph.entityAtPoint(canvasPosition)
+    const state = getState()
+    const visualGraph = getVisualGraph(state)
+    const graphPosition = toGraphPosition(state, canvasPosition)
+    const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
     if (item) {
       dispatch(toggleInspector())
     } else {
@@ -45,7 +46,7 @@ export const mouseDown = (canvasPosition, metaKey) => {
     const visualGraph = getVisualGraph(state)
     const graphPosition = toGraphPosition(state, canvasPosition)
 
-    const item = visualGraph.entityAtPoint(graphPosition)
+    const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
     if (item) {
       switch (item.entityType) {
         case 'node':
@@ -105,7 +106,7 @@ export const mouseMove = (canvasPosition) => {
 
     switch (mouse.dragType) {
       case 'NONE':
-        const item = visualGraph.entityAtPoint(graphPosition)
+        const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
         if (item && item.entityType === 'nodeRing') {
           if (dragging.sourceNodeId === null || (dragging.sourceNodeId && item.id !== dragging.sourceNodeId)) {
             dispatch(activateRing(item.id))

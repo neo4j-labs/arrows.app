@@ -32,14 +32,14 @@ export default class VisualGraph {
     edges.forEach(edge => edge.updateEndPoints())
   }
 
-  entityAtPoint(point) {
-    const node = nodeAtPoint(this.graph, point)
+  entityAtPoint(canvasPosition, graphPosition) {
+    const node = nodeAtPoint(this.graph, graphPosition)
     if (node) return { ...node, entityType: 'node' }
 
-    const nodeRing = nodeRingAtPoint(this.graph, point)
+    const nodeRing = nodeRingAtPoint(this.graph, graphPosition)
     if (nodeRing) return { ...nodeRing, entityType: 'nodeRing' }
 
-    const relationship = this.relationshipAtPoint(point)
+    const relationship = this.relationshipAtPoint(canvasPosition)
     if (relationship) return { ...relationship, entityType: 'relationship' }
 
     return null
