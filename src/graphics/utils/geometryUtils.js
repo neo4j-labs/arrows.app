@@ -1,6 +1,33 @@
 import { defaultNewNodeRadius } from "../constants";
 import Voronoi from "./voronoi";
 
+export const calculateBoundingBox = positions => {
+  if (positions.length === 0) {
+    return null
+  }
+
+  let left = positions[0].x
+  let right = positions[0].x
+  let top = positions[0].y
+  let bottom =  positions[0].y
+
+  positions.forEach(position => {
+    if (position.x > right) {
+      right = position.x
+    } else if (position.x < left) {
+      left = position.x
+    }
+
+    if (position.y > bottom) {
+      bottom = position.y
+    } else if (position.y < top) {
+      top = position.y
+    }
+  })
+
+  return { left, right, top, bottom }
+}
+
 export const pointOnCircle = (x, y, radius, percentage) => {
   let angle = percentage * 2 * Math.PI
   return {
