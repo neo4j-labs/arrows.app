@@ -8,6 +8,8 @@ const viewTransformation = (state = new ViewTransformation(), action) => {
     case 'PAN':
       return state.pan(action.newMousePosition.vectorFrom(action.oldMousePosition))
 
+    case 'ADJUST_VIEWPORT':
+      return state.adjust(action.scale, action.panX, action.panY)
     default:
       return state
   }
