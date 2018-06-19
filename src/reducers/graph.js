@@ -101,6 +101,7 @@ const graph = (state = emptyGraph(), action) => {
     }
 
     case 'MOVE_NODES':
+      console.log('MOVE_NODES')
       const nodeIdToNode = {}
       state.nodes.forEach((node) => {
         nodeIdToNode[node.id] = node
