@@ -3,13 +3,19 @@ import { adjustViewport } from "../actions/viewTransformation"
 import { FETCHING_GRAPH_SUCCEEDED } from "../state/storageStatus"
 import { Point } from "../model/Point"
 
+const observedActionTypes = [
+  'MOVE_NODES',
+  'MOVE_NODES_END_DRAG',
+  'FETCHING_GRAPH_SUCCEEDED'
+]
+
 export const viewportMiddleware = store => next => action => {
   const result = next(action)
 
-  if (action.type === 'FETCHING_GRAPH_SUCCEEDED' || action.category === 'GRAPH') {
+  if (observedActionTypes.includes(action.type)) {
     console.log('HANDLING IN VIEWPORT MIDDLEWARE')
     const { graph, windowSize, viewTransformation } = store.getState()
-    const bbox = calculateBoundingBox(Object.values(graph.nodes).map(n => n.position))
+    const bbox = calculateBoundingBox(Object.values(graph.nodes), graph.style.radius, 1)
 
     if (bbox) {
       let visualsWidth = (bbox.right - bbox.left) + 100
@@ -24,12 +30,20 @@ export const viewportMiddleware = store => next => action => {
       let panX = viewTransformation.offset.dx
       let panY = viewTransformation.offset.dy
 
+      if (scale !== 1) {
+        const scaledbbox = calculateBoundingBox(Object.values(graph.nodes), graph.style.radius, scale)
+        visualsCenter = new Point((scaledbbox.right + scaledbbox.left) / 2, (scaledbbox.bottom + scaledbbox.top) / 2)
+      }
+
       const scaleChanges = scale !== viewTransformation.scale
 
       if (scaleChanges || action.type === 'FETCHING_GRAPH_SUCCEEDED') {
-        const translateVector = viewportCenter.vectorFrom(visualsCenter)
-        panX = translateVector.dx // viewportCenter.x - visualsCenter.x
-        panY = translateVector.dy// viewportCenter.y - visualsCenter.y
+
+        if (scale > viewTransformation.scale || action.type !== 'MOVE_NODES') {
+          const translateVector = viewportCenter.vectorFrom(visualsCenter)
+          panX = translateVector.dx // viewportCenter.x - visualsCenter.x
+          panY = translateVector.dy// viewportCenter.y - visualsCenter.y
+        }
       }
 
       /*if (visualsWidth > 0 && visualsHeight > 0) {
@@ -49,7 +63,7 @@ export const viewportMiddleware = store => next => action => {
       */
 
       console.log('BBOX', scale, panX, panY)
-      store.dispatch(adjustViewport(1, panX, panY))
+      store.dispatch(adjustViewport(scale, panX, panY))
     }
   }
 
