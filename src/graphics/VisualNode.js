@@ -16,6 +16,9 @@ export default class VisualNode {
 
     nodeStyleAttributes.forEach(styleAttribute => {
       this[styleAttribute] = getStyleSelector(node, styleAttribute)(graph)
+      if (styleAttribute === 'radius') {
+        this[styleAttribute] *= viewTransformation.scale
+      }
     })
   }
 
