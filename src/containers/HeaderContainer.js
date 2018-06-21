@@ -1,6 +1,6 @@
 import {connect} from 'react-redux'
 import {createNode} from '../actions/graph'
-import {fetchGraphFromDatabase} from "../actions/neo4jStorage";
+import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import Header from '../components/Header'
 
 const mapStateToProps = state => {

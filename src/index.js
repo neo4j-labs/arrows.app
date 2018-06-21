@@ -7,9 +7,9 @@ import './index.css';
 import reducer from './reducers'
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import {fetchGraphFromDatabase} from "./actions/neo4jStorage";
+import {fetchGraphFromDatabase} from "./storage/neo4jStorage";
 import 'semantic-ui-css/semantic.min.css'
-import {storageMiddleware} from "./storage/storageMiddleware";
+import {storageMiddleware} from "./storage/neo4jStorage";
 
 //noinspection JSUnresolvedVariable,JSUnresolvedFunction
 let store = createStore(
