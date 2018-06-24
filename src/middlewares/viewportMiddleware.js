@@ -13,8 +13,9 @@ export const viewportMiddleware = store => next => action => {
   const result = next(action)
 
   if (observedActionTypes.includes(action.type)) {
-    console.log('HANDLING IN VIEWPORT MIDDLEWARE')
     const { graph, windowSize, viewTransformation } = store.getState()
+    console.log('HANDLING IN VIEWPORT MIDDLEWARE', action.type, viewTransformation)
+
     const bbox = calculateBoundingBox(Object.values(graph.nodes), graph.style.radius, 1)
 
     if (bbox) {
@@ -38,31 +39,29 @@ export const viewportMiddleware = store => next => action => {
       const scaleChanges = scale !== viewTransformation.scale
 
       if (scaleChanges || action.type === 'FETCHING_GRAPH_SUCCEEDED') {
-
-        if (scale > viewTransformation.scale || action.type !== 'MOVE_NODES') {
-          const translateVector = viewportCenter.vectorFrom(visualsCenter)
-          panX = translateVector.dx // viewportCenter.x - visualsCenter.x
-          panY = translateVector.dy// viewportCenter.y - visualsCenter.y
+        switch (action.type) {
+          case 'MOVE_NODES_END_DRAG':
+          case 'FETCHING_GRAPH_SUCCEEDED':
+            console.log('ACTION', action.type)
+            const translateVector = viewportCenter.vectorFrom(visualsCenter)
+            panX = translateVector.dx
+            panY = translateVector.dy
+            break
+          case 'MOVE_NODES':
+            if (scale > viewTransformation.scale) {
+              scale = viewTransformation.scale
+            } else {
+              const translateVector = viewportCenter.vectorFrom(visualsCenter)
+              panX = translateVector.dx
+              panY = translateVector.dy
+            }
+          default:
+            break
         }
       }
 
-      /*if (visualsWidth > 0 && visualsHeight > 0) {
-        scale = Math.min(viewportHeight / visualsHeight, viewportWidth / visualsWidth)
-        visualsCenter = new Point(viewportWidth / 2, viewportHeight / 2)
-        //let
-       /!* visualsWidth /= 2
-        visualsHeight /= 2*!/
-      } else {
-        scale = 1
-        visualsWidth = bbox.left
-        visualsHeight = bbox.top
-      }
+      console.log('HANDLED IT', scale, panX, panY)
 
-      const panX = -(visualsWidth - ((viewportWidth * scale) / 2))
-      const panY = (visualsHeight - ((viewportHeight * scale) / 2))
-      */
-
-      console.log('BBOX', scale, panX, panY)
       store.dispatch(adjustViewport(scale, panX, panY))
     }
   }
