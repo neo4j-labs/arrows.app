@@ -1,3 +1,4 @@
+import {fetchGraphFromDatabase, updateDriver} from "../storage/neo4jStorage";
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 
 export const updateConnectionParameters = (connectionParameters) => {
@@ -8,7 +9,9 @@ export const updateConnectionParameters = (connectionParameters) => {
       const session = driver.session()
       session.run("RETURN 1").then(() => {
         session.close()
+        updateDriver(driver)
         dispatch(successfulUpdate(connectionParameters))
+        dispatch(fetchGraphFromDatabase())
       }).catch(function (error) {
         dispatch(unsuccessfulUpdate(connectionParameters, error.message))
       });

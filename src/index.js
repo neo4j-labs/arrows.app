@@ -18,11 +18,11 @@ let store = createStore(
   applyMiddleware(thunkMiddleware, storageMiddleware)
 )
 
+store.dispatch(fetchGraphFromDatabase())
 render(
   <Provider store={store}>
     <App />
   </Provider>,
   document.getElementById('root')
 )
-store.dispatch(fetchGraphFromDatabase())
 registerServiceWorker();

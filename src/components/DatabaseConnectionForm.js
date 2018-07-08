@@ -55,6 +55,7 @@ class DatabaseConnectionForm extends Component {
               <Form.Input
                 value={username}
                 name="username"
+                autoComplete="username"
                 onChange={this.inputUpdated}
                 placeholder="Username"
               />
@@ -64,6 +65,7 @@ class DatabaseConnectionForm extends Component {
               <Form.Input
                 value={password}
                 name="password"
+                autoComplete="current-password"
                 onChange={this.inputUpdated}
                 type="password"
                 placeholder="Password"
@@ -78,6 +80,7 @@ class DatabaseConnectionForm extends Component {
             content="Cancel"
           />
           <Button
+            type="submit"
             onClick={this.onSave}
             positive
             content="Save"

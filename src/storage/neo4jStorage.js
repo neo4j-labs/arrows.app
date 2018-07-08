@@ -2,16 +2,25 @@ import {fetchingGraph} from "../actions/neo4jStorage";
 import {readGraph} from "./cypherReadQueries";
 import {writeQueriesForAction} from "./cypherWriteQueries";
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
-const host = "bolt://localhost:7687"
-const driver = neo4j.driver(host, neo4j.auth.basic("neo4j", "a"))
+
+let driver = null
+
+export const updateDriver = (newDriver) => {
+  if (driver) {
+    driver.close()
+  }
+  driver = newDriver
+}
 
 export function fetchGraphFromDatabase() {
   return function (dispatch) {
-    dispatch(fetchingGraph())
+    if (driver) {
+      dispatch(fetchingGraph())
 
-    let session = driver.session(neo4j.READ)
+      let session = driver.session(neo4j.READ)
 
-    readGraph(session, dispatch)
+      readGraph(session, dispatch)
+    }
   }
 }
 
