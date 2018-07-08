@@ -1,6 +1,23 @@
 import {fetchGraphFromDatabase, updateDriver} from "../storage/neo4jStorage";
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 
+const localStorageKey = "neo4j-arrows-app.rememberedConnectionParameters";
+
+const rememberConnectionParameters = (connectionParameters) => {
+  const serializedVal = JSON.stringify(connectionParameters)
+  localStorage.setItem(localStorageKey, serializedVal)
+}
+
+export const useRememberedConnectionParameters = () => {
+  const serializedVal = localStorage.getItem(localStorageKey)
+  const parsedVal = JSON.parse(serializedVal)
+  if (parsedVal && parsedVal.connectionUri) {
+    return updateConnectionParameters(parsedVal)
+  } else {
+    return () => {}
+  }
+}
+
 export const updateConnectionParameters = (connectionParameters) => {
   return function (dispatch) {
     const {connectionUri, username, password} = connectionParameters
@@ -9,6 +26,7 @@ export const updateConnectionParameters = (connectionParameters) => {
       const session = driver.session()
       session.run("RETURN 1").then(() => {
         session.close()
+        rememberConnectionParameters(connectionParameters)
         updateDriver(driver)
         dispatch(successfulUpdate(connectionParameters))
         dispatch(fetchGraphFromDatabase())
@@ -16,7 +34,7 @@ export const updateConnectionParameters = (connectionParameters) => {
         dispatch(unsuccessfulUpdate(connectionParameters, error.message))
       });
     }
-    catch(error) {
+    catch (error) {
       dispatch(unsuccessfulUpdate(connectionParameters, error.message))
     }
   }
