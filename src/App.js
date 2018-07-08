@@ -8,6 +8,7 @@ import { Grid, Tab, Header, Icon, Menu} from 'semantic-ui-react'
 import DetailInspector from "./components/DetailInspector"
 import GeneralInspector from './components/GeneralInspector'
 import HeaderContainer from './containers/HeaderContainer'
+import DatabaseConnectionContainer from "./containers/DatabaseConnectionContainer";
 
 const panes = [{
   menuItem:
@@ -44,6 +45,7 @@ class App extends Component {
         </Grid.Row>
         <Grid.Row style={{paddingTop: 0}}>
           <Grid.Column width={12}>
+            <DatabaseConnectionContainer/>
             <GraphContainer/>
           </Grid.Column>
           <Grid.Column width={4}>
