@@ -2,6 +2,7 @@ import {connect} from 'react-redux'
 import {createNode} from '../actions/graph'
 import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import Header from '../components/Header'
+import {editConnectionParameters} from "../actions/databaseConnection";
 
 const mapStateToProps = state => {
   return {
@@ -16,6 +17,9 @@ const mapDispatchToProps = dispatch => {
     },
     onReloadGraphClick: () => {
       dispatch(fetchGraphFromDatabase())
+    },
+    onEditStorageConfiguration: () => {
+      dispatch(editConnectionParameters())
     }
   }
 }

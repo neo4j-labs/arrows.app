@@ -36,16 +36,17 @@ class App extends Component {
   }
   state = { sidebarVisible : false }
   render() {
+    const storageConfigurationModal = this.props.editingStorageConfiguration ? (<DatabaseConnectionContainer/>) : null
     return (
       <Grid columns={2}>
         <Grid.Row style={{paddingBottom: 0}}>
           <Grid.Column width={16}>
+            {storageConfigurationModal}
             <HeaderContainer/>
           </Grid.Column>
         </Grid.Row>
         <Grid.Row style={{paddingTop: 0}}>
           <Grid.Column width={12}>
-            <DatabaseConnectionContainer/>
             <GraphContainer/>
           </Grid.Column>
           <Grid.Column width={4}>
@@ -67,7 +68,8 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  sidebar: state.sidebar
+  sidebar: state.sidebar,
+  editingStorageConfiguration: state.storageConfiguration.editingStorageConfiguration
 })
 
 export default compose(

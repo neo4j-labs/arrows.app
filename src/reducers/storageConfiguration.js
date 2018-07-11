@@ -10,29 +10,35 @@ const initialConnectionParameters = () => {
 }
 
 export default function storageConfiguration(state = {
-  editingStorageConfiguration: true,
+  editingStorageConfiguration: false,
   databaseConnectionParameters: initialConnectionParameters(),
   errorMsg: null
 }, action) {
   switch (action.type) {
-    case 'UPDATE_CONNECTION_PARAMETERS':
+    case 'EDIT_CONNECTION_PARAMETERS':
       return {
-        editingStorageConfiguration: false,
-        databaseConnectionParameters: action.storageConfiguration,
-        errorMsg: null
-      }
-
-    case 'FAILED_DATABASE_CONNECTION':
-      return {
-        editingStorageConfiguration: true,
-        databaseConnectionParameters: action.storageConfiguration,
-        errorMsg: action.errorMsg
+        ...state,
+        editingStorageConfiguration: true
       }
 
     case 'CANCEL_EDIT_CONNECTION_PARAMETERS':
       return {
         ...state,
         editingStorageConfiguration: false
+      }
+
+    case 'UPDATE_CONNECTION_PARAMETERS':
+      return {
+        editingStorageConfiguration: false,
+        databaseConnectionParameters: action.connectionParameters,
+        errorMsg: null
+      }
+
+    case 'FAILED_DATABASE_CONNECTION':
+      return {
+        editingStorageConfiguration: true,
+        databaseConnectionParameters: action.connectionParameters,
+        errorMsg: action.errorMsg
       }
 
     default:

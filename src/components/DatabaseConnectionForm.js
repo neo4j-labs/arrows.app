@@ -5,7 +5,7 @@ import {defaultConnectionUri} from "../reducers/storageConfiguration";
 class DatabaseConnectionForm extends Component {
 
   constructor(props) {
-    super();
+    super(props);
     this.state = { ...props.connectionParameters }
   }
 
@@ -15,6 +15,9 @@ class DatabaseConnectionForm extends Component {
 
   checkboxUpdated = (_, { name, checked }) => {
     this.setState({ [name]: checked })
+    if (name === 'rememberCredentials' && !checked) {
+      this.props.forgetConnectionParameters()
+    }
   }
 
   onSave = () => {
@@ -38,7 +41,7 @@ class DatabaseConnectionForm extends Component {
   }
 
   render() {
-    const { open, errorMsg } = this.props;
+    const { errorMsg } = this.props;
     const { connectionUri, username, password, rememberCredentials } = this.state;
     const messages = errorMsg ? [(
       <Message key="errorMsg" error header="Database connection error" content={errorMsg} />
@@ -46,7 +49,7 @@ class DatabaseConnectionForm extends Component {
     return (
       <Modal
         size="tiny"
-        open={open}
+        open={true}
         onClose={this.onCancel}
       >
         <Modal.Header>Database Connection</Modal.Header>

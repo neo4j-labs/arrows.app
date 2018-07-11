@@ -8,13 +8,17 @@ const rememberConnectionParameters = (connectionParameters) => {
   localStorage.setItem(localStorageKey, serializedVal)
 }
 
+export const forgetConnectionParameters = () => {
+  localStorage.removeItem(localStorageKey)
+}
+
 export const useRememberedConnectionParameters = () => {
   const serializedVal = localStorage.getItem(localStorageKey)
   const parsedVal = JSON.parse(serializedVal)
   if (parsedVal && parsedVal.connectionUri) {
     return updateConnectionParameters(parsedVal)
   } else {
-    return () => {}
+    return editConnectionParameters()
   }
 }
 
@@ -54,6 +58,12 @@ const successfulUpdate = (connectionParameters) => {
   return {
     type: 'UPDATE_CONNECTION_PARAMETERS',
     connectionParameters
+  }
+}
+
+export const editConnectionParameters = () => {
+  return {
+    type: 'EDIT_CONNECTION_PARAMETERS'
   }
 }
 
