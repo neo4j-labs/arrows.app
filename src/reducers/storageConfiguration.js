@@ -1,16 +1,17 @@
 export const defaultConnectionUri = "bolt://localhost";
 
-const storedConnectionParameters = () => {
+const initialConnectionParameters = () => {
   return {
     connectionUri: defaultConnectionUri,
     username: "",
-    password: ""
+    password: "",
+    rememberCredentials: false
   }
 }
 
 export default function storageConfiguration(state = {
   editingStorageConfiguration: true,
-  databaseConnectionParameters: storedConnectionParameters(),
+  databaseConnectionParameters: initialConnectionParameters(),
   errorMsg: null
 }, action) {
   switch (action.type) {

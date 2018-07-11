@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { Button, Form, Modal, Message } from 'semantic-ui-react'
+import { Button, Form, Checkbox, Modal, Message } from 'semantic-ui-react'
 import {defaultConnectionUri} from "../reducers/storageConfiguration";
 
 class DatabaseConnectionForm extends Component {
@@ -13,13 +13,24 @@ class DatabaseConnectionForm extends Component {
     this.setState({ [name]: value })
   }
 
+  checkboxUpdated = (_, { name, checked }) => {
+    this.setState({ [name]: checked })
+  }
+
   onSave = () => {
-    const { connectionUri, username, password } = this.state;
+    const { connectionUri, username, password, rememberCredentials } = this.state;
     this.props.onConnectionParametersUpdated({
       connectionUri,
       username,
-      password
+      password,
+      rememberCredentials
     })
+  }
+
+  onKeyUp = (e) => {
+    if (e.key === "Enter") {
+      this.onSave()
+    }
   }
 
   onCancel = () => {
@@ -28,7 +39,7 @@ class DatabaseConnectionForm extends Component {
 
   render() {
     const { open, errorMsg } = this.props;
-    const { connectionUri, username, password } = this.state;
+    const { connectionUri, username, password, rememberCredentials } = this.state;
     const messages = errorMsg ? [(
       <Message key="errorMsg" error header="Database connection error" content={errorMsg} />
     )] : []
@@ -40,10 +51,12 @@ class DatabaseConnectionForm extends Component {
       >
         <Modal.Header>Database Connection</Modal.Header>
         <Modal.Content>
-          <Form error={messages.length > 0}>
+          <Form error={messages.length > 0} onKeyUp={this.onKeyUp}>
             <Form.Field>
               <label>Bolt Connection URI</label>
               <Form.Input
+                iconPosition='left'
+                icon='lightning'
                 value={connectionUri}
                 name="connectionUri"
                 onChange={this.inputUpdated}
@@ -53,6 +66,8 @@ class DatabaseConnectionForm extends Component {
             <Form.Field>
               <label>Username</label>
               <Form.Input
+                iconPosition='left'
+                icon='user'
                 value={username}
                 name="username"
                 autoComplete="username"
@@ -63,12 +78,22 @@ class DatabaseConnectionForm extends Component {
             <Form.Field>
               <label>Password</label>
               <Form.Input
+                iconPosition='left'
+                icon='lock'
                 value={password}
                 name="password"
                 autoComplete="current-password"
                 onChange={this.inputUpdated}
                 type="password"
                 placeholder="Password"
+              />
+            </Form.Field>
+            <Form.Field>
+              <Checkbox
+                checked={rememberCredentials}
+                name='rememberCredentials'
+                onChange={this.checkboxUpdated}
+                label='Remember credentials'
               />
             </Form.Field>
           </Form>

@@ -26,7 +26,9 @@ export const updateConnectionParameters = (connectionParameters) => {
       const session = driver.session()
       session.run("RETURN 1").then(() => {
         session.close()
-        rememberConnectionParameters(connectionParameters)
+        if (connectionParameters.rememberCredentials) {
+          rememberConnectionParameters(connectionParameters)
+        }
         updateDriver(driver)
         dispatch(successfulUpdate(connectionParameters))
         dispatch(fetchGraphFromDatabase())
