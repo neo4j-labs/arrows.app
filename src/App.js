@@ -4,12 +4,13 @@ import {connect} from 'react-redux'
 import './App.css'
 import withKeybindings, { ignoreTarget } from './interactions/Keybindings'
 import { compose } from 'recompose'
-import { Grid, Tab, Header, Icon, Menu} from 'semantic-ui-react'
+import { Tab, Header, Icon, Menu, Sidebar, Segment, Table, Input, Form, Button} from 'semantic-ui-react'
 import DetailInspector from "./components/DetailInspector"
 import GeneralInspector from './components/GeneralInspector'
 import HeaderContainer from './containers/HeaderContainer'
 import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer";
 import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer";
+import {PropertyRow} from "./components/PropertyRow";
 
 const panes = [{
   menuItem:
@@ -57,6 +58,7 @@ class App extends Component {
           </Grid.Column>
         </Grid.Row>
       </Grid>
+
     );
   }
   fireKeyboardShortcutAction (ev) {
