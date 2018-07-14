@@ -33,6 +33,13 @@ export const calculateBoundingBox = (nodes, defaultRadius, scale) => {
   })
 
   return { left, right, top, bottom }
+
+  /*return {
+    left: left - radius,
+    right: right + radius,
+    top: top - radius,
+    bottom: bottom + radius
+  }*/
 }
 
 export const pointOnCircle = (x, y, radius, percentage) => {

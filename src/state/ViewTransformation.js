@@ -23,7 +23,6 @@ export class ViewTransformation {
   }
 
   adjust(scale, panX, panY) {
-    console.log('ADJUSTING', scale, panY)
     return new ViewTransformation(scale, new Vector(panX, panY))
   }
 }

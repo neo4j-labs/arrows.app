@@ -101,7 +101,6 @@ const graph = (state = emptyGraph(), action) => {
     }
 
     case 'MOVE_NODES':
-      console.log('MOVE_NODES')
       const nodeIdToNode = {}
       state.nodes.forEach((node) => {
         nodeIdToNode[node.id] = node
@@ -109,6 +108,7 @@ const graph = (state = emptyGraph(), action) => {
       action.nodePositions.forEach((nodePosition) => {
         nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
       })
+      console.log('UPDATING POSITIONS')
       return {
         style: state.style,
         nodes: Object.values(nodeIdToNode),
