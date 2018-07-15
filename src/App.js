@@ -9,6 +9,7 @@ import DetailInspector from "./components/DetailInspector"
 import GeneralInspector from './components/GeneralInspector'
 import HeaderContainer from './containers/HeaderContainer'
 import DatabaseConnectionContainer from "./containers/DatabaseConnectionContainer";
+import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer";
 
 const panes = [{
   menuItem:
@@ -37,11 +38,13 @@ class App extends Component {
   state = { sidebarVisible : false }
   render() {
     const storageConfigurationModal = this.props.editingStorageConfiguration ? (<DatabaseConnectionContainer/>) : null
+    const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
     return (
       <Grid columns={2}>
         <Grid.Row style={{paddingBottom: 0}}>
           <Grid.Column width={16}>
             {storageConfigurationModal}
+            {databaseConnectionMessageModal}
             <HeaderContainer/>
           </Grid.Column>
         </Grid.Row>
@@ -69,7 +72,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => ({
   sidebar: state.sidebar,
-  editingStorageConfiguration: state.storageConfiguration.editingStorageConfiguration
+  editingStorageConfiguration: state.storageConfiguration.editingStorageConfiguration,
+  showDisconnectedDialog: state.storageConfiguration.showDisconnectedDialog
 })
 
 export default compose(

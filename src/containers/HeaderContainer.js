@@ -6,6 +6,7 @@ import {editConnectionParameters} from "../actions/databaseConnection";
 
 const mapStateToProps = state => {
   return {
+    storageConfigurationEditable: state.storageConfiguration.storageConfigurationEditable,
     storageStatus: state.storageStatus
   }
 }

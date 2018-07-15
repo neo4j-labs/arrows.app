@@ -24,22 +24,21 @@ export const initializeConnection = () => {
 
 const useConnectionParametersFromDesktopContext = () => {
   return function (dispatch) {
-    if (integrationPoint) {
-      subscribeToDatabaseCredentialsForActiveGraph(
-        integrationPoint,
-        (credentials) => {
-          dispatch(updateConnectionParameters({
-            connectionUri: credentials.host,
-            username: credentials.username,
-            password: credentials.password,
-            rememberCredentials: false
-          }))
-        },
-        () => {
-          console.log("Disconnected")
-        }
-      )
-    }
+    dispatch(disableEditingConnectionParameters())
+    subscribeToDatabaseCredentialsForActiveGraph(
+      integrationPoint,
+      (credentials) => {
+        dispatch(updateConnectionParameters({
+          connectionUri: credentials.host,
+          username: credentials.username,
+          password: credentials.password,
+          rememberCredentials: false
+        }))
+      },
+      () => {
+        dispatch(desktopDisconnected())
+      }
+    )
   }
 }
 
@@ -77,6 +76,12 @@ export const updateConnectionParameters = (connectionParameters) => {
   }
 }
 
+const disableEditingConnectionParameters = () => {
+  return {
+    type: 'DISABLE_EDITING_CONNECTION_PARAMETERS'
+  }
+}
+
 const unsuccessfulUpdate = (connectionParameters, errorMsg) => {
   return {
     type: 'FAILED_DATABASE_CONNECTION',
@@ -101,5 +106,11 @@ export const editConnectionParameters = () => {
 export const cancelEditing = () => {
   return {
     type: 'CANCEL_EDIT_CONNECTION_PARAMETERS'
+  }
+}
+
+export const desktopDisconnected = () => {
+  return {
+    type: 'DESKTOP_DISCONNECTED'
   }
 }

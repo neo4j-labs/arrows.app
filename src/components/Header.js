@@ -26,6 +26,13 @@ const storageStatusMessage = (props) => {
   }
 }
 
+const editStorageConfiguration = (props) => {
+  return props.storageConfigurationEditable ? (
+    <Menu.Item onClick={props.onEditStorageConfiguration}>
+      <Icon name='lightning'/>Database connection
+    </Menu.Item>
+  ) : null
+}
 const Header = (props) => (
   <Menu color='grey' inverted style={{borderRadius: 0}}>
     <Menu.Item onClick={props.onPlusNodeClick}>
@@ -34,9 +41,7 @@ const Header = (props) => (
     <Menu.Item onClick={props.onReloadGraphClick}>
       <Icon name='refresh'/>Graph
     </Menu.Item>
-    <Menu.Item onClick={props.onEditStorageConfiguration}>
-      <Icon name='lightning'/>Database connection
-    </Menu.Item>
+    {editStorageConfiguration(props)}
     {storageStatusMessage(props)}
   </Menu>
 )
