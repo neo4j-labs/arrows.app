@@ -1,6 +1,8 @@
 import {fetchGraphFromDatabase, updateDriver} from "../storage/neo4jStorage";
-const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
+import { subscribeToDatabaseCredentialsForActiveGraph } from 'graph-app-kit/components/GraphAppBase'
 
+const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
+const integrationPoint = window.neo4jDesktopApi
 const localStorageKey = "neo4j-arrows-app.rememberedConnectionParameters";
 
 const rememberConnectionParameters = (connectionParameters) => {
@@ -12,7 +14,36 @@ export const forgetConnectionParameters = () => {
   localStorage.removeItem(localStorageKey)
 }
 
-export const useRememberedConnectionParameters = () => {
+export const initializeConnection = () => {
+  if (integrationPoint) {
+    return useConnectionParametersFromDesktopContext()
+  } else {
+    return useRememberedConnectionParameters()
+  }
+}
+
+const useConnectionParametersFromDesktopContext = () => {
+  return function (dispatch) {
+    if (integrationPoint) {
+      subscribeToDatabaseCredentialsForActiveGraph(
+        integrationPoint,
+        (credentials) => {
+          dispatch(updateConnectionParameters({
+            connectionUri: credentials.host,
+            username: credentials.username,
+            password: credentials.password,
+            rememberCredentials: false
+          }))
+        },
+        () => {
+          console.log("Disconnected")
+        }
+      )
+    }
+  }
+}
+
+const useRememberedConnectionParameters = () => {
   const serializedVal = localStorage.getItem(localStorageKey)
   const parsedVal = JSON.parse(serializedVal)
   if (parsedVal && parsedVal.connectionUri) {
