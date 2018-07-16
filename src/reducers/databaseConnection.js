@@ -9,10 +9,10 @@ const initialConnectionParameters = () => {
   }
 }
 
-export default function storageConfiguration(state = {
-  storageConfigurationEditable: true,
-  editingStorageConfiguration: false,
-  databaseConnectionParameters: initialConnectionParameters(),
+export default function databaseConnection(state = {
+  connectionParametersEditable: true,
+  editingConnectionParameters: false,
+  connectionParameters: initialConnectionParameters(),
   showDisconnectedDialog: false,
   errorMsg: null
 }, action) {
@@ -20,42 +20,42 @@ export default function storageConfiguration(state = {
     case 'DISABLE_EDITING_CONNECTION_PARAMETERS':
       return {
         ...state,
-        storageConfigurationEditable: false
+        connectionParametersEditable: false
       }
 
     case 'EDIT_CONNECTION_PARAMETERS':
       return {
         ...state,
-        editingStorageConfiguration: true
+        editingConnectionParameters: true
       }
 
     case 'CANCEL_EDIT_CONNECTION_PARAMETERS':
       return {
         ...state,
-        editingStorageConfiguration: false
+        editingConnectionParameters: false
       }
 
     case 'UPDATE_CONNECTION_PARAMETERS':
       return {
         ...state,
-        editingStorageConfiguration: false,
+        editingConnectionParameters: false,
         showDisconnectedDialog: false,
-        databaseConnectionParameters: action.connectionParameters,
+        connectionParameters: action.connectionParameters,
         errorMsg: null
       }
 
     case 'FAILED_DATABASE_CONNECTION':
       return {
         ...state,
-        editingStorageConfiguration: state.storageConfigurationEditable,
-        showDisconnectedDialog: !state.storageConfigurationEditable,
-        databaseConnectionParameters: action.connectionParameters,
+        editingConnectionParameters: state.connectionParametersEditable,
+        showDisconnectedDialog: !state.connectionParametersEditable,
+        connectionParameters: action.connectionParameters,
         errorMsg: action.errorMsg
       }
 
     case 'DESKTOP_DISCONNECTED':
       return {
-        databaseConnectionParameters: null,
+        connectionParameters: null,
         showDisconnectedDialog: true
       }
 

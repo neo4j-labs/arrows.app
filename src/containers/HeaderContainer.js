@@ -6,7 +6,7 @@ import {editConnectionParameters} from "../actions/databaseConnection";
 
 const mapStateToProps = state => {
   return {
-    storageConfigurationEditable: state.storageConfiguration.storageConfigurationEditable,
+    connectionParametersEditable: state.databaseConnection.connectionParametersEditable,
     storageStatus: state.storageStatus
   }
 }
@@ -19,7 +19,7 @@ const mapDispatchToProps = dispatch => {
     onReloadGraphClick: () => {
       dispatch(fetchGraphFromDatabase())
     },
-    onEditStorageConfiguration: () => {
+    onEditConnectionParameters: () => {
       dispatch(editConnectionParameters())
     }
   }

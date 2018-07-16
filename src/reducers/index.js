@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-import storageConfiguration from "./storageConfiguration";
+import databaseConnection from "./databaseConnection";
 import graph from "./graph";
 import selection from "./selection";
 import mouse from "./mouse";
@@ -11,7 +11,7 @@ import sidebar from "./sidebar"
 import gestures from "./gestures";
 
 const arrowsApp = combineReducers({
-  storageConfiguration,
+  databaseConnection,
   graph,
   selection,
   mouse,

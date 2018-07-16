@@ -1,11 +1,11 @@
 import {connect} from "react-redux"
-import DatabaseConnectionForm from "../components/DatabaseConnectionForm";
+import EditConnectionParametersForm from "../components/EditConnectionParametersForm";
 import {cancelEditing, forgetConnectionParameters, updateConnectionParameters} from "../actions/databaseConnection";
 
 const mapStateToProps = state => {
   return {
-    connectionParameters: state.storageConfiguration.databaseConnectionParameters,
-    errorMsg: state.storageConfiguration.errorMsg
+    connectionParameters: state.databaseConnection.connectionParameters,
+    errorMsg: state.databaseConnection.errorMsg
   }
 }
 
@@ -24,4 +24,4 @@ const mapDispatchToProps = dispatch => {
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DatabaseConnectionForm)
+)(EditConnectionParametersForm)

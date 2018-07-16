@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import { Button, Form, Checkbox, Modal, Message } from 'semantic-ui-react'
-import {defaultConnectionUri} from "../reducers/storageConfiguration";
+import {defaultConnectionUri} from "../reducers/databaseConnection";
 
-class DatabaseConnectionForm extends Component {
+class EditConnectionParametersForm extends Component {
 
   constructor(props) {
     super(props);
@@ -119,4 +119,4 @@ class DatabaseConnectionForm extends Component {
   }
 }
 
-export default DatabaseConnectionForm
+export default EditConnectionParametersForm
