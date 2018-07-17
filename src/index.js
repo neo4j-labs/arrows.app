@@ -7,9 +7,9 @@ import './index.css';
 import reducer from './reducers'
 import App from './App';
 import registerServiceWorker from './registerServiceWorker';
-import {fetchGraphFromDatabase} from "./storage/neo4jStorage";
 import 'semantic-ui-css/semantic.min.css'
 import {storageMiddleware} from "./storage/neo4jStorage";
+import { initializeConnection } from "./actions/databaseConnection";
 
 //noinspection JSUnresolvedVariable,JSUnresolvedFunction
 let store = createStore(
@@ -18,11 +18,11 @@ let store = createStore(
   applyMiddleware(thunkMiddleware, storageMiddleware)
 )
 
+store.dispatch(initializeConnection())
 render(
   <Provider store={store}>
     <App />
   </Provider>,
   document.getElementById('root')
 )
-store.dispatch(fetchGraphFromDatabase())
 registerServiceWorker();

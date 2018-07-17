@@ -3,8 +3,6 @@ import {connect} from 'react-redux'
 import {FETCHING_GRAPH, FETCHING_GRAPH_FAILED, UPDATING_GRAPH, UPDATING_GRAPH_FAILED} from "../state/storageStatus";
 import { Icon, Menu } from 'semantic-ui-react'
 
-export const headerHeight = 50;
-
 const storageStatusMessage = (props) => {
   if (props.storageStatus === FETCHING_GRAPH) {
     return (
@@ -28,6 +26,13 @@ const storageStatusMessage = (props) => {
   }
 }
 
+const editConnectionParameters = (props) => {
+  return props.connectionParametersEditable ? (
+    <Menu.Item onClick={props.onEditConnectionParameters}>
+      <Icon name='lightning'/>Database connection
+    </Menu.Item>
+  ) : null
+}
 const Header = (props) => (
   <Menu color='grey' inverted style={{borderRadius: 0}}>
     <Menu.Item onClick={props.onPlusNodeClick}>
@@ -36,6 +41,7 @@ const Header = (props) => (
     <Menu.Item onClick={props.onReloadGraphClick}>
       <Icon name='refresh'/>Graph
     </Menu.Item>
+    {editConnectionParameters(props)}
     {storageStatusMessage(props)}
   </Menu>
 )

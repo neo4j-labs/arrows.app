@@ -8,6 +8,8 @@ import { Grid, Tab, Header, Icon, Menu} from 'semantic-ui-react'
 import DetailInspector from "./components/DetailInspector"
 import GeneralInspector from './components/GeneralInspector'
 import HeaderContainer from './containers/HeaderContainer'
+import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer";
+import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer";
 
 const panes = [{
   menuItem:
@@ -35,10 +37,14 @@ class App extends Component {
   }
   state = { sidebarVisible : false }
   render() {
+    const connectionParametersModal = this.props.editingConnectionParameters ? (<EditConnectionParametersContainer/>) : null
+    const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
     return (
       <Grid columns={2}>
         <Grid.Row style={{paddingBottom: 0}}>
           <Grid.Column width={16}>
+            {connectionParametersModal}
+            {databaseConnectionMessageModal}
             <HeaderContainer/>
           </Grid.Column>
         </Grid.Row>
@@ -65,7 +71,9 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  sidebar: state.sidebar
+  sidebar: state.sidebar,
+  editingConnectionParameters: state.databaseConnection.editingConnectionParameters,
+  showDisconnectedDialog: state.databaseConnection.showDisconnectedDialog
 })
 
 export default compose(
