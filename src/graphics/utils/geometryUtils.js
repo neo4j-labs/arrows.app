@@ -1,7 +1,7 @@
 import { defaultNewNodeRadius } from "../constants";
 import Voronoi from "./voronoi";
 
-export const calculateBoundingBox = (nodes, defaultRadius, scale) => {
+export const calculateBoundingBox = (nodes, defaultRadius, scale = 1) => {
   if (nodes.length === 0) {
     return null
   }
@@ -17,7 +17,7 @@ export const calculateBoundingBox = (nodes, defaultRadius, scale) => {
 
   nodes.forEach(node => {
     const position = getPosition(node)
-    radius = scale * (node.style.radius || defaultRadius)
+    radius = (node.style && node.style.radius || defaultRadius) * scale
 
     if (position.x + radius > right) {
       right = position.x + radius

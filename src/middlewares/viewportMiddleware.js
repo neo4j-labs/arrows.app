@@ -2,6 +2,8 @@ import { calculateBoundingBox } from "../graphics/utils/geometryUtils"
 import { adjustViewport } from "../actions/viewTransformation"
 import { FETCHING_GRAPH_SUCCEEDED } from "../state/storageStatus"
 import { Point } from "../model/Point"
+import { ViewTransformation } from "../state/ViewTransformation";
+import { Vector } from "../model/Vector";
 
 const observedActionTypes = [
   'MOVE_NODES',
@@ -9,13 +11,30 @@ const observedActionTypes = [
   'FETCHING_GRAPH_SUCCEEDED'
 ]
 
-export const calculateViewportTranslation = (nodes, radius, windowSize, viewTransformation) => {
+export const calculateScaling = (nodes, radius, windowSize, viewTransformation, action) => {
+  const node = action.nodePositions[0]  // nodes.find(n => n.id === action.nodeId)
+  const position = viewTransformation.transform(node.position)
+
+  const leftOverflow = 0 - (position.x - radius)
+  const rightOverflow =  (position.x + radius) - windowSize.width
+  const topOverflow = 0 - (position.y - radius)
+  const bottomOverflow = (position.y + radius) - windowSize.height
+
+  const horizontalExp = leftOverflow > 0 ? -1 * leftOverflow : (rightOverflow > 0 ? rightOverflow : 0)
+  const verticalExp = topOverflow > 0 ? -1 * topOverflow : (bottomOverflow > 0 ? bottomOverflow : 0)
+
+  let expansionVector = new Vector(horizontalExp, verticalExp)
+
+  const expansionRatio = ((windowSize.width + Math.abs(horizontalExp)) * (windowSize.height + Math.abs(verticalExp))) / (windowSize.width * windowSize.height)
+  return { expansionRatio, expansionVector }
+}
+
+export const calculateViewportTranslation = (nodes, radius, windowSize) => {
   const boundingBox = calculateBoundingBox(nodes, radius, 1)
 
   if (boundingBox) {
-
-    let visualsWidth = (boundingBox.right - boundingBox.left) + 50
-    let visualsHeight = (boundingBox.bottom - boundingBox.top) + 50
+    let visualsWidth = (boundingBox.right - boundingBox.left)
+    let visualsHeight = (boundingBox.bottom - boundingBox.top)
     let visualsCenter = new Point((boundingBox.right + boundingBox.left) / 2, (boundingBox.bottom + boundingBox.top) / 2)
 
     const viewportWidth = windowSize.width
@@ -25,9 +44,6 @@ export const calculateViewportTranslation = (nodes, radius, windowSize, viewTran
     let scale = Math.min(1, Math.min(viewportHeight / visualsHeight, viewportWidth / visualsWidth))
 
     if (scale !== 1) {
-      /*if (scale < viewTransformation.scale) {
-        scale = scale * 0.95
-      }*/
       const scaledbbox = calculateBoundingBox(nodes, radius, scale)
       visualsCenter = new Point((scaledbbox.right + scaledbbox.left) / 2, (scaledbbox.bottom + scaledbbox.top) / 2)
     }
@@ -49,41 +65,20 @@ export const viewportMiddleware = store => next => action => {
     // console.log('HANDLING IN VIEWPORT MIDDLEWARE', action.type, viewTransformation)
     const nodes = graph.nodes //.map(node => ({ id: node.id, position: node.position, style: node.style }))
 
-    let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize, viewTransformation)
-
-    if (scale && translateVector) {
+    if (action.type === 'FETCHING_GRAPH_SUCCEEDED' || action.type === 'MOVE_NODES_END_DRAG') {
+      let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
+      store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
+    } else {
+      const { expansionRatio, expansionVector } = calculateScaling(nodes, graph.style.radius, windowSize, viewTransformation, action)
       let panX = viewTransformation.offset.dx
       let panY = viewTransformation.offset.dy
 
-      const scaleChanges = scale !== viewTransformation.scale
-
-      if (scaleChanges || action.type === 'FETCHING_GRAPH_SUCCEEDED') {
-        switch (action.type) {
-          case 'MOVE_NODES_END_DRAG':
-          case 'FETCHING_GRAPH_SUCCEEDED':
-            // console.log('ACTION', action.type)
-            panX = translateVector.dx
-            panY = translateVector.dy
-            break
-          case 'MOVE_NODES':
-            console.log('ACTION at MOVE NODES', action)
-            if (scale > viewTransformation.scale) {
-              scale = viewTransformation.scale
-            } else {
-              const mouseDelta = action.newMousePosition.vectorFrom(action.oldMousePosition)
-              const deltaDistance = mouseDelta.distance()
-              console.log('Delta Distance', deltaDistance)
-              panX = translateVector.dx
-              panY = translateVector.dy
-            }
-          default:
-            break
-        }
+      if (expansionRatio > 1) {
+        let newScale = viewTransformation.scale / expansionRatio
+        panX -= expansionVector.dx
+        panY -= expansionVector.dy
+        store.dispatch(adjustViewport(newScale, panX, panY))
       }
-
-      // console.log('HANDLED IT', scale, panX, panY)
-
-      store.dispatch(adjustViewport(scale, panX, panY))
     }
   }
 

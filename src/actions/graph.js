@@ -98,11 +98,9 @@ export const tryMoveNode = (nodeId, oldMousePosition, newMousePosition) => {
 
       if (movedNodePosition) {
         console.log('ADJUSTING MOVED NODE', differenceVector.distance())
-        movedNodePosition.position = movedNodePosition.position.translate(differenceVector) // ??.translate(delta.scale(2))
-
+        movedNodePosition.position = movedNodePosition.position.translate(delta.scale(5)) // translate(differenceVector) // ??.translate(delta.scale(2))
       }
     }*/
-
 
     dispatch(moveNodes(oldMousePosition, newMousePosition, nodePositions, guides))
   }
