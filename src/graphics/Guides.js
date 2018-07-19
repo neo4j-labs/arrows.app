@@ -36,7 +36,7 @@ export class Guides {
     })
 
     if (this.naturalPosition) {
-      drawSolidCircle(ctx, transform(this.naturalPosition), 'grey', defaultNodeRadius)
+      drawSolidCircle(ctx, transform(this.naturalPosition), 'grey', defaultNodeRadius * displayOptions.viewTransformation.scale)
     }
   }
 }
