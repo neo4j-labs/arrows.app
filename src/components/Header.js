@@ -34,7 +34,7 @@ const editConnectionParameters = (props) => {
   ) : null
 }
 const Header = (props) => (
-  <Menu color='grey' inverted style={{borderRadius: 0}}>
+  <Menu attached='top' color='grey' inverted style={{borderRadius: 0}}>
     <Menu.Item onClick={props.onPlusNodeClick}>
       <Icon name='add'/>Node
     </Menu.Item>

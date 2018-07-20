@@ -42,9 +42,6 @@ class App extends Component {
     const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
     return (
       <div>
-        {connectionParametersModal}
-        {databaseConnectionMessageModal}
-        <HeaderContainer/>
         <Sidebar.Pushable>
 
           <Sidebar
@@ -87,10 +84,11 @@ class App extends Component {
           </Sidebar>
 
           <Sidebar.Pusher>
-            <Segment basic>
+              {connectionParametersModal}
+              {databaseConnectionMessageModal}
+              <HeaderContainer/>
               <GraphContainer/>
               <DetailInspector/>
-            </Segment>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
       </div>
