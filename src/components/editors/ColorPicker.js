@@ -8,15 +8,12 @@ export default class extends Component {
   }
 
   render () {
-    const { caption, value, onChange, onDelete } = this.props
+    const { value, onChange } = this.props
     const { expanded } = this.state
 
     return (
       <React.Fragment>
-        <Form.Group widths='equal' key={`form-group-style-${caption}`}>
-          <Form.Field style={{ textAlign: 'right', fontSize: '1.1rem', alignSelf: 'center' }}>
-            <span>{caption}</span>
-          </Form.Field>
+        <Form.Group widths='equal'>
           <Form.Field>
             <Input
               size='small'
@@ -30,12 +27,10 @@ export default class extends Component {
                 icon={this.state.expanded ? 'chevron up' : 'chevron down'}
                 onClick={() => this.setState({ expanded: !this.state.expanded })}
               />
-              <Button onClick={onDelete} icon='close' style={{ borderTopLeftRadius: '0', borderBottomLeftRadius: '0', marginRight: '0'}}/>
             </Input>
           </Form.Field>
         </Form.Group>
-        <Form.Group widths='equal' key={`form-group-style-${caption}-detail`}>
-          <Form.Field></Form.Field>
+        <Form.Group widths='equal'>
           {expanded ?
             <CompactPicker
               color={value}

@@ -1,65 +1,57 @@
 import React from 'react'
-import {Form, Input} from 'semantic-ui-react'
+import {Input} from 'semantic-ui-react'
 import ColorPicker from './ColorPicker'
 import Slider from './Slider'
 
-export const getEditorComponent = ({ key, value, type='string', onChange, onKeyChange, onDelete, placeholder = key }) => {
+export const getEditorComponent = ({ value, type='string', onChange }) => {
   switch (type) {
     case 'size':
-      return (<Slider
-        key={'form-group-'+ key}
-        caption={key}
-        value={value}
-        onChange={onChange}
-        onDelete={onDelete}
-      />)
+      return (
+        <Slider
+          value={value}
+          onChange={onChange}
+        />
+      )
     case 'color':
       return (
         <ColorPicker
-          key={'form-group-'+ key}
-          caption={key}
           value={value}
           onChange={onChange}
-          onDelete={onDelete}
         />
       )
     case 'string':
     default:
       return (
-        <Form.Group widths='equal' key={'form-group-'+ key}>
-          <Form.Field>
-            <Input fluid value={key} onChange={onKeyChange} label=':' labelPosition='right' className={'property-key'}/>
-          </Form.Field>
-          <Form.Field>
-            <Input fluid value={value} placeholder={placeholder} onChange={onChange}
-                   action={{icon: 'close', onClick: onDelete}}/>
-          </Form.Field>
-        </Form.Group>
+        <Input
+          fluid
+          value={value}
+          onChange={onChange}
+        />
       )
   }
 }
 
-export const getStyleEditorComponent = (styleAttribute, value, onChange, onDelete) => {
-  switch (styleAttribute) {
+export const getStyleEditorComponent = (styleKey, value, onChange) => {
+  switch (styleKey) {
     case 'radius':
-      return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
+      return getEditorComponent({ value, type:'size', onChange })
     case 'node-color':
-      return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })
+      return getEditorComponent({ value, type:'color', onChange })
     case 'border-width':
-      return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
+      return getEditorComponent({ value, type:'size', onChange })
     case 'border-color':
-      return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })
+      return getEditorComponent({ value, type:'color', onChange })
     case 'caption-color':
-      return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })
+      return getEditorComponent({ value, type:'color', onChange })
     case 'caption-font-size':
-      return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
+      return getEditorComponent({ value, type:'size', onChange })
     case 'property-color':
-      return getEditorComponent({ key: styleAttribute, value, type:'color', onChange, onDelete })
+      return getEditorComponent({ value, type:'color', onChange })
     case 'property-font-size':
-      return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
+      return getEditorComponent({ value, type:'size', onChange })
     case 'arrow-width':
-      return getEditorComponent({ key: styleAttribute, value, type:'size', onChange, onDelete })
+      return getEditorComponent({ value, type:'size', onChange })
     default:
-      return getEditorComponent({ key: styleAttribute, value, onChange, onDelete })
+      return getEditorComponent({ value, onChange })
   }
 }

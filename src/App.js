@@ -4,32 +4,11 @@ import {connect} from 'react-redux'
 import './App.css'
 import withKeybindings, { ignoreTarget } from './interactions/Keybindings'
 import { compose } from 'recompose'
-import { Tab, Header, Icon, Menu, Sidebar, Segment, Table, Input, Form, Button} from 'semantic-ui-react'
+import { Sidebar, Segment } from 'semantic-ui-react'
 import DetailInspector from "./components/DetailInspector"
-import GeneralInspector from './components/GeneralInspector'
 import HeaderContainer from './containers/HeaderContainer'
 import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer";
 import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer";
-import {PropertyRow} from "./components/PropertyRow";
-
-const panes = [{
-  menuItem:
-    <Menu.Item key='detail' style={{width: '50%'}}>
-      <Header as='h3'>
-        <Icon name='edit'/>
-        Inspector
-      </Header>
-    </Menu.Item>,
-  render: () => <Tab.Pane><DetailInspector/></Tab.Pane>
-}, {
-  menuItem: <Menu.Item key='general' style={{ width: '50%' }}>
-    <Header as='h3'>
-      <Icon name='settings'/>
-      Settings
-    </Header>
-  </Menu.Item>,
-  render: () => <Tab.Pane><GeneralInspector/></Tab.Pane>
-}]
 
 class App extends Component {
   constructor (props) {
@@ -48,38 +27,10 @@ class App extends Component {
             animation='overlay'
             direction='right'
             visible={true}
-            // width="very wide"
             style={{'backgroundColor': 'white', width: '425px'}}
           >
             <Segment basic>
-              <Form>
-                <Form.Field key='_caption'>
-                  <label>Caption</label>
-                  <Input width="{3}"/>
-                </Form.Field>
-                <Form.Field>
-                  <label>Properties</label>
-                  <Table compact collapsing style={{marginTop: 0}}>
-                    <Table.Body>
-                      <PropertyRow/>
-                      <PropertyRow/>
-                      <PropertyRow/>
-                    </Table.Body>
-                  </Table>
-                  <Button content="Property" basic size="tiny" icon="plus"/>
-                </Form.Field>
-                <Form.Field>
-                  <label>Style</label>
-                  <Table compact collapsing style={{marginTop: 0}}>
-                    <Table.Body>
-                      <PropertyRow/>
-                      <PropertyRow/>
-                      <PropertyRow/>
-                    </Table.Body>
-                  </Table>
-                  <Button content="Style" basic size="tiny" icon="plus"/>
-                </Form.Field>
-              </Form>
+              <DetailInspector/>
             </Segment>
           </Sidebar>
 
@@ -88,7 +39,6 @@ class App extends Component {
               {databaseConnectionMessageModal}
               <HeaderContainer/>
               <GraphContainer/>
-              <DetailInspector/>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
       </div>

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form, Input, Segment, Icon, Header, Button, Dropdown, Divider} from 'semantic-ui-react'
+import {Form, Input, Table, Button, Dropdown} from 'semantic-ui-react'
 import {connect} from "react-redux";
 import {
   setProperty, setNodeCaption, setRelationshipType, renameProperty, removeProperty,
@@ -9,12 +9,12 @@ import {commonValue} from "../model/values";
 import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
 import {combineProperties, combineStyle} from "../model/properties";
 import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
-import { getStyleEditorComponent } from "./editors/editorFactory";
+import {PropertyRow} from "./PropertyRow";
+import {StyleRow} from "./StyleRow";
 
 class DetailInspector extends Component {
   constructor(props) {
     super(props)
-    this.newPropElementKey = 1
   }
 
   state = {
@@ -35,29 +35,42 @@ class DetailInspector extends Component {
     }
   }
 
-  propertyTable(properties) {
-    const rows = Object.keys(properties).map((key, index) => {
-      const onKeyChange = (event) => this.props.onSavePropertyKey(this.props.selection, key, event.target.value);
-      const onValueChange = (event) => this.props.onSavePropertyValue(this.props.selection, key, event.target.value)
-      const onDeleteProperty = (event) => this.props.onDeleteProperty(this.props.selection, key)
-      const {valueFieldValue, valueFieldPlaceHolder} = this.propertyInput(properties[key])
+  propertyTable(selection, properties) {
+    const rows = Object.keys(properties).map((propertyKey) => {
+      const onKeyChange = (event) => this.props.onSavePropertyKey(this.props.selection, propertyKey, event.target.value);
+      const onValueChange = (event) => this.props.onSavePropertyValue(this.props.selection, propertyKey, event.target.value)
+      const onDeleteProperty = (event) => this.props.onDeleteProperty(this.props.selection, propertyKey)
+      const {valueFieldValue, valueFieldPlaceHolder} = this.propertyInput(properties[propertyKey])
       return (
-        <Form.Group widths='equal' key={'form-group-'+ index}>
-          <Form.Field>
-            <Input fluid value={key} onChange={onKeyChange} label=':' labelPosition='right' className={'property-key'}/>
-          </Form.Field>
-          <Form.Field>
-            <Input fluid value={valueFieldValue} placeholder={valueFieldPlaceHolder} onChange={onValueChange}
-                      action={{icon: 'close', onClick: onDeleteProperty}}/>
-          </Form.Field>
-        </Form.Group>
+        <PropertyRow
+          key={propertyKey}
+          propertyKey={propertyKey}
+          onKeyChange={onKeyChange}
+          onValueChange={onValueChange}
+          onDeleteProperty={onDeleteProperty}
+          valueFieldValue={valueFieldValue}
+          valueFieldPlaceHolder={valueFieldPlaceHolder}
+        />
       )
     })
     return (
-      <div key='propertiesTable'>
-        <Divider horizontal>Properties</Divider>
-        {rows}
-      </div>
+      <Form.Field key='propertiesTable'>
+        <label>Properties</label>
+        <Table compact collapsing style={{marginTop: 0}}>
+          <Table.Body>
+            {rows}
+          </Table.Body>
+        </Table>
+        <Button
+          key='addProperty'
+          onClick={(event) => this.props.onSavePropertyValue(selection, '', '')}
+          basic
+          floated='right'
+          size="tiny"
+          icon="plus"
+          content='Property'
+        />
+      </Form.Field>
     )
   }
 
@@ -68,20 +81,27 @@ class DetailInspector extends Component {
       .concat(selectionIncludes.relationships ? relationshipStyleAttributes : [])
 
     const availableStyleAttributes = possibleStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
-    const styleElements = []
+    const rows = []
 
     const styleOptions = availableStyleAttributes.map(styleAttribute => ({
       text: styleAttribute,
       value: styleAttribute
     }))
 
-    const getStyleValueChangeHandler = styleAttribute => value => onSaveArrowsPropertyValue(this.props.selection, styleAttribute, value)
-    const getStyleValueRemoveHandler = styleAttribute => () => onDeleteArrowsProperty(this.props.selection, styleAttribute)
-
-    Object.keys(style).sort().forEach(styleAttribute => {
-      const currentValue = style[styleAttribute].status === 'CONSISTENT' ?  style[styleAttribute].value : graphStyle[styleAttribute]
-      const editorComponent = getStyleEditorComponent(styleAttribute, currentValue, getStyleValueChangeHandler(styleAttribute), getStyleValueRemoveHandler(styleAttribute))
-      styleElements.push(editorComponent)
+    Object.keys(style).sort().forEach(styleKey => {
+      const styleValue = style[styleKey].status === 'CONSISTENT' ?  style[styleKey].value : graphStyle[styleKey]
+      const onValueChange = value => onSaveArrowsPropertyValue(this.props.selection, styleKey, value)
+      const onDeleteStyle = () => onDeleteArrowsProperty(this.props.selection, styleKey)
+      rows.push((
+        <StyleRow
+          key={styleKey}
+          styleKey={styleKey}
+          styleValue={styleValue}
+          onValueChange={onValueChange}
+          onDeleteStyle={onDeleteStyle}
+        />
+        )
+      )
     })
 
     const changeStyleElement = styleOptions.length > 0 ? (
@@ -92,7 +112,9 @@ class DetailInspector extends Component {
             selectOnBlur={false}
             placeholder='+ Style'
             options={styleOptions}
-            onChange={(evt, data) => getStyleValueChangeHandler(data.value)(graphStyle[data.value])}
+            onChange={(evt, data) => {
+              return onSaveArrowsPropertyValue(this.props.selection, data.value, graphStyle[data.value]);
+            }}
             key={availableStyleAttributes.join('-')}
           />
         </Form.Field>
@@ -102,15 +124,20 @@ class DetailInspector extends Component {
       : null
 
     return (
-      <React.Fragment>
+      <Form.Field key='styleTable'>
+        <label>Style</label>
+        <Table compact collapsing style={{marginTop: 0}}>
+          <Table.Body>
+            {rows}
+          </Table.Body>
+        </Table>
         {changeStyleElement}
-        {styleElements}
-      </React.Fragment>
+      </Form.Field>
     )
   }
 
   render() {
-    const {selection, graph, onSaveCaption, onSaveType, onSavePropertyValue, onDeleteArrowsProperty} = this.props
+    const {selection, graph, onSaveCaption, onSaveType, onDeleteArrowsProperty} = this.props
     const fields = []
 
     const nodes = selectedNodes(graph, selection)
@@ -149,18 +176,17 @@ class DetailInspector extends Component {
     }
 
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
-      fields.push(this.propertyTable(properties))
-      fields.push((
-        <Button key='saveButton' onClick={(event) => onSavePropertyValue(selection, '', '')}>+ Property</Button>
+      fields.push(this.propertyTable(
+        selection,
+        properties
       ))
-
-      const style = combineStyle(entities)
-      fields.push(
-        <div key='styling' style={{ marginTop: '1em' }}>
-          <Divider horizontal>Styling</Divider>
-          {this.stylingSection(style, selectionIncludes, this.props.onSaveArrowsPropertyValue, onDeleteArrowsProperty, graph.style)}
-        </div>
-      )
+      fields.push(this.stylingSection(
+        combineStyle(entities),
+        selectionIncludes,
+        this.props.onSaveArrowsPropertyValue,
+        onDeleteArrowsProperty,
+        graph.style
+      ))
     }
 
     return (
