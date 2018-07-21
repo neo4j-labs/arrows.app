@@ -8,7 +8,8 @@ import { Vector } from "../model/Vector";
 const observedActionTypes = [
   'MOVE_NODES',
   'MOVE_NODES_END_DRAG',
-  'FETCHING_GRAPH_SUCCEEDED'
+  'FETCHING_GRAPH_SUCCEEDED',
+  'DELETE_NODES_AND_RELATIONSHIPS'
 ]
 
 export const calculateScaling = (nodes, radius, windowSize, viewTransformation, action) => {
@@ -25,7 +26,9 @@ export const calculateScaling = (nodes, radius, windowSize, viewTransformation, 
 
   let expansionVector = new Vector(horizontalExp, verticalExp)
 
-  const expansionRatio = ((windowSize.width + Math.abs(horizontalExp)) * (windowSize.height + Math.abs(verticalExp))) / (windowSize.width * windowSize.height)
+  //const expansionRatio = ((windowSize.width + Math.abs(horizontalExp)) * (windowSize.height + Math.abs(verticalExp))) / (windowSize.width * windowSize.height)
+  const expansionRatio = Math.max((windowSize.width + Math.abs(horizontalExp)) / windowSize.width, (windowSize.height + Math.abs(verticalExp)) / windowSize.height)
+
   return { expansionRatio, expansionVector }
 }
 
@@ -62,23 +65,18 @@ export const viewportMiddleware = store => next => action => {
 
   if (observedActionTypes.includes(action.type)) {
     const { graph, windowSize, viewTransformation } = store.getState()
-    // console.log('HANDLING IN VIEWPORT MIDDLEWARE', action.type, viewTransformation)
-    const nodes = graph.nodes //.map(node => ({ id: node.id, position: node.position, style: node.style }))
+    const nodes = graph.nodes
 
-    if (action.type === 'FETCHING_GRAPH_SUCCEEDED' || action.type === 'MOVE_NODES_END_DRAG') {
-      let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
-      store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
-    } else {
+    if (action.type === 'MOVE_NODES') {
       const { expansionRatio, expansionVector } = calculateScaling(nodes, graph.style.radius, windowSize, viewTransformation, action)
-      let panX = viewTransformation.offset.dx
-      let panY = viewTransformation.offset.dy
-
       if (expansionRatio > 1) {
-        let newScale = viewTransformation.scale / expansionRatio
-        panX -= expansionVector.dx
-        panY -= expansionVector.dy
-        store.dispatch(adjustViewport(newScale, panX, panY))
+        let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
+        store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
       }
+    } else {
+      let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
+      console.log('DISPATCHING')
+      store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
     }
   }
 
