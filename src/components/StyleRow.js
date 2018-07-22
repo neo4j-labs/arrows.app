@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
-import {Table, Input, Form, Icon} from 'semantic-ui-react'
+import {Table, Dropdown, Form, Icon} from 'semantic-ui-react'
 import {getStyleEditorComponent} from "./editors/editorFactory";
+import {nodeStyleAttributes} from "../model/styling";
 
 export class StyleRow extends Component {
 
@@ -26,15 +27,23 @@ export class StyleRow extends Component {
   render = () => {
     const { styleKey, styleValue, onValueChange, onDeleteStyle } = this.props
 
+    const styleOptions = nodeStyleAttributes.map(styleAttribute => ({
+      text: styleAttribute,
+      value: styleAttribute
+    }))
+
     return (
       <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
-        <Table.Cell width={3} collapsing>
+        <Table.Cell width={3} collapsing style={{padding: 0}}>
           <Form.Field>
-            <Input
+            <Dropdown
               value={styleKey}
-              disabled
-              transparent
+              inline
+              search
+              selection
+              options={styleOptions}
               className={'property-key'}
+              style={{border: 'none'}}
             />:
           </Form.Field>
         </Table.Cell>
