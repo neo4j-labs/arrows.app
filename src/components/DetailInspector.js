@@ -36,14 +36,14 @@ class DetailInspector extends Component {
   }
 
   propertyTable(selection, properties) {
-    const rows = Object.keys(properties).map((propertyKey) => {
+    const rows = Object.keys(properties).map((propertyKey, index) => {
       const onKeyChange = (event) => this.props.onSavePropertyKey(this.props.selection, propertyKey, event.target.value);
       const onValueChange = (event) => this.props.onSavePropertyValue(this.props.selection, propertyKey, event.target.value)
       const onDeleteProperty = (event) => this.props.onDeleteProperty(this.props.selection, propertyKey)
       const {valueFieldValue, valueFieldPlaceHolder} = this.propertyInput(properties[propertyKey])
       return (
         <PropertyRow
-          key={propertyKey}
+          key={'row-' + index}
           propertyKey={propertyKey}
           onKeyChange={onKeyChange}
           onValueChange={onValueChange}
