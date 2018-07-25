@@ -6,6 +6,7 @@ export default ({value, onChange, min = 0, max = 100, step = 5}) => {
     <Input
       size='small'
       value={value}
+      transparent
       style={{'width': '8em'}}
       onChange={evt => onChange(Number(evt.target.value))}
     />

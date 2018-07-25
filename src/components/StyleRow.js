@@ -27,25 +27,14 @@ export class StyleRow extends Component {
   render = () => {
     const { styleKey, styleValue, onValueChange, onDeleteStyle } = this.props
 
-    const styleOptions = nodeStyleAttributes.map(styleAttribute => ({
-      text: styleAttribute,
-      value: styleAttribute
-    }))
-
     return (
       <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <Table.Cell width={3} collapsing style={{padding: 0}}>
-          <Form.Field>
-            <Dropdown
-              value={styleKey}
-              inline
-              search
-              selection
-              options={styleOptions}
-              className={'property-key'}
-              style={{border: 'none'}}
-            />:
-          </Form.Field>
+          <div
+            style={{
+              'text-align': 'right'
+            }}
+          >{styleKey}:</div>
         </Table.Cell>
         <Table.Cell width={3}>
           {getStyleEditorComponent(styleKey, styleValue, onValueChange)}

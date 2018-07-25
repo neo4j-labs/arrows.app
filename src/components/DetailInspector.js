@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form, Input, Table, Button, Dropdown} from 'semantic-ui-react'
+import {Form, Input, Table, Button, Menu, Popup} from 'semantic-ui-react'
 import {connect} from "react-redux";
 import {
   setProperty, setNodeCaption, setRelationshipType, renameProperty, removeProperty,
@@ -83,11 +83,6 @@ class DetailInspector extends Component {
     const availableStyleAttributes = possibleStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
     const rows = []
 
-    const styleOptions = availableStyleAttributes.map(styleAttribute => ({
-      text: styleAttribute,
-      value: styleAttribute
-    }))
-
     Object.keys(style).sort().forEach(styleKey => {
       const styleValue = style[styleKey].status === 'CONSISTENT' ?  style[styleKey].value : graphStyle[styleKey]
       const onValueChange = value => onSaveArrowsPropertyValue(this.props.selection, styleKey, value)
@@ -104,24 +99,31 @@ class DetailInspector extends Component {
       )
     })
 
-    const changeStyleElement = styleOptions.length > 0 ? (
-      <Form.Group widths='equal' key={'form-group-changeStyle'}>
-        <Form.Field>
-          <Dropdown
-            button
-            selectOnBlur={false}
-            placeholder='+ Style'
-            options={styleOptions}
-            onChange={(evt, data) => {
-              return onSaveArrowsPropertyValue(this.props.selection, data.value, graphStyle[data.value]);
+    const addStyleMenu = (
+      <Menu text vertical>
+        {availableStyleAttributes.map(styleAttribute => (
+          <Menu.Item
+            name='inbox'
+            onClick={() => {
+              onSaveArrowsPropertyValue(this.props.selection, styleAttribute, graphStyle[styleAttribute])
             }}
-            key={availableStyleAttributes.join('-')}
-          />
-        </Form.Field>
-        <Form.Field></Form.Field>
-      </Form.Group>
+          >
+            {styleAttribute}
+          </Menu.Item>
+        ))}
+      </Menu>
     )
-      : null
+
+    const addStyleButton = (
+      <Button
+        key='addProperty'
+        basic
+        floated='right'
+        size="tiny"
+        icon="plus"
+        content='Style'
+      />
+    )
 
     return (
       <Form.Field key='styleTable'>
@@ -131,7 +133,12 @@ class DetailInspector extends Component {
             {rows}
           </Table.Body>
         </Table>
-        {changeStyleElement}
+        <Popup
+          trigger={addStyleButton}
+          content={addStyleMenu}
+          on='click'
+          position='bottom center'
+        />
       </Form.Field>
     )
   }

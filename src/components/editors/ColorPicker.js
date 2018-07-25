@@ -1,15 +1,19 @@
 import React, {Component} from 'react'
-import {Form, Input, Popup} from 'semantic-ui-react'
-import { CompactPicker } from 'react-color'
+import {Form, Input, Popup, Label} from 'semantic-ui-react'
+import {CompactPicker} from 'react-color'
 
 export default class extends Component {
-  render () {
-    const { value, onChange } = this.props
+  render() {
+    const {value, onChange} = this.props
     const textBox = (
       <Input
         size='small'
         value={value}
-        style={{ 'width': '5em', background: value, borderTopLeftRadius: '0.286em', borderBottomLeftRadius: '0.286em', paddingLeft: '0.5em' }}
+        style={{
+          'width': '8em',
+          'border-left': '17px solid ' + value,
+          'padding-left': '5px',
+        }}
         transparent
         onChange={evt => onChange(evt.target.value)}
       />
