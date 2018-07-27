@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form, Input, Table, Button, Menu, Popup} from 'semantic-ui-react'
+import {Form, Input, Table, Button} from 'semantic-ui-react'
 import {connect} from "react-redux";
 import {
   setProperty, setNodeCaption, setRelationshipType, renameProperty, removeProperty,
@@ -11,6 +11,7 @@ import {combineProperties, combineStyle} from "../model/properties";
 import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
 import {PropertyRow} from "./PropertyRow";
 import {StyleRow} from "./StyleRow";
+import AddStyle from "./AddStyle";
 
 class DetailInspector extends Component {
   constructor(props) {
@@ -99,32 +100,6 @@ class DetailInspector extends Component {
       )
     })
 
-    const addStyleMenu = (
-      <Menu text vertical>
-        {availableStyleAttributes.map(styleAttribute => (
-          <Menu.Item
-            name='inbox'
-            onClick={() => {
-              onSaveArrowsPropertyValue(this.props.selection, styleAttribute, graphStyle[styleAttribute])
-            }}
-          >
-            {styleAttribute}
-          </Menu.Item>
-        ))}
-      </Menu>
-    )
-
-    const addStyleButton = (
-      <Button
-        key='addProperty'
-        basic
-        floated='right'
-        size="tiny"
-        icon="plus"
-        content='Style'
-      />
-    )
-
     return (
       <Form.Field key='styleTable'>
         <label>Style</label>
@@ -133,11 +108,11 @@ class DetailInspector extends Component {
             {rows}
           </Table.Body>
         </Table>
-        <Popup
-          trigger={addStyleButton}
-          content={addStyleMenu}
-          on='click'
-          position='bottom center'
+        <AddStyle
+          styleKeys={availableStyleAttributes}
+          onAddStyle={(styleKey) => {
+            onSaveArrowsPropertyValue(this.props.selection, styleKey, graphStyle[styleKey])
+          }}
         />
       </Form.Field>
     )
