@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form, Input, Table} from 'semantic-ui-react'
+import {Form, Input} from 'semantic-ui-react'
 import {connect} from "react-redux";
 import {
   setProperty, setNodeCaption, setRelationshipType, renameProperty, removeProperty,
@@ -8,66 +8,17 @@ import {
 import {commonValue} from "../model/values";
 import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
 import {combineProperties, combineStyle} from "../model/properties";
-import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
-import {StyleRow} from "./StyleRow";
-import AddStyle from "./AddStyle";
 import PropertyTable from "./PropertyTable";
+import StyleTable from "./StyleTable";
 
 class DetailInspector extends Component {
   constructor(props) {
     super(props)
   }
 
-  state = {
-    addProperty: {state: 'empty', key: '', value: ''},
-    displayColorPicker: false
-  }
-
-  stylingSection (style, selectionIncludes, onSaveArrowsPropertyValue, onDeleteArrowsProperty, graphStyle) {
-    const existingStyleAttributes = Object.keys(style)
-    const possibleStyleAttributes = []
-      .concat(selectionIncludes.nodes ? nodeStyleAttributes : [])
-      .concat(selectionIncludes.relationships ? relationshipStyleAttributes : [])
-
-    const availableStyleAttributes = possibleStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
-    const rows = []
-
-    Object.keys(style).sort().forEach(styleKey => {
-      const styleValue = style[styleKey].status === 'CONSISTENT' ?  style[styleKey].value : graphStyle[styleKey]
-      const onValueChange = value => onSaveArrowsPropertyValue(this.props.selection, styleKey, value)
-      const onDeleteStyle = () => onDeleteArrowsProperty(this.props.selection, styleKey)
-      rows.push((
-        <StyleRow
-          key={styleKey}
-          styleKey={styleKey}
-          styleValue={styleValue}
-          onValueChange={onValueChange}
-          onDeleteStyle={onDeleteStyle}
-        />
-        )
-      )
-    })
-
-    return (
-      <Form.Field key='styleTable'>
-        <label>Style</label>
-        <Table compact collapsing style={{marginTop: 0}}>
-          <Table.Body>
-            {rows}
-          </Table.Body>
-        </Table>
-        <AddStyle
-          styleKeys={availableStyleAttributes}
-          onAddStyle={(styleKey) => {
-            onSaveArrowsPropertyValue(this.props.selection, styleKey, graphStyle[styleKey])
-          }}
-        />
-      </Form.Field>
-    )
-  }
-
   render() {
-    const {selection, graph, onSaveCaption, onSaveType, onDeleteArrowsProperty} = this.props
+    const {selection, graph, onSaveCaption, onSaveType} = this.props
+    const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
 
@@ -108,20 +59,22 @@ class DetailInspector extends Component {
 
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
       fields.push(
-        <PropertyTable
+        <PropertyTable key='properties'
           properties={properties}
           onSavePropertyKey={(oldPropertyKey, newPropertyKey) => onSavePropertyKey(selection, oldPropertyKey, newPropertyKey)}
           onSavePropertyValue={(propertyKey, propertyValue) => onSavePropertyValue(selection, propertyKey, propertyValue)}
           onDeleteProperty={(propertyKey) => onDeleteProperty(selection, propertyKey)}
         />
       )
-      fields.push(this.stylingSection(
-        combineStyle(entities),
-        selectionIncludes,
-        this.props.onSaveArrowsPropertyValue,
-        onDeleteArrowsProperty,
-        graph.style
-      ))
+      fields.push(
+        <StyleTable key='style'
+          style={combineStyle(entities)}
+          graphStyle={graph.style}
+          selectionIncludes={selectionIncludes}
+          onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
+          onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
+        />
+      )
     }
 
     return (
