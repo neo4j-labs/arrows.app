@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
-import {Table, Dropdown, Form, Icon} from 'semantic-ui-react'
+import {Table, Icon} from 'semantic-ui-react'
 import {getStyleEditorComponent} from "./editors/editorFactory";
-import {nodeStyleAttributes} from "../model/styling";
 
 export class StyleRow extends Component {
 

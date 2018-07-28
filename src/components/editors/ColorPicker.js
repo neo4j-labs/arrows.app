@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Form, Input, Popup, Label} from 'semantic-ui-react'
+import {Form, Input, Popup} from 'semantic-ui-react'
 import {CompactPicker} from 'react-color'
 
 export default class extends Component {
