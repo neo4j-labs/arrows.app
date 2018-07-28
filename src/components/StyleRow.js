@@ -32,7 +32,7 @@ export class StyleRow extends Component {
         <Table.Cell width={3} collapsing style={{padding: 0}}>
           <div
             style={{
-              'text-align': 'right'
+              textAlign: 'right'
             }}
           >{styleKey}:</div>
         </Table.Cell>

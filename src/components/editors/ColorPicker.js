@@ -10,9 +10,9 @@ export default class extends Component {
         size='small'
         value={value}
         style={{
-          'width': '8em',
-          'border-left': '17px solid ' + value,
-          'padding-left': '5px',
+          width: '8em',
+          borderLeft: '17px solid ' + value,
+          paddingLeft: '5px',
         }}
         transparent
         onChange={evt => onChange(evt.target.value)}
