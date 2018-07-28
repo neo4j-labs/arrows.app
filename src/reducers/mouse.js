@@ -1,10 +1,13 @@
 const mouse = (state = { dragType: 'NONE' }, action) => {
   switch (action.type) {
     case 'MOUSE_DOWN_ON_NODE': {
+      const mouseToNodeVector = action.node.position.vectorFrom(action.graphPosition)
+      console.log('mouseToCenterVector', mouseToNodeVector)
       return {
         dragType: 'NODE',
         node: action.node,
-        mousePosition: action.position
+        mousePosition: action.position,
+        mouseToNodeVector
       }
     }
 
