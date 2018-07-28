@@ -9,7 +9,6 @@ import { moveNodes } from "../actions/graph";
 const observedActionTypes = [
   'MOVE_NODES',
   'MOVE_NODES_END_DRAG',
-  'END_DRAG',
   'FETCHING_GRAPH_SUCCEEDED',
   'DELETE_NODES_AND_RELATIONSHIPS'
 ]
@@ -102,8 +101,8 @@ export const viewportMiddleware = store => next => action => {
       }
     } else {
       let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
-      // console.log('DISPATCHING')
-      if (scale) {
+
+      if (scale && (action.type !== 'MOVE_NODES_END_DRAG' || viewTransformation.scale !== scale)) {
         store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
       }
     }
