@@ -30,6 +30,7 @@ export default class AddStyle extends Component {
       <Menu text vertical>
         {this.props.styleKeys.map(styleKey => (
           <Menu.Item
+            key={styleKey}
             onClick={() => {
               this.setState({isOpen: false})
               this.props.onAddStyle(styleKey)
