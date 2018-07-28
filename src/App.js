@@ -5,10 +5,10 @@ import './App.css'
 import withKeybindings, { ignoreTarget } from './interactions/Keybindings'
 import { compose } from 'recompose'
 import { Sidebar, Segment } from 'semantic-ui-react'
-import DetailInspector from "./components/DetailInspector"
 import HeaderContainer from './containers/HeaderContainer'
-import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer";
-import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer";
+import InspectorContainer from "./containers/InspectorContainer"
+import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer"
+import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer"
 
 class App extends Component {
   constructor (props) {
@@ -30,7 +30,7 @@ class App extends Component {
             style={{'backgroundColor': 'white', width: '425px'}}
           >
             <Segment basic>
-              <DetailInspector/>
+              <InspectorContainer/>
             </Segment>
           </Sidebar>
 

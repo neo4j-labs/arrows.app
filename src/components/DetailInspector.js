@@ -1,17 +1,12 @@
 import React, {Component} from 'react'
 import {Form, Input} from 'semantic-ui-react'
-import {connect} from "react-redux";
-import {
-  setProperty, setNodeCaption, setRelationshipType, renameProperty, removeProperty,
-  setArrowsProperty, removeArrowsProperty
-} from "../actions/graph";
 import {commonValue} from "../model/values";
 import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
 import {combineProperties, combineStyle} from "../model/properties";
 import PropertyTable from "./PropertyTable";
 import StyleTable from "./StyleTable";
 
-class DetailInspector extends Component {
+export class DetailInspector extends Component {
   constructor(props) {
     super(props)
   }
@@ -88,43 +83,4 @@ class DetailInspector extends Component {
       </React.Fragment>
     )
   }
-
 }
-
-const mapStateToProps = state => {
-  return {
-    graph: state.graph,
-    selection: state.selection
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onSaveCaption: (selection, caption) => {
-      dispatch(setNodeCaption(selection, caption))
-    },
-    onSaveType: (selection, type) => {
-      dispatch(setRelationshipType(selection, type))
-    },
-    onSavePropertyKey: (selection, oldPropertyKey, newPropertyKey) => {
-      dispatch(renameProperty(selection, oldPropertyKey, newPropertyKey))
-    },
-    onSavePropertyValue: (selection, key, value) => {
-      dispatch(setProperty(selection, key, value))
-    },
-    onSaveArrowsPropertyValue: (selection, key, value) => {
-      dispatch(setArrowsProperty(selection, key, value))
-    },
-    onDeleteProperty: (selection, key) => {
-      dispatch(removeProperty(selection, key))
-    },
-    onDeleteArrowsProperty: (selection, key) => {
-      dispatch(removeArrowsProperty(selection, key))
-    }
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DetailInspector)
