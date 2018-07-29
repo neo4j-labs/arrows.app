@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import './App.css'
 import withKeybindings, { ignoreTarget } from './interactions/Keybindings'
 import { compose } from 'recompose'
-import { Sidebar, Segment } from 'semantic-ui-react'
+import { Sidebar } from 'semantic-ui-react'
 import HeaderContainer from './containers/HeaderContainer'
 import InspectorContainer from "./containers/InspectorContainer"
 import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer"
@@ -29,16 +29,14 @@ class App extends Component {
             visible={true}
             style={{'backgroundColor': 'white', width: '425px'}}
           >
-            <Segment basic>
-              <InspectorContainer/>
-            </Segment>
+            <InspectorContainer/>
           </Sidebar>
 
           <Sidebar.Pusher>
-              {connectionParametersModal}
-              {databaseConnectionMessageModal}
-              <HeaderContainer/>
-              <GraphContainer/>
+            {connectionParametersModal}
+            {databaseConnectionMessageModal}
+            <HeaderContainer/>
+            <GraphContainer/>
           </Sidebar.Pusher>
         </Sidebar.Pushable>
       </div>

@@ -1,8 +1,9 @@
 import React, {Component} from 'react'
-import {Form, Input} from 'semantic-ui-react'
+import {Segment, Form, Input, Menu, Icon} from 'semantic-ui-react'
 import {commonValue} from "../model/values";
-import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
+import {selectedNodes, selectedRelationships} from "../model/selection";
 import {combineProperties, combineStyle} from "../model/properties";
+import {describeSelection} from "./SelectionCounters";
 import PropertyTable from "./PropertyTable";
 import StyleTable from "./StyleTable";
 
@@ -74,12 +75,20 @@ export class DetailInspector extends Component {
 
     return (
       <React.Fragment>
-        <p>
-          {describeSelection(selection)}
-        </p>
-        <Form style={{'textAlign': 'left'}}>
-          {fields}
-        </Form>
+        <Menu borderless attached='top' style={{borderRadius: 0}}>
+          <Menu.Item style={{height: '40px'}}>
+            <Icon name='info circle'/>
+            {describeSelection(selection)}
+          </Menu.Item>
+          <Menu.Item position='right'>
+            <Icon name='angle double right'/>
+          </Menu.Item>
+        </Menu>
+        <Segment basic style={{margin: 0}}>
+          <Form style={{textAlign: 'left'}}>
+            {fields}
+          </Form>
+        </Segment>
       </React.Fragment>
     )
   }
