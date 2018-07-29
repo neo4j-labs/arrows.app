@@ -13,6 +13,7 @@ export class Guides {
 
   draw (ctx, displayOptions) {
     const transform = (position) => displayOptions.viewTransformation.transform(position)
+    const scale = displayOptions.viewTransformation.scale
 
     this.guidelines.forEach(guideline => {
       switch (guideline.type) {
@@ -27,7 +28,7 @@ export class Guides {
           break
 
         case 'CIRCLE':
-          drawCircle(ctx, transform(guideline.center), guideline.radius, true)
+          drawCircle(ctx, transform(guideline.center), guideline.radius * scale, true)
           break
 
         default:
