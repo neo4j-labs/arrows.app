@@ -42,22 +42,23 @@ export const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState)
   })
 }
 
-export const tryMoveNode = (nodeId, oldMousePosition, newMousePosition) => {
+export const tryMoveNode = ({ nodeId, oldMousePosition, newMousePosition, forcedNodePosition }) => {
   return function (dispatch, getState) {
-    const { graph, viewTransformation, windowSize } = getState()
-    let translateMultiplier = 1
-
-    const vector = newMousePosition.vectorFrom(oldMousePosition).scale(1 / viewTransformation.scale)
-    vector.dx *= translateMultiplier
-
-    const activelyMovedNode = graph.nodes.find((node) => idsMatch(node.id, nodeId))
+    const { graph, viewTransformation } = getState()
+    let naturalPosition
     const otherSelectedNodes = Object.keys(getState().selection.selectedNodeIdMap).filter((selectedNodeId) => selectedNodeId !== nodeId)
-    let currentPosition = getState().guides.naturalPosition || activelyMovedNode.position
+    const activelyMovedNode = graph.nodes.find((node) => idsMatch(node.id, nodeId))
 
+    if (forcedNodePosition) {
+      naturalPosition = forcedNodePosition
+    } else {
+      const vector = newMousePosition.vectorFrom(oldMousePosition).scale(1 / viewTransformation.scale)
+      let currentPosition = getState().guides.naturalPosition || activelyMovedNode.position
 
-    let naturalPosition = currentPosition.translate(vector)
+      naturalPosition = currentPosition.translate(vector)
+    }
+
     let snaps = snapToNeighbourDistancesAndAngles(graph, nodeId, naturalPosition, otherSelectedNodes)
-
     let guides = new Guides()
     let newPosition = naturalPosition
     if (snaps.snapped) {
@@ -75,35 +76,6 @@ export const tryMoveNode = (nodeId, oldMousePosition, newMousePosition) => {
         position: graph.nodes.find((node) => idsMatch(node.id, otherNodeId)).position.translate(delta)
       })
     })
-
-    // TO ANTICIPATE VIEWPORT ADJUST AND ACT
-
-   /*const nodes = graph.nodes.map(node => ({ id: node.id, position: node.position, style: node.style }))
-    let movedNodePosition
-    nodePositions.forEach(nodePosition => {
-      const node = nodes.find(node => node.id === nodePosition.nodeId)
-      if (node.position.x !== nodePosition.position.x || node.position.y !== nodePosition.position.y) {
-        console.log('UPDATING POSITION AT TRY MOVE NODE')
-        node.position = nodePosition.position
-        if (nodePosition.nodeId === activelyMovedNode.id) {
-          movedNodePosition = nodePosition
-        }
-      }
-    })
-
-    let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
-
-    if (scale && scale < 1 && scale < viewTransformation.scale) {
-      const scaleChange = viewTransformation.scale / scale
-      // console.log('OLD SCALE, NEW SCALE', scaleChange)
-      console.log('translateVector',scaleChange, translateVector, viewTransformation.offset)
-      const differenceVector = translateVector.minus(viewTransformation.offset)
-
-      if (movedNodePosition) {
-        console.log('ADJUSTING MOVED NODE', differenceVector.distance())
-        movedNodePosition.position = movedNodePosition.position.translate(delta.scale(5)) // translate(differenceVector) // ??.translate(delta.scale(2))
-      }
-    }*/
 
     dispatch(moveNodes(oldMousePosition, newMousePosition, nodePositions, guides))
   }

@@ -121,7 +121,11 @@ export const mouseMove = (canvasPosition) => {
 
       case 'NODE':
         if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
-          dispatch(tryMoveNode(mouse.node.id, previousPosition, canvasPosition))
+          dispatch(tryMoveNode({
+            nodeId: mouse.node.id,
+            oldMousePosition: previousPosition,
+            newMousePosition: canvasPosition
+          }))
         }
         break
 
