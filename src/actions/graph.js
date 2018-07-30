@@ -44,7 +44,7 @@ export const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState)
 
 export const tryMoveNode = ({ nodeId, oldMousePosition, newMousePosition, forcedNodePosition }) => {
   return function (dispatch, getState) {
-    const { graph, viewTransformation } = getState()
+    const { graph, viewTransformation, mouse } = getState()
     let naturalPosition
     const otherSelectedNodes = Object.keys(getState().selection.selectedNodeIdMap).filter((selectedNodeId) => selectedNodeId !== nodeId)
     const activelyMovedNode = graph.nodes.find((node) => idsMatch(node.id, nodeId))
@@ -77,7 +77,7 @@ export const tryMoveNode = ({ nodeId, oldMousePosition, newMousePosition, forced
       })
     })
 
-    dispatch(moveNodes(oldMousePosition, newMousePosition, nodePositions, guides))
+    dispatch(moveNodes(oldMousePosition, newMousePosition || mouse.mousePosition, nodePositions, guides))
   }
 }
 

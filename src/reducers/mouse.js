@@ -29,10 +29,11 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
     }
 
     case 'MOVE_NODES':
+      const currentPosition = action.newMousePosition || state.mousePosition
       return {
         ...state,
         dragged: true,
-        mousePosition: action.newMousePosition
+        mousePosition: currentPosition
       }
 
     case 'RING_DRAGGED':

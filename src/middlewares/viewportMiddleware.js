@@ -72,11 +72,12 @@ export const viewportMiddleware = store => next => action => {
       const { expansionRatio } = calculateScaling(nodes, graph.style.radius, windowSize, viewTransformation, action)
       if (expansionRatio > 1) {
         let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
+
         store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
 
         if (mouse.mouseToNodeVector) {
           const newViewTransformation = new ViewTransformation(scale, new Vector(translateVector.dx, translateVector.dy))
-          const mousePositionInGraph = newViewTransformation.inverse(action.newMousePosition)
+          const mousePositionInGraph = newViewTransformation.inverse(action.newMousePosition || mouse.mousePosition)
 
           const expectedNodePositionbyMouse = mousePositionInGraph.translate(mouse.mouseToNodeVector.scale(viewTransformation.scale))
           const differenceVector = expectedNodePositionbyMouse.vectorFrom(action.nodePositions[0].position)
@@ -85,7 +86,22 @@ export const viewportMiddleware = store => next => action => {
             window.requestAnimationFrame(() => store.dispatch(tryMoveNode({
               nodeId: action.nodePositions[0].nodeId,
               oldMousePosition: action.oldMousePosition,
-              newMousePosition: action.newMousePosition,
+              newMousePosition: null,
+              forcedNodePosition: expectedNodePositionbyMouse
+            })))
+          }
+        }
+      } else {
+        if (mouse.mouseToNodeVector) {
+          const mousePositionInGraph = viewTransformation.inverse(mouse.mousePosition)
+          const expectedNodePositionbyMouse = mousePositionInGraph.translate(mouse.mouseToNodeVector.scale(viewTransformation.scale))
+          const differenceVector = expectedNodePositionbyMouse.vectorFrom(action.nodePositions[0].position)
+
+          if (differenceVector.distance() > graph.style.radius / 2) {
+            window.requestAnimationFrame(() => store.dispatch(tryMoveNode({
+              nodeId: action.nodePositions[0].nodeId,
+              oldMousePosition: action.oldMousePosition,
+              newMousePosition: null,
               forcedNodePosition: expectedNodePositionbyMouse
             })))
           }
