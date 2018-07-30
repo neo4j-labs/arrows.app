@@ -15,7 +15,7 @@ export const describeSelection = (selection) => {
           <Label
             key={entityType}
             basic
-            color='blue'
+            color='black'
             pointing='left'
             style={{margin: 0}}>
             {length}
