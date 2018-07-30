@@ -74,7 +74,6 @@ class GraphDisplay extends Component {
       // now scale the context to counter
       // the fact that we've manually scaled
       // our canvas element
-      console.log("RATIOT", ratio)
       context.scale(ratio, ratio)
     }
 

@@ -94,11 +94,83 @@ export const viewportMiddleware = store => next => action => {
     } else {
       let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
 
-      if (scale && (action.type !== 'MOVE_NODES_END_DRAG' || viewTransformation.scale !== scale)) {
-        store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
+      if (scale) {
+       if (action.type === 'MOVE_NODES_END_DRAG') {
+          if (scale > viewTransformation.scale) {
+            let currentStep = 0
+            let duration    = 1000
+            let fps         = 60
+
+            const targetViewTransformation = new ViewTransformation(scale, new Vector(translateVector.dx, translateVector.dy))
+            const { scaleTable, panningTable } = calculateTransformationTable(viewTransformation, targetViewTransformation, duration / fps)
+            console.log('ANIMATION START', viewTransformation, targetViewTransformation)
+
+            const animateScale = () => {
+              setTimeout(() => {
+                const nextScale = scaleTable[currentStep]
+                const nextPan = panningTable[currentStep]
+
+                store.dispatch(adjustViewport(nextScale, nextPan.dx, nextPan.dy))
+
+                currentStep++
+                if (currentStep < scaleTable.length) {
+                  window.requestAnimationFrame(animateScale)
+                }
+              }, 1000 / fps)
+            }
+
+            window.requestAnimationFrame(animateScale)
+          } else if (scale !== viewTransformation.scale) {
+            store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
+          }
+        } else {
+          store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
+        }
       }
     }
   }
 
   return result
+}
+
+const calculateTransformationTable = (currentViewTransformation, targetViewTransformation, totalSteps) => {
+  let lastScale = currentViewTransformation.scale
+  const targetScale = targetViewTransformation.scale
+  const scaleByStep = (targetScale - lastScale) / totalSteps
+
+  let lastPan = {
+    dx: currentViewTransformation.offset.dx,
+    dy: currentViewTransformation.offset.dy
+  }
+  const panByStep = {
+    dx: (targetViewTransformation.offset.dx - lastPan.dx) / totalSteps,
+    dy: (targetViewTransformation.offset.dy - lastPan.dy) / totalSteps
+  }
+
+  const scaleTable = []
+  const panningTable = []
+  let stepIndex = 0
+
+  while (stepIndex < totalSteps - 1) {
+    lastScale += scaleByStep
+    lastPan = {
+      dx: lastPan.dx + panByStep.dx,
+      dy: lastPan.dy + panByStep.dy
+    }
+
+    scaleTable.push(lastScale)
+    panningTable.push(lastPan)
+
+    stepIndex++
+  }
+
+  // because of decimal figures does not sum up to exact number
+  scaleTable.push(targetViewTransformation.scale)
+  panningTable.push(targetViewTransformation.offset)
+
+  console.log(scaleTable, panningTable)
+  return  {
+    scaleTable,
+    panningTable
+  }
 }
