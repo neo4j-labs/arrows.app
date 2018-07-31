@@ -10,7 +10,7 @@ export const drawAnnotation = (ctx, visualNode) => {
   let orientation = null
   let textStart = null
   let textSide = null
-  const fontSize = visualNode['property-font-size']
+  const fontSize = visualNode['property-font-size'] * visualNode.viewTransformation.scale
   const fontColor = visualNode['property-color']
   const fontFace = get(config, 'font.face')
   const lineHeight = fontSize
