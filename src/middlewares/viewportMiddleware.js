@@ -26,11 +26,9 @@ export const calculateScaling = (nodes, defaultRadius, windowSize, viewTransform
   const horizontalExp = leftOverflow > 0 ? -1 * leftOverflow : (rightOverflow > 0 ? rightOverflow : 0)
   const verticalExp = topOverflow > 0 ? -1 * topOverflow : (bottomOverflow > 0 ? bottomOverflow : 0)
 
-  let expansionVector = new Vector(horizontalExp, verticalExp)
-
   const expansionRatio = Math.max((windowSize.width + Math.abs(horizontalExp)) / windowSize.width, (windowSize.height + Math.abs(verticalExp)) / windowSize.height)
 
-  return { expansionRatio, expansionVector }
+  return expansionRatio > 1
 }
 
 export const calculateViewportTranslation = (nodes, radius, windowSize) => {
@@ -69,8 +67,8 @@ export const viewportMiddleware = store => next => action => {
     const nodes = graph.nodes
 
     if (action.type === 'MOVE_NODES') {
-      const { expansionRatio } = calculateScaling(nodes, graph.style.radius, windowSize, viewTransformation, action)
-      if (expansionRatio > 1) {
+      const shouldScaleUp = calculateScaling(nodes, graph.style.radius, windowSize, viewTransformation, action)
+      if (shouldScaleUp) {
         let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
 
         store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
@@ -119,7 +117,6 @@ export const viewportMiddleware = store => next => action => {
 
             const targetViewTransformation = new ViewTransformation(scale, new Vector(translateVector.dx, translateVector.dy))
             const { scaleTable, panningTable } = calculateTransformationTable(viewTransformation, targetViewTransformation, duration / fps)
-            console.log('ANIMATION START', viewTransformation, targetViewTransformation)
 
             const animateScale = () => {
               setTimeout(() => {
@@ -184,7 +181,6 @@ const calculateTransformationTable = (currentViewTransformation, targetViewTrans
   scaleTable.push(targetViewTransformation.scale)
   panningTable.push(targetViewTransformation.offset)
 
-  console.log(scaleTable, panningTable)
   return  {
     scaleTable,
     panningTable
