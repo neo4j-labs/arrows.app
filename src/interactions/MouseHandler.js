@@ -60,6 +60,7 @@ export default class MouseHandler {
 
   canvasPosition(event) {
     let rect = this.canvas.getBoundingClientRect()
+    // TODO Origin of right / bottom ISSUE ???
     return new Point(
       event.clientX - rect.left,
       event.clientY - rect.top

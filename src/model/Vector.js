@@ -8,6 +8,10 @@ export class Vector {
     return new Vector(this.dx + otherVector.dx, this.dy + otherVector.dy)
   }
 
+  minus(otherVector) {
+    return new Vector(this.dx - otherVector.dx, this.dy - otherVector.dy)
+  }
+
   scale(scaleFactor) {
     return new Vector(this.dx * scaleFactor, this.dy * scaleFactor)
   }

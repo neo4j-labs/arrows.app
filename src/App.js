@@ -40,7 +40,7 @@ class App extends Component {
     const connectionParametersModal = this.props.editingConnectionParameters ? (<EditConnectionParametersContainer/>) : null
     const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
     return (
-      <Grid columns={2}>
+      <Grid columns={2} style={{ height: '100%' }}>
         <Grid.Row style={{paddingBottom: 0}}>
           <Grid.Column width={16}>
             {connectionParametersModal}
@@ -48,11 +48,11 @@ class App extends Component {
             <HeaderContainer/>
           </Grid.Column>
         </Grid.Row>
-        <Grid.Row style={{paddingTop: 0}}>
-          <Grid.Column width={12}>
+        <Grid.Row style={{paddingTop: 0, height: '100%', marginLeft: '1em'}}>
+          <Grid.Column width={12} style={{padding: 0, marginBottom: '1.7em'}}>
             <GraphContainer/>
           </Grid.Column>
-          <Grid.Column width={4}>
+          <Grid.Column width={4} style={{padding: 0, margin: 0}}>
             <Tab menu={{ secondary: true, pointing: true }} grid={{tabWidth: 6}} panes={panes}/>
           </Grid.Column>
         </Grid.Row>

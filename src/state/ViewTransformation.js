@@ -21,4 +21,8 @@ export class ViewTransformation {
   inverse(point) {
     return point.translate(this.offset.invert()).scale(1 / this.scale)
   }
+
+  adjust(scale, panX, panY) {
+    return new ViewTransformation(scale, new Vector(panX, panY))
+  }
 }

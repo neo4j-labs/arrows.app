@@ -1,6 +1,47 @@
 import { defaultNewNodeRadius } from "../constants";
 import Voronoi from "./voronoi";
 
+export const calculateBoundingBox = (nodes, defaultRadius, scale = 1) => {
+  if (nodes.length === 0) {
+    return null
+  }
+
+  let radius = scale * (nodes[0].style.radius || defaultRadius)
+  const getPosition = node => node.position.scale(scale)
+  const node = nodes[0]
+
+  let left = getPosition(node).x - radius
+  let right = getPosition(node).x + radius
+  let top = getPosition(node).y - radius
+  let bottom = getPosition(node).y + radius
+
+  nodes.forEach(node => {
+    const position = getPosition(node)
+    radius = (node.style && node.style.radius || defaultRadius) * scale
+
+    if (position.x + radius > right) {
+      right = position.x + radius
+    } else if (position.x - radius < left) {
+      left = position.x - radius
+    }
+
+    if (position.y + radius > bottom) {
+      bottom = position.y + radius
+    } else if (position.y - radius < top) {
+      top = position.y - radius
+    }
+  })
+
+  return { left, right, top, bottom }
+
+  /*return {
+    left: left - radius,
+    right: right + radius,
+    top: top - radius,
+    bottom: bottom + radius
+  }*/
+}
+
 export const pointOnCircle = (x, y, radius, percentage) => {
   let angle = percentage * 2 * Math.PI
   return {

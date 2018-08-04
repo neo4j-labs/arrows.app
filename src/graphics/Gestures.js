@@ -1,5 +1,5 @@
 import { drawRing, drawStraightArrow, drawPolygon, drawCircle} from "./canvasRenderer";
-import { ringMargin } from "./constants";
+import { ringMargin as defaultRingMargin } from "./constants";
 import { Vector } from "../model/Vector";
 import { getArrowGeometryData, getVoronoi, isPointInPolygon, sortPoints } from "./utils/geometryUtils";
 import {idsMatch} from "../model/Id";
@@ -17,7 +17,8 @@ export default class Gestures {
   draw (ctx, displayOptions) {
     const { graph, selection, gestures } = this
     const { dragToCreate, selectionPath, selectionMarquee } = gestures
-    const transform = (position) => displayOptions.viewTransformation.transform(position)
+    const viewTransformation = displayOptions.viewTransformation
+    const transform = (position) => viewTransformation.transform(position)
     const getBbox = (from, to) => [
       from, {
         x: to.x,
@@ -30,7 +31,9 @@ export default class Gestures {
       from
     ]
 
-    let newNodeRadius = graph.style.radius + ringMargin;
+    const ringMargin = defaultRingMargin * viewTransformation.scale
+
+    let newNodeRadius = graph.style.radius * viewTransformation.scale
 
     if (selectionMarquee && graph.nodes.length > 0) {
       const marqueeScreen = {from: transform(selectionMarquee.from), to: transform(selectionMarquee.to)}
@@ -83,14 +86,14 @@ export default class Gestures {
       if (!idsMatch(nodeId, dragToCreate.sourceNodeId)) {
         const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
         const nodeRadius = getStyleSelector(node, 'radius')(graph)
-        drawRing(ctx, transform(node.position), green, nodeRadius + ringMargin / 2)
+        drawRing(ctx, transform(node.position), green, (nodeRadius * viewTransformation.scale + ringMargin / 2))
       }
     })
 
     if (dragToCreate.sourceNodeId) {
       const sourceNode = graph.nodes.find((node) => idsMatch(node.id, dragToCreate.sourceNodeId))
       if (sourceNode) {
-        const radius = getStyleSelector(sourceNode, 'radius')(graph)
+        const radius = getStyleSelector(sourceNode, 'radius')(graph) * viewTransformation.scale
         const outerRadius = radius + ringMargin
         const sourceNodeIdPosition = sourceNode.position
         if (dragToCreate.newNodePosition) {
@@ -103,7 +106,6 @@ export default class Gestures {
               newNodeRadius *= ratio
             } else {
               newNodePosition = dragToCreate.newNodePosition
-              newNodeRadius = newNodeRadius
             }
           }
 

@@ -51,7 +51,7 @@ export const mouseDown = (canvasPosition, metaKey) => {
       switch (item.entityType) {
         case 'node':
           dispatch(toggleSelection(item, metaKey))
-          dispatch(mouseDownOnNode(item, canvasPosition))
+          dispatch(mouseDownOnNode(item, canvasPosition, graphPosition))
           break
 
         case 'relationship':
@@ -71,10 +71,11 @@ export const mouseDown = (canvasPosition, metaKey) => {
   }
 }
 
-const mouseDownOnNode = (node, canvasPosition) => ({
+const mouseDownOnNode = (node, canvasPosition, graphPosition) => ({
   type: 'MOUSE_DOWN_ON_NODE',
   node,
-  position: canvasPosition
+  position: canvasPosition,
+  graphPosition
 })
 
 const mouseDownOnNodeRing = (node, canvasPosition) => ({
@@ -120,7 +121,11 @@ export const mouseMove = (canvasPosition) => {
 
       case 'NODE':
         if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
-          dispatch(tryMoveNode(mouse.node.id, previousPosition, canvasPosition))
+          dispatch(tryMoveNode({
+            nodeId: mouse.node.id,
+            oldMousePosition: previousPosition,
+            newMousePosition: canvasPosition
+          }))
         }
         break
 

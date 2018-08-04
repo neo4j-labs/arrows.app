@@ -1,10 +1,12 @@
 const mouse = (state = { dragType: 'NONE' }, action) => {
   switch (action.type) {
     case 'MOUSE_DOWN_ON_NODE': {
+      const mouseToNodeVector = action.node.position.vectorFrom(action.graphPosition)
       return {
         dragType: 'NODE',
         node: action.node,
-        mousePosition: action.position
+        mousePosition: action.position,
+        mouseToNodeVector
       }
     }
 
@@ -27,10 +29,11 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
     }
 
     case 'MOVE_NODES':
+      const currentPosition = action.newMousePosition || state.mousePosition
       return {
         ...state,
         dragged: true,
-        mousePosition: action.newMousePosition
+        mousePosition: currentPosition
       }
 
     case 'RING_DRAGGED':
