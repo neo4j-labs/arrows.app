@@ -77,7 +77,7 @@ export class DetailInspector extends Component {
       <React.Fragment>
         <Menu borderless attached='top' style={{borderRadius: 0}}>
           <Menu.Item style={{height: '40px'}}>
-            <Icon name='info circle'/>
+            <Icon name='edit'/>
             {describeSelection(selection)}
           </Menu.Item>
           <Menu.Item position='right'>
