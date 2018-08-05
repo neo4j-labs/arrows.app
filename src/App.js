@@ -15,7 +15,6 @@ class App extends Component {
     super(props)
     window.onkeydown = this.fireKeyboardShortcutAction.bind(this)
   }
-  state = { sidebarVisible : false }
   render() {
     const connectionParametersModal = this.props.editingConnectionParameters ? (<EditConnectionParametersContainer/>) : null
     const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
@@ -25,7 +24,7 @@ class App extends Component {
         <Sidebar
           animation='overlay'
           direction='right'
-          visible={true}
+          visible={this.props.inspectorVisible}
           style={{'backgroundColor': 'white', width: '425px'}}
         >
           <InspectorContainer/>
@@ -52,7 +51,7 @@ class App extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  sidebar: state.sidebar,
+  inspectorVisible: state.applicationLayout.inspectorVisible,
   editingConnectionParameters: state.databaseConnection.editingConnectionParameters,
   showDisconnectedDialog: state.databaseConnection.showDisconnectedDialog
 })

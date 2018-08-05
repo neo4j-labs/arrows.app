@@ -43,6 +43,12 @@ const Header = (props) => (
     </Menu.Item>
     {editConnectionParameters(props)}
     {storageStatusMessage(props)}
+    <Menu.Item
+      position='right'
+      onClick={props.showInspector}
+    >
+      <Icon name='angle double left'/>
+    </Menu.Item>
   </Menu>
 )
 

@@ -80,7 +80,10 @@ export class DetailInspector extends Component {
             <Icon name='edit'/>
             {describeSelection(selection)}
           </Menu.Item>
-          <Menu.Item position='right'>
+          <Menu.Item
+            position='right'
+            onClick={this.props.hideInspector}
+          >
             <Icon name='angle double right'/>
           </Menu.Item>
         </Menu>

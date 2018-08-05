@@ -4,7 +4,7 @@ import { FETCHING_GRAPH_SUCCEEDED } from "../state/storageStatus"
 import { Point } from "../model/Point"
 import { ViewTransformation } from "../state/ViewTransformation";
 import { Vector } from "../model/Vector";
-import { moveNodes, tryMoveNode } from "../actions/graph";
+import { tryMoveNode } from "../actions/graph";
 
 const observedActionTypes = [
   'MOVE_NODES',
@@ -63,8 +63,9 @@ export const viewportMiddleware = store => next => action => {
   const result = next(action)
 
   if (observedActionTypes.includes(action.type)) {
-    const { graph, windowSize, viewTransformation, mouse } = store.getState()
+    const { graph, applicationLayout, viewTransformation, mouse } = store.getState()
     const nodes = graph.nodes
+    const windowSize = applicationLayout.windowSize
 
     if (action.type === 'MOVE_NODES') {
       const shouldScaleUp = calculateScaling(nodes, graph.style.radius, windowSize, viewTransformation, action)

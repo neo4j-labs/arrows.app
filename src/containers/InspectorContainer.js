@@ -4,6 +4,7 @@ import {
   setArrowsProperty, removeArrowsProperty
 } from "../actions/graph";
 import {DetailInspector} from "../components/DetailInspector"
+import {hideInspector} from "../actions/applicationLayout";
 
 const mapStateToProps = state => {
   return {
@@ -14,6 +15,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    hideInspector: () => {
+      dispatch(hideInspector())
+    },
     onSaveCaption: (selection, caption) => {
       dispatch(setNodeCaption(selection, caption))
     },

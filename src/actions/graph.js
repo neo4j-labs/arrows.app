@@ -2,13 +2,10 @@ import {snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId} from "../model/Id";
 import {Point} from "../model/Point";
-import { blueActive } from "../model/colors";
-import { defaultNodeRadius } from "../graphics/constants";
-import { calculateBoundingBox } from "../graphics/utils/geometryUtils";
-import { calculateViewportTranslation } from "../middlewares/viewportMiddleware";
 
 export const createNode = () => (dispatch, getState) => {
-  const { viewTransformation, windowSize } = getState()
+  const { viewTransformation, applicationLayout } = getState()
+  const windowSize = applicationLayout.applicationLayout
   const randomPosition = new Point(Math.random() * windowSize.width, Math.random() * windowSize.height)
 
   dispatch({

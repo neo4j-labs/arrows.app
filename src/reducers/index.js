@@ -5,9 +5,8 @@ import selection from "./selection";
 import mouse from "./mouse";
 import guides from "./guides";
 import storageStatus from "./storageStatus";
-import windowSize from "./windowSize";
+import applicationLayout from "./applicationLayout";
 import viewTransformation from "./viewTransformation";
-import sidebar from "./sidebar"
 import gestures from "./gestures";
 
 const arrowsApp = combineReducers({
@@ -18,9 +17,8 @@ const arrowsApp = combineReducers({
   gestures,
   guides,
   storageStatus,
-  windowSize,
-  viewTransformation,
-  sidebar
+  applicationLayout,
+  viewTransformation
 })
 
 export default arrowsApp
