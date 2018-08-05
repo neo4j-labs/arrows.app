@@ -20,18 +20,12 @@ class GraphDisplay extends Component {
     )
   }
 
-  onWindowResized () {
-    this.fitToParent()
-  }
-
   fitToParent () {
     const parent = this.canvas.parentElement
     const rect = parent.getBoundingClientRect()
-    this.props.onWindowResized(rect.width, rect.height)
   }
 
   componentDidMount() {
-    window.addEventListener('resize', this.onWindowResized.bind(this))
     this.touchHandler = new MouseHandler(this.canvas)
     this.fitToParent()
     this.drawVisuals()
@@ -44,7 +38,9 @@ class GraphDisplay extends Component {
 
   render() {
     return (
-      <canvas ref={(elm) => this.canvas = elm} />
+      <canvas
+        ref={(elm) => this.canvas = elm}
+      />
     )
   }
 

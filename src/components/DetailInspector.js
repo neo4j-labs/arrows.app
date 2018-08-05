@@ -6,6 +6,7 @@ import {combineProperties, combineStyle} from "../model/properties";
 import {describeSelection} from "./SelectionCounters";
 import PropertyTable from "./PropertyTable";
 import StyleTable from "./StyleTable";
+import {headerHeight} from "../model/applicationLayout";
 
 export class DetailInspector extends Component {
   constructor(props) {
@@ -75,8 +76,11 @@ export class DetailInspector extends Component {
 
     return (
       <React.Fragment>
-        <Menu borderless attached='top' style={{borderRadius: 0}}>
-          <Menu.Item style={{height: '40px'}}>
+        <Menu
+          borderless
+          attached='top'
+          style={{borderRadius: 0, width: '100%'}}>
+          <Menu.Item style={{height: headerHeight + 'px'}}>
             <Icon name='edit'/>
             {describeSelection(selection)}
           </Menu.Item>

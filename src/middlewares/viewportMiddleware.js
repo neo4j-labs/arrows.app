@@ -5,33 +5,37 @@ import { Point } from "../model/Point"
 import { ViewTransformation } from "../state/ViewTransformation";
 import { Vector } from "../model/Vector";
 import { tryMoveNode } from "../actions/graph";
+import {computeCanvasSize} from "../model/applicationLayout";
 
 const observedActionTypes = [
   'MOVE_NODES',
   'MOVE_NODES_END_DRAG',
   'FETCHING_GRAPH_SUCCEEDED',
-  'DELETE_NODES_AND_RELATIONSHIPS'
+  'DELETE_NODES_AND_RELATIONSHIPS',
+  'WINDOW_RESIZED',
+  'SHOW_INSPECTOR',
+  'HIDE_INSPECTOR'
 ]
 
-export const calculateScaling = (nodes, defaultRadius, windowSize, viewTransformation, action) => {
+export const calculateScaling = (nodes, defaultRadius, canvasSize, viewTransformation, action) => {
   const node =  nodes.find(n => n.id === action.nodePositions[0].nodeId)
   const position = viewTransformation.transform(node.position)
   let radius = viewTransformation.scale * ((node.style && node.style.radius) || defaultRadius)
 
   const leftOverflow = 0 - (position.x - radius)
-  const rightOverflow =  (position.x + radius) - windowSize.width
+  const rightOverflow =  (position.x + radius) - canvasSize.width
   const topOverflow = 0 - (position.y - radius)
-  const bottomOverflow = (position.y + radius) - windowSize.height
+  const bottomOverflow = (position.y + radius) - canvasSize.height
 
   const horizontalExp = leftOverflow > 0 ? -1 * leftOverflow : (rightOverflow > 0 ? rightOverflow : 0)
   const verticalExp = topOverflow > 0 ? -1 * topOverflow : (bottomOverflow > 0 ? bottomOverflow : 0)
 
-  const expansionRatio = Math.max((windowSize.width + Math.abs(horizontalExp)) / windowSize.width, (windowSize.height + Math.abs(verticalExp)) / windowSize.height)
+  const expansionRatio = Math.max((canvasSize.width + Math.abs(horizontalExp)) / canvasSize.width, (canvasSize.height + Math.abs(verticalExp)) / canvasSize.height)
 
   return expansionRatio > 1
 }
 
-export const calculateViewportTranslation = (nodes, radius, windowSize) => {
+export const calculateViewportTranslation = (nodes, radius, canvasSize) => {
   const boundingBox = calculateBoundingBox(nodes, radius, 1)
 
   if (boundingBox) {
@@ -39,8 +43,8 @@ export const calculateViewportTranslation = (nodes, radius, windowSize) => {
     let visualsHeight = (boundingBox.bottom - boundingBox.top)
     let visualsCenter = new Point((boundingBox.right + boundingBox.left) / 2, (boundingBox.bottom + boundingBox.top) / 2)
 
-    const viewportWidth = windowSize.width
-    const viewportHeight = windowSize.height
+    const viewportWidth = canvasSize.width
+    const viewportHeight = canvasSize.height
     const viewportCenter = new Point(viewportWidth / 2, viewportHeight / 2)
 
     let scale = Math.min(1, Math.min(viewportHeight / visualsHeight, viewportWidth / visualsWidth))
@@ -65,12 +69,12 @@ export const viewportMiddleware = store => next => action => {
   if (observedActionTypes.includes(action.type)) {
     const { graph, applicationLayout, viewTransformation, mouse } = store.getState()
     const nodes = graph.nodes
-    const windowSize = applicationLayout.windowSize
+    const canvasSize = computeCanvasSize(applicationLayout)
 
     if (action.type === 'MOVE_NODES') {
-      const shouldScaleUp = calculateScaling(nodes, graph.style.radius, windowSize, viewTransformation, action)
+      const shouldScaleUp = calculateScaling(nodes, graph.style.radius, canvasSize, viewTransformation, action)
       if (shouldScaleUp) {
-        let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
+        let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, canvasSize)
 
         store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
 
@@ -107,7 +111,7 @@ export const viewportMiddleware = store => next => action => {
         }
       }
     } else {
-      let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, windowSize)
+      let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, canvasSize)
 
       if (scale) {
        if (action.type === 'MOVE_NODES_END_DRAG') {
