@@ -17,6 +17,10 @@ const choose = (mode, min, max) => {
   }
 }
 
+const inRange = (value, min, max) => {
+  return value >= min && value <= max
+}
+
 export default class TransformationHandles {
   constructor(graph, selection, viewTransformation) {
     const selectedNodes = graph.nodes.filter((node) => selection.selectedNodeIdMap.hasOwnProperty(node.id))
@@ -67,5 +71,12 @@ export default class TransformationHandles {
         'white'
       )
     })
+  }
+
+  handleAtPoint(canvasPosition) {
+    return this.handles.find(handle =>
+        inRange(canvasPosition.x, handle.topLeft.x, handle.topLeft.x + handleSize) &&
+        inRange(canvasPosition.y, handle.topLeft.y, handle.topLeft.y + handleSize)
+    )
   }
 }

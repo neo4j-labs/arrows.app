@@ -1,5 +1,13 @@
 const mouse = (state = { dragType: 'NONE' }, action) => {
   switch (action.type) {
+    case 'MOUSE_DOWN_ON_HANDLE': {
+      return {
+        dragType: 'HANDLE',
+        corner: action.corner,
+        mousePosition: action.canvasPosition
+      }
+    }
+
     case 'MOUSE_DOWN_ON_NODE': {
       const mouseToNodeVector = action.node.position.vectorFrom(action.graphPosition)
       return {

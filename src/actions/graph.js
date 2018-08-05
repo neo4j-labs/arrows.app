@@ -5,7 +5,7 @@ import {Point} from "../model/Point";
 
 export const createNode = () => (dispatch, getState) => {
   const { viewTransformation, applicationLayout } = getState()
-  const windowSize = applicationLayout.applicationLayout
+  const windowSize = applicationLayout.windowSize
   const randomPosition = new Point(Math.random() * windowSize.width, Math.random() * windowSize.height)
 
   dispatch({
@@ -37,6 +37,32 @@ export const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState)
     newRelationshipId: nextAvailableId(getState().graph.relationships),
     targetNodeId
   })
+}
+
+export const tryMoveHandle = ({corner, oldMousePosition, newMousePosition}) => {
+  return function (dispatch, getState) {
+    const { graph, selection, viewTransformation, mouse } = getState()
+
+    const vector = newMousePosition.vectorFrom(oldMousePosition).scale(1 / viewTransformation.scale)
+
+    const selectedNodes = Object.keys(selection.selectedNodeIdMap)
+      .map(nodeId => graph.nodes.find((node) => idsMatch(node.id, nodeId)))
+    const yMin = Math.min(...selectedNodes.map(node => node.position.y))
+    const yMax = Math.max(...selectedNodes.map(node => node.position.y))
+    const spread = yMax - yMin
+
+    const nodePositions = selectedNodes.map(node => {
+      return {
+        nodeId: node.id,
+        position: new Point(
+          node.position.x,
+          yMin + (node.position.y - yMin) / spread * (spread + vector.dy)
+        )
+      }
+    })
+
+    dispatch(moveNodes(oldMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides()))
+  }
 }
 
 export const tryMoveNode = ({ nodeId, oldMousePosition, newMousePosition, forcedNodePosition }) => {
