@@ -3,6 +3,7 @@ import {createNode} from '../actions/graph'
 import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import Header from '../components/Header'
 import {editConnectionParameters} from "../actions/databaseConnection";
+import {showInspector} from "../actions/applicationLayout";
 
 const mapStateToProps = state => {
   return {
@@ -13,6 +14,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    showInspector: () => {
+      dispatch(showInspector())
+    },
     onPlusNodeClick: () => {
       dispatch(createNode())
     },

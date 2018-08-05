@@ -1,6 +1,6 @@
 import {getVisualGraph} from "../selectors/"
 import {clearSelection, toggleSelection} from "./selection"
-import {toggleInspector} from "./sidebar"
+import {showInspector} from "./applicationLayout";
 import {connectNodes, createNodeAndRelationship, moveNodesEndDrag, tryMoveNode} from "./graph"
 import {pan} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
@@ -33,7 +33,7 @@ export const doubleClick = (canvasPosition) => {
     const graphPosition = toGraphPosition(state, canvasPosition)
     const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
     if (item) {
-      dispatch(toggleInspector())
+      dispatch(showInspector())
     } else {
       dispatch(tryUpdateSelectionPath(canvasPosition, true))
     }

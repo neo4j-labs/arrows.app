@@ -1,116 +1,22 @@
 import React, {Component} from 'react'
-import {Form, Input, Segment, Icon, Header, Button, Dropdown, Divider} from 'semantic-ui-react'
-import {connect} from "react-redux";
-import {
-  setProperty, setNodeCaption, setRelationshipType, renameProperty, removeProperty,
-  setArrowsProperty, removeArrowsProperty
-} from "../actions/graph";
+import {Segment, Form, Input, Menu, Icon} from 'semantic-ui-react'
 import {commonValue} from "../model/values";
-import {describeSelection, selectedNodes, selectedRelationships} from "../model/selection";
+import {selectedNodes, selectedRelationships} from "../model/selection";
 import {combineProperties, combineStyle} from "../model/properties";
-import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
-import { getStyleEditorComponent } from "./editors/editorFactory";
+import {describeSelection} from "./SelectionCounters";
+import PropertyTable from "./PropertyTable";
+import StyleTable from "./StyleTable";
+import {headerHeight} from "../model/applicationLayout";
 
-class DetailInspector extends Component {
+export class DetailInspector extends Component {
   constructor(props) {
     super(props)
-    this.newPropElementKey = 1
-  }
-
-  state = {
-    addProperty: {state: 'empty', key: '', value: ''},
-    displayColorPicker: false
-  }
-
-  propertyInput(property) {
-    switch (property.status) {
-      case 'CONSISTENT':
-        return {valueFieldValue: property.value, valueFieldPlaceHolder: null}
-
-      case 'INCONSISTENT':
-        return {valueFieldValue: '', valueFieldPlaceHolder: '<multiple values>'}
-
-      default:
-        return {valueFieldValue: '', valueFieldPlaceHolder: '<partially present>'}
-    }
-  }
-
-  propertyTable(properties) {
-    const rows = Object.keys(properties).map((key, index) => {
-      const onKeyChange = (event) => this.props.onSavePropertyKey(this.props.selection, key, event.target.value);
-      const onValueChange = (event) => this.props.onSavePropertyValue(this.props.selection, key, event.target.value)
-      const onDeleteProperty = (event) => this.props.onDeleteProperty(this.props.selection, key)
-      const {valueFieldValue, valueFieldPlaceHolder} = this.propertyInput(properties[key])
-      return (
-        <Form.Group widths='equal' key={'form-group-'+ index}>
-          <Form.Field>
-            <Input fluid value={key} onChange={onKeyChange} label=':' labelPosition='right' className={'property-key'}/>
-          </Form.Field>
-          <Form.Field>
-            <Input fluid value={valueFieldValue} placeholder={valueFieldPlaceHolder} onChange={onValueChange}
-                      action={{icon: 'close', onClick: onDeleteProperty}}/>
-          </Form.Field>
-        </Form.Group>
-      )
-    })
-    return (
-      <div key='propertiesTable'>
-        <Divider horizontal>Properties</Divider>
-        {rows}
-      </div>
-    )
-  }
-
-  stylingSection (style, selectionIncludes, onSaveArrowsPropertyValue, onDeleteArrowsProperty, graphStyle) {
-    const existingStyleAttributes = Object.keys(style)
-    const possibleStyleAttributes = []
-      .concat(selectionIncludes.nodes ? nodeStyleAttributes : [])
-      .concat(selectionIncludes.relationships ? relationshipStyleAttributes : [])
-
-    const availableStyleAttributes = possibleStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
-    const styleElements = []
-
-    const styleOptions = availableStyleAttributes.map(styleAttribute => ({
-      text: styleAttribute,
-      value: styleAttribute
-    }))
-
-    const getStyleValueChangeHandler = styleAttribute => value => onSaveArrowsPropertyValue(this.props.selection, styleAttribute, value)
-    const getStyleValueRemoveHandler = styleAttribute => () => onDeleteArrowsProperty(this.props.selection, styleAttribute)
-
-    Object.keys(style).sort().forEach(styleAttribute => {
-      const currentValue = style[styleAttribute].status === 'CONSISTENT' ?  style[styleAttribute].value : graphStyle[styleAttribute]
-      const editorComponent = getStyleEditorComponent(styleAttribute, currentValue, getStyleValueChangeHandler(styleAttribute), getStyleValueRemoveHandler(styleAttribute))
-      styleElements.push(editorComponent)
-    })
-
-    const changeStyleElement = styleOptions.length > 0 ? (
-      <Form.Group widths='equal' key={'form-group-changeStyle'}>
-        <Form.Field>
-          <Dropdown
-            button
-            selectOnBlur={false}
-            placeholder='+ Style'
-            options={styleOptions}
-            onChange={(evt, data) => getStyleValueChangeHandler(data.value)(graphStyle[data.value])}
-            key={availableStyleAttributes.join('-')}
-          />
-        </Form.Field>
-        <Form.Field></Form.Field>
-      </Form.Group>
-    )
-      : null
-
-    return (
-      <React.Fragment>
-        {changeStyleElement}
-        {styleElements}
-      </React.Fragment>
-    )
   }
 
   render() {
-    const {selection, graph, onSaveCaption, onSaveType, onSavePropertyValue, onDeleteArrowsProperty} = this.props
+    const {selection, graph, onSaveCaption, onSaveType} = this.props
+    const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
+    const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
 
     const nodes = selectedNodes(graph, selection)
@@ -149,68 +55,48 @@ class DetailInspector extends Component {
     }
 
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
-      fields.push(this.propertyTable(properties))
-      fields.push((
-        <Button key='saveButton' onClick={(event) => onSavePropertyValue(selection, '', '')}>+ Property</Button>
-      ))
-
-      const style = combineStyle(entities)
       fields.push(
-        <div key='styling' style={{ marginTop: '1em' }}>
-          <Divider horizontal>Styling</Divider>
-          {this.stylingSection(style, selectionIncludes, this.props.onSaveArrowsPropertyValue, onDeleteArrowsProperty, graph.style)}
-        </div>
+        <PropertyTable key='properties'
+          properties={properties}
+          onSavePropertyKey={(oldPropertyKey, newPropertyKey) => onSavePropertyKey(selection, oldPropertyKey, newPropertyKey)}
+          onSavePropertyValue={(propertyKey, propertyValue) => onSavePropertyValue(selection, propertyKey, propertyValue)}
+          onDeleteProperty={(propertyKey) => onDeleteProperty(selection, propertyKey)}
+        />
+      )
+      fields.push(
+        <StyleTable key='style'
+          style={combineStyle(entities)}
+          graphStyle={graph.style}
+          selectionIncludes={selectionIncludes}
+          onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
+          onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
+        />
       )
     }
 
     return (
       <React.Fragment>
-        <p>
-          {describeSelection(selection)}
-        </p>
-        <Form style={{'textAlign': 'left'}}>
-          {fields}
-        </Form>
+        <Menu
+          borderless
+          attached='top'
+          style={{borderRadius: 0, width: '100%'}}>
+          <Menu.Item style={{height: headerHeight + 'px'}}>
+            <Icon name='edit'/>
+            {describeSelection(selection)}
+          </Menu.Item>
+          <Menu.Item
+            position='right'
+            onClick={this.props.hideInspector}
+          >
+            <Icon name='angle double right'/>
+          </Menu.Item>
+        </Menu>
+        <Segment basic style={{margin: 0}}>
+          <Form style={{textAlign: 'left'}}>
+            {fields}
+          </Form>
+        </Segment>
       </React.Fragment>
     )
   }
-
 }
-
-const mapStateToProps = state => {
-  return {
-    graph: state.graph,
-    selection: state.selection
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    onSaveCaption: (selection, caption) => {
-      dispatch(setNodeCaption(selection, caption))
-    },
-    onSaveType: (selection, type) => {
-      dispatch(setRelationshipType(selection, type))
-    },
-    onSavePropertyKey: (selection, oldPropertyKey, newPropertyKey) => {
-      dispatch(renameProperty(selection, oldPropertyKey, newPropertyKey))
-    },
-    onSavePropertyValue: (selection, key, value) => {
-      dispatch(setProperty(selection, key, value))
-    },
-    onSaveArrowsPropertyValue: (selection, key, value) => {
-      dispatch(setArrowsProperty(selection, key, value))
-    },
-    onDeleteProperty: (selection, key) => {
-      dispatch(removeProperty(selection, key))
-    },
-    onDeleteArrowsProperty: (selection, key) => {
-      dispatch(removeArrowsProperty(selection, key))
-    }
-  }
-}
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DetailInspector)

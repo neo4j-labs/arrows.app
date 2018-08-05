@@ -34,7 +34,7 @@ const editConnectionParameters = (props) => {
   ) : null
 }
 const Header = (props) => (
-  <Menu color='grey' inverted style={{borderRadius: 0}}>
+  <Menu attached='top' style={{borderRadius: 0}}>
     <Menu.Item onClick={props.onPlusNodeClick}>
       <Icon name='add'/>Node
     </Menu.Item>
@@ -43,6 +43,12 @@ const Header = (props) => (
     </Menu.Item>
     {editConnectionParameters(props)}
     {storageStatusMessage(props)}
+    <Menu.Item
+      position='right'
+      onClick={props.showInspector}
+    >
+      <Icon name='angle double left'/>
+    </Menu.Item>
   </Menu>
 )
 

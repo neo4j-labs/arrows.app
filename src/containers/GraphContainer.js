@@ -2,11 +2,11 @@ import {connect} from "react-redux"
 import GraphDisplay from "../components/GraphDisplay"
 import {compose} from "recompose"
 import withKeyBindings from "../interactions/Keybindings"
-import {windowResized} from "../actions/windowSize"
 import {getVisualGraph} from "../selectors/index"
 import {deleteSelection} from "../actions/graph"
 import {removeSelectionPath} from "../actions/selectionPath"
 import {selectAll} from "../actions/selection";
+import {computeCanvasSize} from "../model/applicationLayout";
 
 const mapStateToProps = state => {
   return {
@@ -14,14 +14,13 @@ const mapStateToProps = state => {
     selection: state.selection,
     gestures: state.gestures,
     guides: state.guides,
-    canvasSize: state.windowSize,
+    canvasSize: computeCanvasSize(state.applicationLayout),
     viewTransformation: state.viewTransformation
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    onWindowResized: (width, height) => dispatch(windowResized(width, height)),
     removeSelectionPath: () => dispatch(removeSelectionPath()),
     deleteSelection: () => dispatch(deleteSelection()),
     selectAll: () => dispatch(selectAll()),

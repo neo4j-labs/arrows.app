@@ -3,63 +3,48 @@ import GraphContainer from "./containers/GraphContainer"
 import {connect} from 'react-redux'
 import './App.css'
 import withKeybindings, { ignoreTarget } from './interactions/Keybindings'
+import {windowResized} from "./actions/applicationLayout"
 import { compose } from 'recompose'
-import { Grid, Tab, Header, Icon, Menu} from 'semantic-ui-react'
-import DetailInspector from "./components/DetailInspector"
-import GeneralInspector from './components/GeneralInspector'
+import { Sidebar } from 'semantic-ui-react'
 import HeaderContainer from './containers/HeaderContainer'
-import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer";
-import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer";
-
-const panes = [{
-  menuItem:
-    <Menu.Item key='detail' style={{width: '50%'}}>
-      <Header as='h3'>
-        <Icon name='edit'/>
-        Inspector
-      </Header>
-    </Menu.Item>,
-  render: () => <Tab.Pane><DetailInspector/></Tab.Pane>
-}, {
-  menuItem: <Menu.Item key='general' style={{ width: '50%' }}>
-    <Header as='h3'>
-      <Icon name='settings'/>
-      Settings
-    </Header>
-  </Menu.Item>,
-  render: () => <Tab.Pane><GeneralInspector/></Tab.Pane>
-}]
+import InspectorContainer from "./containers/InspectorContainer"
+import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer"
+import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer"
+import {inspectorWidth} from "./model/applicationLayout";
 
 class App extends Component {
   constructor (props) {
     super(props)
     window.onkeydown = this.fireKeyboardShortcutAction.bind(this)
   }
-  state = { sidebarVisible : false }
   render() {
     const connectionParametersModal = this.props.editingConnectionParameters ? (<EditConnectionParametersContainer/>) : null
     const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
     return (
-      <Grid columns={2} style={{ height: '100%' }}>
-        <Grid.Row style={{paddingBottom: 0}}>
-          <Grid.Column width={16}>
-            {connectionParametersModal}
-            {databaseConnectionMessageModal}
-            <HeaderContainer/>
-          </Grid.Column>
-        </Grid.Row>
-        <Grid.Row style={{paddingTop: 0, height: '100%', marginLeft: '1em'}}>
-          <Grid.Column width={12} style={{padding: 0, marginBottom: '1.7em'}}>
-            <GraphContainer/>
-          </Grid.Column>
-          <Grid.Column width={4} style={{padding: 0, margin: 0}}>
-            <Tab menu={{ secondary: true, pointing: true }} grid={{tabWidth: 6}} panes={panes}/>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
+      <Sidebar.Pushable>
+
+        <Sidebar
+          animation='overlay'
+          direction='right'
+          visible={this.props.inspectorVisible}
+          style={{'backgroundColor': 'white', width: inspectorWidth + 'px'}}
+        >
+          <InspectorContainer/>
+        </Sidebar>
+
+        <Sidebar.Pusher
+          style={{height: '100%'}}
+        >
+          {connectionParametersModal}
+          {databaseConnectionMessageModal}
+          <HeaderContainer/>
+          <GraphContainer/>
+        </Sidebar.Pusher>
+      </Sidebar.Pushable>
     );
   }
-  fireKeyboardShortcutAction (ev) {
+
+  fireKeyboardShortcutAction(ev) {
     if (ignoreTarget(ev)) return
 
     const handled = this.props.fireAction(ev)
@@ -68,15 +53,26 @@ class App extends Component {
       ev.stopPropagation()
     }
   }
+
+  componentDidMount() {
+    window.addEventListener('resize', this.props.onWindowResized)
+  }
 }
 
 const mapStateToProps = (state) => ({
-  sidebar: state.sidebar,
+  inspectorVisible: state.applicationLayout.inspectorVisible,
   editingConnectionParameters: state.databaseConnection.editingConnectionParameters,
   showDisconnectedDialog: state.databaseConnection.showDisconnectedDialog
 })
 
+
+const mapDispatchToProps = dispatch => {
+  return {
+    onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight)),
+  }
+}
+
 export default compose(
-  connect(mapStateToProps, null),
+  connect(mapStateToProps, mapDispatchToProps),
   withKeybindings
 )(App)
