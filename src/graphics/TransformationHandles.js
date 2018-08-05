@@ -3,25 +3,49 @@ import {Point} from "../model/Point";
 import {drawSolidRectangle} from "./canvasRenderer";
 import {Vector} from "../model/Vector";
 
+const handleSize = 20
+const handlePadding = 2
+
+const choose = (mode, min, max) => {
+  switch (mode) {
+    case 'min':
+      return min
+    case 'max':
+      return max
+    default:
+      return (min + max) / 2
+  }
+}
+
 export default class TransformationHandles {
   constructor(graph, selection, viewTransformation) {
     const selectedNodes = graph.nodes.filter((node) => selection.selectedNodeIdMap.hasOwnProperty(node.id))
     if (selectedNodes.length > 1) {
       const box = calculateBoundingBox(selectedNodes, graph.style.radius, 1)
       const transform = (position) => viewTransformation.transform(position)
-      const middle = (a, b) => (a + b) / 2
-      this.handles = [
-        new Point(box.left, box.top),
-        new Point(middle(box.left, box.right), box.top),
-        new Point(box.right, box.top),
-        new Point(box.right, middle(box.top, box.bottom)),
-        new Point(box.right, box.bottom),
-        new Point(middle(box.left, box.right), box.bottom),
-        new Point(box.left, box.bottom),
-        new Point(box.left, middle(box.top, box.bottom))
-      ].map(corner => {
+      const corners = [
+        { x: 'min', y: 'min' },
+        { x: 'mid', y: 'min' },
+        { x: 'max', y: 'min' },
+        { x: 'max', y: 'mid' },
+        { x: 'max', y: 'max' },
+        { x: 'mid', y: 'max' },
+        { x: 'min', y: 'max' },
+        { x: 'min', y: 'mid' },
+      ]
+      this.handles = corners.map(corner => {
+        const anchor = transform(new Point(
+          choose(corner.x, box.left, box.right),
+          choose(corner.y, box.top, box.bottom)
+        ))
+        const topLeft = anchor.translate(new Vector(
+          choose(corner.x, -handleSize, 0),
+          choose(corner.y, -handleSize, 0)
+        ))
         return {
-          position: transform(corner)
+          corner,
+          anchor,
+          topLeft
         }
       })
     } else {
@@ -31,8 +55,17 @@ export default class TransformationHandles {
 
   draw(ctx) {
     this.handles.forEach(handle => {
-      drawSolidRectangle(ctx, handle.position, 20, 20, 3, 'blue')
-      drawSolidRectangle(ctx, handle.position.translate(new Vector(2, 2)), 8, 8, 2, 'white')
+      drawSolidRectangle(ctx, handle.topLeft, handleSize, handleSize, 3, 'blue')
+      drawSolidRectangle(
+        ctx, handle.topLeft.translate(new Vector(
+          (handle.corner.x === 'min' ? (handleSize) / 2 : handlePadding),
+          (handle.corner.y === 'min' ? (handleSize) / 2 : handlePadding)
+        )),
+        handle.corner.x === 'mid' ? handleSize - handlePadding * 2 : handleSize / 2 - handlePadding,
+        handle.corner.y === 'mid' ? handleSize - handlePadding * 2 : handleSize / 2 - handlePadding,
+        2,
+        'white'
+      )
     })
   }
 }
