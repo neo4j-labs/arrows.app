@@ -17,6 +17,20 @@ export function drawCircle (ctx, position, r, stroke = false) {
   ctx.closePath()
 }
 
+export function drawSolidRectangle(ctx, topLeft, width, height, radius, color) {
+  const x = topLeft.x
+  const y = topLeft.y
+  ctx.beginPath()
+  ctx.fillStyle = color
+  ctx.moveTo(x + radius, y);
+  ctx.arcTo(x + width, y, x + width, y + height, radius);
+  ctx.arcTo(x + width, y + height, x, y + height, radius);
+  ctx.arcTo(x, y + height, x, y, radius);
+  ctx.arcTo(x, y, x + width, y, radius);
+  ctx.fill()
+  ctx.closePath()
+}
+
 export function drawStraightArrow(ctx, sourcePoint, targetPoint, arrowData) {
   drawStraightLine(ctx, sourcePoint, targetPoint)
 

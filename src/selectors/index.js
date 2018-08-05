@@ -3,6 +3,7 @@ import config from '../graphics/config'
 import VisualNode from "../graphics/VisualNode";
 import VisualEdge from "../graphics/VisualEdge";
 import VisualGraph from "../graphics/VisualGraph";
+import TransformationHandles from "../graphics/TransformationHandles";
 
 const getGraph = (state) => state.graph
 const getSelection = (state) => state.selection
@@ -28,5 +29,12 @@ export const getVisualGraph = createSelector(
     )
 
     return new VisualGraph(graph, nodes, relationships)
+  }
+)
+
+export const getTransformationHandles = createSelector(
+  [getGraph, getSelection, getViewTransformation],
+  (graph, selection, viewTransformation) => {
+    return new TransformationHandles(graph, selection, viewTransformation)
   }
 )

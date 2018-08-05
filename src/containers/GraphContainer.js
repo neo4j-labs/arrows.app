@@ -2,7 +2,7 @@ import {connect} from "react-redux"
 import GraphDisplay from "../components/GraphDisplay"
 import {compose} from "recompose"
 import withKeyBindings from "../interactions/Keybindings"
-import {getVisualGraph} from "../selectors/index"
+import {getVisualGraph, getTransformationHandles} from "../selectors/index"
 import {deleteSelection} from "../actions/graph"
 import {removeSelectionPath} from "../actions/selectionPath"
 import {selectAll} from "../actions/selection";
@@ -14,6 +14,7 @@ const mapStateToProps = state => {
     selection: state.selection,
     gestures: state.gestures,
     guides: state.guides,
+    handles: getTransformationHandles(state),
     canvasSize: computeCanvasSize(state.applicationLayout),
     viewTransformation: state.viewTransformation
   }
