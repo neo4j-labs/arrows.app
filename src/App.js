@@ -20,26 +20,24 @@ class App extends Component {
     const connectionParametersModal = this.props.editingConnectionParameters ? (<EditConnectionParametersContainer/>) : null
     const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
     return (
-      <div>
-        <Sidebar.Pushable>
+      <Sidebar.Pushable>
 
-          <Sidebar
-            animation='overlay'
-            direction='right'
-            visible={true}
-            style={{'backgroundColor': 'white', width: '425px'}}
-          >
-            <InspectorContainer/>
-          </Sidebar>
+        <Sidebar
+          animation='overlay'
+          direction='right'
+          visible={true}
+          style={{'backgroundColor': 'white', width: '425px'}}
+        >
+          <InspectorContainer/>
+        </Sidebar>
 
-          <Sidebar.Pusher>
-            {connectionParametersModal}
-            {databaseConnectionMessageModal}
-            <HeaderContainer/>
-            <GraphContainer/>
-          </Sidebar.Pusher>
-        </Sidebar.Pushable>
-      </div>
+        <Sidebar.Pusher>
+          {connectionParametersModal}
+          {databaseConnectionMessageModal}
+          <HeaderContainer/>
+          <GraphContainer/>
+        </Sidebar.Pusher>
+      </Sidebar.Pushable>
     );
   }
   fireKeyboardShortcutAction (ev) {
