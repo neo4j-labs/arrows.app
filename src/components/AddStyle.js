@@ -22,6 +22,7 @@ export default class AddStyle extends Component {
         size="tiny"
         icon="plus"
         content='Style'
+        type='button'
         disabled={this.props.styleKeys.length < 1}
       />
     )

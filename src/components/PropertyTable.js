@@ -50,6 +50,7 @@ export default class PropertyTable extends Component {
           size="tiny"
           icon="plus"
           content='Property'
+          type='button'
         />
       </Form.Field>
     )
