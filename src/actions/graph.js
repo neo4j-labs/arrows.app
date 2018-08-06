@@ -54,18 +54,31 @@ export const tryMoveHandle = ({corner, oldMousePosition, newMousePosition}) => {
       const min = Math.min(...coordinates)
       const max = Math.max(...coordinates)
       ranges[dimension] = {
-        min: min,
-        max: max,
+        min,
+        max,
         spread: max - min
       }
     })
+
+    const coordinate = (position, dimension) => {
+      const original = position[dimension]
+      const range = ranges[dimension]
+      switch (corner[dimension]) {
+        case 'min':
+          return range.max - (range.max - original) * (range.spread - vector['d' + dimension]) / range.spread
+        case 'max':
+          return range.min + (original - range.min) * (range.spread + vector['d' + dimension]) / range.spread
+        default:
+          return original
+      }
+    }
 
     const nodePositions = selectedNodes.map(node => {
       return {
         nodeId: node.id,
         position: new Point(
-          node.position.x,
-          ranges.y.min + (node.position.y - ranges.y.min) / ranges.y.spread * (ranges.y.spread + vector.dy)
+          coordinate(node.position, 'x'),
+          coordinate(node.position, 'y')
         )
       }
     })
