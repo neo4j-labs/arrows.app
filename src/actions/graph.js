@@ -47,16 +47,25 @@ export const tryMoveHandle = ({corner, oldMousePosition, newMousePosition}) => {
 
     const selectedNodes = Object.keys(selection.selectedNodeIdMap)
       .map(nodeId => graph.nodes.find((node) => idsMatch(node.id, nodeId)))
-    const yMin = Math.min(...selectedNodes.map(node => node.position.y))
-    const yMax = Math.max(...selectedNodes.map(node => node.position.y))
-    const spread = yMax - yMin
+    const dimensions = ['x', 'y']
+    const ranges = {}
+    dimensions.forEach(dimension => {
+      const coordinates = selectedNodes.map(node => node.position[dimension])
+      const min = Math.min(...coordinates)
+      const max = Math.max(...coordinates)
+      ranges[dimension] = {
+        min: min,
+        max: max,
+        spread: max - min
+      }
+    })
 
     const nodePositions = selectedNodes.map(node => {
       return {
         nodeId: node.id,
         position: new Point(
           node.position.x,
-          yMin + (node.position.y - yMin) / spread * (spread + vector.dy)
+          ranges.y.min + (node.position.y - ranges.y.min) / ranges.y.spread * (ranges.y.spread + vector.dy)
         )
       }
     })
