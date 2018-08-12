@@ -186,6 +186,7 @@ export const mouseUp = () => {
         dispatch(selectNodesInMarquee())
         break
 
+      case 'HANDLE':
       case 'NODE':
         const graph = state.graph
         const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
