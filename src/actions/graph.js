@@ -39,18 +39,16 @@ export const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState)
   })
 }
 
-export const tryMoveHandle = ({corner, oldMousePosition, newMousePosition}) => {
+export const tryMoveHandle = ({corner, initialNodePositions, initialMousePosition, newMousePosition}) => {
   return function (dispatch, getState) {
-    const { graph, selection, viewTransformation, mouse } = getState()
+    const { viewTransformation, mouse } = getState()
 
-    const vector = newMousePosition.vectorFrom(oldMousePosition).scale(1 / viewTransformation.scale)
+    const vector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
 
-    const selectedNodes = Object.keys(selection.selectedNodeIdMap)
-      .map(nodeId => graph.nodes.find((node) => idsMatch(node.id, nodeId)))
     const dimensions = ['x', 'y']
     const ranges = {}
     dimensions.forEach(dimension => {
-      const coordinates = selectedNodes.map(node => node.position[dimension])
+      const coordinates = initialNodePositions.map(entry => entry.position[dimension])
       const min = Math.min(...coordinates)
       const max = Math.max(...coordinates)
       ranges[dimension] = {
@@ -73,17 +71,17 @@ export const tryMoveHandle = ({corner, oldMousePosition, newMousePosition}) => {
       }
     }
 
-    const nodePositions = selectedNodes.map(node => {
+    const nodePositions = initialNodePositions.map(entry => {
       return {
-        nodeId: node.id,
+        nodeId: entry.nodeId,
         position: new Point(
-          coordinate(node.position, 'x'),
-          coordinate(node.position, 'y')
+          coordinate(entry.position, 'x'),
+          coordinate(entry.position, 'y')
         )
       }
     })
 
-    dispatch(moveNodes(oldMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides()))
+    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides()))
   }
 }
 

@@ -4,7 +4,9 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
       return {
         dragType: 'HANDLE',
         corner: action.corner,
-        mousePosition: action.canvasPosition
+        mousePosition: action.canvasPosition,
+        initialMousePosition: action.canvasPosition,
+        initialNodePositions: action.nodePositions
       }
     }
 

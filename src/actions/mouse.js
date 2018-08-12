@@ -49,7 +49,7 @@ export const mouseDown = (canvasPosition, metaKey) => {
 
     const handle = transformationHandles.handleAtPoint(canvasPosition)
     if (handle) {
-      dispatch(mouseDownOnHandle(handle.corner, canvasPosition))
+      dispatch(mouseDownOnHandle(handle.corner, canvasPosition, positionsOfSelectedNodes(state)))
     } else {
       const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
       if (item) {
@@ -77,10 +77,11 @@ export const mouseDown = (canvasPosition, metaKey) => {
   }
 }
 
-const mouseDownOnHandle = (corner, canvasPosition) => ({
+const mouseDownOnHandle = (corner, canvasPosition, nodePositions) => ({
   type: 'MOUSE_DOWN_ON_HANDLE',
   corner,
-  canvasPosition
+  canvasPosition,
+  nodePositions
 })
 
 const mouseDownOnNode = (node, canvasPosition, graphPosition) => ({
@@ -135,7 +136,8 @@ export const mouseMove = (canvasPosition) => {
         if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
           dispatch(tryMoveHandle({
             corner: mouse.corner,
-            oldMousePosition: previousPosition,
+            initialNodePositions: mouse.initialNodePositions,
+            initialMousePosition: mouse.initialMousePosition,
             newMousePosition: canvasPosition
           }))
         }
@@ -176,6 +178,19 @@ export const mouseMove = (canvasPosition) => {
   }
 }
 
+const positionsOfSelectedNodes = (state) => {
+  const graph = state.graph
+  const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
+  const nodePositions = []
+  selectedNodes.forEach((nodeId) => {
+    nodePositions.push({
+      nodeId: nodeId,
+      position: graph.nodes.find((node) => idsMatch(node.id, nodeId)).position
+    })
+  })
+  return nodePositions
+}
+
 export const mouseUp = () => {
   return function (dispatch, getState) {
     const state = getState();
@@ -188,16 +203,7 @@ export const mouseUp = () => {
 
       case 'HANDLE':
       case 'NODE':
-        const graph = state.graph
-        const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
-        const nodePositions = []
-        selectedNodes.forEach((nodeId) => {
-          nodePositions.push({
-            nodeId: nodeId,
-            position: graph.nodes.find((node) => idsMatch(node.id, nodeId)).position
-          })
-        })
-        dispatch(moveNodesEndDrag(nodePositions))
+        dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
         break
 
       case 'NODE_RING':
