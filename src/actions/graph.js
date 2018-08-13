@@ -44,6 +44,7 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
     const { viewTransformation, mouse } = getState()
 
     const vector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
+    const maxDiameter = Math.max(...initialNodePositions.map(entry => entry.radius)) * 2
 
     const dimensions = ['x', 'y']
     const ranges = {}
@@ -51,10 +52,35 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
       const coordinates = initialNodePositions.map(entry => entry.position[dimension])
       const min = Math.min(...coordinates)
       const max = Math.max(...coordinates)
+      const spread = max - min;
       ranges[dimension] = {
         min,
         max,
-        spread: max - min
+        spread
+      }
+      switch (corner[dimension]) {
+        case 'min': {
+          const newSpread = spread - vector['d' + dimension];
+          if (newSpread < 0) {
+            if (newSpread < -maxDiameter) {
+              vector['d' + dimension] -= maxDiameter
+            } else {
+              vector['d' + dimension] = spread
+            }
+          }
+          break
+        }
+        case 'max': {
+          const newSpread = spread + vector['d' + dimension];
+          if (newSpread < 0) {
+            if (newSpread < -maxDiameter) {
+              vector['d' + dimension] += maxDiameter
+            } else {
+              vector['d' + dimension] = -spread
+            }
+          }
+          break
+        }
       }
     })
 

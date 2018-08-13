@@ -183,9 +183,11 @@ const positionsOfSelectedNodes = (state) => {
   const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
   const nodePositions = []
   selectedNodes.forEach((nodeId) => {
+    const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
     nodePositions.push({
       nodeId: nodeId,
-      position: graph.nodes.find((node) => idsMatch(node.id, nodeId)).position
+      position: node.position,
+      radius: node.style && node.style.radius || graph.style.radius
     })
   })
   return nodePositions
