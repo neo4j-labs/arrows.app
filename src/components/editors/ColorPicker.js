@@ -3,8 +3,11 @@ import {Form, Input, Popup} from 'semantic-ui-react'
 import {CompactPicker} from 'react-color'
 
 export default class extends Component {
+  componentDidMount () {
+    this.props.setFocusHandler(() => this.inputElement && this.inputElement.focus())
+  }
   render() {
-    const {value, onChange} = this.props
+    const {value, onChange, onKeyPress} = this.props
     const textBox = (
       <Input
         size='small'
@@ -15,6 +18,8 @@ export default class extends Component {
           paddingLeft: '5px',
         }}
         transparent
+        onKeyPress={onKeyPress}
+        ref={elm => this.inputElement = elm}
         onChange={evt => onChange(evt.target.value)}
       />
     )

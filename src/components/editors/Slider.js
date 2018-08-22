@@ -1,35 +1,43 @@
-import React from 'react'
+import React, {Component} from 'react'
 import {Form, Input, Popup} from 'semantic-ui-react'
 
-export default ({value, onChange, min = 0, max = 100, step = 5}) => {
-  const textBox = (
-    <Input
-      size='small'
-      value={value}
-      transparent
-      style={{'width': '8em'}}
-      onChange={evt => onChange(Number(evt.target.value))}
-    />
-  )
-  const slider = (
-    <input
-      type='range'
-      min={min}
-      max={max}
-      step={step}
-      value={value}
-      style={{'width': '10em'}}
-      onChange={evt => onChange(Number(evt.target.value))}
-    />
-  )
-  return (
-    <Form.Field>
-      <Popup
-        trigger={textBox}
-        content={slider}
-        on='click'
-        position='bottom center'
+export default class extends Component {
+  componentDidMount () {
+    this.props.setFocusHandler(() => this.inputElement && this.inputElement.focus())
+  }
+  render() {
+    const {value, onChange, min = 0, max = 100, step = 5, onKeyPress} = this.props
+    const textBox = (
+      <Input
+        size='small'
+        value={value}
+        transparent
+        style={{ 'width': '8em' }}
+        onKeyPress={onKeyPress}
+        ref={elm => this.inputElement = elm}
+        onChange={evt => onChange(Number(evt.target.value))}
       />
-    </Form.Field>
-  );
+    )
+    const slider = (
+      <input
+        type='range'
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        style={{ 'width': '10em' }}
+        onChange={evt => onChange(Number(evt.target.value))}
+      />
+    )
+    return (
+      <Form.Field>
+        <Popup
+          trigger={textBox}
+          content={slider}
+          on='click'
+          position='bottom center'
+        />
+      </Form.Field>
+    );
+  }
 }
