@@ -5,7 +5,7 @@ import withKeyBindings from "../interactions/Keybindings"
 import {getVisualGraph, getTransformationHandles} from "../selectors/index"
 import {deleteSelection} from "../actions/graph"
 import {removeSelectionPath} from "../actions/selectionPath"
-import {selectAll} from "../actions/selection";
+import {selectAll, jumpToNextNode} from "../actions/selection";
 import {computeCanvasSize} from "../model/applicationLayout";
 
 const mapStateToProps = state => {
@@ -25,6 +25,7 @@ const mapDispatchToProps = dispatch => {
     removeSelectionPath: () => dispatch(removeSelectionPath()),
     deleteSelection: () => dispatch(deleteSelection()),
     selectAll: () => dispatch(selectAll()),
+    jumpToNextNode: direction => dispatch(jumpToNextNode(direction)),
     dispatch: dispatch
   }
 }
