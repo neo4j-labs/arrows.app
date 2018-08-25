@@ -48,39 +48,41 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
 
     const dimensions = ['x', 'y']
     const ranges = {}
+
+    const choose = (mode, min, max, other) => {
+      switch (mode) {
+        case 'min':
+          return min
+        case 'max':
+          return max
+        default:
+          return other
+      }
+    }
+
     dimensions.forEach(dimension => {
       const coordinates = initialNodePositions.map(entry => entry.position[dimension])
       const min = Math.min(...coordinates)
       const max = Math.max(...coordinates)
-      const spread = max - min
+      const oldSpread = max - min
+      let newSpread = choose(
+        corner[dimension],
+        oldSpread - vector['d' + dimension],
+        oldSpread + vector['d' + dimension],
+        oldSpread
+      )
+      if (newSpread < 0) {
+        if (newSpread < -maxDiameter) {
+          newSpread += maxDiameter
+        } else {
+          newSpread = 0
+        }
+      }
       ranges[dimension] = {
         min,
         max,
-        spread
-      }
-      switch (corner[dimension]) {
-        case 'min': {
-          const newSpread = spread - vector['d' + dimension];
-          if (newSpread < 0) {
-            if (newSpread < -maxDiameter) {
-              vector['d' + dimension] -= maxDiameter
-            } else {
-              vector['d' + dimension] = spread
-            }
-          }
-          break
-        }
-        case 'max': {
-          const newSpread = spread + vector['d' + dimension];
-          if (newSpread < 0) {
-            if (newSpread < -maxDiameter) {
-              vector['d' + dimension] += maxDiameter
-            } else {
-              vector['d' + dimension] = -spread
-            }
-          }
-          break
-        }
+        oldSpread,
+        newSpread
       }
     })
 
@@ -89,9 +91,9 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
       const range = ranges[dimension]
       switch (corner[dimension]) {
         case 'min':
-          return range.max - (range.max - original) * (range.spread - vector['d' + dimension]) / range.spread
+          return range.max - (range.max - original) * range.newSpread / range.oldSpread
         case 'max':
-          return range.min + (original - range.min) * (range.spread + vector['d' + dimension]) / range.spread
+          return range.min + (original - range.min) * range.newSpread / range.oldSpread
         default:
           return original
       }
