@@ -2,6 +2,7 @@ import {calculateBoundingBox} from "./utils/geometryUtils";
 import {Point} from "../model/Point";
 import {drawSolidRectangle} from "./canvasRenderer";
 import {Vector} from "../model/Vector";
+import {green} from "../model/colors";
 
 const handleSize = 20
 const handlePadding = 2
@@ -71,7 +72,7 @@ export default class TransformationHandles {
 
   draw(ctx) {
     this.handles.forEach(handle => {
-      drawSolidRectangle(ctx, handle.topLeft, handleSize, handleSize, 3, 'blue')
+      drawSolidRectangle(ctx, handle.topLeft, handleSize, handleSize, 3, green)
       drawSolidRectangle(
         ctx, handle.topLeft.translate(new Vector(
           (handle.corner.x === 'min' ? (handleSize) / 2 : handlePadding),
