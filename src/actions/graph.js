@@ -85,6 +85,16 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
         newSpread
       }
     })
+    if (corner.x !== 'mid' && corner.y !== 'mid') {
+      const ratio = Math.max(...dimensions.map(dimension => {
+        const range = ranges[dimension]
+        return range.newSpread / range.oldSpread;
+      }))
+      dimensions.forEach(dimension => {
+        const range = ranges[dimension]
+        range.newSpread = range.oldSpread * ratio;
+      })
+    }
 
     const coordinate = (position, dimension) => {
       const original = position[dimension]
