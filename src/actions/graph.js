@@ -52,7 +52,7 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
       const coordinates = initialNodePositions.map(entry => entry.position[dimension])
       const min = Math.min(...coordinates)
       const max = Math.max(...coordinates)
-      const spread = max - min;
+      const spread = max - min
       ranges[dimension] = {
         min,
         max,

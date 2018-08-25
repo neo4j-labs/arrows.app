@@ -26,17 +26,29 @@ export default class TransformationHandles {
     const selectedNodes = graph.nodes.filter((node) => selection.selectedNodeIdMap.hasOwnProperty(node.id))
     if (selectedNodes.length > 1) {
       const box = calculateBoundingBox(selectedNodes, graph.style.radius, 1)
+      const dimensions = ['x', 'y']
+      const modes = {}
+      dimensions.forEach(dimension => {
+        const coordinates = selectedNodes.map(node => node.position[dimension])
+        const min = Math.min(...coordinates)
+        const max = Math.max(...coordinates)
+        const spread = max - min
+        if (spread > 1) {
+          modes[dimension] = ['min', 'mid', 'max']
+        } else {
+          modes[dimension] = ['mid']
+        }
+      })
+
       const transform = (position) => viewTransformation.transform(position)
-      const corners = [
-        { x: 'min', y: 'min' },
-        { x: 'mid', y: 'min' },
-        { x: 'max', y: 'min' },
-        { x: 'max', y: 'mid' },
-        { x: 'max', y: 'max' },
-        { x: 'mid', y: 'max' },
-        { x: 'min', y: 'max' },
-        { x: 'min', y: 'mid' },
-      ]
+      const corners = []
+      modes.x.forEach(x => {
+        modes.y.forEach(y => {
+          if (x !== 'mid' || y !== 'mid') {
+            corners.push({x, y})
+          }
+        })
+      })
       this.handles = corners.map(corner => {
         const anchor = transform(new Point(
           choose(corner.x, box.left, box.right),
