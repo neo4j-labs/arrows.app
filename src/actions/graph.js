@@ -1,4 +1,4 @@
-import {snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
+import {snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId} from "../model/Id";
 import {Point} from "../model/Point";
@@ -85,13 +85,31 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
         newSpread
       }
     })
+    const snapRatios = [-1, 1]
     if (corner.x !== 'mid' && corner.y !== 'mid') {
-      const ratio = Math.max(...dimensions.map(dimension => {
+      let ratio = Math.max(...dimensions.map(dimension => {
         const range = ranges[dimension]
         return range.newSpread / range.oldSpread;
       }))
+      let smallestSpread = Math.min(...dimensions.map(dimension => ranges[dimension].oldSpread))
+      snapRatios.forEach(snapRatio => {
+        if (Math.abs(ratio - snapRatio) * smallestSpread < snapTolerance) {
+          ratio = snapRatio
+        }
+      })
       dimensions.forEach(dimension => {
         const range = ranges[dimension]
+        range.newSpread = range.oldSpread * ratio;
+      })
+    } else {
+      dimensions.forEach(dimension => {
+        const range = ranges[dimension]
+        let ratio = range.newSpread / range.oldSpread
+        snapRatios.forEach(snapRatio => {
+          if (Math.abs(ratio - snapRatio) * range.oldSpread < snapTolerance) {
+            ratio = snapRatio
+          }
+        })
         range.newSpread = range.oldSpread * ratio;
       })
     }

@@ -1,7 +1,7 @@
 import {Point} from "../model/Point";
 import {idsMatch} from "../model/Id";
 
-const snapTolerance = 20
+export const snapTolerance = 20
 
 export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, naturalPosition, otherSelectedNodes) => {
 
