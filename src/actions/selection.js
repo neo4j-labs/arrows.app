@@ -1,3 +1,5 @@
+import { Vector } from "../model/Vector"
+
 export const toggleSelection = (entity, additive) => ({
   type: 'TOGGLE_SELECTION',
   entityType: entity.entityType,
@@ -23,13 +25,15 @@ export const clearSelection = () => ({
 
 export const jumpToNextNode = direction => {
   return function (dispatch, getState) {
-    const graph = getState().graph
+    const { viewTransformation, applicationLayout, graph } = getState()
+    const maxDimension = Math.max(applicationLayout.windowSize.width, applicationLayout.windowSize.height) / viewTransformation.scale
+
     const currentSelection = getState().selection
     const currentNodeId = Object.keys(currentSelection.selectedNodeIdMap)[0]
 
     if (currentNodeId) {
       const currentNode = graph.nodes.find(node => node.id === currentNodeId)
-      const nextNode = getNextNode(currentNode, graph.nodes, direction)
+      const nextNode = getNextNode(currentNode, graph.nodes, direction, maxDimension)
 
       if (nextNode) {
         dispatch(clearSelection())
@@ -39,22 +43,61 @@ export const jumpToNextNode = direction => {
   }
 }
 
-const getNextNode = (node, nodes, direction) => {
-  let nextNode = null
+const getNextNode = (node, nodes, direction, maxDimension) => {
+  let nextNode
   const position = node.position
+
+  const isPointBetween = (center, point1, point2, candidate) => {
+    const sign1 = (candidate.x - center.x) * (point1.y - center.y) - (candidate.y - center.y) * (point1.x - center.x)
+    const sign2 = (candidate.x - center.x) * (point2.y - center.y) - (candidate.y - center.y) * (point2.x - center.x)
+    return sign1 > 0 && sign2 < 0 || sign1 < 0 && sign2 > 0 || (sign1 * sign2 === 0)
+  }
 
   const getCandidates = direction => {
     switch (direction) {
       case 'LEFT': {
-        return nodes.filter(candidate => candidate.position.x < node.position.x)
+        const topVector = new Vector(-1, -1)
+        const bottomVector = new Vector(-1, 1)
+
+        const topPoint = node.position.translate(topVector.scale(maxDimension))
+        const bottomPoint = node.position.translate(bottomVector.scale(maxDimension))
+
+        return nodes.filter(candidate =>
+          candidate.position.x < node.position.x && isPointBetween(node.position, topPoint, bottomPoint, candidate.position)
+        )
       }
       case 'UP': {
-        return nodes.filter(candidate => candidate.position.y < node.position.y)
+        const leftVector = new Vector(-1, -1)
+        const rightVector = new Vector(1, -1)
+
+        const leftPoint = node.position.translate(leftVector.scale(maxDimension))
+        const rightPoint = node.position.translate(rightVector.scale(maxDimension))
+
+        return nodes.filter(candidate =>
+          candidate.position.y < node.position.y && isPointBetween(node.position, leftPoint, rightPoint, candidate.position)
+        )
       }
       case 'RIGHT': {
-        return nodes.filter(candidate => candidate.position.x > node.position.x)
+        const topVector = new Vector(1, -1)
+        const bottomVector = new Vector(1, 1)
+
+        const topPoint = node.position.translate(topVector.scale(maxDimension))
+        const bottomPoint = node.position.translate(bottomVector.scale(maxDimension))
+
+        return nodes.filter(candidate => {
+          return candidate.position.x > node.position.x && isPointBetween(node.position, topPoint, bottomPoint, candidate.position)
+        })
       }
       case 'DOWN': {
+        const leftVector = new Vector(-1, 1)
+        const rightVector = new Vector(1, 1)
+
+        const leftPoint = node.position.translate(leftVector.scale(maxDimension))
+        const rightPoint = node.position.translate(rightVector.scale(maxDimension))
+
+        return nodes.filter(candidate =>
+          candidate.position.y > node.position.y && isPointBetween(node.position, leftPoint, rightPoint, candidate.position)
+        )
         return nodes.filter(candidate => candidate.position.y > node.position.y)
       }
       default:
