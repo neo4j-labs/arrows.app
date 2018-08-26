@@ -8,6 +8,7 @@ import storageStatus from "./storageStatus";
 import applicationLayout from "./applicationLayout";
 import viewTransformation from "./viewTransformation";
 import gestures from "./gestures";
+import actionMemos from "./actionMemos";
 
 const arrowsApp = combineReducers({
   databaseConnection,
@@ -18,7 +19,8 @@ const arrowsApp = combineReducers({
   guides,
   storageStatus,
   applicationLayout,
-  viewTransformation
+  viewTransformation,
+  actionMemos
 })
 
 export default arrowsApp

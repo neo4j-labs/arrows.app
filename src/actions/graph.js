@@ -287,15 +287,37 @@ export const deleteSelection = () => {
   }
 }
 
+const duplicateNodeOffset = (graph, selectedNodes, actionMemos) => {
+  const box = calculateBoundingBox(selectedNodes, graph.style.radius, 1)
+  const offset = new Vector(box.right - box.left, box.bottom - box.top)
+  if (actionMemos.lastDuplicateAction) {
+    const action = actionMemos.lastDuplicateAction
+    const newNodeId = Object.keys(action.nodeIdMap)[0]
+    if (newNodeId) {
+      const oldNodeId = action.nodeIdMap[newNodeId].oldNodeId
+      const oldNode = graph.nodes.find(n => idsMatch(n.id, oldNodeId))
+      const newNode = graph.nodes.find(n => idsMatch(n.id, newNodeId))
+      if (oldNode && newNode) {
+        const translation = newNode.position.vectorFrom(oldNode.position)
+        if (translation.dx > offset.dx || translation.dy > offset.dy) {
+          return translation
+        }
+      }
+    }
+  }
+  return offset
+}
+
 export const duplicateSelection = () => {
   return function (dispatch, getState) {
     const state = getState();
     const selection = state.selection
     const graph = state.graph
+    const actionMemos = state.actionMemos
 
     const selectedNodes = graph.nodes.filter(n => selection.selectedNodeIdMap.hasOwnProperty(n.id))
     if (selectedNodes.length > 0) {
-      const box = calculateBoundingBox(selectedNodes, graph.style.radius, 1)
+      const offset = duplicateNodeOffset(graph, selectedNodes, actionMemos)
 
       const nodeIdMap = {}
       const oldNodeToNewNodeMap = {}
@@ -304,7 +326,7 @@ export const duplicateSelection = () => {
         const oldNode = graph.nodes.find(r => idsMatch(nodeId, r.id))
         nodeIdMap[newNodeId] = {
           oldNodeId: nodeId,
-          position: oldNode.position.translate(new Vector(box.right - box.left, box.bottom - box.top))
+          position: oldNode.position.translate(offset)
         }
         oldNodeToNewNodeMap[nodeId] = newNodeId
         newNodeId = nextId(newNodeId)
