@@ -1,7 +1,8 @@
 import {snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
-import {idsMatch, nextAvailableId} from "../model/Id";
+import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {Point} from "../model/Point";
+import {Vector} from "../model/Vector";
 
 export const createNode = () => (dispatch, getState) => {
   const { viewTransformation, applicationLayout } = getState()
@@ -253,6 +254,13 @@ export const setRelationshipType = (selection, relationshipType) => ({
   relationshipType
 })
 
+export const duplicateNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
+  category: 'GRAPH',
+  type: 'DUPLICATE_NODES_AND_RELATIONSHIPS',
+  nodeIdMap,
+  relationshipIdMap
+})
+
 export const deleteNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
   category: 'GRAPH',
   type: 'DELETE_NODES_AND_RELATIONSHIPS',
@@ -275,5 +283,52 @@ export const deleteSelection = () => {
     })
 
     dispatch(deleteNodesAndRelationships(nodeIdMap, relationshipIdMap))
+  }
+}
+
+export const duplicateSelection = () => {
+  return function (dispatch, getState) {
+    const state = getState();
+    const selection = state.selection
+    const nodes = state.graph.nodes
+    const relationships = state.graph.relationships
+
+    const nodeIdMap = {}
+    const oldNodeToNewNodeMap = {}
+    let newNodeId = nextAvailableId(nodes)
+    Object.keys(selection.selectedNodeIdMap).forEach((nodeId) => {
+      const oldNode = nodes.find(r => idsMatch(nodeId, r.id))
+      nodeIdMap[newNodeId] = {
+        oldNodeId: nodeId,
+        position: oldNode.position.translate(new Vector(10, 10))
+      }
+      oldNodeToNewNodeMap[nodeId] = newNodeId
+      newNodeId = nextId(newNodeId)
+    })
+
+    const relationshipsToBeDuplicated = {}
+    relationships.forEach(relationship => {
+      if (selection.selectedNodeIdMap[relationship.fromId] || selection.selectedNodeIdMap[relationship.toId]) {
+        relationshipsToBeDuplicated[relationship.id] = true
+      }
+    })
+    Object.keys(selection.selectedRelationshipIdMap).forEach((relationshipId) => {
+      relationshipsToBeDuplicated[relationshipId] = true
+    })
+
+    const relationshipIdMap = {}
+    let newRelationshipId = nextAvailableId(relationships)
+    Object.keys(relationshipsToBeDuplicated).forEach((relationshipId) => {
+      const oldRelationship = relationships.find(r => idsMatch(relationshipId, r.id))
+      relationshipIdMap[newRelationshipId] = {
+        oldRelationshipId: relationshipId,
+        relationshipType: oldRelationship.type,
+        fromId: oldNodeToNewNodeMap[oldRelationship.fromId] || oldRelationship.fromId,
+        toId: oldNodeToNewNodeMap[oldRelationship.toId] || oldRelationship.toId
+      }
+      newRelationshipId = nextId(newRelationshipId)
+    })
+
+    dispatch(duplicateNodesAndRelationships(nodeIdMap, relationshipIdMap))
   }
 }
