@@ -1,7 +1,7 @@
-import {getVisualGraph} from "../selectors/"
+import {getVisualGraph, getTransformationHandles} from "../selectors/"
 import {clearSelection, toggleSelection} from "./selection"
 import {showInspector} from "./applicationLayout";
-import {connectNodes, createNodeAndRelationship, moveNodesEndDrag, tryMoveNode} from "./graph"
+import {connectNodes, createNodeAndRelationship, moveNodesEndDrag, tryMoveNode, tryMoveHandle} from "./graph"
 import {pan} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {tryUpdateSelectionPath} from "./selectionPath"
@@ -44,32 +44,45 @@ export const mouseDown = (canvasPosition, metaKey) => {
   return function (dispatch, getState) {
     const state = getState();
     const visualGraph = getVisualGraph(state)
+    const transformationHandles = getTransformationHandles(state)
     const graphPosition = toGraphPosition(state, canvasPosition)
 
-    const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
-    if (item) {
-      switch (item.entityType) {
-        case 'node':
-          dispatch(toggleSelection(item, metaKey))
-          dispatch(mouseDownOnNode(item, canvasPosition, graphPosition))
-          break
-
-        case 'relationship':
-          dispatch(toggleSelection(item, metaKey))
-          break
-
-        case 'nodeRing':
-          dispatch(mouseDownOnNodeRing(item, canvasPosition))
-          break
-      }
+    const handle = transformationHandles.handleAtPoint(canvasPosition)
+    if (handle) {
+      dispatch(mouseDownOnHandle(handle.corner, canvasPosition, positionsOfSelectedNodes(state)))
     } else {
-      if (!metaKey) {
-        dispatch(clearSelection())
+      const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
+      if (item) {
+        switch (item.entityType) {
+          case 'node':
+            dispatch(toggleSelection(item, metaKey))
+            dispatch(mouseDownOnNode(item, canvasPosition, graphPosition))
+            break
+
+          case 'relationship':
+            dispatch(toggleSelection(item, metaKey))
+            break
+
+          case 'nodeRing':
+            dispatch(mouseDownOnNodeRing(item, canvasPosition))
+            break
+        }
+      } else {
+        if (!metaKey) {
+          dispatch(clearSelection())
+        }
+        dispatch(mouseDownOnCanvas(canvasPosition, graphPosition))
       }
-      dispatch(mouseDownOnCanvas(canvasPosition, graphPosition))
     }
   }
 }
+
+const mouseDownOnHandle = (corner, canvasPosition, nodePositions) => ({
+  type: 'MOUSE_DOWN_ON_HANDLE',
+  corner,
+  canvasPosition,
+  nodePositions
+})
 
 const mouseDownOnNode = (node, canvasPosition, graphPosition) => ({
   type: 'MOUSE_DOWN_ON_NODE',
@@ -119,6 +132,17 @@ export const mouseMove = (canvasPosition) => {
         }
         break
 
+      case 'HANDLE':
+        if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
+          dispatch(tryMoveHandle({
+            corner: mouse.corner,
+            initialNodePositions: mouse.initialNodePositions,
+            initialMousePosition: mouse.initialMousePosition,
+            newMousePosition: canvasPosition
+          }))
+        }
+        break
+
       case 'NODE':
         if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
           dispatch(tryMoveNode({
@@ -154,6 +178,21 @@ export const mouseMove = (canvasPosition) => {
   }
 }
 
+const positionsOfSelectedNodes = (state) => {
+  const graph = state.graph
+  const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
+  const nodePositions = []
+  selectedNodes.forEach((nodeId) => {
+    const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
+    nodePositions.push({
+      nodeId: nodeId,
+      position: node.position,
+      radius: node.style && node.style.radius || graph.style.radius
+    })
+  })
+  return nodePositions
+}
+
 export const mouseUp = () => {
   return function (dispatch, getState) {
     const state = getState();
@@ -164,17 +203,9 @@ export const mouseUp = () => {
         dispatch(selectNodesInMarquee())
         break
 
+      case 'HANDLE':
       case 'NODE':
-        const graph = state.graph
-        const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
-        const nodePositions = []
-        selectedNodes.forEach((nodeId) => {
-          nodePositions.push({
-            nodeId: nodeId,
-            position: graph.nodes.find((node) => idsMatch(node.id, nodeId)).position
-          })
-        })
-        dispatch(moveNodesEndDrag(nodePositions))
+        dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
         break
 
       case 'NODE_RING':

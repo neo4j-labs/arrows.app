@@ -2,7 +2,7 @@ import Gestures from "./Gestures";
 import {drawAnnotation} from "./Annotation";
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
-  const { visualGraph, selection, gestures, guides } = visuals
+  const { visualGraph, selection, gestures, guides, handles } = visuals
 
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
@@ -13,12 +13,14 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   visualGestures.draw(ctx, displayOptions)
 
   drawGraph(ctx, visualGraph)
+
+  handles.draw(ctx)
 }
 
 function drawGraph(ctx, visualGraph) {
   visualGraph.edges.forEach(edge => edge.draw(ctx))
   Object.values(visualGraph.nodes).forEach(visualNode => {
-    visualNode.draw(ctx, visualGraph)
+    visualNode.draw(ctx)
     if (visualNode.node.properties) {
       drawAnnotation(ctx, visualNode)
     }

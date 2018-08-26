@@ -1,11 +1,11 @@
-import {snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
+import {snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId} from "../model/Id";
 import {Point} from "../model/Point";
 
 export const createNode = () => (dispatch, getState) => {
   const { viewTransformation, applicationLayout } = getState()
-  const windowSize = applicationLayout.applicationLayout
+  const windowSize = applicationLayout.windowSize
   const randomPosition = new Point(Math.random() * windowSize.width, Math.random() * windowSize.height)
 
   dispatch({
@@ -37,6 +37,108 @@ export const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState)
     newRelationshipId: nextAvailableId(getState().graph.relationships),
     targetNodeId
   })
+}
+
+export const tryMoveHandle = ({corner, initialNodePositions, initialMousePosition, newMousePosition}) => {
+  return function (dispatch, getState) {
+    const { viewTransformation, mouse } = getState()
+
+    const vector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
+    const maxDiameter = Math.max(...initialNodePositions.map(entry => entry.radius)) * 2
+
+    const dimensions = ['x', 'y']
+    const ranges = {}
+
+    const choose = (mode, min, max, other) => {
+      switch (mode) {
+        case 'min':
+          return min
+        case 'max':
+          return max
+        default:
+          return other
+      }
+    }
+
+    dimensions.forEach(dimension => {
+      const coordinates = initialNodePositions.map(entry => entry.position[dimension])
+      const min = Math.min(...coordinates)
+      const max = Math.max(...coordinates)
+      const oldSpread = max - min
+      let newSpread = choose(
+        corner[dimension],
+        oldSpread - vector['d' + dimension],
+        oldSpread + vector['d' + dimension],
+        oldSpread
+      )
+      if (newSpread < 0) {
+        if (newSpread < -maxDiameter) {
+          newSpread += maxDiameter
+        } else {
+          newSpread = 0
+        }
+      }
+      ranges[dimension] = {
+        min,
+        max,
+        oldSpread,
+        newSpread
+      }
+    })
+    const snapRatios = [-1, 1]
+    if (corner.x !== 'mid' && corner.y !== 'mid') {
+      let ratio = Math.max(...dimensions.map(dimension => {
+        const range = ranges[dimension]
+        return range.newSpread / range.oldSpread;
+      }))
+      let smallestSpread = Math.min(...dimensions.map(dimension => ranges[dimension].oldSpread))
+      snapRatios.forEach(snapRatio => {
+        if (Math.abs(ratio - snapRatio) * smallestSpread < snapTolerance) {
+          ratio = snapRatio
+        }
+      })
+      dimensions.forEach(dimension => {
+        const range = ranges[dimension]
+        range.newSpread = range.oldSpread * ratio;
+      })
+    } else {
+      dimensions.forEach(dimension => {
+        const range = ranges[dimension]
+        let ratio = range.newSpread / range.oldSpread
+        snapRatios.forEach(snapRatio => {
+          if (Math.abs(ratio - snapRatio) * range.oldSpread < snapTolerance) {
+            ratio = snapRatio
+          }
+        })
+        range.newSpread = range.oldSpread * ratio;
+      })
+    }
+
+    const coordinate = (position, dimension) => {
+      const original = position[dimension]
+      const range = ranges[dimension]
+      switch (corner[dimension]) {
+        case 'min':
+          return range.max - (range.max - original) * range.newSpread / range.oldSpread
+        case 'max':
+          return range.min + (original - range.min) * range.newSpread / range.oldSpread
+        default:
+          return original
+      }
+    }
+
+    const nodePositions = initialNodePositions.map(entry => {
+      return {
+        nodeId: entry.nodeId,
+        position: new Point(
+          coordinate(entry.position, 'x'),
+          coordinate(entry.position, 'y')
+        )
+      }
+    })
+
+    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides()))
+  }
 }
 
 export const tryMoveNode = ({ nodeId, oldMousePosition, newMousePosition, forcedNodePosition }) => {
