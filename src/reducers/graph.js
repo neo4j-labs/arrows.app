@@ -128,9 +128,11 @@ const graph = (state = emptyGraph(), action) => {
         const spec = action.nodeIdMap[newNodeId]
         const oldNode = state.nodes.find(n => idsMatch(n.id, spec.oldNodeId))
         const newNode = {
-          ...oldNode,
           id: newNodeId,
-          position: spec.position
+          position: spec.position,
+          caption: oldNode.caption,
+          style: {...oldNode.style},
+          properties: {...oldNode.properties}
         }
         newNodes.push(newNode)
       })
@@ -140,10 +142,12 @@ const graph = (state = emptyGraph(), action) => {
         const spec = action.relationshipIdMap[newRelationshipId]
         const oldRelationship = state.relationships.find(r => idsMatch(r.id, spec.oldRelationshipId))
         const newRelationship = {
-          ...oldRelationship,
           id: newRelationshipId,
+          type: oldRelationship.type,
           fromId: spec.fromId,
-          toId: spec.toId
+          toId: spec.toId,
+          style: {...oldRelationship.style},
+          properties: {...oldRelationship.properties}
         }
         newRelationships.push(newRelationship)
       })
