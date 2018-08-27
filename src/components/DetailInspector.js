@@ -11,6 +11,10 @@ import {headerHeight} from "../model/applicationLayout";
 export class DetailInspector extends Component {
   constructor(props) {
     super(props)
+  moveCursorToEnd(e) {
+    const temp_value = e.target.value
+    e.target.value = ''
+    e.target.value = temp_value
   }
 
   render() {
@@ -42,6 +46,7 @@ export class DetailInspector extends Component {
         <Form.Field key='_caption'>
           <label>Caption</label>
           <Input value={fieldValue}
+                 onFocus={this.moveCursorToEnd}
                  onChange={(event) => onSaveCaption(selection, event.target.value)}
                  placeholder={placeholder}
                  ref={elm => this.captionInput = elm}
