@@ -1,20 +1,42 @@
 import React, {Component} from 'react'
 import {Segment, Form, Input, Menu, Icon} from 'semantic-ui-react'
-import {commonValue} from "../model/values";
-import {selectedNodes, selectedRelationships} from "../model/selection";
-import {combineProperties, combineStyle} from "../model/properties";
-import {describeSelection} from "./SelectionCounters";
-import PropertyTable from "./PropertyTable";
-import StyleTable from "./StyleTable";
-import {headerHeight} from "../model/applicationLayout";
+import {commonValue} from "../model/values"
+import {selectedNodes, selectedRelationships} from "../model/selection"
+import {combineProperties, combineStyle} from "../model/properties"
+import {describeSelection} from "./SelectionCounters"
+import PropertyTable from "./PropertyTable"
+import StyleTable from "./StyleTable"
+import {headerHeight} from "../model/applicationLayout"
+import { compose } from "recompose"
+import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
 
-export class DetailInspector extends Component {
+class DetailInspector extends Component {
   constructor(props) {
     super(props)
+
+    props.registerAction(
+      TOGGLE_FOCUS,
+      () => {
+        if (!this.props.inspectorVisible) {
+          this.props.showInspector()
+        } else {
+          if (document.activeElement.tagName === 'BODY') {
+            this.captionInput && this.captionInput.focus()
+          }
+        }
+      })
+  }
+
   moveCursorToEnd(e) {
     const temp_value = e.target.value
     e.target.value = ''
     e.target.value = temp_value
+  }
+
+  componentDidUpdate (prevProps) {
+    if (this.props.inspectorVisible && !prevProps.inspectorVisible) {
+      this.captionInput && this.captionInput.focus()
+    }
   }
 
   render() {
