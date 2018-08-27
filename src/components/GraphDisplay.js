@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import { renderVisuals } from "../graphics/visualsRenderer";
-import { DELETE_SELECTION, MOVE_LEFT, MOVE_UP, MOVE_RIGHT, MOVE_DOWN,SELECT_ALL } from "../interactions/Keybindings";
+import { DELETE_SELECTION, DUPLICATE_SELECTION, MOVE_LEFT, MOVE_UP, MOVE_RIGHT, MOVE_DOWN,SELECT_ALL } from "../interactions/Keybindings";
 import MouseHandler from "../interactions/MouseHandler";
 
 class GraphDisplay extends Component {
@@ -9,6 +9,10 @@ class GraphDisplay extends Component {
     props.registerAction(
       'REMOVE_SELECTION_PATH',
       () => this.props.removeSelectionPath()
+    )
+    props.registerAction(
+      DUPLICATE_SELECTION,
+      () => this.props.duplicateSelection()
     )
     props.registerAction(
       DELETE_SELECTION,

@@ -4,8 +4,7 @@ import { withProps } from 'recompose'
 export const SELECT_ALL = 'SELECT_ALL'
 export const DESELECT_ALL_NODES = 'DESELECT_ALL_NODES'
 export const INVERT_SELECTION = 'INVERT_SELECTION'
-export const DISMISS_SELECTION = 'DISMISS_SELECTION'
-export const DISMISS_UNSELECTED = 'DISMISS_UNSELECTED'
+export const DUPLICATE_SELECTION = 'DUPLICATE_SELECTION'
 export const INSPECT = 'INSPECT'
 export const ZOOM_IN = 'ZOOM_IN'
 export const ZOOM_OUT = 'ZOOM_OUT'
@@ -21,8 +20,7 @@ const KeyBindings = {
   [SELECT_ALL]: [{ metaKey: true, code: 65 }],
   [DESELECT_ALL_NODES]: [{ metaKey: true, shiftKey: true, code: 65 }],
   [INVERT_SELECTION]: [{ metaKey: true, altKey: true, code: 65 }],
-  [DISMISS_SELECTION]: [{ metaKey: true, code: 68 }],
-  [DISMISS_UNSELECTED]: [{ metaKey: true, shiftKey: true, code: 68 }],
+  [DUPLICATE_SELECTION]: [{ metaKey: true, code: 68 }],
   [INSPECT]: [{ metaKey: true, code: 73 }],
   [ZOOM_IN]: [{ metaKey: true, code: 187 }],
   [ZOOM_OUT]: [{ metaKey: true, code: 189 }],

@@ -1,7 +1,9 @@
 import {snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
-import {idsMatch, nextAvailableId} from "../model/Id";
+import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {Point} from "../model/Point";
+import {Vector} from "../model/Vector";
+import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
 
 export const createNode = () => (dispatch, getState) => {
   const { viewTransformation, applicationLayout } = getState()
@@ -253,6 +255,13 @@ export const setRelationshipType = (selection, relationshipType) => ({
   relationshipType
 })
 
+export const duplicateNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
+  category: 'GRAPH',
+  type: 'DUPLICATE_NODES_AND_RELATIONSHIPS',
+  nodeIdMap,
+  relationshipIdMap
+})
+
 export const deleteNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
   category: 'GRAPH',
   type: 'DELETE_NODES_AND_RELATIONSHIPS',
@@ -275,5 +284,78 @@ export const deleteSelection = () => {
     })
 
     dispatch(deleteNodesAndRelationships(nodeIdMap, relationshipIdMap))
+  }
+}
+
+const duplicateNodeOffset = (graph, selectedNodes, actionMemos) => {
+  const box = calculateBoundingBox(selectedNodes, graph.style.radius, 1)
+  const offset = new Vector(box.right - box.left, box.bottom - box.top)
+  if (actionMemos.lastDuplicateAction) {
+    const action = actionMemos.lastDuplicateAction
+    const newNodeId = Object.keys(action.nodeIdMap)[0]
+    if (newNodeId) {
+      const oldNodeId = action.nodeIdMap[newNodeId].oldNodeId
+      const oldNode = graph.nodes.find(n => idsMatch(n.id, oldNodeId))
+      const newNode = graph.nodes.find(n => idsMatch(n.id, newNodeId))
+      if (oldNode && newNode) {
+        const translation = newNode.position.vectorFrom(oldNode.position)
+        if (translation.dx > offset.dx || translation.dy > offset.dy) {
+          return translation
+        }
+      }
+    }
+  }
+  return offset
+}
+
+export const duplicateSelection = () => {
+  return function (dispatch, getState) {
+    const state = getState();
+    const selection = state.selection
+    const graph = state.graph
+    const actionMemos = state.actionMemos
+
+    const selectedNodes = graph.nodes.filter(n => selection.selectedNodeIdMap.hasOwnProperty(n.id))
+    if (selectedNodes.length > 0) {
+      const offset = duplicateNodeOffset(graph, selectedNodes, actionMemos)
+
+      const nodeIdMap = {}
+      const oldNodeToNewNodeMap = {}
+      let newNodeId = nextAvailableId(graph.nodes)
+      Object.keys(selection.selectedNodeIdMap).forEach((nodeId) => {
+        const oldNode = graph.nodes.find(r => idsMatch(nodeId, r.id))
+        nodeIdMap[newNodeId] = {
+          oldNodeId: nodeId,
+          position: oldNode.position.translate(offset)
+        }
+        oldNodeToNewNodeMap[nodeId] = newNodeId
+        newNodeId = nextId(newNodeId)
+      })
+
+      const relationshipsToBeDuplicated = {}
+      graph.relationships.forEach(relationship => {
+        if (selection.selectedNodeIdMap[relationship.fromId] || selection.selectedNodeIdMap[relationship.toId]) {
+          relationshipsToBeDuplicated[relationship.id] = true
+        }
+      })
+      Object.keys(selection.selectedRelationshipIdMap).forEach((relationshipId) => {
+        relationshipsToBeDuplicated[relationshipId] = true
+      })
+
+      const relationshipIdMap = {}
+      let newRelationshipId = nextAvailableId(graph.relationships)
+      Object.keys(relationshipsToBeDuplicated).forEach((relationshipId) => {
+        const oldRelationship = graph.relationships.find(r => idsMatch(relationshipId, r.id))
+        relationshipIdMap[newRelationshipId] = {
+          oldRelationshipId: relationshipId,
+          relationshipType: oldRelationship.type,
+          fromId: oldNodeToNewNodeMap[oldRelationship.fromId] || oldRelationship.fromId,
+          toId: oldNodeToNewNodeMap[oldRelationship.toId] || oldRelationship.toId
+        }
+        newRelationshipId = nextId(newRelationshipId)
+      })
+
+      dispatch(duplicateNodesAndRelationships(nodeIdMap, relationshipIdMap))
+    }
   }
 }

@@ -172,6 +172,44 @@ export const writeQueriesForAction = (action) => {
       }
     }
 
+    case 'DUPLICATE_NODES_AND_RELATIONSHIPS': {
+      return session => {
+        let result = session
+        Object.keys(action.nodeIdMap).forEach(newNodeId => {
+          const spec = action.nodeIdMap[newNodeId];
+          result = session.run(`MATCH (old:Diagram0 {_id: $oldNodeId})
+            WITH old
+            CREATE (new:Diagram0)
+            SET new = old
+            SET new._id = $newNodeId
+            SET new._x = $x, new._y = $y`, {
+            oldNodeId: spec.oldNodeId,
+            newNodeId,
+            x: spec.position.x,
+            y: spec.position.y
+          })
+        })
+        Object.keys(action.relationshipIdMap).forEach(newRelationshipId => {
+          const spec = action.relationshipIdMap[newRelationshipId]
+          const newType = stringTypeToDatabaseType(spec.relationshipType)
+          result = session.run(`MATCH ()-[old]->()
+            WHERE old._id = $oldRelationshipId
+            WITH old
+            MATCH (source:Diagram0 {_id: $sourceId}), (target:Diagram0 {_id: $targetId})
+            CREATE (source)-[new:\`${newType}\`]->(target)
+            SET new = old
+            SET new._id = $newRelationshipId`, {
+            oldRelationshipId: spec.oldRelationshipId,
+            newRelationshipId,
+            sourceId: spec.fromId,
+            targetId: spec.toId,
+            newType
+          })
+        })
+        return result
+      }
+    }
+
     case 'DELETE_NODES_AND_RELATIONSHIPS': {
       const nodeIds = Object.keys(action.nodeIdMap)
       const relIds = Object.keys(action.relationshipIdMap)

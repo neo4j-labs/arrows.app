@@ -71,6 +71,18 @@ export default function selection(state = {
         selectedRelationshipIdMap: oneRelationshipSelected
       }
     }
+    case 'DUPLICATE_NODES_AND_RELATIONSHIPS' :
+      return {
+        ...state,
+        selectedNodeIdMap: Object.keys(action.nodeIdMap).reduce((newMap, nodeId) => {
+          newMap[nodeId] = true
+          return newMap
+        }, {}),
+        selectedRelationshipIdMap: Object.keys(action.relationshipIdMap).reduce((newMap, relId) => {
+          newMap[relId] = true
+          return newMap
+        }, {})
+      }
     case 'DELETE_NODES_AND_RELATIONSHIPS' :
       return {
         ...state,

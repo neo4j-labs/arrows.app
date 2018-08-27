@@ -3,7 +3,7 @@ import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setCaption} from "../model/Node";
 import { setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
-import { defaultNodeRadius } from "../graphics/constants";
+import {idsMatch} from "../model/Id";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -121,6 +121,38 @@ const graph = (state = emptyGraph(), action) => {
         nodes: state.nodes,
         relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? setType(relationship, action.relationshipType) : relationship)
       }
+
+    case 'DUPLICATE_NODES_AND_RELATIONSHIPS' :
+      const newNodes = state.nodes.slice();
+      Object.keys(action.nodeIdMap).forEach(newNodeId => {
+        const spec = action.nodeIdMap[newNodeId]
+        const oldNode = state.nodes.find(n => idsMatch(n.id, spec.oldNodeId))
+        const newNode = {
+          id: newNodeId,
+          position: spec.position,
+          caption: oldNode.caption,
+          style: {...oldNode.style},
+          properties: {...oldNode.properties}
+        }
+        newNodes.push(newNode)
+      })
+
+      const newRelationships = state.relationships.slice();
+      Object.keys(action.relationshipIdMap).forEach(newRelationshipId => {
+        const spec = action.relationshipIdMap[newRelationshipId]
+        const oldRelationship = state.relationships.find(r => idsMatch(r.id, spec.oldRelationshipId))
+        const newRelationship = {
+          id: newRelationshipId,
+          type: oldRelationship.type,
+          fromId: spec.fromId,
+          toId: spec.toId,
+          style: {...oldRelationship.style},
+          properties: {...oldRelationship.properties}
+        }
+        newRelationships.push(newRelationship)
+      })
+
+      return {style: state.style, nodes: newNodes, relationships: newRelationships}
 
     case 'DELETE_NODES_AND_RELATIONSHIPS' :
       return {
