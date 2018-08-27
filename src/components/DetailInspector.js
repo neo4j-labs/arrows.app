@@ -28,6 +28,12 @@ export class DetailInspector extends Component {
     }
     const properties = combineProperties(entities)
 
+    const handleKeyDown = (evt) => {
+      if (evt.key === 'Enter' && evt.metaKey) {
+        this.captionInput.inputRef && this.captionInput.inputRef.blur()
+      }
+    }
+
     if (selectionIncludes.nodes && !selectionIncludes.relationships) {
       const value = commonValue(nodes.map((node) => node.caption));
       const fieldValue = value || ''
@@ -37,7 +43,9 @@ export class DetailInspector extends Component {
           <label>Caption</label>
           <Input value={fieldValue}
                  onChange={(event) => onSaveCaption(selection, event.target.value)}
-                 placeholder={placeholder}/>
+                 placeholder={placeholder}
+                 ref={elm => this.captionInput = elm}
+                 onKeyDown={handleKeyDown.bind(this)}/>
         </Form.Field>
       )
     }
@@ -100,3 +108,8 @@ export class DetailInspector extends Component {
     )
   }
 }
+
+export default compose(
+  withKeybindings
+)(DetailInspector)
+

@@ -7,6 +7,13 @@ export default class extends Component {
   }
   render() {
     const {value, onChange, min = 0, max = 100, step = 5, onKeyPress} = this.props
+
+    const handleKeyDown = (evt) => {
+      if (evt.key === 'Enter' && evt.metaKey) {
+        evt.target.blur()
+      }
+    }
+
     const textBox = (
       <Input
         size='small'
@@ -14,6 +21,7 @@ export default class extends Component {
         transparent
         style={{ 'width': '8em' }}
         onKeyPress={onKeyPress}
+        onKeyDown={handleKeyDown}
         ref={elm => this.inputElement = elm}
         onChange={evt => onChange(Number(evt.target.value))}
       />

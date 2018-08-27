@@ -42,6 +42,12 @@ export class PropertyRow extends Component {
       }
     }
 
+    const handleKeyDown = (evt) => {
+      if (evt.key === 'Enter' && evt.metaKey) {
+        evt.target.blur()
+      }
+    }
+
     return (
       <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <Table.Cell width={3} collapsing>
@@ -53,6 +59,7 @@ export class PropertyRow extends Component {
               className={'property-key'}
               ref={elm => this.keyInput = elm}
               onKeyPress={(evt) => handleKeyPress('key', evt)}
+              onKeyDown={handleKeyDown}
             />:
           </Form.Field>
         </Table.Cell>
@@ -64,6 +71,7 @@ export class PropertyRow extends Component {
               onChange={onValueChange}
               ref={elm => this.valueInput = elm}
               onKeyPress={(evt) => handleKeyPress('value', evt)}
+              onKeyDown={handleKeyDown}
               transparent
             />
           </Form.Field>
