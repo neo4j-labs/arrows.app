@@ -3,13 +3,14 @@ import {
   setProperty, setNodeCaption, setRelationshipType, renameProperty, removeProperty,
   setArrowsProperty, removeArrowsProperty
 } from "../actions/graph";
-import {DetailInspector} from "../components/DetailInspector"
-import {hideInspector} from "../actions/applicationLayout";
+import DetailInspector from "../components/DetailInspector"
+import {showInspector, hideInspector} from "../actions/applicationLayout";
 
 const mapStateToProps = state => {
   return {
     graph: state.graph,
-    selection: state.selection
+    selection: state.selection,
+    inspectorVisible: state.applicationLayout.inspectorVisible
   }
 }
 
@@ -17,6 +18,9 @@ const mapDispatchToProps = dispatch => {
   return {
     hideInspector: () => {
       dispatch(hideInspector())
+    },
+    showInspector: () => {
+      dispatch(showInspector())
     },
     onSaveCaption: (selection, caption) => {
       dispatch(setNodeCaption(selection, caption))

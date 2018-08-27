@@ -3,6 +3,10 @@ import { Form, Button, Table } from 'semantic-ui-react'
 import {PropertyRow} from "./PropertyRow";
 
 export default class PropertyTable extends Component {
+  constructor (props) {
+    super(props)
+    this.focusHandlers = []
+  }
 
   static propertyInput(property) {
     switch (property.status) {
@@ -19,8 +23,20 @@ export default class PropertyTable extends Component {
 
   render() {
     const { properties, onSavePropertyKey, onSavePropertyValue, onDeleteProperty } = this.props
+    const propertiesList = Object.keys(properties)
+    const addEmptyProperty = () =>  {
+      onSavePropertyValue('', '')
+    }
 
-    const rows = Object.keys(properties).map((propertyKey, index) => {
+    const onNextProperty = (nextIndex) => {
+      if (nextIndex === propertiesList.length) {
+        addEmptyProperty()
+      } else {
+        this.focusHandlers[nextIndex]()
+      }
+    }
+
+    const rows = propertiesList.map((propertyKey, index) => {
       const {valueFieldValue, valueFieldPlaceHolder} = PropertyTable.propertyInput(properties[propertyKey])
       return (
         <PropertyRow
@@ -31,6 +47,8 @@ export default class PropertyTable extends Component {
           onDeleteProperty={(event) => onDeleteProperty(propertyKey)}
           valueFieldValue={valueFieldValue}
           valueFieldPlaceHolder={valueFieldPlaceHolder}
+          setFocusHandler={action => this.focusHandlers[index] = action}
+          onNext={() => onNextProperty(index + 1)}
         />
       )
     })
@@ -44,7 +62,7 @@ export default class PropertyTable extends Component {
         </Table>
         <Button
           key='addProperty'
-          onClick={(event) => onSavePropertyValue('', '')}
+          onClick={addEmptyProperty}
           basic
           floated='right'
           size="tiny"

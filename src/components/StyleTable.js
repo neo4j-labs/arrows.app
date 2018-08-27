@@ -5,6 +5,10 @@ import {StyleRow} from "./StyleRow";
 import AddStyle from "./AddStyle";
 
 export default class StyleTable extends Component {
+  constructor (props) {
+    super(props)
+    this.focusHandlers = []
+  }
 
   render() {
     const { style, graphStyle, selectionIncludes, onSaveStyle, onDeleteStyle } = this.props
@@ -17,7 +21,13 @@ export default class StyleTable extends Component {
     const availableStyleAttributes = possibleStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
     const rows = []
 
-    Object.keys(style).sort().forEach(styleKey => {
+    const onNextProperty = (nextIndex) => {
+      if (nextIndex < existingStyleAttributes.length) {
+        this.focusHandlers[nextIndex]()
+      }
+    }
+
+    existingStyleAttributes.sort().forEach((styleKey, index) => {
       const styleValue = style[styleKey].status === 'CONSISTENT' ?  style[styleKey].value : graphStyle[styleKey]
       rows.push((
           <StyleRow
@@ -26,6 +36,8 @@ export default class StyleTable extends Component {
             styleValue={styleValue}
             onValueChange={value => onSaveStyle(styleKey, value)}
             onDeleteStyle={() => onDeleteStyle(styleKey)}
+            setFocusHandler={action => this.focusHandlers[index] = action}
+            onNext={() => onNextProperty(index + 1)}
           />
         )
       )

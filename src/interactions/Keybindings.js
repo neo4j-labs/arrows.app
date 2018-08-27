@@ -9,7 +9,13 @@ export const DISMISS_UNSELECTED = 'DISMISS_UNSELECTED'
 export const INSPECT = 'INSPECT'
 export const ZOOM_IN = 'ZOOM_IN'
 export const ZOOM_OUT = 'ZOOM_OUT'
+export const REMOVE_SELECTION_PATH = 'REMOVE_SELECTION_PATH'
 export const DELETE_SELECTION = 'DELETE_SELECTION'
+export const MOVE_LEFT = 'MOVE_LEFT'
+export const MOVE_UP = 'MOVE_UP'
+export const MOVE_RIGHT = 'MOVE_RIGHT'
+export const MOVE_DOWN = 'MOVE_DOWN'
+export const TOGGLE_FOCUS = 'TOGGLE_FOCUS'
 
 const KeyBindings = {
   [SELECT_ALL]: [{ metaKey: true, code: 65 }],
@@ -20,8 +26,13 @@ const KeyBindings = {
   [INSPECT]: [{ metaKey: true, code: 73 }],
   [ZOOM_IN]: [{ metaKey: true, code: 187 }],
   [ZOOM_OUT]: [{ metaKey: true, code: 189 }],
-  ['REMOVE_SELECTION_PATH']: [{ metaKey: false, code: 27 }],
-  [DELETE_SELECTION]: [{ metaKey: false, code: 46 }, { metaKey: false, code: 8 }]
+  [REMOVE_SELECTION_PATH]: [{ metaKey: false, code: 27 }],
+  [DELETE_SELECTION]: [{ metaKey: false, code: 46 }, { metaKey: false, code: 8 }],
+  [MOVE_LEFT]: [{ metaKey: false, code: 37 }],
+  [MOVE_UP]: [{ metaKey: false, code: 38 }],
+  [MOVE_RIGHT]: [{ metaKey: false, code: 39 }],
+  [MOVE_DOWN]: [{ metaKey: false, code: 40 }],
+  [TOGGLE_FOCUS]: [{ metaKey: true, code: 13}]
 }
 
 const actions = {}
