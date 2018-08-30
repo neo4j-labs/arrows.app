@@ -30,7 +30,7 @@ const KeyBindings = {
   [MOVE_UP]: [{ metaKey: false, code: 38 }],
   [MOVE_RIGHT]: [{ metaKey: false, code: 39 }],
   [MOVE_DOWN]: [{ metaKey: false, code: 40 }],
-  [TOGGLE_FOCUS]: [{ metaKey: true, code: 13}]
+  [TOGGLE_FOCUS]: [{ metaKey: false, code: 13, codeRange: {min: 48, max: 90}}]
 }
 
 const actions = {}
@@ -38,7 +38,7 @@ const actions = {}
 const findAction = ({ altKey, ctrlKey, metaKey, shiftKey, keyCode }) =>
   find(actions, ({bindings}) =>
     find(bindings, (binding) =>
-      keyCode === binding.code &&
+      (keyCode === binding.code || (binding.codeRange && keyCode >= binding.codeRange.min && keyCode <= binding.codeRange.max)) &&
       altKey === !!binding.altKey &&
       ctrlKey === !!binding.ctrlKey &&
       metaKey === !!binding.metaKey &&
