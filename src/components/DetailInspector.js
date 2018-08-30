@@ -31,6 +31,7 @@ class DetailInspector extends Component {
     const temp_value = e.target.value
     e.target.value = ''
     e.target.value = temp_value
+    e.target.select()
   }
 
   componentDidUpdate (prevProps) {
