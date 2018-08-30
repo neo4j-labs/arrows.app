@@ -56,7 +56,7 @@ class DetailInspector extends Component {
     const properties = combineProperties(entities)
 
     const handleKeyDown = (evt) => {
-      if (evt.key === 'Enter' && evt.metaKey) {
+      if (evt.key === 'Escape' || (evt.key === 'Enter' && evt.metaKey)) {
         this.captionInput.inputRef && this.captionInput.inputRef.blur()
       }
     }
