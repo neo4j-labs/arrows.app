@@ -56,7 +56,11 @@ export const updateConnectionParameters = (connectionParameters) => {
   return function (dispatch) {
     const {connectionUri, username, password} = connectionParameters
     try {
-      const driver = neo4j.driver(connectionUri, neo4j.auth.basic(username, password))
+      const driver = neo4j.driver(
+        connectionUri,
+        neo4j.auth.basic(username, password),
+        {encrypted: window.location.protocol === 'https:'}
+      )
       const session = driver.session()
       session.run("RETURN 1").then(() => {
         session.close()
