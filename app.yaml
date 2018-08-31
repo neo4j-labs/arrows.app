@@ -1,0 +1,25 @@
+runtime: python27
+api_version: 1
+threadsafe: true
+
+handlers:
+- url: /
+  static_files: build/index.html
+  upload: build/index.html
+
+- url: /(.*)
+  static_files: build/\1
+  upload: build/(.*)
+
+skip_files:
+- README.md
+- node_modules
+- package.json
+- public
+- src
+- yarn.lock
+- ^(.*/)?#.*#$
+- ^(.*/)?.*~$
+- ^(.*/)?.*\.py[co]$
+- ^(.*/)?.*/RCS/.*$
+- ^(.*/)?\..*$
