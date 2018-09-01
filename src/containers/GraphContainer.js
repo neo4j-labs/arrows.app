@@ -26,7 +26,7 @@ const mapDispatchToProps = dispatch => {
     duplicateSelection: () => dispatch(duplicateSelection()),
     deleteSelection: () => dispatch(deleteSelection()),
     selectAll: () => dispatch(selectAll()),
-    jumpToNextNode: direction => dispatch(jumpToNextNode(direction)),
+    jumpToNextNode: (direction, extraKeys) => dispatch(jumpToNextNode(direction, extraKeys)),
     dispatch: dispatch
   }
 }
