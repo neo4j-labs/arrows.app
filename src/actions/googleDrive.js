@@ -7,30 +7,8 @@ export const saveGraphToGoogleDrive = () => {
   const storeGraphIfSignedIn = (graph) => {
     const isSignedIn = window.gapi.auth2.getAuthInstance().isSignedIn.get()
     console.log("signed in: ", isSignedIn)
-    if (isSignedIn) listFiles()
     if (isSignedIn) createFile(graph)
     return isSignedIn
-  }
-
-  const listFiles = () => {
-    const appendPre = (message) => {
-      console.log(message)
-    }
-    window.gapi.client.drive.files.list({
-      'pageSize': 10,
-      'fields': "nextPageToken, files(id, name)"
-    }).then((response) => {
-      appendPre('Files:');
-      const files = response.result.files;
-      if (files && files.length > 0) {
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
-          appendPre(file.name + ' (' + file.id + ')');
-        }
-      } else {
-        appendPre('No files found.');
-      }
-    });
   }
 
   const createFile = (data) => {
@@ -67,22 +45,31 @@ export const saveGraphToGoogleDrive = () => {
     request.execute((file) => console.log(file));
   }
 
-  window.gapi.client.init({
-    apiKey: config.apiKey,
-    clientId: config.clientId,
-    discoveryDocs: DISCOVERY_DOCS,
-    scope: SCOPES
-  }).then(() => {
-    if (!window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-      window.gapi.auth2.getAuthInstance().signIn();
-    }
-  })
-
   return function (dispatch, getState) {
     const graph = getState().graph
-    setTimeout(() => {
-      const success = storeGraphIfSignedIn(graph)
-      console.log("STORAGE SUCCESS", success)
-    }, 1000)
+
+    function sleep(ms) {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    const tryToSaveGraph = async () => {
+      while (!storeGraphIfSignedIn(graph)) {
+        console.log("SLEEPING")
+        await sleep(1000)
+      }
+    }
+
+    window.gapi.client.init({
+      apiKey: config.apiKey,
+      clientId: config.clientId,
+      discoveryDocs: DISCOVERY_DOCS,
+      scope: SCOPES
+    }).then(() => {
+      if (window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
+        tryToSaveGraph()
+      } else {
+        window.gapi.auth2.getAuthInstance().signIn();
+        tryToSaveGraph()
+      }
+    })
   }
 }
