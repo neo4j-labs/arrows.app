@@ -4,11 +4,11 @@ const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 
 export const saveGraphToGoogleDrive = () => {
 
-  const listFilesIfSignedIn = () => {
+  const storeGraphIfSignedIn = (graph) => {
     const isSignedIn = window.gapi.auth2.getAuthInstance().isSignedIn.get()
     console.log("signed in: ", isSignedIn)
     if (isSignedIn) listFiles()
-    if (isSignedIn) createFile({hello: true})
+    if (isSignedIn) createFile(graph)
     return isSignedIn
   }
 
@@ -41,7 +41,7 @@ export const saveGraphToGoogleDrive = () => {
     const contentType = 'application/json';
 
     const metadata = {
-      'name': "hello.json",
+      'name': "arrows-graph.json",
       'mimeType': contentType
     };
 
@@ -61,7 +61,8 @@ export const saveGraphToGoogleDrive = () => {
       'headers': {
         'Content-Type': 'multipart/related; boundary="' + boundary + '"'
       },
-      'body': multipartRequestBody});
+      'body': multipartRequestBody
+    });
 
     request.execute((file) => console.log(file));
   }
@@ -72,14 +73,16 @@ export const saveGraphToGoogleDrive = () => {
     discoveryDocs: DISCOVERY_DOCS,
     scope: SCOPES
   }).then(() => {
-    if (!listFilesIfSignedIn()) {
+    if (!window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
       window.gapi.auth2.getAuthInstance().signIn();
-      const keepTrying = setTimeout(() => {
-        if (!listFilesIfSignedIn()) keepTrying()
-      }, 1000)
-      keepTrying()
     }
   })
 
-  return () => {}
+  return function (dispatch, getState) {
+    const graph = getState().graph
+    setTimeout(() => {
+      const success = storeGraphIfSignedIn(graph)
+      console.log("STORAGE SUCCESS", success)
+    }, 1000)
+  }
 }
