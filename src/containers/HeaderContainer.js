@@ -4,6 +4,7 @@ import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import Header from '../components/Header'
 import {editConnectionParameters} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
+import {saveGraphToGoogleDrive} from "../actions/googleDrive";
 
 const mapStateToProps = state => {
   return {
@@ -25,6 +26,9 @@ const mapDispatchToProps = dispatch => {
     },
     onEditConnectionParameters: () => {
       dispatch(editConnectionParameters())
+    },
+    onGoogleDriveClick: () => {
+      dispatch(saveGraphToGoogleDrive())
     }
   }
 }

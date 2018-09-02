@@ -42,6 +42,9 @@ const Header = (props) => (
       <Icon name='refresh'/>Graph
     </Menu.Item>
     {editConnectionParameters(props)}
+    <Menu.Item onClick={props.onGoogleDriveClick}>
+      <Icon name='google drive'/>Google drive
+    </Menu.Item>
     {storageStatusMessage(props)}
     <Menu.Item
       position='right'
