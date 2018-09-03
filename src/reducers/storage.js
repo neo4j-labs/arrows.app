@@ -3,21 +3,37 @@ import {
   UPDATING_GRAPH, UPDATING_GRAPH_FAILED, UPDATING_GRAPH_SUCCEEDED
 } from "../state/storageStatus";
 
-const storageStatus = (state = IDLE, action) => {
+const initialState = {
+  status: IDLE,
+  store: 'neo4j',
+  fileId: null
+}
+
+const storage = (state = initialState, action) => {
   switch (action.type) {
     case FETCHING_GRAPH:
     case FETCHING_GRAPH_FAILED:
     case UPDATING_GRAPH:
     case UPDATING_GRAPH_FAILED:
-      return action.type;
-
+      return {
+        ...state,
+        status: action.type
+      }
     case FETCHING_GRAPH_SUCCEEDED:
     case UPDATING_GRAPH_SUCCEEDED:
-      return IDLE;
-
+      return {
+        ...state,
+        status: IDLE
+      }
+    case 'SET_STORE_TYPE':
+      return {
+        ...state,
+        store: action.store,
+        fileId: action.fileId
+      }
     default:
       return state
   }
 }
 
-export default storageStatus
+export default storage

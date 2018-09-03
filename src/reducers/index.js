@@ -4,7 +4,7 @@ import graph from "./graph";
 import selection from "./selection";
 import mouse from "./mouse";
 import guides from "./guides";
-import storageStatus from "./storageStatus";
+import storage from "./storage";
 import applicationLayout from "./applicationLayout";
 import viewTransformation from "./viewTransformation";
 import gestures from "./gestures";
@@ -17,7 +17,7 @@ const arrowsApp = combineReducers({
   mouse,
   gestures,
   guides,
-  storageStatus,
+  storage: storage,
   applicationLayout,
   viewTransformation,
   actionMemos

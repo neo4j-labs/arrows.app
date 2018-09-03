@@ -14,6 +14,7 @@ import { viewportMiddleware } from "./middlewares/viewportMiddleware"
 import { initializeConnection } from "./actions/databaseConnection";
 import { googleDriveUrlRegex } from "./actions/googleDrive";
 import { fetchGraphFromDrive } from "./storage/googleDriveStorage";
+import { setStorage } from "./actions/storage";
 
 const checkInitialFile = () => {
   const urlDriveParts = googleDriveUrlRegex.exec(window.location.hash)
@@ -47,6 +48,7 @@ const renderApp = () => {
 }
 
 if (initialFileId) {
+  store.dispatch(setStorage('googleDrive', initialFileId))
   renderApp()
   window.addEventListener("load", () => {
     store.dispatch(fetchGraphFromDrive(initialFileId))
