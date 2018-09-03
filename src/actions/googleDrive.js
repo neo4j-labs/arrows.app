@@ -24,7 +24,7 @@ export const saveGraphToGoogleDrive = () => {
     const contentType = 'application/json';
 
     const metadata = {
-      'name': "arrows-graph.json",
+      'name': `arrows-graph-${Date.now()}.json`,
       'mimeType': contentType
     };
 

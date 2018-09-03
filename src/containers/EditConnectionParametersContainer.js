@@ -1,6 +1,7 @@
 import {connect} from "react-redux"
 import EditConnectionParametersForm from "../components/EditConnectionParametersForm";
 import {cancelEditing, forgetConnectionParameters, updateConnectionParameters} from "../actions/databaseConnection";
+import { fetchGraphFromDrive } from "../storage/googleDriveStorage";
 
 const mapStateToProps = state => {
   return {
@@ -17,7 +18,11 @@ const mapDispatchToProps = dispatch => {
     onCancel: () =>{
       dispatch(cancelEditing())
     },
-    forgetConnectionParameters: forgetConnectionParameters
+    forgetConnectionParameters: forgetConnectionParameters,
+    onFilePicked: fileId => {
+      dispatch(fetchGraphFromDrive(fileId))
+      dispatch(cancelEditing())
+    }
   }
 }
 

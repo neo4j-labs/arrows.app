@@ -50,7 +50,7 @@ const drainUpdateQueue = (store) => {
 }
 
 export const storageMiddleware = store => next => action => {
-  if (action.category === 'GRAPH') {
+  if (driver && action.category === 'GRAPH') {
     updateQueue.push(action)
     drainUpdateQueue(store)
   }
