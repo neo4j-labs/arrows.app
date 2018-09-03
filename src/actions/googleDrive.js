@@ -6,14 +6,17 @@ export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 
 export const saveGraphToGoogleDrive = () => {
 
-  const storeGraphIfSignedIn = (graph) => {
+  const storeGraphIfSignedIn = (graph, fileId) => {
     const isSignedIn = window.gapi.auth2.getAuthInstance().isSignedIn.get()
     console.log("signed in: ", isSignedIn)
-    if (isSignedIn) createFile(graph)
+    
+    if (isSignedIn) {
+      saveFile(graph, fileId)
+    }
     return isSignedIn
   }
 
-  const createFile = (data) => {
+  const saveFile = (data, fileId) => {
     const boundary = '-------314159265358979323846';
     const delimiter = "\r\n--" + boundary + "\r\n";
     const close_delim = "\r\n--" + boundary + "--";
@@ -35,8 +38,8 @@ export const saveGraphToGoogleDrive = () => {
       close_delim;
 
     const request = window.gapi.client.request({
-      'path': '/upload/drive/v3/files',
-      'method': 'POST',
+      'path': `/upload/drive/v3/files${fileId ? '/' + fileId : ''}`,
+      'method': fileId ? 'PATCH' : 'POST',
       'params': {'uploadType': 'multipart'},
       'headers': {
         'Content-Type': 'multipart/related; boundary="' + boundary + '"'
@@ -48,30 +51,40 @@ export const saveGraphToGoogleDrive = () => {
   }
 
   return function (dispatch, getState) {
-    const graph = getState().graph
+    const { graph, storage } = getState()
+    const fileId = storage.fileId
 
     function sleep(ms) {
       return new Promise(resolve => setTimeout(resolve, ms));
     }
+
     const tryToSaveGraph = async () => {
-      while (!storeGraphIfSignedIn(graph)) {
+      while (!storeGraphIfSignedIn(graph, fileId)) {
         console.log("SLEEPING")
         await sleep(1000)
       }
     }
 
-    window.gapi.client.init({
-      apiKey: config.apiKey,
-      clientId: config.clientId,
-      discoveryDocs: DISCOVERY_DOCS,
-      scope: SCOPES
-    }).then(() => {
+    const signInAndSave = () => {
       if (window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
         tryToSaveGraph()
       } else {
         window.gapi.auth2.getAuthInstance().signIn();
         tryToSaveGraph()
       }
-    })
+    }
+
+    if (window.gapi.client.drive) {
+      signInAndSave()
+    } else {
+      window.gapi.client.init({
+        apiKey: config.apiKey,
+        clientId: config.clientId,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
+      }).then(() => {
+        signInAndSave()
+      })
+    }
   }
 }
