@@ -23,21 +23,31 @@ export const clearSelection = () => ({
   type: 'CLEAR_SELECTION',
 })
 
-export const jumpToNextNode = direction => {
+export const jumpToNextNode = (direction, extraKeys) => {
   return function (dispatch, getState) {
     const { viewTransformation, applicationLayout, graph } = getState()
     const maxDimension = Math.max(applicationLayout.windowSize.width, applicationLayout.windowSize.height) / viewTransformation.scale
 
     const currentSelection = getState().selection
-    const currentNodeId = Object.keys(currentSelection.selectedNodeIdMap)[0]
+    const nodeIds = Object.keys(currentSelection.selectedNodeIdMap)
+    const currentNodeId = nodeIds[nodeIds.length - 1]
 
     if (currentNodeId) {
       const currentNode = graph.nodes.find(node => node.id === currentNodeId)
       const nextNode = getNextNode(currentNode, graph.nodes, direction, maxDimension)
 
       if (nextNode) {
-        dispatch(clearSelection())
-        dispatch(ensureSelected([nextNode.id]))
+        const multiSelect = extraKeys.shiftKey === true
+        if (multiSelect) {
+          if (currentSelection.selectedNodeIdMap[nextNode.id]) {
+            dispatch(toggleSelection({...currentNode, entityType: 'node'}, true))
+          } else {
+            dispatch(ensureSelected([nextNode.id]))
+          }
+        } else {
+          dispatch(clearSelection())
+          dispatch(ensureSelected([nextNode.id]))
+        }
       }
     }
   }

@@ -26,11 +26,11 @@ const KeyBindings = {
   [ZOOM_OUT]: [{ metaKey: true, code: 189 }],
   [REMOVE_SELECTION_PATH]: [{ metaKey: false, code: 27 }],
   [DELETE_SELECTION]: [{ metaKey: false, code: 46 }, { metaKey: false, code: 8 }],
-  [MOVE_LEFT]: [{ metaKey: false, code: 37 }],
-  [MOVE_UP]: [{ metaKey: false, code: 38 }],
-  [MOVE_RIGHT]: [{ metaKey: false, code: 39 }],
-  [MOVE_DOWN]: [{ metaKey: false, code: 40 }],
-  [TOGGLE_FOCUS]: [{ metaKey: true, code: 13}]
+  [MOVE_LEFT]: [{ metaKey: false, shiftKey: 'optional', code: 37 }],
+  [MOVE_UP]: [{ metaKey: false, shiftKey: 'optional', code: 38 }],
+  [MOVE_RIGHT]: [{ metaKey: false, shiftKey: 'optional', code: 39 }],
+  [MOVE_DOWN]: [{ metaKey: false, shiftKey: 'optional', code: 40 }],
+  [TOGGLE_FOCUS]: [{ metaKey: false, code: 13, codeRange: {min: 48, max: 90}}]
 }
 
 const actions = {}
@@ -38,11 +38,11 @@ const actions = {}
 const findAction = ({ altKey, ctrlKey, metaKey, shiftKey, keyCode }) =>
   find(actions, ({bindings}) =>
     find(bindings, (binding) =>
-      keyCode === binding.code &&
-      altKey === !!binding.altKey &&
-      ctrlKey === !!binding.ctrlKey &&
-      metaKey === !!binding.metaKey &&
-      shiftKey === !!binding.shiftKey
+      (keyCode === binding.code || (binding.codeRange && keyCode >= binding.codeRange.min && keyCode <= binding.codeRange.max)) &&
+      (binding.altKey === 'optional' || altKey === !!binding.altKey) &&
+      (binding.ctrlKey === 'optional' || ctrlKey === !!binding.ctrlKey) &&
+      (binding.metaKey === 'optional' || metaKey === !!binding.metaKey) &&
+      (binding.shiftKey === 'optional' || shiftKey === !!binding.shiftKey)
     )
   )
 
@@ -50,7 +50,15 @@ const hocProps = {
   registerAction: (name, handler) => (actions[name] = { bindings: KeyBindings[name], handler }),
   fireAction: (event, ...args) => {
     const action = findAction(event)
-    if (action) action.handler(...args)
+    if (action) {
+      action.handler({
+        altKey: event.altKey,
+        ctrlKey: event.ctrlKey,
+        metaKey: event.metaKey,
+        shiftKey: event.shiftKey
+      }, ...args)
+    }
+
     return !!action
   }
 }

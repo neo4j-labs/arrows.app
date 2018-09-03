@@ -24,19 +24,19 @@ class GraphDisplay extends Component {
     )
     props.registerAction(
       MOVE_LEFT,
-      () => this.props.jumpToNextNode('LEFT')
+      (extraKeys) => this.props.jumpToNextNode('LEFT', extraKeys)
     )
     props.registerAction(
       MOVE_UP,
-      () => this.props.jumpToNextNode('UP')
+      (extraKeys) => this.props.jumpToNextNode('UP', extraKeys)
     )
     props.registerAction(
       MOVE_RIGHT,
-      () => this.props.jumpToNextNode('RIGHT')
+      (extraKeys) => this.props.jumpToNextNode('RIGHT', extraKeys)
     )
     props.registerAction(
       MOVE_DOWN,
-      () => this.props.jumpToNextNode('DOWN')
+      (extraKeys) => this.props.jumpToNextNode('DOWN', extraKeys)
     )
   }
 
