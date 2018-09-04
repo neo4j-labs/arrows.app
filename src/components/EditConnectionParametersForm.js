@@ -96,7 +96,7 @@ class EditConnectionParametersForm extends Component {
           />
         </Form.Field>
         {messages}
-        <div style={{'text-align': 'right'}}>
+        <div style={{'textAlign': 'right'}}>
           <Button
             onClick={this.onCancel}
             content="Cancel"
@@ -112,18 +112,24 @@ class EditConnectionParametersForm extends Component {
     )
 
     const panes = [{
+      menuItem: 'New Graph', render: () => (
+        <Tab.Pane attached={false}>
+          <Button primary onClick={this.onCancel} content="Empty Graph" />
+        </Tab.Pane>
+      )
+    }, {
       menuItem: 'Neo4j Database', render: () => (
         <Tab.Pane attached={false}>{dbTabContent}</Tab.Pane>
         )
     }, {
       menuItem: 'Google Drive', render: () => (
         <Tab.Pane attached={false}>
-          <GoogleDriveConnection onFilePicked={this.props.onFilePicked} fileId={this.props.fileId} saveToDrive={this.props.saveToDrive} />
+          <GoogleDriveConnection onFilePicked={this.props.onFilePicked} fileId={this.props.storage.fileId} saveToDrive={this.props.saveToDrive} />
         </Tab.Pane>
       )
     }]
 
-    const tabs = <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
+    const tabs = <Tab defaultActiveIndex={this.props.storage.fileId ? 2 : 0} menu={{ secondary: true, pointing: true }} panes={panes} />
 
     return (
       <Modal
@@ -131,7 +137,7 @@ class EditConnectionParametersForm extends Component {
         open={true}
         onClose={this.onCancel}
       >
-        <Modal.Header>Database Connection</Modal.Header>
+        <Modal.Header>Graph Storage</Modal.Header>
         <Modal.Content>
           {tabs}
         </Modal.Content>
