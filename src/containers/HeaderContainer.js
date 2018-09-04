@@ -10,7 +10,7 @@ const mapStateToProps = state => {
   return {
     connectionParametersEditable: state.databaseConnection.connectionParametersEditable,
     storageStatus: state.storage.status,
-    fileId: state.storage.fileId
+    storage: state.storage
   }
 }
 

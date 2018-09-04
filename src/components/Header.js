@@ -35,9 +35,9 @@ const editConnectionParameters = (props) => {
 }
 
 const googleDriveItem = (props) => {
-  if (props.fileId) {
+  if (props.storage.fileId) {
     return (
-      <Menu.Item onClick={() => props.onGoogleDriveClick(props)}>
+      <Menu.Item onClick={() => props.onGoogleDriveClick()}>
         <Icon name='google drive'/>
         Save to Google drive
       </Menu.Item>

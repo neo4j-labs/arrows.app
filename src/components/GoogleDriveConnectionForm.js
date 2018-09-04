@@ -8,7 +8,7 @@ const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 
 export class GoogleDriveConnection extends Component {
   state = {
-    fileName: ''
+    fileName: this.props.storage.fileName
   }
 
   componentDidMount () {
@@ -25,30 +25,9 @@ export class GoogleDriveConnection extends Component {
         .build();
     }
 
-    const getFileMeta = (fileId) => {
-      const downloadUrl = `https://www.googleapis.com/drive/v3/files/${fileId}`
-      var accessToken = window.gapi.auth.getToken().access_token
-      var xhr = new XMLHttpRequest();
-      xhr.open('GET', downloadUrl)
-      xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
-      xhr.onload = () => {
-        const fullFileName = JSON.parse(xhr.responseText).name
-        const noExtensionName = fullFileName.slice(0, fullFileName.lastIndexOf('.json'))
-        this.setState({
-          fileName: noExtensionName,
-          originalFileName: noExtensionName
-        })
-      }
-      xhr.onerror = error => console.log(error)
-      xhr.send()
-    }
-
     if (window.gapi.auth2.getAuthInstance() && window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
       const accessToken = window.gapi.auth.getToken().access_token
       setupPicker(accessToken)
-      if (this.props.fileId) {
-        getFileMeta(this.props.fileId)
-      }
     } else {
       window.gapi.client.init({
         apiKey: config.apiKey,
@@ -58,22 +37,15 @@ export class GoogleDriveConnection extends Component {
       }).then(() => {
         if (window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
           setupPicker(window.gapi.auth.getToken().access_token)
-          if (this.props.fileId) {
-            getFileMeta(this.props.fileId)
-          }
         } else {
           window.gapi.auth2.getAuthInstance().signIn();
           setupPicker(window.gapi.auth.getToken().access_token)
-          if (this.props.fileId) {
-            getFileMeta(this.props.fileId)
-          }
         }
       })
     }
   }
 
   pickerCallback ({action, docs}) {
-    console.log('PICKER CALLBACK', action)
     if (action === 'picked' && docs.length > 0) {
       const fileId = docs[0].id
       this.props.onFilePicked(fileId)
@@ -97,7 +69,7 @@ export class GoogleDriveConnection extends Component {
             icon='file'
             iconPosition='left' size='medium'
             onChange={evt => this.setState({fileName: evt.target.value}) } />
-          <Button positive onClick={() => this.props.saveToDrive(this.state.fileName, this.state.fileName === this.state.originalFileName)}>
+          <Button positive onClick={() => this.props.saveToDrive(this.state.fileName, this.state.fileName !== this.props.storage.fileName)}>
             <Icon name='google drive' />
             Save to Google Drive
           </Button>

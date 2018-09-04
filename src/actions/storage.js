@@ -1,9 +1,17 @@
 
 
-export function setStorage(store, fileId) {
+export function setStorage(store, fileId, fileName) {
   return {
     type: 'SET_STORE_TYPE',
     store,
-    fileId
+    fileId,
+    fileName
+  }
+}
+
+export function setFileMetadata(fileName) {
+  return {
+    type: 'SET_FILE_METADATA',
+    fileName
   }
 }

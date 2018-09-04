@@ -29,7 +29,13 @@ const storage = (state = initialState, action) => {
       return {
         ...state,
         store: action.store,
-        fileId: action.fileId
+        fileId: action.fileId,
+        fileName: action.fileName
+      }
+    case 'SET_FILE_METADATA':
+      return {
+        ...state,
+        fileName: action.fileName
       }
     default:
       return state
