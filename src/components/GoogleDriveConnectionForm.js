@@ -4,7 +4,7 @@ import { Form, Button, Icon, Popup, Input } from 'semantic-ui-react'
 import { defaultConnectionUri } from "../reducers/databaseConnection";
 
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+const SCOPES = 'https://www.googleapis.com/auth/drive';
 
 export class GoogleDriveConnection extends Component {
   state = {

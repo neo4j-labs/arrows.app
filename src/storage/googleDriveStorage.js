@@ -3,7 +3,7 @@ import config from "../config";
 import { Point } from "../model/Point";
 import { setFileMetadata } from "../actions/storage";
 const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+const SCOPES = 'https://www.googleapis.com/auth/drive';
 
 export function fetchGraphFromDrive(fileId) {
   return function (dispatch) {
