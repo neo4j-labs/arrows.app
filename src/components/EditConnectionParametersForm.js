@@ -95,6 +95,19 @@ class EditConnectionParametersForm extends Component {
             label='Remember credentials'
           />
         </Form.Field>
+        {messages}
+        <div style={{'text-align': 'right'}}>
+          <Button
+            onClick={this.onCancel}
+            content="Cancel"
+          />
+          <Button
+            type="submit"
+            onClick={this.onSave}
+            positive
+            content="Save"
+          />
+        </div>
       </Form>
     )
 
@@ -121,20 +134,7 @@ class EditConnectionParametersForm extends Component {
         <Modal.Header>Database Connection</Modal.Header>
         <Modal.Content>
           {tabs}
-          {messages}
         </Modal.Content>
-        <Modal.Actions>
-          <Button
-            onClick={this.onCancel}
-            content="Cancel"
-          />
-          <Button
-            type="submit"
-            onClick={this.onSave}
-            positive
-            content="Save"
-          />
-        </Modal.Actions>
       </Modal>
     )
   }
