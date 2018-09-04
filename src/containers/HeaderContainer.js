@@ -9,7 +9,8 @@ import {saveGraphToGoogleDrive} from "../actions/googleDrive";
 const mapStateToProps = state => {
   return {
     connectionParametersEditable: state.databaseConnection.connectionParametersEditable,
-    storageStatus: state.storage.status
+    storageStatus: state.storage.status,
+    fileId: state.storage.fileId
   }
 }
 

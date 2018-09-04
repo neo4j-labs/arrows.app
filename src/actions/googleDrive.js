@@ -4,7 +4,7 @@ const SCOPES = 'https://www.googleapis.com/auth/drive.file';
 
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 
-export const saveGraphToGoogleDrive = () => {
+export const saveGraphToGoogleDrive = (fileName, update) => {
 
   const storeGraphIfSignedIn = (graph, fileId) => {
     const isSignedIn = window.gapi.auth2.getAuthInstance().isSignedIn.get()
@@ -24,7 +24,7 @@ export const saveGraphToGoogleDrive = () => {
     const contentType = 'application/json';
 
     const metadata = {
-      'name': `arrows-graph-${Date.now()}.json`,
+      'name': `${fileName}.json`,
       'mimeType': contentType
     };
 
@@ -59,7 +59,7 @@ export const saveGraphToGoogleDrive = () => {
     }
 
     const tryToSaveGraph = async () => {
-      while (!storeGraphIfSignedIn(graph, fileId)) {
+      while (!storeGraphIfSignedIn(graph, update && fileId)) {
         console.log("SLEEPING")
         await sleep(1000)
       }

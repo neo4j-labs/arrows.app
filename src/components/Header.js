@@ -33,6 +33,15 @@ const editConnectionParameters = (props) => {
     </Menu.Item>
   ) : null
 }
+
+const saveToGoogleDrive = (props) => {
+  if (props.fileId) {
+    props.onGoogleDriveClick()
+  } else {
+
+  }
+}
+
 const Header = (props) => (
   <Menu attached='top' style={{borderRadius: 0}}>
     <Menu.Item onClick={props.onPlusNodeClick}>
@@ -42,8 +51,9 @@ const Header = (props) => (
       <Icon name='refresh'/>Graph
     </Menu.Item>
     {editConnectionParameters(props)}
-    <Menu.Item onClick={props.onGoogleDriveClick}>
-      <Icon name='google drive'/>Google drive
+    <Menu.Item onClick={() => saveToGoogleDrive(props)}>
+      <Icon name='google drive'/>
+      Google drive
     </Menu.Item>
     {storageStatusMessage(props)}
     <Menu.Item

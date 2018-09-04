@@ -8,7 +8,9 @@ export function fetchGraphFromDrive(fileId) {
   return function (dispatch) {
     dispatch(fetchingGraph())
 
-    const fetchData = () => downloadFile(fileId, graph => dispatch(fetchingGraphSucceeded(constructGraphFromFile(graph))))
+    const fetchData = () => downloadFile(fileId, graph => {
+      dispatch(fetchingGraphSucceeded(constructGraphFromFile(graph)))
+    })
 
     window.gapi.client.init({
       apiKey: config.apiKey,
@@ -32,7 +34,9 @@ const downloadFile = (fileId, callback) => {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', downloadUrl)
   xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
-  xhr.onload = () => callback(xhr.responseText)
+  xhr.onload = () => {
+    callback(xhr.responseText)
+  }
   xhr.onerror = error => callback({ error })
   xhr.send()
 }
