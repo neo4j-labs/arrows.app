@@ -18,9 +18,12 @@ const NodeToolboxItems = (props) => null
 
 const RelationshipToolboxItems = (props) =>(
   <Menu.Item style={{fontSize: '.857rem'}}>
-    <Button size='tiny' basic icon onClick={props.onReverseRelationships}>
-      <Icon name='exchange' />
-    </Button>
+    <Button
+      basic
+      size='tiny'
+      icon="exchange"
+      content='Reverse'
+      onClick={props.onReverseRelationships} />
   </Menu.Item>
 )
 
