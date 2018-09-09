@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import {Menu, Icon, Button } from 'semantic-ui-react'
 
 const visibleMode = selection => {
@@ -10,26 +10,9 @@ const visibleMode = selection => {
   if (selectedRelationshipIdMap && Object.keys(selectedRelationshipIdMap).length > 0) {
     visible |= 2
   }
-  console.log(visible)
+
   return visible
 }
-
-export const DetailToolbox = (props) =>
-  // currently show only for relationships
-  (visibleMode(props.selection) & 3) === 2 ? (
-    <React.Fragment>
-      <Menu
-        borderless
-        attached='top'
-        style={{borderRadius: 0, borderTop: 0, marginTop: 0, width: '100%'}}>
-        <ToolboxItems/>
-        {(visibleMode(props.selection) & 3) === 1 ? <NodeToolboxItems /> : null}
-        {(visibleMode(props.selection) & 3) === 2 ? <RelationshipToolboxItems /> : null}
-      </Menu>
-    </React.Fragment>
-  ) : null
-
-const ToolboxItems = (props) => null
 
 const NodeToolboxItems = (props) => null
 
@@ -40,3 +23,35 @@ const RelationshipToolboxItems = (props) =>(
     </Button>
   </Menu.Item>
 )
+
+export const DetailToolbox = (props) => (
+  <ToolboxItems {...props}>
+    {(visibleMode(props.selection) & 3) === 1 ? <ToolboxItems.NodeTools /> : null}
+    {(visibleMode(props.selection) & 3) === 2 ? <ToolboxItems.RelationshipTools /> : null}
+  </ToolboxItems>
+)
+
+class ToolboxItems extends Component {
+  static NodeTools = NodeToolboxItems
+  static RelationshipTools = RelationshipToolboxItems
+
+  render () {
+    const { selection, children } = this.props
+    const visibility = selection && visibleMode(selection)
+
+    // currently only show for relationships
+    if ((visibility & 3) === 2) {
+      return (
+        <Menu
+          borderless
+          attached='top'
+          style={{ borderRadius: 0, borderTop: 0, marginTop: 0, width: '100%' }}>
+          <div>{/*common toolbox items will be here*/}</div>
+          {children}
+        </Menu>
+      )
+    } else {
+      return null
+    }
+  }
+}
