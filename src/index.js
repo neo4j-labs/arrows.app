@@ -12,20 +12,51 @@ import 'semantic-ui-css/semantic.min.css'
 import {storageMiddleware} from "./storage/neo4jStorage"
 import { viewportMiddleware } from "./middlewares/viewportMiddleware"
 import { initializeConnection } from "./actions/databaseConnection";
+import { googleDriveUrlRegex } from "./actions/googleDrive";
+import { fetchGraphFromDrive } from "./storage/googleDriveStorage";
+import { setStorage } from "./actions/storage";
 
-//noinspection JSUnresolvedVariable,JSUnresolvedFunction
+const checkInitialFile = () => {
+  const urlDriveParts = googleDriveUrlRegex.exec(window.location.hash)
+  if (urlDriveParts && urlDriveParts.length > 1) {
+    const initialFiles = urlDriveParts[1].split(',')
+    if (initialFiles.length > 0) {
+      return initialFiles[0]
+    }
+  }
+}
+
+const initialFileId = checkInitialFile()
+const middlewares = [viewportMiddleware]
+if (!initialFileId) {
+  middlewares.unshift(storageMiddleware)
+}
+
 let store = createStore(
   reducer,
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
-  applyMiddleware(thunkMiddleware, storageMiddleware, viewportMiddleware)
+  applyMiddleware(thunkMiddleware, ...middlewares)
 )
 
-store.dispatch(initializeConnection())
-render(
-  <Provider store={store}>
-    <App />
-  </Provider>,
-  document.getElementById('root')
-)
-store.dispatch(fetchGraphFromDatabase())
+const renderApp = () => {
+  render(
+    <Provider store={store}>
+      <App />
+    </Provider>,
+    document.getElementById('root')
+  )
+}
+
+if (initialFileId) {
+  store.dispatch(setStorage('googleDrive', initialFileId))
+  renderApp()
+  window.addEventListener("load", () => {
+    store.dispatch(fetchGraphFromDrive(initialFileId))
+  })
+} else {
+  store.dispatch(initializeConnection())
+  renderApp(store)
+  store.dispatch(fetchGraphFromDatabase())
+}
+
 registerServiceWorker()

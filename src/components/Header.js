@@ -29,10 +29,24 @@ const storageStatusMessage = (props) => {
 const editConnectionParameters = (props) => {
   return props.connectionParametersEditable ? (
     <Menu.Item onClick={props.onEditConnectionParameters}>
-      <Icon name='lightning'/>Database connection
+      <Icon name='database'/>Graph storage
     </Menu.Item>
   ) : null
 }
+
+const googleDriveItem = (props) => {
+  if (props.storage.fileId) {
+    return (
+      <Menu.Item onClick={() => props.onGoogleDriveClick()}>
+        <Icon name='google drive'/>
+        Save to Google drive
+      </Menu.Item>
+    )
+  } else {
+    return null
+  }
+}
+
 const Header = (props) => (
   <Menu attached='top' style={{borderRadius: 0}}>
     <Menu.Item onClick={props.onPlusNodeClick}>
@@ -42,6 +56,7 @@ const Header = (props) => (
       <Icon name='refresh'/>Graph
     </Menu.Item>
     {editConnectionParameters(props)}
+    {googleDriveItem(props)}
     {storageStatusMessage(props)}
     <Menu.Item
       position='right'

@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import { Button, Form, Checkbox, Modal, Message } from 'semantic-ui-react'
 import {defaultConnectionUri} from "../reducers/databaseConnection";
+import { Tab } from 'semantic-ui-react'
+import { GoogleDriveConnection } from "./GoogleDriveConnectionForm";
 
 class EditConnectionParametersForm extends Component {
 
@@ -46,63 +48,55 @@ class EditConnectionParametersForm extends Component {
     const messages = errorMsg ? [(
       <Message key="errorMsg" error header="Database connection error" content={errorMsg} />
     )] : []
-    return (
-      <Modal
-        size="tiny"
-        open={true}
-        onClose={this.onCancel}
-      >
-        <Modal.Header>Database Connection</Modal.Header>
-        <Modal.Content>
-          <Form error={messages.length > 0} onKeyUp={this.onKeyUp}>
-            <Form.Field>
-              <label>Bolt Connection URI</label>
-              <Form.Input
-                iconPosition='left'
-                icon='lightning'
-                value={connectionUri}
-                name="connectionUri"
-                onChange={this.inputUpdated}
-                placeholder={defaultConnectionUri}
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Username</label>
-              <Form.Input
-                iconPosition='left'
-                icon='user'
-                value={username}
-                name="username"
-                autoComplete="username"
-                onChange={this.inputUpdated}
-                placeholder="Username"
-              />
-            </Form.Field>
-            <Form.Field>
-              <label>Password</label>
-              <Form.Input
-                iconPosition='left'
-                icon='lock'
-                value={password}
-                name="password"
-                autoComplete="current-password"
-                onChange={this.inputUpdated}
-                type="password"
-                placeholder="Password"
-              />
-            </Form.Field>
-            <Form.Field>
-              <Checkbox
-                checked={rememberCredentials}
-                name='rememberCredentials'
-                onChange={this.checkboxUpdated}
-                label='Remember credentials'
-              />
-            </Form.Field>
-          </Form>
-          {messages}
-        </Modal.Content>
-        <Modal.Actions>
+
+    const dbTabContent = (
+      <Form error={messages.length > 0} onKeyUp={this.onKeyUp}>
+        <Form.Field>
+          <label>Bolt Connection URI</label>
+          <Form.Input
+            iconPosition='left'
+            icon='lightning'
+            value={connectionUri}
+            name="connectionUri"
+            onChange={this.inputUpdated}
+            placeholder={defaultConnectionUri}
+          />
+        </Form.Field>
+        <Form.Field>
+          <label>Username</label>
+          <Form.Input
+            iconPosition='left'
+            icon='user'
+            value={username}
+            name="username"
+            autoComplete="username"
+            onChange={this.inputUpdated}
+            placeholder="Username"
+          />
+        </Form.Field>
+        <Form.Field>
+          <label>Password</label>
+          <Form.Input
+            iconPosition='left'
+            icon='lock'
+            value={password}
+            name="password"
+            autoComplete="current-password"
+            onChange={this.inputUpdated}
+            type="password"
+            placeholder="Password"
+          />
+        </Form.Field>
+        <Form.Field>
+          <Checkbox
+            checked={rememberCredentials}
+            name='rememberCredentials'
+            onChange={this.checkboxUpdated}
+            label='Remember credentials'
+          />
+        </Form.Field>
+        {messages}
+        <div style={{'textAlign': 'right'}}>
           <Button
             onClick={this.onCancel}
             content="Cancel"
@@ -113,7 +107,40 @@ class EditConnectionParametersForm extends Component {
             positive
             content="Save"
           />
-        </Modal.Actions>
+        </div>
+      </Form>
+    )
+
+    const panes = [{
+      menuItem: 'New Graph', render: () => (
+        <Tab.Pane attached={false}>
+          <Button primary onClick={this.onCancel} content="Empty Graph" />
+        </Tab.Pane>
+      )
+    }, {
+      menuItem: 'Neo4j Database', render: () => (
+        <Tab.Pane attached={false}>{dbTabContent}</Tab.Pane>
+        )
+    }, {
+      menuItem: 'Google Drive', render: () => (
+        <Tab.Pane attached={false}>
+          <GoogleDriveConnection onFilePicked={this.props.onFilePicked} storage={this.props.storage} saveToDrive={this.props.saveToDrive} />
+        </Tab.Pane>
+      )
+    }]
+
+    const tabs = <Tab defaultActiveIndex={this.props.storage.fileId ? 2 : 0} menu={{ secondary: true, pointing: true }} panes={panes} />
+
+    return (
+      <Modal
+        size="tiny"
+        open={true}
+        onClose={this.onCancel}
+      >
+        <Modal.Header>Graph Storage</Modal.Header>
+        <Modal.Content>
+          {tabs}
+        </Modal.Content>
       </Modal>
     )
   }

@@ -47,7 +47,7 @@ export class StyleRow extends Component {
         <Table.Cell width={1}>
           <Icon
             style={{visibility: this.state.mouseOver ? 'visible' : 'hidden'}}
-            name="trash outline"
+            name="trash alternate outline"
             onClick={onDeleteStyle}
           />
         </Table.Cell>
