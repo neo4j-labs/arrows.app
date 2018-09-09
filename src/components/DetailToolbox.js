@@ -18,7 +18,7 @@ const NodeToolboxItems = (props) => null
 
 const RelationshipToolboxItems = (props) =>(
   <Menu.Item style={{fontSize: '.857rem'}}>
-    <Button size='tiny' basic icon>
+    <Button size='tiny' basic icon onClick={props.onReverseRelationships}>
       <Icon name='exchange' />
     </Button>
   </Menu.Item>
@@ -27,7 +27,7 @@ const RelationshipToolboxItems = (props) =>(
 export const DetailToolbox = (props) => (
   <ToolboxItems {...props}>
     {(visibleMode(props.selection) & 3) === 1 ? <ToolboxItems.NodeTools /> : null}
-    {(visibleMode(props.selection) & 3) === 2 ? <ToolboxItems.RelationshipTools /> : null}
+    {(visibleMode(props.selection) & 3) === 2 ? <ToolboxItems.RelationshipTools onReverseRelationships={() => props.onReverseRelationships(props.selection)} /> : null}
   </ToolboxItems>
 )
 

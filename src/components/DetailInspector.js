@@ -42,7 +42,7 @@ class DetailInspector extends Component {
   }
 
   render() {
-    const {selection, graph, onSaveCaption, onSaveType} = this.props
+    const {selection, graph, onSaveCaption, onSaveType, reverseRelationships} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
@@ -128,7 +128,7 @@ class DetailInspector extends Component {
             <Icon name='angle double right'/>
           </Menu.Item>
         </Menu>
-        <DetailToolbox selection={selection} />
+        <DetailToolbox selection={selection} onReverseRelationships={reverseRelationships} />
         <Segment basic style={{margin: 0}}>
           <Form style={{textAlign: 'left'}}>
             {fields}

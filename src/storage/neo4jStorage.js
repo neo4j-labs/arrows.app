@@ -31,7 +31,7 @@ const drainUpdateQueue = (store) => {
   const applyHead = () => {
     if (updateQueue.length > 0) {
       const action = updateQueue[0]
-      const work = writeQueriesForAction(action)
+      const work = writeQueriesForAction(action, store.getState())
       const session = driver.session()
       work(session)
         .then(() => {
