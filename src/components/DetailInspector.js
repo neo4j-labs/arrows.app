@@ -9,6 +9,7 @@ import StyleTable from "./StyleTable"
 import {headerHeight} from "../model/applicationLayout"
 import { compose } from "recompose"
 import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
+import { DetailToolbox } from "./DetailToolbox"
 
 class DetailInspector extends Component {
   constructor(props) {
@@ -127,6 +128,7 @@ class DetailInspector extends Component {
             <Icon name='angle double right'/>
           </Menu.Item>
         </Menu>
+        <DetailToolbox selection={selection} />
         <Segment basic style={{margin: 0}}>
           <Form style={{textAlign: 'left'}}>
             {fields}
