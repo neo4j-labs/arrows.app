@@ -18,11 +18,4 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
 }
 
 function drawGraph(ctx, visualGraph) {
-  visualGraph.edges.forEach(edge => edge.draw(ctx))
-  Object.values(visualGraph.nodes).forEach(visualNode => {
-    visualNode.draw(ctx)
-    if (visualNode.node.properties) {
-      drawAnnotation(ctx, visualNode)
-    }
-  })
 }
