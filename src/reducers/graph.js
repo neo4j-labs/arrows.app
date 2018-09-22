@@ -4,6 +4,7 @@ import {moveTo, setCaption} from "../model/Node";
 import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
 import {idsMatch} from "../model/Id";
+import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -79,8 +80,14 @@ const graph = (state = emptyGraph(), action) => {
     case 'SET_ARROWS_PROPERTY': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setArrowsProperty(node, action.key, action.value) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setArrowsProperty(relationship, action.key, action.value) : relationship)
+        nodes: state.nodes.map((node) =>
+          nodeStyleAttributes.includes(action.key) && action.selection.selectedNodeIdMap[node.id]
+            ? setArrowsProperty(node, action.key, action.value)
+            : node),
+        relationships: state.relationships.map((relationship) =>
+          relationshipStyleAttributes.includes(action.key) && action.selection.selectedRelationshipIdMap[relationship.id]
+            ? setArrowsProperty(relationship, action.key, action.value)
+            : relationship)
       }
     }
 
