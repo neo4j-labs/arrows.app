@@ -1,3 +1,7 @@
+import { isNode } from "./Node";
+import { nodeStyleAttributes, relationshipStyleAttributes } from "./styling";
+import { isRelationship } from "./Relationship";
+
 export const combineProperties = (entities) => {
   const properties = {}
   let firstKey = true;
@@ -26,33 +30,51 @@ export const combineProperties = (entities) => {
   return properties
 }
 
+const doesStyleApply = (entity, styleKey) => {
+  if (isNode(entity)) {
+    return nodeStyleAttributes.includes(styleKey)
+  } else if(isRelationship(entity)) {
+    return relationshipStyleAttributes.includes(styleKey)
+  }
+}
+
 export const combineStyle = (entities) => {
   const style = {}
-  let firstKey = true;
+  let firstKey = {
+    node: true,
+    relationship: true
+  }
+
   entities.forEach((entity) => {
-    if(entity.style) {
+    const entityType = isNode(entity) ? 'node' : 'relationship'
+    if (entity.style) {
       Object.keys(entity.style).forEach((key) => {
-        const currentEntry = style[key];
-        if (currentEntry) {
-          if (currentEntry.status === 'CONSISTENT' && currentEntry.value !== entity.style[key]) {
-            style[key] = { status: 'INCONSISTENT' }
-          }
-        } else {
-          if (firstKey) {
-            style[key] = { status: 'CONSISTENT', value: entity.style[key] }
+        if (doesStyleApply(entity, key)) {
+          const currentEntry = style[key];
+          if (currentEntry) {
+            if (currentEntry.status === 'CONSISTENT' && currentEntry.value !== entity.style[key]) {
+              style[key] = { status: 'INCONSISTENT' }
+            }
           } else {
-            style[key] = { status: 'PARTIAL' }
+            if (firstKey[entityType]) {
+              style[key] = { status: 'CONSISTENT', value: entity.style[key] }
+            } else {
+              style[key] = { status: 'PARTIAL' }
+            }
           }
         }
       })
-      Object.keys(style).forEach((key) => {
-        if (!entity.style.hasOwnProperty(key)) {
-          style[key] = { status: 'PARTIAL' }
-        }
-      })
-      firstKey = false
     }
+
+    Object.keys(style).forEach((key) => {
+      if (doesStyleApply(entity, key) && !entity.style.hasOwnProperty(key)) {
+        style[key] = { status: 'PARTIAL' }
+      }
+    })
+
+    firstKey[entityType] = false
   })
+
   return style
 }
 

@@ -11,3 +11,6 @@ export const setCaption = (node, caption) => {
     caption
   }
 }
+
+export const isNode = entity =>
+  entity.hasOwnProperty('caption') && entity.hasOwnProperty('position')
