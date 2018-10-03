@@ -3,6 +3,7 @@ import {asKey} from "../model/Id";
 import { getDistanceToBezierEdge } from "./utils/geometryUtils";
 import { relationshipHitTolerance } from "./constants";
 import {nodeAtPoint, nodeRingAtPoint} from "../model/Graph";
+import { drawAnnotation } from "./Annotation";
 
 export default class VisualGraph {
   constructor(graph, nodes, edges) {
@@ -63,4 +64,15 @@ export default class VisualGraph {
     })
     return closestRelationship
   }
+
+  draw(ctx) {
+    this.edges.forEach(edge => edge.draw(ctx))
+    Object.values(this.nodes).forEach(visualNode => {
+      visualNode.draw(ctx)
+      if (visualNode.node.properties) {
+        drawAnnotation(ctx, visualNode)
+      }
+    })
+  }
+
 }

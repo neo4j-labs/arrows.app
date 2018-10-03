@@ -1,5 +1,20 @@
 import Gestures from "./Gestures";
-import {drawAnnotation} from "./Annotation";
+
+const layerManager = (() => {
+  let layers = []
+  return {
+    register: (name, drawFunction) => layers.push({
+      name,
+      draw: drawFunction
+    }),
+    clear: () => {
+      layers = []
+    },
+    renderAll: (ctx, displayOptions) => {
+      layers.forEach(layer => layer.draw(ctx, displayOptions))
+    }
+  }
+})()
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const { visualGraph, selection, gestures, guides, handles } = visuals
@@ -7,22 +22,16 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
 
-  guides.draw(ctx, displayOptions)
-
   const visualGestures = new Gestures(visualGraph.graph, selection, gestures)
-  visualGestures.draw(ctx, displayOptions)
 
-  drawGraph(ctx, visualGraph)
+  layerManager.clear()
 
-  handles.draw(ctx)
-}
+  layerManager.register('GUIDES ACTUAL POSITION', guides.drawActualPosition.bind(guides))
+  layerManager.register('GESTURES', visualGestures.draw.bind(visualGestures))
+  layerManager.register('GRAPH', visualGraph.draw.bind(visualGraph))
+  layerManager.register('HANDLES', handles.draw.bind(handles))
 
-function drawGraph(ctx, visualGraph) {
-  visualGraph.edges.forEach(edge => edge.draw(ctx))
-  Object.values(visualGraph.nodes).forEach(visualNode => {
-    visualNode.draw(ctx)
-    if (visualNode.node.properties) {
-      drawAnnotation(ctx, visualNode)
-    }
-  })
+  layerManager.register('GUIDES SNAP LINES', guides.drawSnaplines.bind(guides))
+
+  layerManager.renderAll(ctx, displayOptions)
 }
