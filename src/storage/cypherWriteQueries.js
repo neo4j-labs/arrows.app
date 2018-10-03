@@ -243,11 +243,9 @@ export const writeQueriesForAction = (action, state) => {
           const type = stringTypeToDatabaseType(relationship.type)
           result = session.run(`MATCH (s1)-[old]->(s2)
             WHERE old._id = $id
-            WITH old, s1, s2
             CREATE (s2)-[new:\`${type}\`]->(s1)
             SET new = old
-            DELETE old
-            return s2,s1,new`, {
+            DELETE old`, {
             id: relationshipId
           })
         })
