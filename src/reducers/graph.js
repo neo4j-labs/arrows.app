@@ -1,7 +1,7 @@
 import {emptyGraph} from "../model/Graph";
 import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setCaption} from "../model/Node";
-import { setType } from "../model/Relationship";
+import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
 import {idsMatch} from "../model/Id";
 
@@ -159,6 +159,12 @@ const graph = (state = emptyGraph(), action) => {
         style: state.style,
         nodes: state.nodes.filter(node => !action.nodeIdMap[node.id]),
         relationships: state.relationships.filter(relationship => !action.relationshipIdMap[relationship.id])
+      }
+
+    case 'REVERSE_RELATIONSHIPS':
+      return {
+        ...state,
+        relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? reverse(relationship) : relationship)
       }
 
     case FETCHING_GRAPH_SUCCEEDED:

@@ -1,7 +1,7 @@
 import {stringTypeToDatabaseType} from "../model/Relationship";
 import {propertyKeyToDatabaseKey, styleKeyToDatabaseKey} from "../model/properties";
 
-export const writeQueriesForAction = (action) => {
+export const writeQueriesForAction = (action, state) => {
 
   switch (action.type) {
     case 'CREATE_NODE': {
@@ -231,6 +231,24 @@ export const writeQueriesForAction = (action) => {
             }
           )
         }
+        return result
+      }
+    }
+
+    case 'REVERSE_RELATIONSHIPS': {
+      return (session) => {
+        let result = session
+        Object.keys(action.selection.selectedRelationshipIdMap).forEach((relationshipId) => {
+          const relationship = state.graph.relationships.find(rel => rel.id === relationshipId)
+          const type = stringTypeToDatabaseType(relationship.type)
+          result = session.run(`MATCH (s1)-[old]->(s2)
+            WHERE old._id = $id
+            CREATE (s2)-[new:\`${type}\`]->(s1)
+            SET new = old
+            DELETE old`, {
+            id: relationshipId
+          })
+        })
         return result
       }
     }

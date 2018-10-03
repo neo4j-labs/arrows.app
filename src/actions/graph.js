@@ -359,3 +359,9 @@ export const duplicateSelection = () => {
     }
   }
 }
+
+export const reverseRelationships = selection => ({
+  category: 'GRAPH',
+  type: 'REVERSE_RELATIONSHIPS',
+  selection
+})
