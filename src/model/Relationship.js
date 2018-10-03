@@ -27,3 +27,6 @@ export const reverse = relationship => {
     fromId: relationship.toId
   }
 }
+
+export const isRelationship = entity =>
+  entity.hasOwnProperty('type') && entity.hasOwnProperty('fromId') && entity.hasOwnProperty('toId')

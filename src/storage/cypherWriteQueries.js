@@ -1,5 +1,6 @@
 import {stringTypeToDatabaseType} from "../model/Relationship";
 import {propertyKeyToDatabaseKey, styleKeyToDatabaseKey} from "../model/properties";
+import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
 
 export const writeQueriesForAction = (action, state) => {
 
@@ -94,19 +95,33 @@ export const writeQueriesForAction = (action, state) => {
     }
 
     case 'SET_ARROWS_PROPERTY': {
-      const styleProperties = {}
-      styleProperties[styleKeyToDatabaseKey(action.key)] = action.value
+      const databaseKey = styleKeyToDatabaseKey(action.key)
+      const styleProperties = { [databaseKey]: action.value }
+      const queries = []
+
+      if (nodeStyleAttributes.includes(action.key)) {
+        queries.push({
+          cypher: 'MATCH (n:Diagram0) WHERE n._id IN $ids SET n += $properties',
+          params: {
+            ids: Object.keys(action.selection.selectedNodeIdMap),
+            properties: styleProperties
+          }
+        })
+      }
+
+      if(relationshipStyleAttributes.includes(action.key)) {
+        queries.push({
+          cypher: 'MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids SET r += $properties',
+          params: {
+            ids: Object.keys(action.selection.selectedRelationshipIdMap),
+            properties: styleProperties
+          }
+        })
+      }
+
       return (session) => {
-        session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
-          'SET n += $properties', {
-          ids: Object.keys(action.selection.selectedNodeIdMap),
-          properties: styleProperties
-        });
-        return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
-          'SET r += $properties', {
-          ids: Object.keys(action.selection.selectedRelationshipIdMap),
-          properties: styleProperties
-        });
+        const promises = queries.map(query => session.run(query.cypher, query.params))
+        return Promise.all(promises)
       }
     }
 
