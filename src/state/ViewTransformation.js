@@ -10,8 +10,8 @@ export class ViewTransformation {
     return new ViewTransformation(scale, this.offset)
   }
 
-  pan(offset) {
-    return new ViewTransformation(this.scale, this.offset.plus(offset))
+  scroll(vector) {
+    return new ViewTransformation(this.scale, this.offset.plus(vector))
   }
 
   transform(point) {

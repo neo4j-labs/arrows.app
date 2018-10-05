@@ -6,7 +6,10 @@ const viewTransformation = (state = new ViewTransformation(), action) => {
       return state.zoom(action.scale)
 
     case 'PAN':
-      return state.pan(action.newMousePosition.vectorFrom(action.oldMousePosition))
+      return state.scroll(action.newMousePosition.vectorFrom(action.oldMousePosition))
+
+    case 'SCROLL':
+      return state.scroll(action.vector)
 
     case 'ADJUST_VIEWPORT':
       return state.adjust(action.scale, action.panX, action.panY)
