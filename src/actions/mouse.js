@@ -18,7 +18,6 @@ export const wheel = (canvasPosition, vector, ctrlKey) => {
     if (ctrlKey) {
       const graphPosition = toGraphPosition(state, canvasPosition)
       const scale = Math.max(state.viewTransformation.scale * (100 - vector.dy) / 100, 0.01)
-      console.log(vector)
       const offset = canvasPosition.vectorFrom(graphPosition.scale(scale))
       dispatch(adjustViewport(scale, offset.dx, offset.dy))
     } else {
@@ -26,8 +25,6 @@ export const wheel = (canvasPosition, vector, ctrlKey) => {
     }
   }
 }
-
-// newScale = oldScale + oldScale * delta
 
 export const click = (canvasPosition) => {
   return function (dispatch, getState) {
