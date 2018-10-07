@@ -2,7 +2,7 @@ import {getVisualGraph, getTransformationHandles} from "../selectors/"
 import {clearSelection, toggleSelection} from "./selection"
 import {showInspector} from "./applicationLayout";
 import {connectNodes, createNodeAndRelationship, moveNodesEndDrag, tryMoveNode, tryMoveHandle} from "./graph"
-import {pan} from "./viewTransformation"
+import {adjustViewport, pan, scroll} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {tryUpdateSelectionPath} from "./selectionPath"
 import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
@@ -11,6 +11,20 @@ import {idsMatch} from "../model/Id";
 const LongPressTime = 300
 
 const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inverse(canvasPosition)
+
+export const wheel = (canvasPosition, vector, ctrlKey) => {
+  return function (dispatch, getState) {
+      const state = getState()
+    if (ctrlKey) {
+      const graphPosition = toGraphPosition(state, canvasPosition)
+      const scale = Math.max(state.viewTransformation.scale * (100 - vector.dy) / 100, 0.01)
+      const offset = canvasPosition.vectorFrom(graphPosition.scale(scale))
+      dispatch(adjustViewport(scale, offset.dx, offset.dy))
+    } else {
+      dispatch(scroll(vector.scale(state.viewTransformation.scale).invert()))
+    }
+  }
+}
 
 export const click = (canvasPosition) => {
   return function (dispatch, getState) {

@@ -1,10 +1,12 @@
 import {Point} from "../model/Point";
-import {click, doubleClick, endDrag, mouseDown, mouseMove, mouseUp} from "../actions/mouse";
+import {click, doubleClick, endDrag, mouseDown, mouseMove, mouseUp, wheel} from "../actions/mouse";
+import {Vector} from "../model/Vector";
 
 export default class MouseHandler {
   constructor(canvas) {
     this.canvas = canvas
 
+    this.canvas.addEventListener('wheel', this.handleWheel.bind(this))
     this.canvas.addEventListener('click', this.handleClick.bind(this))
     this.canvas.addEventListener('dblclick', this.handleDoubleClick.bind(this))
     this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this))
@@ -15,6 +17,11 @@ export default class MouseHandler {
 
   setDispatch(dispatch) {
     this.dispatch = dispatch
+  }
+
+  handleWheel (evt) {
+    this.dispatch(wheel(this.canvasPosition(evt), new Vector(evt.deltaX, evt.deltaY), evt.ctrlKey))
+    evt.preventDefault()
   }
 
   handleClick (evt) {
