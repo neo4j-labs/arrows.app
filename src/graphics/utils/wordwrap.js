@@ -108,7 +108,7 @@ const isNewLine = char => '\n\r\v'.includes(char)
  *
  * @return  array of text lines
  */
-const tryWithNumberOfLines = (text, measureWidth, getAvailbleWidth, numberOfLines, allowedToGiveUp = false) => {
+const tryWithNumberOfLines = (text, measureWidth, getAvailableWidth, numberOfLines, allowedToGiveUp = false) => {
   const availbleWidths = []
   const testLines = []
   let consumedNbrChars = 0
@@ -116,7 +116,7 @@ const tryWithNumberOfLines = (text, measureWidth, getAvailbleWidth, numberOfLine
 
   // Fetch availble width for this configuration
   for (let i = 0; i < numberOfLines; i++) {
-    availbleWidths[i] = getAvailbleWidth(i, numberOfLines)
+    availbleWidths[i] = getAvailableWidth(i, numberOfLines)
   }
 
   let textForThisLine
@@ -206,6 +206,49 @@ const tryWithNumberOfLines = (text, measureWidth, getAvailbleWidth, numberOfLine
   return testLines
 }
 
+/**
+ * This functions tries to fit the text in a given number of lines and only linebreak on whitespace
+ *
+ * @param {string} text = The full string to place
+ * @param {function} measureWidth - a function that returns the width of a string as pixels on the canvas
+ * @param {function} getAvailbleWidth - A function providing the pixel width for a line index
+ * @param {number} numberOfLines - How many lines is availble for this placement
+ *
+ * @return  array of text lines
+ */
+const tryBreakingOnSpaces = (text, measureWidth, getAvailableWidth, numberOfLines) => {
+  const tokens = text.split(/\s/g)
+    .filter(token => token.length > 0)
+  let lines = []
+  let currentLine = null
+
+  const didOverflow = text => measureWidth(text) > getAvailableWidth(lines.length, numberOfLines)
+
+  for (let token of tokens) {
+    const nextLine = currentLine ? currentLine + ' ' + token : token
+
+    if (measureWidth(nextLine) < getAvailableWidth(lines.length, numberOfLines)) {
+      currentLine = nextLine
+    } else {
+      // If currentLine is too long, we have a single word that is too long to fit on one line => give up
+      if (currentLine) {
+        lines.push({ text: currentLine, overflowed: didOverflow(currentLine) })
+      }
+
+      currentLine = token
+      if (lines.length > numberOfLines) {
+        return null
+      }
+    }
+  }
+
+  if (currentLine) {
+    lines.push({ text: currentLine, overflowed: didOverflow(currentLine) })
+  }
+
+  return lines.length <= numberOfLines ? lines : null
+}
+
 /*
  Node word-wrap algorithm, according to the following rules:
  - The width of the lines are matched to a circular node
@@ -225,13 +268,13 @@ const tryWithNumberOfLines = (text, measureWidth, getAvailbleWidth, numberOfLine
       lookbackChars = the amount of characters to look back at for white space or camelCase word splitting points
  */
 
- /**
-  * @param {object} ctx = Canvas.2dContext
-  * @param {object} text - The text to display
-  * @param {object} optionCb - Callback to query for options
-  *
-  * @return  array of text lines
-  */
+/**
+ * @param {object} ctx = Canvas.2dContext
+ * @param {object} text - The text to display
+ * @param {object} optionCb - Callback to query for options
+ *
+ * @return  array of text lines
+ */
 export const getLines = (ctx, text, fontFace, fontSize, maxWidth, hasIcon) => {
   // temporary set the font to bold to make the calculations not differ when bold is used
   ctx.font = ('bold ' + fontSize + 'px ' + fontFace).replace(/"/g, '')
@@ -244,7 +287,7 @@ export const getLines = (ctx, text, fontFace, fontSize, maxWidth, hasIcon) => {
   const iconAdditionalLines = ['', ''] //, '']
   const emptyTopLines = hasIcon ? iconAdditionalLines.length : 0
 
-  const getAvailbleWidth = (line, nofLines) => {
+  const getAvailableWidth = (line, nofLines) => {
     return getAvailbleWidthPerLine(line + emptyTopLines, nofLines + emptyTopLines, maxWidth)
   }
 
@@ -254,13 +297,54 @@ export const getLines = (ctx, text, fontFace, fontSize, maxWidth, hasIcon) => {
 
   // Iteratively try to fit on increasing number of lines
   while (!lines) {
-    lines = tryWithNumberOfLines(
+    lines = tryBreakingOnSpaces(
       text,
       measureWidth,
-      getAvailbleWidth,
-      numberOfLines,
-      maxNoLines > numberOfLines
+      getAvailableWidth,
+      numberOfLines
     )
+    if (!lines) {
+      lines = tryWithNumberOfLines(
+        text,
+        measureWidth,
+        getAvailableWidth,
+        numberOfLines,
+        maxNoLines > numberOfLines
+      )
+    } else {
+      if (lines.some(line => line.overflowed)) {
+        lines = lines.reduce((newLines, line) => {
+          const remainingLines = maxNoLines - newLines.length
+          if (remainingLines === 0) {
+            const lastLine = newLines[newLines.length - 1]
+            if (!lastLine.endsWith('…')) {
+              if (measureWidth(lastLine) + measureWidth('…') > getAvailableWidth(newLines.length, numberOfLines)) {
+                newLines[newLines.length - 1] = lastLine.slice(0, -2) + '…'
+              } else {
+                newLines[newLines.length - 1] = lastLine + '…'
+              }
+            }
+            return newLines
+          }
+          if (line.overflowed === false) {
+            newLines.push(line.text)
+          } else {
+            const hyphenatedLines = tryWithNumberOfLines(
+              line.text,
+              measureWidth,
+              getAvailableWidth,
+              remainingLines
+            )
+
+            newLines = newLines.concat(hyphenatedLines)
+          }
+          return newLines
+        }, [])
+      } else {
+        lines = lines.map(line => line.text)
+      }
+    }
+
     numberOfLines++
   }
 
@@ -274,8 +358,4 @@ export const getLines = (ctx, text, fontFace, fontSize, maxWidth, hasIcon) => {
   }
 
   return lines
-}
-
-export {
-  tryWithNumberOfLines
 }
