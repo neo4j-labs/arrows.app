@@ -137,15 +137,15 @@ export const getArrowGeometryData = (from, fromPoint, to, toPoint, viaNode, line
     var guidePos = getPointAtRange(Math.max(0.0, Math.min(1.0, arrowPoint.t + guideOffset)), fromPoint, toPoint, viaNode)
     angle = Math.atan2(arrowPoint.y - guidePos.y, arrowPoint.x - guidePos.x)
   } else {
-    /*// draw circle (loop)
-    let [x, y] = this._getCircleData(ctx)
-    if (position === 'from') {
-      arrowPoint = this.findBorderPosition(this.from, ctx, { x, y, low: 0.25, high: 0.6, direction: -1 })
+    // draw circle (loop)
+    const {x, y} = node1
+    // if (position === 'from') {
+      arrowPoint = this.findBorderPosition(this.from, { x, y, low: 0.25, high: 0.6, direction: -1 })
       angle = arrowPoint.t * -2 * Math.PI + 1.5 * Math.PI + 0.1 * Math.PI
-    } else {
-      arrowPoint = this.findBorderPosition(this.from, ctx, { x, y, low: 0.6, high: 1.0, direction: 1 })
-      angle = arrowPoint.t * -2 * Math.PI + 1.5 * Math.PI - 1.1 * Math.PI
-    }*/
+    // } else {
+    //   arrowPoint = this.findBorderPosition(this.from, { x, y, low: 0.6, high: 1.0, direction: 1 })
+    //   angle = arrowPoint.t * -2 * Math.PI + 1.5 * Math.PI - 1.1 * Math.PI
+    // }
   }
 
   var length = 0

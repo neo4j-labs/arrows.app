@@ -16,12 +16,8 @@ export default class EdgeBundle {
     this.edgeMap[asKey(edge.id)] = edge
 
     if (this.nodes.length === 0) {
-      if (edge.from === edge.to) {
-        this.node = edge.from
-      } else {
-        this.nodes.push(edge.from)
-        this.nodes.push(edge.to)
-      }
+      this.nodes.push(edge.from)
+      this.nodes.push(edge.to)
     }
   }
 

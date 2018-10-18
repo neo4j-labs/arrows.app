@@ -10,5 +10,6 @@ export const nodeStyleAttributes = [
 ]
 
 export const relationshipStyleAttributes = [
-  'arrow-width'
+  'arrow-width',
+  'arrow-color'
 ]

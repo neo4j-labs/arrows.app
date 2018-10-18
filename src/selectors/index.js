@@ -1,9 +1,10 @@
 import {createSelector} from "reselect";
-import config from '../graphics/config'
 import VisualNode from "../graphics/VisualNode";
 import VisualEdge from "../graphics/VisualEdge";
 import VisualGraph from "../graphics/VisualGraph";
 import TransformationHandles from "../graphics/TransformationHandles";
+import {bundle} from "../model/graph/relationshipBundling";
+import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 
 const getGraph = (state) => state.graph
 const getSelection = (state) => state.selection
@@ -18,17 +19,18 @@ export const getVisualGraph = createSelector(
     }, {})
 
     const relationships = graph.relationships.map(relationship =>
-      new VisualEdge({
-          relationship,
-          from: nodes[relationship.fromId],
-          to: nodes[relationship.toId]
-        },
-        config,
+      new VisualEdge(
+        relationship,
+        nodes[relationship.fromId],
+        nodes[relationship.toId],
         selection.selectedRelationshipIdMap[relationship.id],
         graph),
     )
+    const relationshipBundles = bundle(relationships).map(bundle => {
+      return new RoutedRelationshipBundle(bundle, viewTransformation, graph);
+    })
 
-    return new VisualGraph(graph, nodes, relationships)
+    return new VisualGraph(graph, nodes, relationshipBundles)
   }
 )
 

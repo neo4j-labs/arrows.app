@@ -10,11 +10,22 @@ export class Point {
     return new Vector(this.x - otherPoint.x, this.y - otherPoint.y)
   }
 
+  vectorFromOrigin() {
+    return new Vector(this.x, this.y)
+  }
+
   scale(scaleFactor) {
     return new Point(this.x * scaleFactor, this.y * scaleFactor)
   }
 
   translate(vector) {
     return new Point(this.x + vector.dx, this.y + vector.dy)
+  }
+
+  rotate(angle) {
+    return new Point(
+      this.x * Math.cos(angle) - this.y * Math.sin(angle),
+      this.x * Math.sin(angle) + this.y * Math.cos(angle)
+    )
   }
 }

@@ -56,6 +56,8 @@ export const getStyleEditorComponent = (styleKey, value, onChange, onKeyPress, s
       return getEditorComponent({ value, type:'size', onChange, onKeyPress, setFocusHandler })
     case 'arrow-width':
       return getEditorComponent({ value, type:'size', onChange, onKeyPress, setFocusHandler })
+    case 'arrow-color':
+      return getEditorComponent({ value, type:'color', onChange, onKeyPress, setFocusHandler })
     default:
       return getEditorComponent({ value, onChange, onKeyPress, setFocusHandler })
   }

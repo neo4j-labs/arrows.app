@@ -20,6 +20,13 @@ export class Vector {
     return new Vector(-this.dx, -this.dy)
   }
 
+  rotate(angle) {
+    return new Vector(
+      this.dx * Math.cos(angle) - this.dy * Math.sin(angle),
+      this.dx * Math.sin(angle) + this.dy * Math.cos(angle)
+    )
+  }
+
   perpendicular() {
     return new Vector(-this.dy, this.dx)
   }
@@ -28,8 +35,12 @@ export class Vector {
     return Math.sqrt(this.dx * this.dx + this.dy * this.dy)
   }
 
-  unit () {
+  unit() {
     const distance = this.distance()
     return new Vector(this.dx / distance, this.dy / distance)
+  }
+
+  angle() {
+    return Math.atan2(this.dy, this.dx)
   }
 }
