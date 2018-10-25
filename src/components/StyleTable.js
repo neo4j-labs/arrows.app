@@ -1,6 +1,5 @@
 import React, {Component} from 'react'
 import { Form, Table } from 'semantic-ui-react'
-import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
 import {StyleRow} from "./StyleRow";
 
 export default class StyleTable extends Component {
@@ -10,12 +9,9 @@ export default class StyleTable extends Component {
   }
 
   render() {
-    const { style, graphStyle, selectionIncludes, onSaveStyle, onDeleteStyle } = this.props
+    const { title, style, graphStyle, possibleStyleAttributes, onSaveStyle, onDeleteStyle } = this.props
 
     const existingStyleAttributes = Object.keys(style)
-    const possibleStyleAttributes = []
-      .concat(selectionIncludes.nodes ? nodeStyleAttributes : [])
-      .concat(selectionIncludes.relationships ? relationshipStyleAttributes : [])
 
     const rows = []
 
@@ -45,7 +41,7 @@ export default class StyleTable extends Component {
 
     return (
       <Form.Field key='styleTable'>
-        <label>Style</label>
+        <label>{title}</label>
         <Table compact collapsing style={{marginTop: 0}}>
           <Table.Body>
             {rows}

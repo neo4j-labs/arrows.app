@@ -10,6 +10,7 @@ import {headerHeight} from "../model/applicationLayout"
 import { compose } from "recompose"
 import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
 import { DetailToolbox } from "./DetailToolbox"
+import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
 
 class DetailInspector extends Component {
   constructor(props) {
@@ -94,19 +95,36 @@ class DetailInspector extends Component {
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
       fields.push(
         <PropertyTable key='properties'
-          properties={properties}
-          onSavePropertyKey={(oldPropertyKey, newPropertyKey) => onSavePropertyKey(selection, oldPropertyKey, newPropertyKey)}
-          onSavePropertyValue={(propertyKey, propertyValue) => onSavePropertyValue(selection, propertyKey, propertyValue)}
-          onDeleteProperty={(propertyKey) => onDeleteProperty(selection, propertyKey)}
+                       properties={properties}
+                       onSavePropertyKey={(oldPropertyKey, newPropertyKey) => onSavePropertyKey(selection, oldPropertyKey, newPropertyKey)}
+                       onSavePropertyValue={(propertyKey, propertyValue) => onSavePropertyValue(selection, propertyKey, propertyValue)}
+                       onDeleteProperty={(propertyKey) => onDeleteProperty(selection, propertyKey)}
         />
       )
+    }
+
+    if (selectionIncludes.nodes) {
       fields.push(
-        <StyleTable key='style'
-          style={combineStyle(entities)}
-          graphStyle={graph.style}
-          selectionIncludes={selectionIncludes}
-          onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
-          onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
+        <StyleTable key='nodeStyle'
+                    title='Node Style'
+                    style={combineStyle(entities)}
+                    graphStyle={graph.style}
+                    possibleStyleAttributes={nodeStyleAttributes}
+                    onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
+                    onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
+        />
+      )
+    }
+
+    if (selectionIncludes.relationships) {
+      fields.push(
+        <StyleTable key='relationshipStyle'
+                    title='Relationship Style'
+                    style={combineStyle(entities)}
+                    graphStyle={graph.style}
+                    possibleStyleAttributes={relationshipStyleAttributes}
+                    onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
+                    onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
         />
       )
     }
