@@ -2,7 +2,6 @@ import React, {Component} from 'react'
 import { Form, Table } from 'semantic-ui-react'
 import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
 import {StyleRow} from "./StyleRow";
-import AddStyle from "./AddStyle";
 
 export default class StyleTable extends Component {
   constructor (props) {
@@ -18,7 +17,6 @@ export default class StyleTable extends Component {
       .concat(selectionIncludes.nodes ? nodeStyleAttributes : [])
       .concat(selectionIncludes.relationships ? relationshipStyleAttributes : [])
 
-    const availableStyleAttributes = possibleStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
     const rows = []
 
     const onNextProperty = (nextIndex) => {
@@ -27,12 +25,14 @@ export default class StyleTable extends Component {
       }
     }
 
-    existingStyleAttributes.sort().forEach((styleKey, index) => {
-      const styleValue = style[styleKey].status === 'CONSISTENT' ?  style[styleKey].value : graphStyle[styleKey]
+    possibleStyleAttributes.sort().forEach((styleKey, index) => {
+      const specialised = style.hasOwnProperty(styleKey)
+      const styleValue = (specialised && style[styleKey].status === 'CONSISTENT') ?  style[styleKey].value : graphStyle[styleKey]
       rows.push((
           <StyleRow
             key={styleKey}
             styleKey={styleKey}
+            specialised={specialised}
             styleValue={styleValue}
             onValueChange={value => onSaveStyle(styleKey, value)}
             onDeleteStyle={() => onDeleteStyle(styleKey)}
@@ -51,12 +51,6 @@ export default class StyleTable extends Component {
             {rows}
           </Table.Body>
         </Table>
-        <AddStyle
-          styleKeys={availableStyleAttributes}
-          onAddStyle={(styleKey) => {
-            onSaveStyle(styleKey, graphStyle[styleKey])
-          }}
-        />
       </Form.Field>
     )
   }

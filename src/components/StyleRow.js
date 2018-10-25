@@ -24,7 +24,7 @@ export class StyleRow extends Component {
   }
 
   render = () => {
-    const { styleKey, styleValue, onValueChange, onDeleteStyle, onNext, setFocusHandler} = this.props
+    const { styleKey, styleValue, specialised, onValueChange, onDeleteStyle, onNext, setFocusHandler} = this.props
 
     const handleKeyPress = (evt) => {
       if (evt.key === 'Enter') {
@@ -33,7 +33,7 @@ export class StyleRow extends Component {
     }
 
     return (
-      <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+      <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} negative={!specialised}>
         <Table.Cell width={3} collapsing style={{padding: 0}}>
           <div
             style={{
@@ -46,8 +46,8 @@ export class StyleRow extends Component {
         </Table.Cell>
         <Table.Cell width={1}>
           <Icon
-            style={{visibility: this.state.mouseOver ? 'visible' : 'hidden'}}
-            name="trash alternate outline"
+            style={{visibility: specialised && this.state.mouseOver ? 'visible' : 'hidden'}}
+            name="close"
             onClick={onDeleteStyle}
           />
         </Table.Cell>
