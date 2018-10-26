@@ -33,7 +33,7 @@ export class StyleRow extends Component {
     }
 
     return (
-      <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} negative={!specialised}>
+      <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} positive={specialised}>
         <Table.Cell width={3} collapsing style={{padding: 0}}>
           <div
             style={{
