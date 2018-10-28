@@ -1,5 +1,6 @@
 import {fetchGraphFromDatabase, updateDriver} from "../storage/neo4jStorage";
 import { subscribeToDatabaseCredentialsForActiveGraph } from 'graph-app-kit/components/GraphAppBase'
+import { setStorage } from "./storage";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const integrationPoint = window.neo4jDesktopApi
@@ -69,6 +70,7 @@ export const updateConnectionParameters = (connectionParameters) => {
         }
         updateDriver(driver)
         dispatch(successfulUpdate(connectionParameters))
+        dispatch(setStorage('neo4j'))
         dispatch(fetchGraphFromDatabase())
       }).catch(function (error) {
         dispatch(unsuccessfulUpdate(connectionParameters, error.message))

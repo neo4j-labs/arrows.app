@@ -9,12 +9,12 @@ import App from './App'
 import registerServiceWorker from './registerServiceWorker'
 import {fetchGraphFromDatabase} from "./storage/neo4jStorage"
 import 'semantic-ui-css/semantic.min.css'
-import {storageMiddleware} from "./storage/neo4jStorage"
 import { viewportMiddleware } from "./middlewares/viewportMiddleware"
 import { initializeConnection } from "./actions/databaseConnection";
 import { googleDriveUrlRegex } from "./actions/googleDrive";
 import { fetchGraphFromDrive } from "./storage/googleDriveStorage";
 import { setStorage } from "./actions/storage";
+import { storageMiddleware } from "./middlewares/storageMiddleware";
 
 const checkInitialFile = () => {
   const urlDriveParts = googleDriveUrlRegex.exec(window.location.hash)

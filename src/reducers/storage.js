@@ -5,7 +5,7 @@ import {
 
 const initialState = {
   status: IDLE,
-  store: 'neo4j',
+  store: null,
   fileId: null
 }
 
