@@ -37,8 +37,6 @@ export const saveToStore = (state, dispatch, userFileName, nameChanged, callback
       'mimeType': contentType
     };
 
-    console.log("SAVING", data.nodes[0].caption, data.nodes.length)
-
     const multipartRequestBody =
       delimiter +
       'Content-Type: application/json\r\n\r\n' +

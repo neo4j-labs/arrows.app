@@ -3,60 +3,51 @@ import { saveToStore as updateGoogleDriveStore } from "../actions/googleDrive";
 
 const updateQueue = []
 
-const driveUpdateInterval = 5000 // ms
+const driveUpdateInterval = 1000 // ms
 
 const limitedUpdater = (() => {
   let lastUpdateTime = new Date()
-  let lastUpdateRequest = null
+  let nextUpdateTask = null
   let lastUpdateRequestTime = null
   let updating = false
-  let nextUpdate = null
 
   return {
     updateRequested: (updateRequest) => {
       lastUpdateRequestTime = new Date()
-      console.log("lastUpdateRequestTime", lastUpdateRequestTime)
-      if (updating) {
-        lastUpdateRequest = updateRequest
-        console.log("is updating", lastUpdateRequest)
-      } else {
-        let startTimestamp = lastUpdateRequestTime
 
-        const updateCallback = () => {
-          lastUpdateTime = new Date()
-          console.log("update complete", lastUpdateTime)
+      const tryRun = (runRequestTime) => {
+        const timeToRun = driveUpdateInterval - (runRequestTime - lastUpdateTime)
 
-          if (lastUpdateRequest && lastUpdateRequestTime > startTimestamp) {
-            startTimestamp = new Date()
-            console.log('UPDATE ON CALLBACK', lastUpdateRequestTime, startTimestamp)
-            lastUpdateRequest(updateCallback)
-          } else {
-            lastUpdateRequest = null
-            updating = false
-            console.log("is updating to false")
-          }
-        }
-
-        console.log("should update", lastUpdateRequestTime, lastUpdateTime, lastUpdateRequestTime - lastUpdateTime)
-        if (lastUpdateRequestTime - lastUpdateTime >= driveUpdateInterval) {
+        if (timeToRun <= 0) {
           updating = true
-          console.log("try update", lastUpdateRequestTime)
-          updateRequest(updateCallback)
+          nextUpdateTask = null
+          updateRequest(getUpdateCallback(runRequestTime))
         } else {
-          lastUpdateRequest = updateRequest
-          const timeToRun = driveUpdateInterval - (lastUpdateRequestTime - lastUpdateTime)
-
-          if (nextUpdate) {
-            clearTimeout(nextUpdate)
+          if (nextUpdateTask) {
+            clearInterval(nextUpdateTask)
           }
 
-          nextUpdate = setTimeout(() => {
-              if (lastUpdateRequestTime == startTimestamp) {
-                lastUpdateRequest(updateCallback)
-              }
-            }, timeToRun
-          )
+          nextUpdateTask = setTimeout(() => {
+            if (!updating) {
+              updating = true
+              updateRequest(getUpdateCallback(runRequestTime))
+            }
+          }, timeToRun)
         }
+      }
+
+      const getUpdateCallback = runRequestTime => {
+        lastUpdateTime = new Date()
+        updating = false
+
+        if (lastUpdateRequestTime > runRequestTime) {
+          tryRun(lastUpdateRequestTime)
+        }
+      }
+
+      let requestTime = lastUpdateRequestTime
+      if (!updating) {
+        tryRun(requestTime)
       }
     }
   }
