@@ -26,11 +26,12 @@ const limitedUpdater = (() => {
           lastUpdateTime = new Date()
           console.log("update complete", lastUpdateTime)
 
-          if (lastUpdateRequestTime > startTimestamp) {
+          if (lastUpdateRequest && lastUpdateRequestTime > startTimestamp) {
             startTimestamp = new Date()
             console.log('UPDATE ON CALLBACK', lastUpdateRequestTime, startTimestamp)
             lastUpdateRequest(updateCallback)
           } else {
+            lastUpdateRequest = null
             updating = false
             console.log("is updating to false")
           }
@@ -42,13 +43,19 @@ const limitedUpdater = (() => {
           console.log("try update", lastUpdateRequestTime)
           updateRequest(updateCallback)
         } else {
+          lastUpdateRequest = updateRequest
           const timeToRun = driveUpdateInterval - (lastUpdateRequestTime - lastUpdateTime)
+
           if (nextUpdate) {
             clearTimeout(nextUpdate)
-            nextUpdate = setTimeout(() => updateRequest(updateCallback), timeToRun)
-          } else {
-            nextUpdate = setTimeout(() => updateRequest(updateCallback), timeToRun)
           }
+
+          nextUpdate = setTimeout(() => {
+              if (lastUpdateRequestTime == startTimestamp) {
+                lastUpdateRequest(updateCallback)
+              }
+            }, timeToRun
+          )
         }
       }
     }
