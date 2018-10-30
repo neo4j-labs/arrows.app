@@ -7,7 +7,7 @@ import {windowResized} from "./actions/applicationLayout"
 import { compose } from 'recompose'
 import { Sidebar } from 'semantic-ui-react'
 import HeaderContainer from './containers/HeaderContainer'
-import InspectorContainer from "./containers/InspectorContainer"
+import InspectorChooser from "./containers/InspectorChooser"
 import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer"
 import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer"
 import {GoogleDriveIntegration} from "./components/GoogleDriveIntegration"
@@ -30,7 +30,7 @@ class App extends Component {
           visible={this.props.inspectorVisible}
           style={{'backgroundColor': 'white', width: inspectorWidth + 'px'}}
         >
-          <InspectorContainer/>
+          <InspectorChooser/>
         </Sidebar>
 
         <Sidebar.Pusher

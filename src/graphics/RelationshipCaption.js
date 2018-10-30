@@ -7,7 +7,6 @@ export class RelationshipCaption {
   }
 
   draw(arrow, ctx) {
-    console.log(arrow.shaftAngle())
     ctx.save()
     const midPoint = arrow.midPoint();
     ctx.translate(midPoint.x, midPoint.y)

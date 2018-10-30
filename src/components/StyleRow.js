@@ -46,8 +46,8 @@ export class StyleRow extends Component {
         </Table.Cell>
         <Table.Cell width={1}>
           <Icon
-            style={{visibility: specialised && this.state.mouseOver ? 'visible' : 'hidden'}}
-            name="close"
+            style={{visibility: specialised ? 'visible' : 'hidden'}}
+            name="undo"
             onClick={onDeleteStyle}
           />
         </Table.Cell>
