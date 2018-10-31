@@ -151,6 +151,17 @@ export const writeQueriesForAction = (action, state) => {
       }
     }
 
+    case 'SET_GRAPH_STYLE': {
+      const databaseKey = styleKeyToDatabaseKey(action.key)
+      const styleProperties = { [databaseKey]: action.value }
+
+      return (session) => {
+        return session.run('MERGE (n:Diagram) WITH n SET n += $properties', {
+          properties: styleProperties
+        });
+      }
+    }
+
     case 'MOVE_NODES_END_DRAG': {
       if (action.nodePositions.length !== 0) {
         return (session) => {

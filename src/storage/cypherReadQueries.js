@@ -17,8 +17,16 @@ function toNumber(prop) {
 export function readGraph(session, dispatch) {
   const nodes = []
   const relationships = []
+  let style = emptyGraph().style
 
-  session.readTransaction((tx) => tx.run('MATCH (n:Diagram0) RETURN n'))
+  session.readTransaction((tx) => tx.run('MATCH (n:Diagram) RETURN n'))
+    .then((result) => {
+      result.records.forEach((record) => {
+        const neo4jNode = record.get('n')
+        style = { ...style, ...(styleFromDatabaseEntity(neo4jNode)) }
+      })
+      return session.readTransaction((tx) => tx.run(`MATCH (n:Diagram0) RETURN n`))
+    })
     .then((result) => {
       result.records.forEach((record) => {
         let neo4jNode = record.get('n');
@@ -50,7 +58,7 @@ export function readGraph(session, dispatch) {
         relationships.push(newRelationship)
       })
       session.close();
-      dispatch(fetchingGraphSucceeded({nodes, relationships, style: emptyGraph().style}))
+      dispatch(fetchingGraphSucceeded({nodes, relationships, style}))
     }, (error) => {
       console.log(error)
       dispatch(fetchingGraphFailed())
