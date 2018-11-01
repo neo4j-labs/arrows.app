@@ -135,10 +135,7 @@ class DetailInspector extends Component {
           borderless
           attached='top'
           style={{borderRadius: 0, width: '100%'}}>
-          <Menu.Item style={{height: headerHeight + 'px'}}>
-            <Icon name='edit'/>
-            {describeSelection(selection)}
-          </Menu.Item>
+          {describeSelection(selection, headerHeight)}
           <Menu.Item
             position='right'
             onClick={this.props.hideInspector}

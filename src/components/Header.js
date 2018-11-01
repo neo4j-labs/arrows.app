@@ -50,7 +50,7 @@ const googleDriveItem = (props) => {
 const Header = (props) => (
   <Menu attached='top' style={{borderRadius: 0}}>
     <Menu.Item onClick={props.onPlusNodeClick}>
-      <Icon name='add'/>Node
+      <Icon name='plus circle'/>Node
     </Menu.Item>
     <Menu.Item onClick={props.onReloadGraphClick}>
       <Icon name='refresh'/>Graph

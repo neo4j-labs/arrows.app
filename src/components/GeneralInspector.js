@@ -37,8 +37,8 @@ export default class GeneralInspector extends Component {
           attached='top'
           style={{borderRadius: 0, width: '100%'}}>
           <Menu.Item style={{height: headerHeight + 'px'}}>
-            <Icon name='edit'/>
-            Graph foo
+            <Icon name='square outline'/>
+            Graph
           </Menu.Item>
           <Menu.Item
             position='right'
