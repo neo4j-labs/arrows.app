@@ -8,6 +8,20 @@ export default class StyleTable extends Component {
     this.focusHandlers = []
   }
 
+  static styleInput(styleKey, specialised, style, graphStyle) {
+    if (specialised) {
+      switch (style[styleKey].status) {
+        case 'CONSISTENT':
+          return {styleValue: style[styleKey].value, styleValuePlaceholder: null}
+
+        default:
+          return {styleValue: '', styleValuePlaceholder: '<various>'}
+      }
+    } else {
+      return {styleValue: graphStyle[styleKey], styleValuePlaceholder: null}
+    }
+  }
+
   render() {
     const { title, style, graphStyle, possibleStyleAttributes, onSaveStyle, onDeleteStyle } = this.props
 
@@ -23,13 +37,14 @@ export default class StyleTable extends Component {
 
     possibleStyleAttributes.sort().forEach((styleKey, index) => {
       const specialised = style.hasOwnProperty(styleKey)
-      const styleValue = (specialised && style[styleKey].status === 'CONSISTENT') ?  style[styleKey].value : graphStyle[styleKey]
+      const {styleValue, styleValuePlaceholder} = StyleTable.styleInput(styleKey, specialised, style, graphStyle)
       rows.push((
           <StyleRow
             key={styleKey}
             styleKey={styleKey}
             specialised={specialised}
             styleValue={styleValue}
+            styleValuePlaceholder={styleValuePlaceholder}
             onValueChange={value => onSaveStyle(styleKey, value)}
             onDeleteStyle={() => onDeleteStyle(styleKey)}
             setFocusHandler={action => this.focusHandlers[index] = action}
