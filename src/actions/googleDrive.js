@@ -5,6 +5,20 @@ const SCOPES = 'https://www.googleapis.com/auth/drive';
 
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 
+export const renameGoogleDriveStore = (fileId, userFileName) => {
+  window.gapi.client.drive.files.update({
+    "fileId": fileId,
+    "resource": {
+      "name": userFileName
+    }
+  })
+    .then(function(response) {
+        // Handle the results here (response.result has the parsed body).
+        console.log("Response", response);
+      },
+      function(err) { console.error("Execute error", err); });
+}
+
 export const saveGraphToGoogleDrive = (userFileName, nameChanged) => {
   return function (dispatch, getState) {
     saveToStore(getState(), dispatch, userFileName, nameChanged)

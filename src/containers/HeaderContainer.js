@@ -5,9 +5,11 @@ import Header from '../components/Header'
 import {editConnectionParameters} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
 import {saveGraphToGoogleDrive} from "../actions/googleDrive";
+import {setDiagramName} from "../actions/diagramName";
 
 const mapStateToProps = state => {
   return {
+    diagramName: state.diagramName,
     connectionParametersEditable: state.databaseConnection.connectionParametersEditable,
     storageStatus: state.storage.status,
     storage: state.storage
@@ -16,6 +18,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    setDiagramName: (diagramName) => {
+      dispatch(setDiagramName(diagramName))
+    },
     showInspector: () => {
       dispatch(showInspector())
     },

@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux'
 import databaseConnection from "./databaseConnection";
+import diagramName from "./diagramName";
 import graph from "./graph";
 import selection from "./selection";
 import mouse from "./mouse";
@@ -12,6 +13,7 @@ import actionMemos from "./actionMemos";
 
 const arrowsApp = combineReducers({
   databaseConnection,
+  diagramName,
   graph,
   selection,
   mouse,

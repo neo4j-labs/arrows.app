@@ -9,6 +9,7 @@
     "neo4j-driver": "^1.6.2",
     "react": "^16.2.0",
     "react-color": "^2.14.0",
+    "react-document-title": "^2.0.3",
     "react-dom": "^16.2.0",
     "react-redux": "^5.0.6",
     "react-scripts": "1.0.17",

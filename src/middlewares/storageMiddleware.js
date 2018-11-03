@@ -1,5 +1,5 @@
 import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
-import { saveToStore as updateGoogleDriveStore } from "../actions/googleDrive";
+import {renameGoogleDriveStore, saveToStore as updateGoogleDriveStore} from "../actions/googleDrive";
 
 const updateQueue = []
 
@@ -54,9 +54,15 @@ const limitedUpdater = (() => {
 })()
 
 export const storageMiddleware = store => next => action => {
+  const state = store.getState()
+  const storage = state.storage
+
+  if (action.type === 'SET_DIAGRAM_NAME') {
+    if (storage.store === "googleDrive") {
+      renameGoogleDriveStore(storage.fileId, action.diagramName)
+    }
+  }
   if (action.category === 'GRAPH') {
-    const state = store.getState()
-    const storage = state.storage
 
     switch (storage.store) {
       case "googleDrive":

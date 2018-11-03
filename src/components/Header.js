@@ -2,6 +2,8 @@ import React from 'react';
 import {connect} from 'react-redux'
 import {FETCHING_GRAPH, FETCHING_GRAPH_FAILED, UPDATING_GRAPH, UPDATING_GRAPH_FAILED} from "../state/storageStatus";
 import { Icon, Menu } from 'semantic-ui-react'
+import DocumentTitle from 'react-document-title'
+import {DiagramNameEditor} from "./DiagramNameEditor";
 
 const storageStatusMessage = (props) => {
   if (props.storageStatus === FETCHING_GRAPH) {
@@ -49,6 +51,14 @@ const googleDriveItem = (props) => {
 
 const Header = (props) => (
   <Menu attached='top' style={{borderRadius: 0}}>
+    <Menu.Item>
+      <DocumentTitle title={props.diagramName + ' - Arrows'}>
+        <DiagramNameEditor
+          diagramName={props.diagramName}
+          setDiagramName={props.setDiagramName}
+        />
+      </DocumentTitle>
+    </Menu.Item>
     <Menu.Item onClick={props.onPlusNodeClick}>
       <Icon name='plus circle'/>Node
     </Menu.Item>
