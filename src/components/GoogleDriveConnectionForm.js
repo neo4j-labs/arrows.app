@@ -11,8 +11,10 @@ export class GoogleDriveConnection extends Component {
 
   createPicker() {
     const setupPicker = (accessToken) => {
+      const view = new window.google.picker.View(window.google.picker.ViewId.DOCS)
+      view.setMimeTypes("application/vnd.neo4j.arrows+json")
       this.picker = new window.google.picker.PickerBuilder()
-        .addView(window.google.picker.ViewId.DOCS)
+        .addView(view)
         .setOAuthToken(accessToken)
         .setDeveloperKey(config.apiKey)
         .setCallback(this.pickerCallback.bind(this))
