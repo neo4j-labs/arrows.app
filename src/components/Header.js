@@ -51,7 +51,9 @@ const googleDriveItem = (props) => {
 
 const Header = (props) => (
   <Menu attached='top' style={{borderRadius: 0}}>
-    <Menu.Item>
+    <Menu.Item style={{
+      minWidth: 200
+    }}>
       <DocumentTitle title={props.diagramName + ' - Arrows'}>
         <DiagramNameEditor
           diagramName={props.diagramName}
