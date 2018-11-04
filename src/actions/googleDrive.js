@@ -1,7 +1,7 @@
 import config from "../config";
 import { setStorage } from "./storage";
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-export const SCOPES = 'https://www.googleapis.com/auth/drive';
+export const SCOPES = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.install';
 
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 
@@ -45,7 +45,7 @@ export const saveToStore = (state, dispatch, callback) => {
     const delimiter = "\r\n--" + boundary + "\r\n";
     const close_delim = "\r\n--" + boundary + "--";
 
-    const contentType = 'application/json';
+    const contentType = 'application/vnd.neo4j.arrows+json';
 
     const metadata = {
       'name': `${fileName}`,
