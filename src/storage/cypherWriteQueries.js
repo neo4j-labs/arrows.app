@@ -252,7 +252,7 @@ export const writeQueriesForAction = (action, state) => {
         if (nodeIds.length > 0) {
           result = session.run(`match(d:Diagram0)
           where d._id in $ids
-          delete d`, {
+          detach delete d`, {
               ids: nodeIds
             }
           )
