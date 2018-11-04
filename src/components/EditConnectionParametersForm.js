@@ -124,7 +124,7 @@ class EditConnectionParametersForm extends Component {
     }, {
       menuItem: 'Google Drive', render: () => (
         <Tab.Pane attached={false}>
-          <GoogleDriveConnection onFilePicked={this.props.onFilePicked} storage={this.props.storage} saveToDrive={this.props.saveToDrive} />
+          <GoogleDriveConnection onFilePicked={this.props.onFilePicked} saveToDrive={this.props.saveToDrive} />
         </Tab.Pane>
       )
     }]

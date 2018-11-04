@@ -70,7 +70,7 @@ export const storageMiddleware = store => next => action => {
         const result = next(action)
         const newState = store.getState()
         if (oldState.graph !== newState.graph) {
-          limitedUpdater.updateRequested(callback => updateGoogleDriveStore(newState, store.dispatch, storage.fileName, false, callback))
+          limitedUpdater.updateRequested(callback => updateGoogleDriveStore(newState, store.dispatch, callback))
         }
         return result
       case "neo4j":

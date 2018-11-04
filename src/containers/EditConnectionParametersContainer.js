@@ -27,8 +27,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(fetchGraphFromDrive(fileId))
       dispatch(cancelEditing())
     },
-    saveToDrive: (fileName, nameChanged) => {
-      dispatch(saveGraphToGoogleDrive(fileName, nameChanged))
+    saveToDrive: () => {
+      dispatch(saveGraphToGoogleDrive())
       dispatch(cancelEditing())
     }
   }

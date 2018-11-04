@@ -1,7 +1,7 @@
 import config from "../config";
 import { setStorage } from "./storage";
-const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-const SCOPES = 'https://www.googleapis.com/auth/drive';
+export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
+export const SCOPES = 'https://www.googleapis.com/auth/drive';
 
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 
@@ -19,15 +19,16 @@ export const renameGoogleDriveStore = (fileId, userFileName) => {
       function(err) { console.error("Execute error", err); });
 }
 
-export const saveGraphToGoogleDrive = (userFileName, nameChanged) => {
+export const saveGraphToGoogleDrive = () => {
   return function (dispatch, getState) {
-    saveToStore(getState(), dispatch, userFileName, nameChanged)
+    saveToStore(getState(), dispatch)
   }
 }
 
-export const saveToStore = (state, dispatch, userFileName, nameChanged, callback) => {
+export const saveToStore = (state, dispatch, callback) => {
   const { graph, storage } = state
-  const { fileId, fileName } = storage
+  const { fileId } = storage
+  const fileName = state.diagramName
 
   const storeGraphIfSignedIn = (graph, fileId, fileName) => {
     const isSignedIn = window.gapi.auth2.getAuthInstance().isSignedIn.get()
@@ -47,7 +48,7 @@ export const saveToStore = (state, dispatch, userFileName, nameChanged, callback
     const contentType = 'application/json';
 
     const metadata = {
-      'name': `${fileName}.json`,
+      'name': `${fileName}`,
       'mimeType': contentType
     };
 
@@ -61,8 +62,8 @@ export const saveToStore = (state, dispatch, userFileName, nameChanged, callback
       close_delim;
 
     const request = window.gapi.client.request({
-      'path': `/upload/drive/v3/files${nameChanged || !fileId ? '' : '/' + fileId}`,
-      'method': nameChanged || !fileId ? 'POST' : 'PATCH',
+      'path': `/upload/drive/v3/files${fileId ? '/' + fileId : ''}`,
+      'method': fileId ? 'PATCH' : 'POST',
       'params': {'uploadType': 'multipart'},
       'headers': {
         'Content-Type': 'multipart/related; boundary="' + boundary + '"'
@@ -82,7 +83,7 @@ export const saveToStore = (state, dispatch, userFileName, nameChanged, callback
   }
 
   const tryToSaveGraph = async () => {
-    while (!storeGraphIfSignedIn(graph, fileId, userFileName || fileName)) {
+    while (!storeGraphIfSignedIn(graph, fileId, fileName)) {
       console.log("SLEEPING")
       await sleep(1000)
     }
