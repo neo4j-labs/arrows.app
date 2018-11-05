@@ -6,7 +6,7 @@ export default class extends Component {
     this.props.setFocusHandler(() => this.inputElement && this.inputElement.focus())
   }
   render() {
-    const {value, onChange, min = 0, max = 100, step = 5, onKeyPress} = this.props
+    const {value, placeholder, onChange, min = 0, max = 100, step = 5, onKeyPress} = this.props
 
     const handleKeyDown = (evt) => {
       if (evt.key === 'Enter' && evt.metaKey) {
@@ -18,6 +18,7 @@ export default class extends Component {
       <Input
         size='small'
         value={value}
+        placeholder={placeholder}
         transparent
         style={{ 'width': '8em' }}
         onKeyPress={onKeyPress}

@@ -1,10 +1,10 @@
 import React from 'react'
-import {Label} from 'semantic-ui-react'
+import {Menu, Icon} from 'semantic-ui-react'
 
-export const describeSelection = (selection) => {
+export const describeSelection = (selection, headerHeight) => {
   const parts = []
 
-  const pushSelectionPart = (map, entityType) => {
+  const pushSelectionPart = (map, entityType, iconName) => {
     const length = Object.keys(map).length
     switch (length) {
       case 0:
@@ -12,29 +12,21 @@ export const describeSelection = (selection) => {
 
       default:
         parts.push(
-          <Label
+          <Menu.Item
+            style={{height: headerHeight + 'px'}}
             key={entityType}
-            basic
-            pointing='left'
-            style={{margin: 0}}>
-            {length}
-            <Label.Detail>{entityType + (length > 1 ? 's' : '')}</Label.Detail>
-          </Label>
+          >
+            <Icon name={iconName}/>
+            {length}&nbsp;
+            {entityType + (length > 1 ? 's' : '')}
+          </Menu.Item>
         )
         break
     }
   }
 
-  pushSelectionPart(selection.selectedNodeIdMap, "node")
-  pushSelectionPart(selection.selectedRelationshipIdMap, "relationship")
+  pushSelectionPart(selection.selectedNodeIdMap, "node", 'circle')
+  pushSelectionPart(selection.selectedRelationshipIdMap, "relationship", 'long arrow alternate right')
 
-  if (parts.length > 0) {
-    return (
-      <Label.Group>
-        {parts}
-      </Label.Group>
-    )
-  } else {
-    return 'Graph'
-  }
+  return parts
 }

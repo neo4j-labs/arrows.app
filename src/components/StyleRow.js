@@ -24,7 +24,7 @@ export class StyleRow extends Component {
   }
 
   render = () => {
-    const { styleKey, styleValue, onValueChange, onDeleteStyle, onNext, setFocusHandler} = this.props
+    const { styleKey, styleValue, styleValuePlaceholder, specialised, onValueChange, onDeleteStyle, onNext, setFocusHandler} = this.props
 
     const handleKeyPress = (evt) => {
       if (evt.key === 'Enter') {
@@ -33,7 +33,7 @@ export class StyleRow extends Component {
     }
 
     return (
-      <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+      <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} positive={specialised}>
         <Table.Cell width={3} collapsing style={{padding: 0}}>
           <div
             style={{
@@ -42,12 +42,12 @@ export class StyleRow extends Component {
           >{styleKey}:</div>
         </Table.Cell>
         <Table.Cell width={3}>
-          {getStyleEditorComponent(styleKey, styleValue, onValueChange, handleKeyPress, setFocusHandler)}
+          {getStyleEditorComponent(styleKey, styleValue, styleValuePlaceholder, onValueChange, handleKeyPress, setFocusHandler)}
         </Table.Cell>
         <Table.Cell width={1}>
           <Icon
-            style={{visibility: this.state.mouseOver ? 'visible' : 'hidden'}}
-            name="trash alternate outline"
+            style={{visibility: specialised ? 'visible' : 'hidden'}}
+            name="undo"
             onClick={onDeleteStyle}
           />
         </Table.Cell>

@@ -7,7 +7,7 @@ export default class extends Component {
     this.props.setFocusHandler(() => this.inputElement && this.inputElement.focus())
   }
   render() {
-    const {value, onChange, onKeyPress} = this.props
+    const {value, placeholder, onChange, onKeyPress} = this.props
 
     const handleKeyDown = (evt) => {
       if (evt.key === 'Enter' && evt.metaKey) {
@@ -15,21 +15,26 @@ export default class extends Component {
       }
     }
 
+    const borderColour = value.length > 0 ? value : 'rgba(0,0,0,0)'
+
     const textBox = (
-      <Input
-        size='small'
-        value={value}
-        style={{
-          width: '8em',
-          borderLeft: '17px solid ' + value,
-          paddingLeft: '5px',
-        }}
-        transparent
-        onKeyPress={onKeyPress}
-        onKeyDown={handleKeyDown}
-        ref={elm => this.inputElement = elm}
-        onChange={evt => onChange(evt.target.value)}
-      />
+      <div>
+        <Input
+          size='small'
+          value={value}
+          placeholder={placeholder}
+          style={{
+            width: '8em',
+            borderLeft: '17px solid ' + borderColour,
+            paddingLeft: '5px',
+          }}
+          transparent
+          onKeyPress={onKeyPress}
+          onKeyDown={handleKeyDown}
+          ref={elm => this.inputElement = elm}
+          onChange={evt => onChange(evt.target.value)}
+        />
+      </div>
     )
     const picker = (
       <CompactPicker

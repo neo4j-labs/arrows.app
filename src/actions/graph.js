@@ -247,6 +247,12 @@ export const removeArrowsProperty = (selection, key) => ({
   key
 })
 
+export const setGraphStyle = (key, value) => ({
+  category: 'GRAPH',
+  type: 'SET_GRAPH_STYLE',
+  key,
+  value
+})
 
 export const setRelationshipType = (selection, relationshipType) => ({
   category: 'GRAPH',

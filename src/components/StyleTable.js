@@ -1,8 +1,6 @@
 import React, {Component} from 'react'
 import { Form, Table } from 'semantic-ui-react'
-import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
 import {StyleRow} from "./StyleRow";
-import AddStyle from "./AddStyle";
 
 export default class StyleTable extends Component {
   constructor (props) {
@@ -10,15 +8,25 @@ export default class StyleTable extends Component {
     this.focusHandlers = []
   }
 
+  static styleInput(styleKey, specialised, style, graphStyle) {
+    if (specialised) {
+      switch (style[styleKey].status) {
+        case 'CONSISTENT':
+          return {styleValue: style[styleKey].value, styleValuePlaceholder: null}
+
+        default:
+          return {styleValue: '', styleValuePlaceholder: '<various>'}
+      }
+    } else {
+      return {styleValue: graphStyle[styleKey], styleValuePlaceholder: null}
+    }
+  }
+
   render() {
-    const { style, graphStyle, selectionIncludes, onSaveStyle, onDeleteStyle } = this.props
+    const { title, style, graphStyle, possibleStyleAttributes, onSaveStyle, onDeleteStyle } = this.props
 
     const existingStyleAttributes = Object.keys(style)
-    const possibleStyleAttributes = []
-      .concat(selectionIncludes.nodes ? nodeStyleAttributes : [])
-      .concat(selectionIncludes.relationships ? relationshipStyleAttributes : [])
 
-    const availableStyleAttributes = possibleStyleAttributes.filter(styleAttr => !existingStyleAttributes.includes(styleAttr))
     const rows = []
 
     const onNextProperty = (nextIndex) => {
@@ -27,13 +35,16 @@ export default class StyleTable extends Component {
       }
     }
 
-    existingStyleAttributes.sort().forEach((styleKey, index) => {
-      const styleValue = style[styleKey].status === 'CONSISTENT' ?  style[styleKey].value : graphStyle[styleKey]
+    possibleStyleAttributes.sort().forEach((styleKey, index) => {
+      const specialised = style.hasOwnProperty(styleKey)
+      const {styleValue, styleValuePlaceholder} = StyleTable.styleInput(styleKey, specialised, style, graphStyle)
       rows.push((
           <StyleRow
             key={styleKey}
             styleKey={styleKey}
+            specialised={specialised}
             styleValue={styleValue}
+            styleValuePlaceholder={styleValuePlaceholder}
             onValueChange={value => onSaveStyle(styleKey, value)}
             onDeleteStyle={() => onDeleteStyle(styleKey)}
             setFocusHandler={action => this.focusHandlers[index] = action}
@@ -45,18 +56,12 @@ export default class StyleTable extends Component {
 
     return (
       <Form.Field key='styleTable'>
-        <label>Style</label>
+        <label>{title}</label>
         <Table compact collapsing style={{marginTop: 0}}>
           <Table.Body>
             {rows}
           </Table.Body>
         </Table>
-        <AddStyle
-          styleKeys={availableStyleAttributes}
-          onAddStyle={(styleKey) => {
-            onSaveStyle(styleKey, graphStyle[styleKey])
-          }}
-        />
       </Form.Field>
     )
   }
