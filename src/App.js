@@ -12,6 +12,7 @@ import EditConnectionParametersContainer from "./containers/EditConnectionParame
 import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer"
 import {GoogleDriveIntegration} from "./components/GoogleDriveIntegration"
 import {inspectorWidth} from "./model/applicationLayout";
+import ExportContainer from "./containers/ExportContainer";
 
 class App extends Component {
   constructor (props) {
@@ -21,6 +22,7 @@ class App extends Component {
   render() {
     const connectionParametersModal = this.props.editingConnectionParameters ? (<EditConnectionParametersContainer/>) : null
     const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
+    const exportModal = this.props.showExportDialog ? (<ExportContainer/>) : null
     return (
       <Sidebar.Pushable>
 
@@ -38,6 +40,7 @@ class App extends Component {
         >
           {connectionParametersModal}
           {databaseConnectionMessageModal}
+          {exportModal}
           <HeaderContainer/>
           <GraphContainer/>
           <GoogleDriveIntegration/>
@@ -64,7 +67,8 @@ class App extends Component {
 const mapStateToProps = (state) => ({
   inspectorVisible: state.applicationLayout.inspectorVisible,
   editingConnectionParameters: state.databaseConnection.editingConnectionParameters,
-  showDisconnectedDialog: state.databaseConnection.showDisconnectedDialog
+  showDisconnectedDialog: state.databaseConnection.showDisconnectedDialog,
+  showExportDialog: state.exporting.showExportDialog
 })
 
 

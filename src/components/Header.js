@@ -70,6 +70,9 @@ const Header = (props) => (
     {editConnectionParameters(props)}
     {googleDriveItem(props)}
     {storageStatusMessage(props)}
+    <Menu.Item onClick={props.onExportClick}>
+      <Icon name='download'/>Export
+    </Menu.Item>
     <Menu.Item
       position='right'
       onClick={props.showInspector}

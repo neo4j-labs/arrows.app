@@ -10,6 +10,7 @@ import applicationLayout from "./applicationLayout";
 import viewTransformation from "./viewTransformation";
 import gestures from "./gestures";
 import actionMemos from "./actionMemos";
+import exporting from "./exporting";
 
 const arrowsApp = combineReducers({
   databaseConnection,
@@ -22,7 +23,8 @@ const arrowsApp = combineReducers({
   storage: storage,
   applicationLayout,
   viewTransformation,
-  actionMemos
+  actionMemos,
+  exporting
 })
 
 export default arrowsApp

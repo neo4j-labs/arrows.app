@@ -6,6 +6,7 @@ import {editConnectionParameters} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
 import {saveGraphToGoogleDrive} from "../actions/googleDrive";
 import {setDiagramName} from "../actions/diagramName";
+import {showExportDialog} from "../actions/exporting";
 
 const mapStateToProps = state => {
   return {
@@ -35,6 +36,9 @@ const mapDispatchToProps = dispatch => {
     },
     onGoogleDriveClick: () => {
       dispatch(saveGraphToGoogleDrive())
+    },
+    onExportClick: () => {
+      dispatch(showExportDialog())
     }
   }
 }
