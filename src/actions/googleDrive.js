@@ -1,5 +1,6 @@
 import config from "../config";
 import { setStorage } from "./storage";
+import {renderGraphAtScaleFactor} from "../graphics/utils/offScreenCanvasRenderer";
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 export const SCOPES = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.install';
 
@@ -25,6 +26,10 @@ export const saveGraphToGoogleDrive = () => {
   }
 }
 
+const base64urlEncodeDataUrl = (dataUrl) => {
+  return dataUrl.substring('data:image/png;base64,'.length).replace(/\+/g, '-').replace(/\//g, '_')
+}
+
 export const saveToStore = (state, dispatch, callback) => {
   const { graph, storage } = state
   const { fileId } = storage
@@ -40,7 +45,7 @@ export const saveToStore = (state, dispatch, callback) => {
     return isSignedIn
   }
 
-  const saveFile = (data, fileId, fileName) => {
+  const saveFile = (graph, fileId, fileName) => {
     const boundary = '-------314159265358979323846';
     const delimiter = "\r\n--" + boundary + "\r\n";
     const close_delim = "\r\n--" + boundary + "--";
@@ -49,16 +54,22 @@ export const saveToStore = (state, dispatch, callback) => {
 
     const metadata = {
       'name': `${fileName}`,
-      'mimeType': contentType
+      'mimeType': contentType,
+      'contentHints': {
+        'thumbnail': {
+          'image': base64urlEncodeDataUrl(renderGraphAtScaleFactor(graph, 2)),
+          'mimeType': 'image/png'
+        }
+      }
     };
 
     const multipartRequestBody =
       delimiter +
-      'Content-Type: application/json\r\n\r\n' +
+      'Content-Type: application/json; charset=UTF-8\r\n\r\n' +
       JSON.stringify(metadata) +
       delimiter +
       'Content-Type: ' + contentType + '\r\n\r\n' +
-      JSON.stringify(data) +
+      JSON.stringify(graph) +
       close_delim;
 
     const request = window.gapi.client.request({
