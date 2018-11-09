@@ -15,6 +15,7 @@ class ExportModal extends Component {
       }
     this.boundingBox.width = this.boundingBox.right - this.boundingBox.left
     this.boundingBox.height = this.boundingBox.bottom - this.boundingBox.top
+    this.scaleFactor = 2
   }
 
   onCancel = () => {
@@ -35,8 +36,8 @@ class ExportModal extends Component {
             overflow: 'scroll'
           }}>
           <canvas
-            width={this.boundingBox.width}
-            height={this.boundingBox.height}
+            width={Math.ceil(this.scaleFactor * this.boundingBox.width)}
+            height={Math.ceil(this.scaleFactor * this.boundingBox.height)}
             ref={(canvas) => this.canvas = canvas}
           />
           </div>
@@ -60,7 +61,7 @@ class ExportModal extends Component {
         selectedNodeIdMap: {},
         selectedRelationshipIdMap: {}
       },
-      viewTransformation: new ViewTransformation(1, new Vector(-this.boundingBox.left, -this.boundingBox.top))
+      viewTransformation: new ViewTransformation(this.scaleFactor, new Vector(-this.scaleFactor * this.boundingBox.left, -this.scaleFactor * this.boundingBox.top))
     }
     const visualGraph = getVisualGraph(renderState)
     const ctx = this.canvas.getContext('2d');
