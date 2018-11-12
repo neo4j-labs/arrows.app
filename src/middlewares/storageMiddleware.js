@@ -58,14 +58,14 @@ export const storageMiddleware = store => next => action => {
   const storage = state.storage
 
   if (action.type === 'SET_DIAGRAM_NAME') {
-    if (storage.store === "googleDrive") {
+    if (storage.store === "GOOGLE_DRIVE") {
       renameGoogleDriveStore(storage.fileId, action.diagramName)
     }
   }
   if (action.category === 'GRAPH') {
 
     switch (storage.store) {
-      case "googleDrive":
+      case "GOOGLE_DRIVE":
         const oldState = store.getState()
         const result = next(action)
         const newState = store.getState()
@@ -73,7 +73,7 @@ export const storageMiddleware = store => next => action => {
           limitedUpdater.updateRequested(callback => updateGoogleDriveStore(newState, store.dispatch, callback))
         }
         return result
-      case "neo4j":
+      case "NEO4J":
         updateQueue.push(action)
         drainUpdateQueue(state)
         return next(action)

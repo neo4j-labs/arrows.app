@@ -11,6 +11,14 @@ export class DiagramNameEditor extends Component {
     }
   }
 
+  componentWillReceiveProps(nextProps){
+    if (nextProps.diagramName !== this.props.diagramName) {
+      this.setState({
+        diagramName: nextProps.diagramName
+      })
+    }
+  }
+
   onClick = () => {
     this.setState({
       editable: true

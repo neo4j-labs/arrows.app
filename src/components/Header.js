@@ -4,6 +4,7 @@ import {FETCHING_GRAPH, FETCHING_GRAPH_FAILED, UPDATING_GRAPH, UPDATING_GRAPH_FA
 import { Icon, Menu } from 'semantic-ui-react'
 import DocumentTitle from 'react-document-title'
 import {DiagramNameEditor} from "./DiagramNameEditor";
+import neo4j_logo from  './neo4j_icon.svg'
 
 const storageStatusMessage = (props) => {
   if (props.storageStatus === FETCHING_GRAPH) {
@@ -65,6 +66,7 @@ const Header = (props) => (
       <Icon name='plus circle'/>Node
     </Menu.Item>
     <Menu.Item onClick={props.onReloadGraphClick}>
+      <img height='14px' src={neo4j_logo}/>
       <Icon name='refresh'/>Graph
     </Menu.Item>
     {editConnectionParameters(props)}

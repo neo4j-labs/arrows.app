@@ -1,10 +1,8 @@
 import config from "../config";
-import { setStorage } from "./storage";
+import { useGoogleDriveStorage } from "./storage";
 import {renderGraphAtScaleFactor} from "../graphics/utils/offScreenCanvasRenderer";
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 export const SCOPES = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.install';
-
-export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 
 export const renameGoogleDriveStore = (fileId, userFileName) => {
   window.gapi.client.drive.files.update({
@@ -84,7 +82,7 @@ export const saveToStore = (state, dispatch, callback) => {
 
     request.execute((file) => {
       console.log(file)
-      dispatch(setStorage('googleDrive', file.id, file.name.slice(0, file.name.lastIndexOf('.json'))))
+      dispatch(useGoogleDriveStorage(file.id))
       callback && callback(true)
     });
   }

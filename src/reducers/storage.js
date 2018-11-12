@@ -5,8 +5,7 @@ import {
 
 const initialState = {
   status: IDLE,
-  store: null,
-  fileId: null
+  store: 'NONE'
 }
 
 const storage = (state = initialState, action) => {
@@ -25,17 +24,16 @@ const storage = (state = initialState, action) => {
         ...state,
         status: IDLE
       }
-    case 'SET_STORE_TYPE':
+    case 'USE_NEO4J_STORAGE':
       return {
-        ...state,
-        store: action.store,
-        fileId: action.fileId,
-        fileName: action.fileName
+        status: IDLE,
+        store: 'NEO4J'
       }
-    case 'SET_FILE_METADATA':
+    case 'USE_GOOGLE_DRIVE_STORAGE':
       return {
-        ...state,
-        fileName: action.fileName
+        status: IDLE,
+        store: 'GOOGLE_DRIVE',
+        fileId: action.fileId
       }
     default:
       return state

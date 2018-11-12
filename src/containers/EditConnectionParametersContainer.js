@@ -3,7 +3,7 @@ import EditConnectionParametersForm from "../components/EditConnectionParameters
 import {cancelEditing, forgetConnectionParameters, updateConnectionParameters} from "../actions/databaseConnection";
 import { fetchGraphFromDrive } from "../storage/googleDriveStorage";
 import { saveGraphToGoogleDrive } from "../actions/googleDrive";
-import { setStorage } from "../actions/storage";
+import { useGoogleDriveStorage } from "../actions/storage";
 
 const mapStateToProps = state => {
   return {
@@ -23,7 +23,7 @@ const mapDispatchToProps = dispatch => {
     },
     forgetConnectionParameters: forgetConnectionParameters,
     onFilePicked: fileId => {
-      dispatch(setStorage('googleDrive', fileId))
+      dispatch(useGoogleDriveStorage(fileId))
       dispatch(fetchGraphFromDrive(fileId))
       dispatch(cancelEditing())
     },
