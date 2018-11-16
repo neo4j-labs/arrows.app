@@ -1,57 +1,74 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import {FETCHING_GRAPH, FETCHING_GRAPH_FAILED, UPDATING_GRAPH, UPDATING_GRAPH_FAILED} from "../state/storageStatus";
-import { Icon, Menu } from 'semantic-ui-react'
+import { Icon, Menu, Popup } from 'semantic-ui-react'
 import DocumentTitle from 'react-document-title'
 import {DiagramNameEditor} from "./DiagramNameEditor";
 import neo4j_logo from  './neo4j_icon.svg'
 
 const storageStatusMessage = (props) => {
-  if (props.storageStatus === FETCHING_GRAPH) {
-    return (
-      <span>Loading graph from database...</span>
-    )
+  const storageNames = {
+    NEO4J: 'Neo4j database',
+    GOOGLE_DRIVE: 'Google Drive'
   }
-  if (props.storageStatus === FETCHING_GRAPH_FAILED) {
-    return (
-      <span>Failed to load graph from database, see Javascript console for details.</span>
-    )
-  }
-  if (props.storageStatus === UPDATING_GRAPH) {
-    return (
-      <span>Saving graph to database...</span>
-    )
-  }
-  if (props.storageStatus === UPDATING_GRAPH_FAILED) {
-    return (
-      <span>Failed to save graph to database, see Javascript console for details.</span>
-    )
-  }
-}
+  if (storageNames[props.storage.store]) {
+    switch (props.storageStatus) {
+      case FETCHING_GRAPH:
+        return (
+          <Popup trigger={<Icon name='dot circle outline'/>}
+                 content='Loading graph from database...'/>
+        )
 
-const editConnectionParameters = (props) => {
-  return props.connectionParametersEditable ? (
-    <Menu.Item onClick={props.onEditConnectionParameters}>
-      <Icon name='database'/>Graph storage
-    </Menu.Item>
-  ) : null
-}
+      case FETCHING_GRAPH_FAILED:
+        return (
+          <Popup trigger={<Icon name='warning'/>}
+                 content='Failed to load graph from database, see Javascript console for details.'/>
+        )
 
-const googleDriveItem = (props) => {
-  if (props.storage.fileId) {
-    return (
-      <Menu.Item onClick={() => props.onGoogleDriveClick()}>
-        <Icon name='google drive'/>
-        Save to Google drive
-      </Menu.Item>
-    )
+      case UPDATING_GRAPH:
+        return (
+          <Popup trigger={<Icon name='dot circle outline'/>}
+                 content='Saving graph to database...'/>
+        )
+
+      case UPDATING_GRAPH_FAILED: {
+        return (
+          <Popup trigger={<Icon name='warning'/>}
+                 content='Failed to save graph to database, see Javascript console for details.'/>
+        )
+      }
+
+      default: {
+        return (
+          <Popup trigger={<Icon name='check circle outline'/>}
+                 content={`Graph stored safely in ${storageNames[props.storage.store]}`}/>
+        )
+      }
+    }
   } else {
     return null
   }
 }
 
+const storageIcon = (props) => {
+  switch (props.storage.store) {
+    case 'NEO4J':
+      return (
+        <img height='14px' src={neo4j_logo}
+             onClick={props.connectionParametersEditable ? props.onEditConnectionParameters : null}/>
+      )
+    case 'GOOGLE_DRIVE':
+      return (
+        <Icon name='google drive'
+              onClick={props.onEditConnectionParameters}/>
+      )
+    default:
+      return null
+  }
+}
+
 const Header = (props) => (
-  <Menu attached='top' style={{borderRadius: 0}}>
+  <Menu attached='top' style={{borderRadius: 0}} borderless>
     <Menu.Item style={{
       minWidth: 200
     }}>
@@ -62,18 +79,19 @@ const Header = (props) => (
         />
       </DocumentTitle>
     </Menu.Item>
+    <Menu.Item>
+      {storageIcon(props)}
+      {storageStatusMessage(props)}
+      <Icon onClick={props.onReloadGraphClick} name='refresh'/>
+    </Menu.Item>
+    <Menu.Item active={true} color='blue'>
+      <Icon name='users'/>Share
+    </Menu.Item>
+    <Menu.Item onClick={props.onExportClick}>
+      <Icon name='download'/>
+    </Menu.Item>
     <Menu.Item onClick={props.onPlusNodeClick}>
       <Icon name='plus circle'/>Node
-    </Menu.Item>
-    <Menu.Item onClick={props.onReloadGraphClick}>
-      <img height='14px' src={neo4j_logo}/>
-      <Icon name='refresh'/>Graph
-    </Menu.Item>
-    {editConnectionParameters(props)}
-    {googleDriveItem(props)}
-    {storageStatusMessage(props)}
-    <Menu.Item onClick={props.onExportClick}>
-      <Icon name='download'/>Export
     </Menu.Item>
     <Menu.Item
       position='right'
