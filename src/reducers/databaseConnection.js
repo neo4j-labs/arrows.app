@@ -11,7 +11,7 @@ const initialConnectionParameters = () => {
 
 export default function databaseConnection(state = {
   connectionParametersEditable: true,
-  editingConnectionParameters: false,
+  editingConnectionParameters: true,
   connectionParameters: initialConnectionParameters(),
   showDisconnectedDialog: false,
   errorMsg: null

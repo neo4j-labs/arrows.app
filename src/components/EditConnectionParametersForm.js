@@ -1,8 +1,9 @@
 import React, {Component} from 'react';
 import { Button, Form, Checkbox, Modal, Message } from 'semantic-ui-react'
 import {defaultConnectionUri} from "../reducers/databaseConnection";
-import { Tab } from 'semantic-ui-react'
+import { Tab, Segment, Grid, Divider, Header, Icon } from 'semantic-ui-react'
 import { GoogleDriveConnection } from "./GoogleDriveConnectionForm";
+import neo4j_logo from  './neo4j_icon.svg'
 
 class EditConnectionParametersForm extends Component {
 
@@ -133,13 +134,44 @@ class EditConnectionParametersForm extends Component {
 
     return (
       <Modal
-        size="tiny"
         open={true}
         onClose={this.onCancel}
       >
-        <Modal.Header>Graph Storage</Modal.Header>
+        <Modal.Header>Where would you like to store your diagram?</Modal.Header>
         <Modal.Content>
-          {tabs}
+          <Segment placeholder>
+            <Grid columns={2} stackable textAlign='center'>
+              <Divider vertical>Or</Divider>
+
+              <Grid.Row verticalAlign='middle'>
+                <Grid.Column>
+                  <Header icon>
+                    <Icon name='google drive' />
+                    Google Drive
+                  </Header>
+                  <p style={{height: '3em'}}>Store the diagram as a JSON file in your Google Drive.</p>
+                  <Button primary>use Google Drive</Button>
+
+                </Grid.Column>
+
+                <Grid.Column>
+                  <Header icon>
+                    <i className="icon" style={{height: '1em'}}>
+                      <img src={neo4j_logo} style={{height: '1em'}}/>
+                    </i>
+                    Neo4j
+                  </Header>
+                  <p style={{height: '3em'}}>Store the diagram as a Graph in a Neo4j database at a given Bolt connection URL.</p>
+                  <Button primary>use Neo4j Database</Button>
+                </Grid.Column>
+              </Grid.Row>
+            </Grid>
+          </Segment>
+          <Message attached='bottom' info icon>
+            <Icon name='info' />
+            This is a serverless app; it runs entirely in your web browser and doesn't have any storage of its own.
+            Instead it stores graph diagrams using one of the options above.
+          </Message>
         </Modal.Content>
       </Modal>
     )
