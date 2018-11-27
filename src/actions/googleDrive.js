@@ -30,7 +30,7 @@ const base64urlEncodeDataUrl = (dataUrl) => {
 
 export const saveToStore = (state, dispatch, callback) => {
   const { graph, storage } = state
-  const { fileId } = storage
+  const { fileId } = storage.googleDrive
   const fileName = state.diagramName
 
   const storeGraphIfSignedIn = (graph, fileId, fileName) => {

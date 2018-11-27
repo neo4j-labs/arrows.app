@@ -58,8 +58,8 @@ export const storageMiddleware = store => next => action => {
   const storage = state.storage
 
   if (action.type === 'SET_DIAGRAM_NAME') {
-    if (storage.store === "GOOGLE_DRIVE") {
-      renameGoogleDriveStore(storage.fileId, action.diagramName)
+    if (storage.mode === "GOOGLE_DRIVE") {
+      renameGoogleDriveStore(storage.googleDrive.fileId, action.diagramName)
     }
   }
   if (action.category === 'GRAPH') {
