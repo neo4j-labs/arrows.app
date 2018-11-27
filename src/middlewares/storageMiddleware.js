@@ -64,7 +64,7 @@ export const storageMiddleware = store => next => action => {
   }
   if (action.category === 'GRAPH') {
 
-    switch (storage.store) {
+    switch (storage.mode) {
       case "GOOGLE_DRIVE":
         const oldState = store.getState()
         const result = next(action)
@@ -73,7 +73,7 @@ export const storageMiddleware = store => next => action => {
           limitedUpdater.updateRequested(callback => updateGoogleDriveStore(newState, store.dispatch, callback))
         }
         return result
-      case "NEO4J":
+      case "DATABASE":
         updateQueue.push(action)
         drainUpdateQueue(state)
         return next(action)

@@ -1,9 +1,12 @@
 import {connect} from "react-redux"
 import EditConnectionParametersForm from "../components/StorageConfigModal";
-import {hideStorageConfig, forgetConnectionParameters, updateConnectionParameters} from "../actions/databaseConnection";
+import {
+  hideStorageConfig, forgetConnectionParameters, updateConnectionParameters,
+  initializeConnection
+} from "../actions/databaseConnection";
 import { fetchGraphFromDrive } from "../storage/googleDriveStorage";
 import { saveGraphToGoogleDrive } from "../actions/googleDrive";
-import {useGoogleDriveStorage, useNeo4jStorage} from "../actions/storage";
+import {useGoogleDriveStorage} from "../actions/storage";
 
 const mapStateToProps = state => {
   return {
@@ -15,7 +18,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     useNeo4jDatabaseStorage: () => {
-      dispatch(useNeo4jStorage())
+      dispatch(initializeConnection())
     },
     useGoogleDriveStorage: () => {
       dispatch(useGoogleDriveStorage())
