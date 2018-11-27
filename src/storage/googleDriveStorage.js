@@ -2,8 +2,7 @@ import { fetchingGraph, fetchingGraphSucceeded } from "../actions/neo4jStorage";
 import config from "../config";
 import { Point } from "../model/Point";
 import { setDiagramName } from "../actions/diagramName";
-const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-const SCOPES = 'https://www.googleapis.com/auth/drive';
+import {DISCOVERY_DOCS, SCOPES} from "../actions/googleDrive";
 
 export function fetchGraphFromDrive(fileId) {
   return function (dispatch) {
