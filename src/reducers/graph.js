@@ -1,5 +1,4 @@
 import {emptyGraph} from "../model/Graph";
-import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setCaption} from "../model/Node";
 import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
@@ -184,7 +183,7 @@ const graph = (state = emptyGraph(), action) => {
         relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? reverse(relationship) : relationship)
       }
 
-    case FETCHING_GRAPH_SUCCEEDED:
+    case 'FETCHING_GRAPH_SUCCEEDED':
       return action.storedGraph
 
     default:

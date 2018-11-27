@@ -49,7 +49,7 @@ const useRememberedConnectionParameters = () => {
   if (parsedVal && parsedVal.connectionUri) {
     return updateConnectionParameters(parsedVal)
   } else {
-    return editConnectionParameters()
+    return viewStorageConfig()
   }
 }
 
@@ -103,15 +103,15 @@ const successfulUpdate = (connectionParameters) => {
   }
 }
 
-export const editConnectionParameters = () => {
+export const viewStorageConfig = () => {
   return {
-    type: 'EDIT_CONNECTION_PARAMETERS'
+    type: 'VIEW_STORAGE_CONFIG'
   }
 }
 
-export const cancelEditing = () => {
+export const hideStorageConfig = () => {
   return {
-    type: 'CANCEL_EDIT_CONNECTION_PARAMETERS'
+    type: 'HIDE_STORAGE_CONFIG'
   }
 }
 

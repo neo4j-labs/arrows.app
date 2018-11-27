@@ -2,7 +2,7 @@ import {connect} from 'react-redux'
 import {createNode} from '../actions/graph'
 import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import Header from '../components/Header'
-import {editConnectionParameters} from "../actions/databaseConnection";
+import {viewStorageConfig} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
 import {saveGraphToGoogleDrive} from "../actions/googleDrive";
 import {setDiagramName} from "../actions/diagramName";
@@ -11,8 +11,7 @@ import {showExportDialog} from "../actions/exporting";
 const mapStateToProps = state => {
   return {
     diagramName: state.diagramName,
-    connectionParametersEditable: state.databaseConnection.connectionParametersEditable,
-    storageStatus: state.storage.status,
+    storageStatus: state.storageStatus,
     storage: state.storage
   }
 }
@@ -31,8 +30,8 @@ const mapDispatchToProps = dispatch => {
     onReloadGraphClick: () => {
       dispatch(fetchGraphFromDatabase())
     },
-    onEditConnectionParameters: () => {
-      dispatch(editConnectionParameters())
+    onViewStorageConfig: () => {
+      dispatch(viewStorageConfig())
     },
     onGoogleDriveClick: () => {
       dispatch(saveGraphToGoogleDrive())

@@ -1,6 +1,5 @@
 import { calculateBoundingBox } from "../graphics/utils/geometryUtils"
 import { adjustViewport } from "../actions/viewTransformation"
-import { FETCHING_GRAPH_SUCCEEDED } from "../state/storageStatus"
 import { Point } from "../model/Point"
 import { ViewTransformation } from "../state/ViewTransformation";
 import { Vector } from "../model/Vector";

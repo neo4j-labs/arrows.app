@@ -1,43 +1,95 @@
-import {
-  FETCHING_GRAPH, FETCHING_GRAPH_FAILED, FETCHING_GRAPH_SUCCEEDED, IDLE,
-  UPDATING_GRAPH, UPDATING_GRAPH_FAILED, UPDATING_GRAPH_SUCCEEDED
-} from "../state/storageStatus";
+export const defaultConnectionUri = "bolt://localhost";
 
-const initialState = {
-  status: IDLE,
-  store: 'NONE'
+const initialConnectionParameters = () => {
+  return {
+    connectionUri: defaultConnectionUri,
+    username: "",
+    password: "",
+    rememberCredentials: false
+  }
 }
 
-const storage = (state = initialState, action) => {
+export default function storage(state = {
+  mode: 'NONE',
+  viewingConfig: false,
+  database: {
+    connectionParametersEditable: true,
+    connectionParameters: initialConnectionParameters(),
+    showDisconnectedDialog: false,
+    errorMsg: null
+  },
+  googleDrive: {}
+}, action) {
   switch (action.type) {
-    case FETCHING_GRAPH:
-    case FETCHING_GRAPH_FAILED:
-    case UPDATING_GRAPH:
-    case UPDATING_GRAPH_FAILED:
-      return {
-        ...state,
-        status: action.type
-      }
-    case FETCHING_GRAPH_SUCCEEDED:
-    case UPDATING_GRAPH_SUCCEEDED:
-      return {
-        ...state,
-        status: IDLE
-      }
     case 'USE_NEO4J_STORAGE':
       return {
-        status: IDLE,
-        store: 'NEO4J'
+        ...state,
+        mode: 'DATABASE'
       }
     case 'USE_GOOGLE_DRIVE_STORAGE':
       return {
-        status: IDLE,
-        store: 'GOOGLE_DRIVE',
-        fileId: action.fileId
+        ...state,
+        mode: 'GOOGLE_DRIVE',
+        googleDrive: {
+          fileId: action.fileId
+        }
       }
+    case 'VIEW_STORAGE_CONFIG':
+      return {
+        ...state,
+        viewingConfig: true
+      }
+
+    case 'HIDE_STORAGE_CONFIG':
+      return {
+        ...state,
+        viewingConfig: false
+      }
+
+    case 'DISABLE_EDITING_CONNECTION_PARAMETERS':
+      return {
+        ...state,
+        database: {
+          ...state.database,
+          connectionParametersEditable: false
+        }
+      }
+
+    case 'UPDATE_CONNECTION_PARAMETERS':
+      return {
+        ...state,
+        viewingConfig: false,
+        database: {
+          ...state.database,
+          showDisconnectedDialog: false,
+          connectionParameters: action.connectionParameters,
+          errorMsg: null
+        }
+      }
+
+    case 'FAILED_DATABASE_CONNECTION':
+      return {
+        ...state,
+        viewingConfig: state.database.connectionParametersEditable,
+        database: {
+          ...state.database,
+          showDisconnectedDialog: state.database.connectionParametersEditable,
+          connectionParameters: action.connectionParameters,
+          errorMsg: action.errorMsg
+        }
+      }
+
+    case 'DESKTOP_DISCONNECTED':
+      return {
+        ...state,
+        database: {
+          ...state.database,
+          showDisconnectedDialog: true,
+          connectionParameters: null
+        }
+      }
+
     default:
       return state
   }
 }
-
-export default storage

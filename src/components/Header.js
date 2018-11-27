@@ -1,6 +1,5 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {FETCHING_GRAPH, FETCHING_GRAPH_FAILED, UPDATING_GRAPH, UPDATING_GRAPH_FAILED} from "../state/storageStatus";
 import { Icon, Menu, Popup } from 'semantic-ui-react'
 import DocumentTitle from 'react-document-title'
 import {DiagramNameEditor} from "./DiagramNameEditor";
@@ -8,59 +7,43 @@ import neo4j_logo from  './neo4j_icon.svg'
 
 const storageStatusMessage = (props) => {
   const storageNames = {
-    NEO4J: 'Neo4j database',
+    DATABASE: 'Neo4j database',
     GOOGLE_DRIVE: 'Google Drive'
   }
-  if (storageNames[props.storage.store]) {
-    switch (props.storageStatus) {
-      case FETCHING_GRAPH:
-        return (
-          <Popup trigger={<Icon name='dot circle outline'/>}
-                 content='Loading graph from database...'/>
-        )
-
-      case FETCHING_GRAPH_FAILED:
-        return (
-          <Popup trigger={<Icon name='warning'/>}
-                 content='Failed to load graph from database, see Javascript console for details.'/>
-        )
-
-      case UPDATING_GRAPH:
-        return (
-          <Popup trigger={<Icon name='dot circle outline'/>}
-                 content='Saving graph to database...'/>
-        )
-
-      case UPDATING_GRAPH_FAILED: {
-        return (
-          <Popup trigger={<Icon name='warning'/>}
-                 content='Failed to save graph to database, see Javascript console for details.'/>
-        )
-      }
-
-      default: {
-        return (
-          <Popup trigger={<Icon name='check circle outline'/>}
-                 content={`Graph stored safely in ${storageNames[props.storage.store]}`}/>
-        )
-      }
+  const moodIcons = {
+    HAPPY: 'check circle outline',
+    BUSY: 'dot circle outline',
+    SAD: 'warning'
+  }
+  const storageName = storageNames[props.storage.mode]
+  if (storageName) {
+    const statusMessages = {
+      IDLE: `Graph stored safely in ${storageName}`,
+      FETCHING_GRAPH: `Loading graph from ${storageName}...`,
+      FETCHING_GRAPH_FAILED: `Failed to load graph from ${storageName}, see Javascript console for details.`,
+      UPDATING_GRAPH: `Saving graph to ${storageName}...`,
+      UPDATING_GRAPH_FAILED: `Failed to save graph to ${storageName}, see Javascript console for details.`
     }
+    return (
+      <Popup trigger={<Icon name={moodIcons[props.storageStatus.mood]}/>}
+             content={statusMessages[props.storageStatus.status]}/>
+    )
   } else {
     return null
   }
 }
 
 const storageIcon = (props) => {
-  switch (props.storage.store) {
-    case 'NEO4J':
+  switch (props.storage.mode) {
+    case 'DATABASE':
       return (
         <img height='14px' src={neo4j_logo}
-             onClick={props.connectionParametersEditable ? props.onEditConnectionParameters : null}/>
+             onClick={props.onViewStorageConfig}/>
       )
     case 'GOOGLE_DRIVE':
       return (
         <Icon name='google drive'
-              onClick={props.onEditConnectionParameters}/>
+              onClick={props.onViewStorageConfig}/>
       )
     default:
       return null

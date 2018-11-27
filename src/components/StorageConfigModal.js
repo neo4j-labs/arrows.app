@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import { Button, Form, Checkbox, Modal, Message } from 'semantic-ui-react'
-import {defaultConnectionUri} from "../reducers/databaseConnection";
+import {defaultConnectionUri} from "../reducers/storage";
 import { Tab, Segment, Grid, Divider, Header, Icon } from 'semantic-ui-react'
 import { GoogleDriveConnection } from "./GoogleDriveConnectionForm";
 import neo4j_logo from  './neo4j_icon.svg'
 
-class EditConnectionParametersForm extends Component {
+class StorageConfigModal extends Component {
 
   constructor(props) {
     super(props);
@@ -130,7 +130,7 @@ class EditConnectionParametersForm extends Component {
       )
     }]
 
-    const tabs = <Tab defaultActiveIndex={this.props.storage.fileId ? 2 : 0} menu={{ secondary: true, pointing: true }} panes={panes} />
+    const tabs = <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
 
     return (
       <Modal
@@ -150,7 +150,7 @@ class EditConnectionParametersForm extends Component {
                     Google Drive
                   </Header>
                   <p style={{height: '3em'}}>Store the diagram as a JSON file in your Google Drive.</p>
-                  <Button primary>use Google Drive</Button>
+                  <Button primary onClick={this.props.useGoogleDriveStorage}>use Google Drive</Button>
 
                 </Grid.Column>
 
@@ -162,7 +162,7 @@ class EditConnectionParametersForm extends Component {
                     Neo4j
                   </Header>
                   <p style={{height: '3em'}}>Store the diagram as a Graph in a Neo4j database at a given Bolt connection URL.</p>
-                  <Button primary>use Neo4j Database</Button>
+                  <Button primary onClick={this.props.useNeo4jDatabaseStorage}>use Neo4j Database</Button>
                 </Grid.Column>
               </Grid.Row>
             </Grid>
@@ -178,4 +178,4 @@ class EditConnectionParametersForm extends Component {
   }
 }
 
-export default EditConnectionParametersForm
+export default StorageConfigModal

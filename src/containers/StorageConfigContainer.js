@@ -1,35 +1,40 @@
 import {connect} from "react-redux"
-import EditConnectionParametersForm from "../components/EditConnectionParametersForm";
-import {cancelEditing, forgetConnectionParameters, updateConnectionParameters} from "../actions/databaseConnection";
+import EditConnectionParametersForm from "../components/StorageConfigModal";
+import {hideStorageConfig, forgetConnectionParameters, updateConnectionParameters} from "../actions/databaseConnection";
 import { fetchGraphFromDrive } from "../storage/googleDriveStorage";
 import { saveGraphToGoogleDrive } from "../actions/googleDrive";
-import { useGoogleDriveStorage } from "../actions/storage";
+import {useGoogleDriveStorage, useNeo4jStorage} from "../actions/storage";
 
 const mapStateToProps = state => {
   return {
-    connectionParameters: state.databaseConnection.connectionParameters,
-    errorMsg: state.databaseConnection.errorMsg,
-    storage: state.storage
+    connectionParameters: state.storage.database.connectionParameters,
+    errorMsg: state.storage.database.errorMsg
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    useNeo4jDatabaseStorage: () => {
+      dispatch(useNeo4jStorage())
+    },
+    useGoogleDriveStorage: () => {
+      dispatch(useGoogleDriveStorage())
+    },
     onConnectionParametersUpdated: (connectionParameters) => {
       dispatch(updateConnectionParameters(connectionParameters))
     },
     onCancel: () =>{
-      dispatch(cancelEditing())
+      dispatch(hideStorageConfig())
     },
     forgetConnectionParameters: forgetConnectionParameters,
     onFilePicked: fileId => {
       dispatch(useGoogleDriveStorage(fileId))
       dispatch(fetchGraphFromDrive(fileId))
-      dispatch(cancelEditing())
+      dispatch(hideStorageConfig())
     },
     saveToDrive: () => {
       dispatch(saveGraphToGoogleDrive())
-      dispatch(cancelEditing())
+      dispatch(hideStorageConfig())
     }
   }
 }

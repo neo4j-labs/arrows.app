@@ -8,7 +8,7 @@ import { compose } from 'recompose'
 import { Sidebar } from 'semantic-ui-react'
 import HeaderContainer from './containers/HeaderContainer'
 import InspectorChooser from "./containers/InspectorChooser"
-import EditConnectionParametersContainer from "./containers/EditConnectionParametersContainer"
+import EditConnectionParametersContainer from "./containers/StorageConfigContainer"
 import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer"
 import {GoogleDriveIntegration} from "./components/GoogleDriveIntegration"
 import {inspectorWidth} from "./model/applicationLayout";
@@ -20,7 +20,7 @@ class App extends Component {
     window.onkeydown = this.fireKeyboardShortcutAction.bind(this)
   }
   render() {
-    const connectionParametersModal = this.props.editingConnectionParameters ? (<EditConnectionParametersContainer/>) : null
+    const connectionParametersModal = this.props.viewingConfig ? (<EditConnectionParametersContainer/>) : null
     const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
     const exportModal = this.props.showExportDialog ? (<ExportContainer/>) : null
     return (
@@ -66,8 +66,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => ({
   inspectorVisible: state.applicationLayout.inspectorVisible,
-  editingConnectionParameters: state.databaseConnection.editingConnectionParameters,
-  showDisconnectedDialog: state.databaseConnection.showDisconnectedDialog,
+  viewingConfig: state.storage.viewingConfig || state.storage.mode === 'NONE',
+  showDisconnectedDialog: state.storage.database.showDisconnectedDialog,
   showExportDialog: state.exporting.showExportDialog
 })
 
