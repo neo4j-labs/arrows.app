@@ -53,8 +53,15 @@ class DetailInspector extends Component {
     const entities = [...nodes, ...relationships];
     const selectionIncludes = {
       nodes: nodes.length > 0,
-      relationships: relationships.length > 0
+      relationships: relationships.length > 0,
+      cluster: nodes.filter(node => node.type === 'cluster').length > 0
     }
+
+    if (selectionIncludes.cluster) {
+      // TODO
+      return null
+    }
+
     const properties = combineProperties(entities)
 
     const handleKeyDown = (evt) => {
