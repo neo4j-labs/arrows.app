@@ -50,7 +50,7 @@ export default class VisualGraph {
     this.relationshipBundles.forEach(bundle => bundle.draw(ctx))
     Object.values(this.nodes).forEach(visualNode => {
       visualNode.draw(ctx)
-      if (visualNode.node.properties) {
+      if (visualNode.node.properties && visualNode.node.status !== 'combined') {
         drawAnnotation(ctx, visualNode)
       }
     })
