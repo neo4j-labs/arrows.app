@@ -1,13 +1,20 @@
-import {getVisualGraph, getTransformationHandles} from "../selectors/"
+import { getVisualGraph, getTransformationHandles, getGraph } from "../selectors/"
 import {clearSelection, toggleSelection} from "./selection"
 import {showInspector} from "./applicationLayout";
-import {connectNodes, createNodeAndRelationship, moveNodesEndDrag, tryMoveNode, tryMoveHandle} from "./graph"
+import {
+  connectNodes,
+  createNodeAndRelationship,
+  moveNodesEndDrag,
+  tryMoveNode,
+  tryMoveHandle
+} from "./graph"
 import {adjustViewport, pan, scroll} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {tryUpdateSelectionPath} from "./selectionPath"
 import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
 import {idsMatch} from "../model/Id";
 import {getStyleSelector} from "../selectors/style";
+import { createClusterGang, splitCluster } from "./gang";
 
 const LongPressTime = 300
 
@@ -138,7 +145,7 @@ export const mouseMove = (canvasPosition) => {
         const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
         if (item && item.entityType === 'nodeRing') {
           if (dragging.sourceNodeId === null || (dragging.sourceNodeId && item.id !== dragging.sourceNodeId)) {
-            dispatch(activateRing(item.id))
+            dispatch(activateRing(item.id, item.type))
           }
         } else {
           if (dragging.sourceNodeId !== null) {
@@ -169,7 +176,9 @@ export const mouseMove = (canvasPosition) => {
         break
 
       case 'NODE_RING':
-        dispatch(tryDragRing(mouse.node.id, graphPosition))
+        if (mouse.node.type !== 'super') {
+          dispatch(tryDragRing(mouse.node.id, graphPosition))
+        }
         break
 
       case 'CANVAS':
@@ -194,7 +203,7 @@ export const mouseMove = (canvasPosition) => {
 }
 
 const positionsOfSelectedNodes = (state) => {
-  const graph = state.graph
+  const graph = getGraph(state)
   const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
   const nodePositions = []
   selectedNodes.forEach((nodeId) => {
@@ -219,14 +228,42 @@ export const mouseUp = () => {
         break
 
       case 'HANDLE':
+        const shouldCombine = positions => {
+          if (positions.length < 2) {
+            return
+          }
+
+          let position = positions[0].position
+          let result = false
+          for (let i = 1; i < positions.length - 1; i++) {
+            if (positions[i].position.x === position.x && positions[i].position.y === position.y) {
+              result = true
+            } else {
+              result = false
+              break
+            }
+          }
+          return result
+        }
+
+        const nodePositions = positionsOfSelectedNodes(state)
+
+        if (shouldCombine(nodePositions)) {
+          dispatch(createClusterGang(nodePositions, mouse.initialNodePositions))
+        } else {
+          dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
+        }
+        break
       case 'NODE':
         dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
         break
-
       case 'NODE_RING':
         const dragToCreate = state.gestures.dragToCreate;
+
         if (dragToCreate.sourceNodeId) {
-          if (dragToCreate.targetNodeId) {
+          if (dragToCreate.nodeType === 'super') {
+            // dispatch(splitCluster(dragToCreate.sourceNodeId))
+          } else if (dragToCreate.targetNodeId) {
             dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
           } else {
             dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
