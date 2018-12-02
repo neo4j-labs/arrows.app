@@ -25,10 +25,15 @@ export const emptyGraph = () => {
   }
 }
 
+export const getNodeIdMap = graph => graph.nodes.reduce((nodeIdMap, node) => {
+  nodeIdMap[node.id] = node
+  return nodeIdMap
+}, {})
+
 export const closestNode = (graph, point, nodeTest) => {
   let closestDistance = Number.POSITIVE_INFINITY
   let closestNode = null
-  graph.nodes.forEach((node) => {
+  graph.nodes.filter(node => node.status !== 'combined').forEach((node) => {
     const distance = node.position.vectorFrom(point).distance()
     if (distance < closestDistance && nodeTest(node, distance)) {
       closestDistance = distance
@@ -50,7 +55,7 @@ export const nodeRingAtPoint = (graph, point) => {
 }
 
 export const nodesInsidePolygon = (graph, path) => graph.nodes
-  .filter(node => isPointInPolygon(node.position, path))
+  .filter(node => node.status !== 'combined' && isPointInPolygon(node.position, path))
   .map(node => node.id)
 
 export const indexableText = (graph) => {

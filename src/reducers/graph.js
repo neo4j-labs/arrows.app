@@ -1,8 +1,9 @@
 import {emptyGraph} from "../model/Graph";
-import {moveTo, setCaption} from "../model/Node";
+import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
+import { moveTo, setCaption } from "../model/Node";
 import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
-import {idsMatch} from "../model/Id";
+import { idsMatch } from "../model/Id";
 import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
 
 const graph = (state = emptyGraph(), action) => {

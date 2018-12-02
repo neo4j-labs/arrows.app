@@ -3,10 +3,11 @@ import {snapToDistancesAndAngles} from "./geometricSnapping"
 import {idsMatch} from "../model/Id"
 import {Guides} from "../graphics/Guides"
 
-export const activateRing = (sourceNodeId) => {
+export const activateRing = (sourceNodeId, nodeType) => {
   return {
     type: 'ACTIVATE_RING',
-    sourceNodeId
+    sourceNodeId,
+    nodeType
   }
 }
 
