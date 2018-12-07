@@ -14,7 +14,7 @@ import {tryUpdateSelectionPath} from "./selectionPath"
 import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
 import {idsMatch} from "../model/Id";
 import {getStyleSelector} from "../selectors/style";
-import { createClusterGang, splitCluster } from "./gang";
+import { createClusterGang, removeCluster } from "./gang";
 
 const LongPressTime = 300
 
@@ -261,8 +261,8 @@ export const mouseUp = () => {
         const dragToCreate = state.gestures.dragToCreate;
 
         if (dragToCreate.sourceNodeId) {
-          if (dragToCreate.nodeType === 'super') {
-            // dispatch(splitCluster(dragToCreate.sourceNodeId))
+          if (dragToCreate.nodeType === 'cluster') {
+            dispatch(removeCluster(dragToCreate.sourceNodeId))
           } else if (dragToCreate.targetNodeId) {
             dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
           } else {

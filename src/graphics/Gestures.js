@@ -121,7 +121,7 @@ export default class Gestures {
           const arrowData = getArrowGeometryData(sourcePoint, sourceBorderPoint, targetPoint, targetBorderPoint, 5)
           drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)
         } else {
-          const ringColor = sourceNode.type === 'super' ? redActive : purple
+          const ringColor = sourceNode.type === 'cluster' ? redActive : purple
           drawRing(ctx, transform(sourceNodeIdPosition), ringColor, outerRadius)
         }
       }

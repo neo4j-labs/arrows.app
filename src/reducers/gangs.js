@@ -12,6 +12,8 @@ export default (state = initialState, action) => {
         type: action.nodeType,
         members: action.members
       }])
+    case 'REMOVE_CLUSTER':
+      return state.filter(gang => gang.id !== action.nodeId)
     default:
       return state
   }
