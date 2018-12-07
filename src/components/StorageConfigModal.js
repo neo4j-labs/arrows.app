@@ -112,26 +112,6 @@ class StorageConfigModal extends Component {
       </Form>
     )
 
-    const panes = [{
-      menuItem: 'New Graph', render: () => (
-        <Tab.Pane attached={false}>
-          <Button primary onClick={this.onCancel} content="Empty Graph" />
-        </Tab.Pane>
-      )
-    }, {
-      menuItem: 'Neo4j Database', render: () => (
-        <Tab.Pane attached={false}>{dbTabContent}</Tab.Pane>
-        )
-    }, {
-      menuItem: 'Google Drive', render: () => (
-        <Tab.Pane attached={false}>
-          <GoogleDriveConnection onFilePicked={this.props.onFilePicked} saveToDrive={this.props.saveToDrive} />
-        </Tab.Pane>
-      )
-    }]
-
-    const tabs = <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
-
     return (
       <Modal
         open={true}

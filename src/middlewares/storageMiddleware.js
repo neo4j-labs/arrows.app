@@ -1,5 +1,5 @@
 import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
-import {renameGoogleDriveStore, saveToStore as updateGoogleDriveStore} from "../actions/googleDrive";
+import {renameGoogleDriveStore, saveFile} from "../actions/googleDrive";
 
 const updateQueue = []
 
@@ -36,7 +36,7 @@ const limitedUpdater = (() => {
         }
       }
 
-      const getUpdateCallback = runRequestTime => {
+      const getUpdateCallback = runRequestTime => () => {
         lastUpdateTime = new Date()
         updating = false
 
@@ -70,7 +70,7 @@ export const storageMiddleware = store => next => action => {
         const result = next(action)
         const newState = store.getState()
         if (oldState.graph !== newState.graph) {
-          limitedUpdater.updateRequested(callback => updateGoogleDriveStore(newState, store.dispatch, callback))
+          limitedUpdater.updateRequested(callback => saveFile(newState.graph, storage.googleDrive.fileId, newState.diagramName, callback))
         }
         return result
       case "DATABASE":

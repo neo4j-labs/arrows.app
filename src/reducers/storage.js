@@ -30,8 +30,21 @@ export default function storage(state = {
       return {
         ...state,
         mode: 'GOOGLE_DRIVE',
+      }
+    case 'UPDATE_GOOGLE_DRIVE_FILE_ID':
+      return {
+        ...state,
         googleDrive: {
+          ...state.googleDrive,
           fileId: action.fileId
+        }
+      }
+    case 'GOOGLE_DRIVE_SIGN_IN_STATUS':
+      return {
+        ...state,
+        googleDrive: {
+          ...state.googleDrive,
+          signedIn: action.signedIn
         }
       }
     case 'VIEW_STORAGE_CONFIG':

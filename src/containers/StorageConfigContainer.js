@@ -5,7 +5,7 @@ import {
   initializeConnection
 } from "../actions/databaseConnection";
 import { fetchGraphFromDrive } from "../storage/googleDriveStorage";
-import { saveGraphToGoogleDrive } from "../actions/googleDrive";
+import {initializeGoogleDriveStorage} from "../actions/googleDrive";
 import {useGoogleDriveStorage} from "../actions/storage";
 
 const mapStateToProps = state => {
@@ -21,7 +21,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(initializeConnection())
     },
     useGoogleDriveStorage: () => {
-      dispatch(useGoogleDriveStorage())
+      dispatch(initializeGoogleDriveStorage())
     },
     onConnectionParametersUpdated: (connectionParameters) => {
       dispatch(updateConnectionParameters(connectionParameters))
@@ -33,10 +33,6 @@ const mapDispatchToProps = dispatch => {
     onFilePicked: fileId => {
       dispatch(useGoogleDriveStorage(fileId))
       dispatch(fetchGraphFromDrive(fileId))
-      dispatch(hideStorageConfig())
-    },
-    saveToDrive: () => {
-      dispatch(saveGraphToGoogleDrive())
       dispatch(hideStorageConfig())
     }
   }

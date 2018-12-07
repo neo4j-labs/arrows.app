@@ -4,7 +4,6 @@ import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import Header from '../components/Header'
 import {viewStorageConfig} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
-import {saveGraphToGoogleDrive} from "../actions/googleDrive";
 import {setDiagramName} from "../actions/diagramName";
 import {showExportDialog} from "../actions/exporting";
 
@@ -32,9 +31,6 @@ const mapDispatchToProps = dispatch => {
     },
     onViewStorageConfig: () => {
       dispatch(viewStorageConfig())
-    },
-    onGoogleDriveClick: () => {
-      dispatch(saveGraphToGoogleDrive())
     },
     onExportClick: () => {
       dispatch(showExportDialog())

@@ -12,6 +12,7 @@ import {viewportMiddleware} from "./middlewares/viewportMiddleware"
 import {storageMiddleware} from "./middlewares/storageMiddleware";
 import {initialiseStorageFromWindowLocationHash} from "./actions/storage";
 import {windowLocationHashMiddleware} from "./middlewares/windowLocationHashMiddleware";
+import {initGoogleDriveApi} from "./actions/googleDrive";
 
 const middleware = [storageMiddleware, windowLocationHashMiddleware, viewportMiddleware]
 
@@ -20,6 +21,8 @@ let store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
   applyMiddleware(thunkMiddleware, ...middleware)
 )
+initialiseStorageFromWindowLocationHash(store)
+initGoogleDriveApi(store)
 
 const renderApp = () => {
   render(
@@ -30,7 +33,6 @@ const renderApp = () => {
   )
 }
 
-store.dispatch(initialiseStorageFromWindowLocationHash())
 renderApp()
 
 registerServiceWorker()
