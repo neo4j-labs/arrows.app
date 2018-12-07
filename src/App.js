@@ -10,7 +10,6 @@ import HeaderContainer from './containers/HeaderContainer'
 import InspectorChooser from "./containers/InspectorChooser"
 import EditConnectionParametersContainer from "./containers/StorageConfigContainer"
 import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer"
-import {GoogleDriveIntegration} from "./components/GoogleDriveIntegration"
 import {inspectorWidth} from "./model/applicationLayout";
 import ExportContainer from "./containers/ExportContainer";
 
@@ -43,7 +42,6 @@ class App extends Component {
           {exportModal}
           <HeaderContainer/>
           <GraphContainer/>
-          <GoogleDriveIntegration/>
         </Sidebar.Pusher>
       </Sidebar.Pushable>
     );
