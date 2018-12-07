@@ -1,3 +1,5 @@
+import { moveTo } from "../model/Node";
+
 const initialState = []
 
 export default (state = initialState, action) => {
@@ -14,6 +16,20 @@ export default (state = initialState, action) => {
       }])
     case 'REMOVE_CLUSTER':
       return state.filter(gang => gang.id !== action.nodeId)
+
+    case 'MOVE_NODES':
+      const nodeIdToNode = {}
+      state.forEach((node) => {
+        nodeIdToNode[node.id] = node
+      })
+
+      action.nodePositions.forEach((nodePosition) => {
+        if(nodeIdToNode[nodePosition.nodeId]) {
+          nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
+        }
+      })
+
+      return [...Object.values(nodeIdToNode)]
     default:
       return state
   }

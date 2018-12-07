@@ -128,7 +128,9 @@ const graph = (state = emptyGraph(), action) => {
         nodeIdToNode[node.id] = node
       })
       action.nodePositions.forEach((nodePosition) => {
-        nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
+        if(nodeIdToNode[nodePosition.nodeId]) {
+          nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
+        }
       })
 
       return {
