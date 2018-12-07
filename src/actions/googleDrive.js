@@ -26,10 +26,10 @@ export const initGoogleDriveApi = (store) => {
     const state = store.getState()
     if (state.storage.mode === 'GOOGLE_DRIVE') {
       const fileId = state.storage.googleDrive.fileId;
-      if (fileId === null) {
-        saveFile(state.graph, null, state.diagramName, onFileSaved)
-      } else {
+      if (fileId) {
         store.dispatch(fetchGraphFromDrive(fileId))
+      } else {
+        saveFile(state.graph, null, state.diagramName, onFileSaved)
       }
     }
   }
