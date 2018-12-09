@@ -5,9 +5,11 @@ export const windowLocationHashMiddleware = store => next => action => {
 
   switch (storage.mode) {
     case "GOOGLE_DRIVE":
-      window.location.hash = `#/googledrive/ids=${storage.googleDrive.fileId}`
+      if (storage.googleDrive.fileId) {
+        window.location.hash = `#/googledrive/ids=${storage.googleDrive.fileId}`
+      }
       break
-    case "NEO4J":
+    case "DATABASE":
       window.location.hash = `#/neo4j`
       break
   }
