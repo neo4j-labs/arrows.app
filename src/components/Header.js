@@ -1,7 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux'
 import { Icon, Menu, Popup, Dropdown } from 'semantic-ui-react'
-import DocumentTitle from 'react-document-title'
 import {DiagramNameEditor} from "./DiagramNameEditor";
 
 const storageStatusMessage = (props) => {
@@ -58,16 +57,10 @@ const Header = (props) => (
         />
       </Dropdown.Menu>
     </Dropdown>
-    <Menu.Item style={{
-      minWidth: 200
-    }}>
-      <DocumentTitle title={props.diagramName + ' - Arrows'}>
-        <DiagramNameEditor
-          diagramName={props.diagramName}
-          setDiagramName={props.setDiagramName}
-        />
-      </DocumentTitle>
-    </Menu.Item>
+    <DiagramNameEditor
+      diagramName={props.diagramName}
+      setDiagramName={props.setDiagramName}
+    />
     <Menu.Item onClick={props.storage.mode === 'DATABASE' ? props.onEditConnectionParameters : null}>
       {storageIcon(props)}
       {storageStatusMessage(props)}

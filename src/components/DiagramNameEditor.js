@@ -1,5 +1,6 @@
 import React, {Component} from 'react'
-import {Input, Ref} from 'semantic-ui-react'
+import {Modal, Button, Input, Menu} from 'semantic-ui-react'
+import DocumentTitle from 'react-document-title'
 
 export class DiagramNameEditor extends Component {
 
@@ -31,8 +32,10 @@ export class DiagramNameEditor extends Component {
     })
   }
 
-  onBlur = () => {
-    this.commit()
+  onCancel = () => {
+    this.setState({
+      editable: false
+    })
   }
 
   onKeyPress = (e) => {
@@ -48,37 +51,42 @@ export class DiagramNameEditor extends Component {
     this.props.setDiagramName(this.state.diagramName)
   }
 
-  handleRef = (ref) => {
-    this.ref = ref
-  }
-
   render() {
-    if (this.state.editable) {
-      return (
-        <Ref innerRef={this.handleRef}>
-          <Input
-            value={this.state.diagramName}
-            onChange={this.onChange}
-            onBlur={this.onBlur}
-            onKeyPress={this.onKeyPress}
-            transparent
-          />
-        </Ref>
-      )
-    } else {
-      return (
-        <span
-          onClick={this.onClick}
-        >{this.state.diagramName}</span>
-      )
-    }
-  }
-
-  componentDidUpdate() {
-    if (this.ref) {
-      const input = this.ref.querySelector('input');
-      this.ref.style.width = input.scrollWidth + 'px'
-      input.focus()
-    }
+    return (
+      <React.Fragment>
+        <Menu.Item onClick={this.onClick}>
+          <DocumentTitle title={this.props.diagramName + ' - Arrows'}>
+            <span style={{fontWeight: 'bold'}}>{this.props.diagramName}</span>
+          </DocumentTitle>
+        </Menu.Item>
+        <Modal
+          open={this.state.editable}
+          size='mini'
+          onClose={this.onCancel}
+        >
+          <Modal.Header>Diagram Name</Modal.Header>
+          <Modal.Content>
+            <Input
+              fluid
+              value={this.state.diagramName}
+              onChange={this.onChange}
+              onKeyPress={this.onKeyPress}
+            />
+          </Modal.Content>
+          <Modal.Actions>
+            <Button
+              onClick={this.onCancel}
+              content="Cancel"
+            />
+            <Button
+              type="submit"
+              onClick={this.commit}
+              positive
+              content="Save"
+            />
+          </Modal.Actions>
+        </Modal>
+      </React.Fragment>
+    )
   }
 }
