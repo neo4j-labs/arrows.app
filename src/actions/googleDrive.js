@@ -23,13 +23,15 @@ export const initGoogleDriveApi = (store) => {
 
   const updateSignedInStatus = (signedIn) => {
     store.dispatch(googleDriveSignInStatusChanged(signedIn))
-    const state = store.getState()
-    if (state.storage.mode === 'GOOGLE_DRIVE') {
-      const fileId = state.storage.googleDrive.fileId;
-      if (fileId) {
-        store.dispatch(fetchGraphFromDrive(fileId))
-      } else {
-        saveFile(state.graph, null, state.diagramName, onFileSaved)
+    if (signedIn) {
+      const state = store.getState()
+      if (state.storage.mode === 'GOOGLE_DRIVE') {
+        const fileId = state.storage.googleDrive.fileId;
+        if (fileId) {
+          store.dispatch(fetchGraphFromDrive(fileId))
+        } else {
+          saveFile(state.graph, null, state.diagramName, onFileSaved)
+        }
       }
     }
   }

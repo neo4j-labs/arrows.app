@@ -4,9 +4,7 @@ import {
   hideStorageConfig, forgetConnectionParameters, updateConnectionParameters,
   initializeConnection
 } from "../actions/databaseConnection";
-import { fetchGraphFromDrive } from "../storage/googleDriveStorage";
 import {initializeGoogleDriveStorage} from "../actions/googleDrive";
-import {useGoogleDriveStorage} from "../actions/storage";
 
 const mapStateToProps = state => {
   return {
@@ -31,9 +29,7 @@ const mapDispatchToProps = dispatch => {
     },
     forgetConnectionParameters: forgetConnectionParameters,
     onFilePicked: fileId => {
-      dispatch(useGoogleDriveStorage(fileId))
-      dispatch(fetchGraphFromDrive(fileId))
-      dispatch(hideStorageConfig())
+      // TODO: implement this when picker functionality restored.
     }
   }
 }

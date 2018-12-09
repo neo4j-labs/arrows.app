@@ -1,8 +1,6 @@
 import { fetchingGraph, fetchingGraphSucceeded } from "../actions/neo4jStorage";
-import config from "../config";
 import { Point } from "../model/Point";
 import { setDiagramName } from "../actions/diagramName";
-import {DISCOVERY_DOCS, SCOPES} from "../actions/googleDrive";
 
 export function fetchGraphFromDrive(fileId) {
   return function (dispatch) {
@@ -20,23 +18,8 @@ export function fetchGraphFromDrive(fileId) {
           dispatch(setDiagramName(fileName))
         })
 
-    window.gapi.client.init({
-      apiKey: config.apiKey,
-      clientId: config.clientId,
-      discoveryDocs: DISCOVERY_DOCS,
-      scope: SCOPES
-    }).then(() => {
-      if (window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-        fetchFileName()
-        fetchData()
-      } else {
-        window.gapi.auth2.getAuthInstance().signIn();
-        fetchFileName()
-        fetchData()
-      }
-    }, function(reason) {
-      console.log('Error: ' + reason.result.error.message);
-    })
+    fetchFileName()
+    fetchData()
   }
 }
 
