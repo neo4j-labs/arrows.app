@@ -12,6 +12,7 @@ import EditConnectionParametersContainer from "./containers/StorageConfigContain
 import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer"
 import {inspectorWidth} from "./model/applicationLayout";
 import ExportContainer from "./containers/ExportContainer";
+import GoogleSignInModal from "./components/editors/GoogleSignInModal";
 
 class App extends Component {
   constructor (props) {
@@ -40,6 +41,7 @@ class App extends Component {
           {connectionParametersModal}
           {databaseConnectionMessageModal}
           {exportModal}
+          <GoogleSignInModal/>
           <HeaderContainer/>
           <GraphContainer/>
         </Sidebar.Pusher>
