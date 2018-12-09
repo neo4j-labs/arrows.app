@@ -3,7 +3,6 @@ import {connect} from 'react-redux'
 import { Icon, Menu, Popup, Dropdown } from 'semantic-ui-react'
 import DocumentTitle from 'react-document-title'
 import {DiagramNameEditor} from "./DiagramNameEditor";
-import neo4j_logo from  './neo4j_icon.svg'
 
 const storageStatusMessage = (props) => {
   const storageNames = {
@@ -37,13 +36,11 @@ const storageIcon = (props) => {
   switch (props.storage.mode) {
     case 'DATABASE':
       return (
-        <img height='14px' src={neo4j_logo}
-             onClick={props.onViewStorageConfig}/>
+        <Icon name='database'/>
       )
     case 'GOOGLE_DRIVE':
       return (
-        <Icon name='google drive'
-              onClick={props.onViewStorageConfig}/>
+        <Icon name='google drive'/>
       )
     default:
       return null
@@ -71,7 +68,7 @@ const Header = (props) => (
         />
       </DocumentTitle>
     </Menu.Item>
-    <Menu.Item>
+    <Menu.Item onClick={props.storage.mode === 'DATABASE' ? props.onEditConnectionParameters : null}>
       {storageIcon(props)}
       {storageStatusMessage(props)}
     </Menu.Item>

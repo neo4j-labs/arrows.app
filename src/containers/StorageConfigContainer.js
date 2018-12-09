@@ -1,16 +1,10 @@
 import {connect} from "react-redux"
 import EditConnectionParametersForm from "../components/StorageConfigModal";
-import {
-  hideStorageConfig, forgetConnectionParameters, updateConnectionParameters,
-  initializeConnection
-} from "../actions/databaseConnection";
+import {initializeConnection} from "../actions/databaseConnection";
 import {initializeGoogleDriveStorage} from "../actions/googleDrive";
 
-const mapStateToProps = state => {
-  return {
-    connectionParameters: state.storage.database.connectionParameters,
-    errorMsg: state.storage.database.errorMsg
-  }
+const mapStateToProps = () => {
+  return {}
 }
 
 const mapDispatchToProps = dispatch => {
@@ -20,16 +14,6 @@ const mapDispatchToProps = dispatch => {
     },
     useGoogleDriveStorage: () => {
       dispatch(initializeGoogleDriveStorage())
-    },
-    onConnectionParametersUpdated: (connectionParameters) => {
-      dispatch(updateConnectionParameters(connectionParameters))
-    },
-    onCancel: () =>{
-      dispatch(hideStorageConfig())
-    },
-    forgetConnectionParameters: forgetConnectionParameters,
-    onFilePicked: fileId => {
-      // TODO: implement this when picker functionality restored.
     }
   }
 }

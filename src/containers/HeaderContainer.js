@@ -1,12 +1,12 @@
 import {connect} from 'react-redux'
 import {createNode} from '../actions/graph'
-import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import Header from '../components/Header'
-import {viewStorageConfig} from "../actions/databaseConnection";
+import {editConnectionParameters} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
 import {setDiagramName} from "../actions/diagramName";
 import {showExportDialog} from "../actions/exporting";
 import {newDiagram} from "../actions/diagram";
+import {reloadGraph} from "../actions/storage";
 
 const mapStateToProps = state => {
   return {
@@ -31,10 +31,10 @@ const mapDispatchToProps = dispatch => {
       dispatch(createNode())
     },
     onReloadGraphClick: () => {
-      dispatch(fetchGraphFromDatabase())
+      dispatch(reloadGraph())
     },
-    onViewStorageConfig: () => {
-      dispatch(viewStorageConfig())
+    onEditConnectionParameters: () => {
+      dispatch(editConnectionParameters())
     },
     onExportClick: () => {
       dispatch(showExportDialog())

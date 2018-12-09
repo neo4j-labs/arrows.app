@@ -11,10 +11,10 @@ const initialConnectionParameters = () => {
 
 export default function storage(state = {
   mode: 'NONE',
-  viewingConfig: false,
   database: {
-    connectionParametersEditable: true,
     connectionParameters: initialConnectionParameters(),
+    editingConnectionParameters: false,
+    connectionParametersEditable: true,
     showDisconnectedDialog: false,
     errorMsg: null
   },
@@ -53,16 +53,22 @@ export default function storage(state = {
           signedIn: action.signedIn
         }
       }
-    case 'VIEW_STORAGE_CONFIG':
+    case 'EDIT_CONNECTION_PARAMETERS':
       return {
         ...state,
-        viewingConfig: true
+        database: {
+          ...state.database,
+          editingConnectionParameters: true
+        }
       }
 
-    case 'HIDE_STORAGE_CONFIG':
+    case 'CANCEL_EDIT_CONNECTION_PARAMETERS':
       return {
         ...state,
-        viewingConfig: false
+        database: {
+          ...state.database,
+          editingConnectionParameters: false
+        }
       }
 
     case 'DISABLE_EDITING_CONNECTION_PARAMETERS':
@@ -77,9 +83,9 @@ export default function storage(state = {
     case 'UPDATE_CONNECTION_PARAMETERS':
       return {
         ...state,
-        viewingConfig: false,
         database: {
           ...state.database,
+          editingConnectionParameters: false,
           showDisconnectedDialog: false,
           connectionParameters: action.connectionParameters,
           errorMsg: null
@@ -89,10 +95,10 @@ export default function storage(state = {
     case 'FAILED_DATABASE_CONNECTION':
       return {
         ...state,
-        viewingConfig: state.database.connectionParametersEditable,
         database: {
           ...state.database,
-          showDisconnectedDialog: state.database.connectionParametersEditable,
+          editingConnectionParameters: state.database.connectionParametersEditable,
+          showDisconnectedDialog: !state.database.connectionParametersEditable,
           connectionParameters: action.connectionParameters,
           errorMsg: action.errorMsg
         }

@@ -8,11 +8,12 @@ import { compose } from 'recompose'
 import { Sidebar } from 'semantic-ui-react'
 import HeaderContainer from './containers/HeaderContainer'
 import InspectorChooser from "./containers/InspectorChooser"
-import EditConnectionParametersContainer from "./containers/StorageConfigContainer"
+import StorageConfigContainer from "./containers/StorageConfigContainer"
 import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer"
 import {inspectorWidth} from "./model/applicationLayout";
 import ExportContainer from "./containers/ExportContainer";
 import GoogleSignInModal from "./components/editors/GoogleSignInModal";
+import DatabaseConnectionContainer from "./containers/DatabaseConnectionContainer";
 
 class App extends Component {
   constructor (props) {
@@ -20,7 +21,8 @@ class App extends Component {
     window.onkeydown = this.fireKeyboardShortcutAction.bind(this)
   }
   render() {
-    const connectionParametersModal = this.props.viewingConfig ? (<EditConnectionParametersContainer/>) : null
+    const storageConfigModal = this.props.viewingConfig ? (<StorageConfigContainer/>) : null
+    const databaseConnectionModal = this.props.editingConnectionParameters ? (<DatabaseConnectionContainer/>) : null
     const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
     const exportModal = this.props.showExportDialog ? (<ExportContainer/>) : null
     return (
@@ -38,7 +40,8 @@ class App extends Component {
         <Sidebar.Pusher
           style={{height: '100%'}}
         >
-          {connectionParametersModal}
+          {storageConfigModal}
+          {databaseConnectionModal}
           {databaseConnectionMessageModal}
           {exportModal}
           <GoogleSignInModal/>
@@ -66,7 +69,8 @@ class App extends Component {
 
 const mapStateToProps = (state) => ({
   inspectorVisible: state.applicationLayout.inspectorVisible,
-  viewingConfig: state.storage.viewingConfig || state.storage.mode === 'NONE',
+  viewingConfig: state.storage.mode === 'NONE',
+  editingConnectionParameters: state.storage.database.editingConnectionParameters,
   showDisconnectedDialog: state.storage.database.showDisconnectedDialog,
   showExportDialog: state.exporting.showExportDialog
 })

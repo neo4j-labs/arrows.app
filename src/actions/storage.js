@@ -1,5 +1,6 @@
 import {initializeConnection} from "./databaseConnection";
 import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
+import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 export const neo4jUrlRegex = /^#\/neo4j/
@@ -46,3 +47,19 @@ export const googleDriveSignInStatusChanged = (signedIn) => ({
   type: 'GOOGLE_DRIVE_SIGN_IN_STATUS',
   signedIn
 })
+
+export const reloadGraph = () => {
+  return function (dispatch, getState) {
+    const { storage } = getState()
+    switch (storage.mode) {
+      case "GOOGLE_DRIVE":
+        if (storage.googleDrive.fileId) {
+          dispatch(fetchGraphFromDrive(storage.googleDrive.fileId))
+        }
+        break
+      case "DATABASE":
+        dispatch(fetchGraphFromDatabase())
+        break
+    }
+  }
+}
