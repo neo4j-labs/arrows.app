@@ -21,6 +21,12 @@ export default function storage(state = {
   googleDrive: {}
 }, action) {
   switch (action.type) {
+    case 'NEW_DIAGRAM': {
+      return {
+        ...state,
+        mode: 'NONE'
+      }
+    }
     case 'USE_NEO4J_STORAGE':
       return {
         ...state,

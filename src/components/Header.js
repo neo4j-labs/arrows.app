@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import { Icon, Menu, Popup } from 'semantic-ui-react'
+import { Icon, Menu, Popup, Dropdown } from 'semantic-ui-react'
 import DocumentTitle from 'react-document-title'
 import {DiagramNameEditor} from "./DiagramNameEditor";
 import neo4j_logo from  './neo4j_icon.svg'
@@ -52,6 +52,15 @@ const storageIcon = (props) => {
 
 const Header = (props) => (
   <Menu attached='top' style={{borderRadius: 0}} borderless>
+    <Dropdown item icon='bars'>
+      <Dropdown.Menu>
+        <Dropdown.Item
+          icon='square outline'
+          text='New Diagram'
+          onClick={props.onNewDiagramClick}
+        />
+      </Dropdown.Menu>
+    </Dropdown>
     <Menu.Item style={{
       minWidth: 200
     }}>
@@ -65,16 +74,18 @@ const Header = (props) => (
     <Menu.Item>
       {storageIcon(props)}
       {storageStatusMessage(props)}
-      <Icon onClick={props.onReloadGraphClick} name='refresh'/>
     </Menu.Item>
-    <Menu.Item active={true} color='blue'>
-      <Icon name='users'/>Share
+    <Menu.Item onClick={props.onReloadGraphClick}>
+      <Icon name='refresh'/>
     </Menu.Item>
     <Menu.Item onClick={props.onExportClick}>
       <Icon name='download'/>
     </Menu.Item>
     <Menu.Item onClick={props.onPlusNodeClick}>
-      <Icon name='plus circle'/>Node
+      <Icon.Group>
+        <Icon name='circle' />
+        <Icon corner name='add' />
+      </Icon.Group>
     </Menu.Item>
     <Menu.Item
       position='right'

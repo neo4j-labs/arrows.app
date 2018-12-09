@@ -6,6 +6,7 @@ import {viewStorageConfig} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
 import {setDiagramName} from "../actions/diagramName";
 import {showExportDialog} from "../actions/exporting";
+import {newDiagram} from "../actions/diagram";
 
 const mapStateToProps = state => {
   return {
@@ -17,6 +18,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onNewDiagramClick: () => {
+      dispatch(newDiagram())
+    },
     setDiagramName: (diagramName) => {
       dispatch(setDiagramName(diagramName))
     },

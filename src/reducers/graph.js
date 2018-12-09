@@ -7,6 +7,9 @@ import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styli
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
+    case 'NEW_DIAGRAM': {
+      return emptyGraph()
+    }
     case 'CREATE_NODE': {
       const newNodes = state.nodes.slice();
       newNodes.push({
