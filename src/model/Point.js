@@ -1,4 +1,4 @@
-import {Vector} from "./Vector";
+import { Vector } from "./Vector";
 
 export class Point {
   constructor(x, y) {
@@ -27,5 +27,9 @@ export class Point {
       this.x * Math.cos(angle) - this.y * Math.sin(angle),
       this.x * Math.sin(angle) + this.y * Math.cos(angle)
     )
+  }
+
+  isEqual(point) {
+    return this.x === point.x && this.y === point.y
   }
 }
