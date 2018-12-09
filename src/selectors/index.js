@@ -7,23 +7,34 @@ import {bundle} from "../model/graph/relationshipBundling";
 import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 import NodeToolboxes from "../graphics/NodeToolboxes";
 import { ViewTransformation } from "../state/ViewTransformation";
-import { Point } from "../model/Point";
-import { calculateBoundingBox } from "../graphics/utils/geometryUtils";
 import { calculateViewportTranslation } from "../middlewares/viewportMiddleware";
-import { applyGangs } from "./gang";
 
 const getSelection = (state) => state.selection
 const getViewTransformation = (state) => state.viewTransformation
-const getGangs = state => state.gangs
 
-export const getGraph = (state) => applyGangs(state.graph, state.gangs)
+export const getGraph = (state) => {
+  const { layers } = state.applicationLayout
+
+  if (layers.length > 0) {
+    const newState = layers.reduce((resultState, layer) => {
+      if (layer.selector) {
+        return layer.selector(resultState)
+      } else {
+        return resultState
+      }
+    }, state)
+    return newState.graph
+  } else {
+    return state.graph
+  }
+}
 
 export const getChildViewTransformation = (state) => new ViewTransformation(
   state.viewTransformation.scale * (400 / state.applicationLayout.windowSize.width)
 )
 
 export const getVisualGraph = createSelector(
-  [getGraph, getSelection, getViewTransformation, getGangs],
+  [getGraph, getSelection, getViewTransformation],
   (graph, selection, viewTransformation) => {
     const visualNodes = graph.nodes.reduce((nodeMap, node) => {
       nodeMap[node.id] = new VisualNode(node, viewTransformation, graph)

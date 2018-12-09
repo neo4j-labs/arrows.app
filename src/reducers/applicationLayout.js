@@ -1,8 +1,15 @@
 import {Size} from "../model/Size";
+import gangsSelector from '../selectors/gang'
+
+const gangsLayer = {
+  name: 'gangs',
+  selector: gangsSelector
+}
 
 const applicationLayout = (state = {
   windowSize: new Size(window.innerWidth, window.innerHeight),
-  inspectorVisible: true
+  inspectorVisible: true,
+  layers: [gangsLayer]
 }, action) => {
   switch (action.type) {
     case 'WINDOW_RESIZED':

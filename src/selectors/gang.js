@@ -1,11 +1,11 @@
-export const applyGangs = (graph, gangs, ) => {
-  if (!gangs || gangs.length === 0) {
-    return graph
+export default (state) => {
+  if (!state.gangs || state.gangs.length === 0) {
+    return state
   }
 
-  let resultGraph = graph
+  let resultGraph = state.graph
 
-  gangs.forEach(gang => {
+  state.gangs.forEach(gang => {
     switch (gang.type) {
       case 'cluster': {
         resultGraph = applyCluster(resultGraph, gang)
@@ -15,7 +15,10 @@ export const applyGangs = (graph, gangs, ) => {
     }
   })
 
-  return resultGraph
+  return {
+    ...state,
+    graph: resultGraph
+  }
 }
 
 
