@@ -3,8 +3,8 @@ import DatabaseConnectionMessage from "../components/DatabaseConnectionMessage";
 
 const mapStateToProps = state => {
   return {
-    connectionParameters: state.databaseConnection.connectionParameters,
-    errorMsg: state.databaseConnection.errorMsg,
+    connectionParameters: state.storage.database.connectionParameters,
+    errorMsg: state.storage.database.errorMsg,
   }
 }
 

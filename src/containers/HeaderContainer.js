@@ -1,21 +1,29 @@
 import {connect} from 'react-redux'
 import {createNode} from '../actions/graph'
-import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import Header from '../components/Header'
 import {editConnectionParameters} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
-import {saveGraphToGoogleDrive} from "../actions/googleDrive";
+import {setDiagramName} from "../actions/diagramName";
+import {showExportDialog} from "../actions/exporting";
+import {newDiagram} from "../actions/diagram";
+import {reloadGraph} from "../actions/storage";
 
 const mapStateToProps = state => {
   return {
-    connectionParametersEditable: state.databaseConnection.connectionParametersEditable,
-    storageStatus: state.storage.status,
+    diagramName: state.diagramName,
+    storageStatus: state.storageStatus,
     storage: state.storage
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
+    onNewDiagramClick: () => {
+      dispatch(newDiagram())
+    },
+    setDiagramName: (diagramName) => {
+      dispatch(setDiagramName(diagramName))
+    },
     showInspector: () => {
       dispatch(showInspector())
     },
@@ -23,13 +31,13 @@ const mapDispatchToProps = dispatch => {
       dispatch(createNode())
     },
     onReloadGraphClick: () => {
-      dispatch(fetchGraphFromDatabase())
+      dispatch(reloadGraph())
     },
     onEditConnectionParameters: () => {
       dispatch(editConnectionParameters())
     },
-    onGoogleDriveClick: () => {
-      dispatch(saveGraphToGoogleDrive())
+    onExportClick: () => {
+      dispatch(showExportDialog())
     }
   }
 }

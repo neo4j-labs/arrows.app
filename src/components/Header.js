@@ -1,63 +1,82 @@
 import React from 'react';
 import {connect} from 'react-redux'
-import {FETCHING_GRAPH, FETCHING_GRAPH_FAILED, UPDATING_GRAPH, UPDATING_GRAPH_FAILED} from "../state/storageStatus";
-import { Icon, Menu } from 'semantic-ui-react'
+import { Icon, Menu, Popup, Dropdown } from 'semantic-ui-react'
+import {DiagramNameEditor} from "./DiagramNameEditor";
 
 const storageStatusMessage = (props) => {
-  if (props.storageStatus === FETCHING_GRAPH) {
-    return (
-      <span>Loading graph from database...</span>
-    )
+  const storageNames = {
+    DATABASE: 'Neo4j database',
+    GOOGLE_DRIVE: 'Google Drive'
   }
-  if (props.storageStatus === FETCHING_GRAPH_FAILED) {
-    return (
-      <span>Failed to load graph from database, see Javascript console for details.</span>
-    )
+  const moodIcons = {
+    HAPPY: 'check circle outline',
+    BUSY: 'dot circle outline',
+    SAD: 'warning'
   }
-  if (props.storageStatus === UPDATING_GRAPH) {
+  const storageName = storageNames[props.storage.mode]
+  if (storageName) {
+    const statusMessages = {
+      IDLE: `Graph stored safely in ${storageName}`,
+      FETCHING_GRAPH: `Loading graph from ${storageName}...`,
+      FETCHING_GRAPH_FAILED: `Failed to load graph from ${storageName}, see Javascript console for details.`,
+      UPDATING_GRAPH: `Saving graph to ${storageName}...`,
+      UPDATING_GRAPH_FAILED: `Failed to save graph to ${storageName}, see Javascript console for details.`
+    }
     return (
-      <span>Saving graph to database...</span>
-    )
-  }
-  if (props.storageStatus === UPDATING_GRAPH_FAILED) {
-    return (
-      <span>Failed to save graph to database, see Javascript console for details.</span>
-    )
-  }
-}
-
-const editConnectionParameters = (props) => {
-  return props.connectionParametersEditable ? (
-    <Menu.Item onClick={props.onEditConnectionParameters}>
-      <Icon name='database'/>Graph storage
-    </Menu.Item>
-  ) : null
-}
-
-const googleDriveItem = (props) => {
-  if (props.storage.fileId) {
-    return (
-      <Menu.Item onClick={() => props.onGoogleDriveClick()}>
-        <Icon name='google drive'/>
-        Save to Google drive
-      </Menu.Item>
+      <Popup trigger={<Icon name={moodIcons[props.storageStatus.mood]}/>}
+             content={statusMessages[props.storageStatus.status]}/>
     )
   } else {
     return null
   }
 }
 
+const storageIcon = (props) => {
+  switch (props.storage.mode) {
+    case 'DATABASE':
+      return (
+        <Icon name='database'/>
+      )
+    case 'GOOGLE_DRIVE':
+      return (
+        <Icon name='google drive'/>
+      )
+    default:
+      return null
+  }
+}
+
 const Header = (props) => (
-  <Menu attached='top' style={{borderRadius: 0}}>
-    <Menu.Item onClick={props.onPlusNodeClick}>
-      <Icon name='plus circle'/>Node
+  <Menu attached='top' style={{borderRadius: 0}} borderless>
+    <Dropdown item icon='bars'>
+      <Dropdown.Menu>
+        <Dropdown.Item
+          icon='square outline'
+          text='New Diagram'
+          onClick={props.onNewDiagramClick}
+        />
+      </Dropdown.Menu>
+    </Dropdown>
+    <DiagramNameEditor
+      diagramName={props.diagramName}
+      setDiagramName={props.setDiagramName}
+    />
+    <Menu.Item onClick={props.storage.mode === 'DATABASE' ? props.onEditConnectionParameters : null}>
+      {storageIcon(props)}
+      {storageStatusMessage(props)}
     </Menu.Item>
     <Menu.Item onClick={props.onReloadGraphClick}>
-      <Icon name='refresh'/>Graph
+      <Icon name='refresh'/>
     </Menu.Item>
-    {editConnectionParameters(props)}
-    {googleDriveItem(props)}
-    {storageStatusMessage(props)}
+    <Menu.Item onClick={props.onExportClick}>
+      <Icon name='download'/>
+    </Menu.Item>
+    <Menu.Item onClick={props.onPlusNodeClick}>
+      <Icon.Group>
+        <Icon name='circle' />
+        <Icon corner name='add' />
+      </Icon.Group>
+    </Menu.Item>
     <Menu.Item
       position='right'
       onClick={props.showInspector}

@@ -1,5 +1,4 @@
 import {emptyGraph} from "../model/Graph";
-import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import {moveTo, setCaption} from "../model/Node";
 import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
@@ -8,6 +7,9 @@ import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styli
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
+    case 'NEW_DIAGRAM': {
+      return emptyGraph()
+    }
     case 'CREATE_NODE': {
       const newNodes = state.nodes.slice();
       newNodes.push({
@@ -184,7 +186,7 @@ const graph = (state = emptyGraph(), action) => {
         relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? reverse(relationship) : relationship)
       }
 
-    case FETCHING_GRAPH_SUCCEEDED:
+    case 'FETCHING_GRAPH_SUCCEEDED':
       return action.storedGraph
 
     default:

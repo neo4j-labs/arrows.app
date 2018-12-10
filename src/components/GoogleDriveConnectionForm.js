@@ -1,15 +1,9 @@
 import React, { Component } from 'react'
 import config from "../config";
-import { Form, Button, Icon, Popup, Input } from 'semantic-ui-react'
-import { defaultConnectionUri } from "../reducers/databaseConnection";
-
-const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-const SCOPES = 'https://www.googleapis.com/auth/drive';
+import { Form, Button, Icon } from 'semantic-ui-react'
+import { DISCOVERY_DOCS, SCOPES } from '../actions/googleDrive'
 
 export class GoogleDriveConnection extends Component {
-  state = {
-    fileName: this.props.storage.fileName
-  }
 
   componentDidMount () {
     this.createPicker()
@@ -17,8 +11,10 @@ export class GoogleDriveConnection extends Component {
 
   createPicker() {
     const setupPicker = (accessToken) => {
+      const view = new window.google.picker.View(window.google.picker.ViewId.DOCS)
+      view.setMimeTypes("application/vnd.neo4j.arrows+json")
       this.picker = new window.google.picker.PickerBuilder()
-        .addView(window.google.picker.ViewId.DOCS)
+        .addView(view)
         .setOAuthToken(accessToken)
         .setDeveloperKey(config.apiKey)
         .setCallback(this.pickerCallback.bind(this))
@@ -63,13 +59,7 @@ export class GoogleDriveConnection extends Component {
           </Button>
         </Form.Field>
         <Form.Field>
-          <Form.Input
-            placeholder='file name'
-            value={this.state.fileName}
-            icon='file'
-            iconPosition='left' size='medium'
-            onChange={evt => this.setState({fileName: evt.target.value}) } />
-          <Button positive onClick={() => this.props.saveToDrive(this.state.fileName, this.state.fileName !== this.props.storage.fileName)}>
+          <Button positive onClick={() => this.props.saveToDrive()}>
             <Icon name='google drive' />
             Save to Google Drive
           </Button>

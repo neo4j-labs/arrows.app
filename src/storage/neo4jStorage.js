@@ -1,6 +1,7 @@
-import {fetchingGraph} from "../actions/neo4jStorage";
-import {readGraph} from "./cypherReadQueries";
-import {writeQueriesForAction} from "./cypherWriteQueries";
+import { fetchingGraph } from "../actions/neo4jStorage";
+import { readGraph } from "./cypherReadQueries";
+import { writeQueriesForAction } from "./cypherWriteQueries";
+
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 
 let driver = null
@@ -24,35 +25,18 @@ export function fetchGraphFromDatabase() {
   }
 }
 
-let updateQueue = []
+export const updateStore = (action, state) => {
+  const work = writeQueriesForAction(action, state)
 
-const drainUpdateQueue = (store) => {
-
-  const applyHead = () => {
-    if (updateQueue.length > 0) {
-      const action = updateQueue[0]
-      const work = writeQueriesForAction(action, store.getState())
-      const session = driver.session()
-      work(session)
-        .then(() => {
-          session.close()
-          updateQueue.shift()
-          applyHead()
-        })
-        .catch((error) => {
-          session.close()
-          console.log(error)
-        })
-    }
+  if (driver) {
+    const session = driver.session()
+    return work(session)
+      .then(() => {
+        session.close()
+      })
+      .catch((error) => {
+        session.close()
+        console.log(error)
+      })
   }
-
-  applyHead()
-}
-
-export const storageMiddleware = store => next => action => {
-  if (driver && action.category === 'GRAPH') {
-    updateQueue.push(action)
-    drainUpdateQueue(store)
-  }
-  return next(action)
 }
