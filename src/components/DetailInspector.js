@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Form, Input, Menu, Icon} from 'semantic-ui-react'
+import {Segment, Form, Input, Menu, Icon, Label} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
 import {selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle} from "../model/properties"
@@ -76,6 +76,21 @@ class DetailInspector extends Component {
                  placeholder={placeholder}
                  ref={elm => this.captionInput = elm}
                  onKeyDown={handleKeyDown.bind(this)}/>
+        </Form.Field>
+      )
+    }
+
+    if (selectionIncludes.nodes) {
+      fields.push(
+        <Form.Field key='_labek'>
+          <label>Labels</label>
+          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
+          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
+          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
+          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
+          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
+          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
+          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
         </Form.Field>
       )
     }
