@@ -16,7 +16,7 @@ const graph = (state = emptyGraph(), action) => {
         id: action.newNodeId,
         position: action.newNodePosition,
         caption: action.caption,
-        style: action.style,
+        style: {},
         properties: {}
       })
       return {style: state.style, nodes: newNodes, relationships: state.relationships}
@@ -29,13 +29,14 @@ const graph = (state = emptyGraph(), action) => {
         id: action.targetNodeId,
         position: action.targetNodePosition,
         caption: action.caption,
-        style: action.style,
+        style: {},
         properties: {}
       }
       newNodes.push(newNode)
       newRelationships.push({
         id: action.newRelationshipId,
         type: '',
+        style: {},
         properties: {},
         fromId: action.sourceNodeId,
         toId: newNode.id
@@ -48,6 +49,7 @@ const graph = (state = emptyGraph(), action) => {
       newRelationships.push({
         id: action.newRelationshipId,
         type: '',
+        style: {},
         properties: {},
         fromId: action.sourceNodeId,
         toId: action.targetNodeId
