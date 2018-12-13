@@ -1,7 +1,6 @@
 import {calculateBoundingBox} from "./geometryUtils";
 import {ViewTransformation} from "../../state/ViewTransformation";
 import {getVisualGraph} from "../../selectors/index";
-import {defaultNewNodeRadius} from "../constants";
 import {Vector} from "../../model/Vector";
 
 export const renderGraphAtScaleFactor = (graph, scaleFactor) => {
@@ -22,9 +21,13 @@ export const renderGraphAtScaleFactor = (graph, scaleFactor) => {
   const visualGraph = getVisualGraph(renderState)
 
   const canvas = window.document.createElement('canvas')
-  canvas.width = Math.ceil(scaleFactor * boundingBox.width)
-  canvas.height = Math.ceil(scaleFactor * boundingBox.height)
-  const ctx = canvas.getContext('2d');
+  const canvasWidth = Math.ceil(scaleFactor * boundingBox.width);
+  const canvasHeight = Math.ceil(scaleFactor * boundingBox.height);
+  canvas.width = canvasWidth
+  canvas.height = canvasHeight
+  const ctx = canvas.getContext('2d')
+  ctx.fillStyle = 'white'
+  ctx.fillRect(0, 0, canvasWidth, canvasHeight)
   visualGraph.draw(ctx)
   return canvas.toDataURL()
 }
