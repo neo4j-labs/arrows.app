@@ -5,7 +5,7 @@ import {defaultNewNodeRadius} from "../constants";
 import {Vector} from "../../model/Vector";
 
 export const renderGraphAtScaleFactor = (graph, scaleFactor) => {
-  const boundingBox = calculateBoundingBox(graph.nodes, defaultNewNodeRadius, 1) || {
+  const boundingBox = calculateBoundingBox(graph.nodes, graph, 1) || {
       left: 0, top: 0, right: 100, bottom: 100
     }
   boundingBox.width = boundingBox.right - boundingBox.left

@@ -294,7 +294,7 @@ export const deleteSelection = () => {
 }
 
 const duplicateNodeOffset = (graph, selectedNodes, actionMemos) => {
-  const box = calculateBoundingBox(selectedNodes, graph.style.radius, 1)
+  const box = calculateBoundingBox(selectedNodes, graph, 1)
   const offset = new Vector(box.right - box.left, box.bottom - box.top)
   if (actionMemos.lastDuplicateAction) {
     const action = actionMemos.lastDuplicateAction
