@@ -1,9 +1,13 @@
 import {Size} from "../model/Size";
 import gangsSelector from '../selectors/gang'
+import { mouseMove } from "../actions/gang";
 
 const gangsLayer = {
   name: 'gangs',
-  selector: gangsSelector
+  selector: gangsSelector,
+  eventHandlers: {
+    mouseMove
+  }
 }
 
 const applicationLayout = (state = {

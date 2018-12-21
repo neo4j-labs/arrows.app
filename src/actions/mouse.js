@@ -15,6 +15,7 @@ import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
 import {idsMatch} from "../model/Id";
 import {getStyleSelector} from "../selectors/style";
 import { createClusterGang } from "./gang";
+import { getEventHandlers } from "../selectors/layers";
 
 const LongPressTime = 300
 
@@ -140,64 +141,72 @@ export const mouseMove = (canvasPosition) => {
     const mouse = state.mouse
     const previousPosition = mouse.mousePosition
 
-    switch (mouse.dragType) {
-      case 'NONE':
-        const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
-        if (item && item.entityType === 'nodeRing') {
-          if (dragging.sourceNodeId === null || (dragging.sourceNodeId && item.id !== dragging.sourceNodeId)) {
-            dispatch(activateRing(item.id, item.type))
-          }
-        } else {
-          if (dragging.sourceNodeId !== null) {
-            dispatch(deactivateRing())
-          }
-        }
-        break
+    const eventHandlers = getEventHandlers(state, 'mouseMove')
+    const preventDefault = eventHandlers.reduce((prevented, handler) => handler({
+      mouse,
+      dispatch
+    }) || prevented, false)
 
-      case 'HANDLE':
-        if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
-          dispatch(tryMoveHandle({
-            corner: mouse.corner,
-            initialNodePositions: mouse.initialNodePositions,
-            initialMousePosition: mouse.initialMousePosition,
-            newMousePosition: canvasPosition
-          }))
-        }
-        break
-
-      case 'NODE':
-        if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
-          dispatch(tryMoveNode({
-            nodeId: mouse.node.id,
-            oldMousePosition: previousPosition,
-            newMousePosition: canvasPosition
-          }))
-        }
-        break
-
-      case 'NODE_RING':
-        if (mouse.node.type !== 'super') {
-          dispatch(tryDragRing(mouse.node.id, graphPosition))
-        }
-        break
-
-      case 'CANVAS':
-        if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
-          if (Date.now() - mouse.mouseDownTime > LongPressTime) {
-            dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
+    if (!preventDefault) {
+      switch (mouse.dragType) {
+        case 'NONE':
+          const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
+          if (item && item.entityType === 'nodeRing') {
+            if (dragging.sourceNodeId === null || (dragging.sourceNodeId && item.id !== dragging.sourceNodeId)) {
+              dispatch(activateRing(item.id, item.type))
+            }
           } else {
-            dispatch(pan(previousPosition, canvasPosition))
+            if (dragging.sourceNodeId !== null) {
+              dispatch(deactivateRing())
+            }
           }
-        }
-        break
+          break
 
-      case 'MARQUEE':
-        dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
-        break
+        case 'HANDLE':
+          if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
+            dispatch(tryMoveHandle({
+              corner: mouse.corner,
+              initialNodePositions: mouse.initialNodePositions,
+              initialMousePosition: mouse.initialMousePosition,
+              newMousePosition: canvasPosition
+            }))
+          }
+          break
 
-      case 'PAN':
-        dispatch(pan(previousPosition, canvasPosition))
-        break
+        case 'NODE':
+          if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
+            dispatch(tryMoveNode({
+              nodeId: mouse.node.id,
+              oldMousePosition: previousPosition,
+              newMousePosition: canvasPosition
+            }))
+          }
+          break
+
+        case 'NODE_RING':
+          if (mouse.node.type !== 'super') {
+            dispatch(tryDragRing(mouse.node.id, graphPosition))
+          }
+          break
+
+        case 'CANVAS':
+          if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
+            if (Date.now() - mouse.mouseDownTime > LongPressTime) {
+              dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
+            } else {
+              dispatch(pan(previousPosition, canvasPosition))
+            }
+          }
+          break
+
+        case 'MARQUEE':
+          dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
+          break
+
+        case 'PAN':
+          dispatch(pan(previousPosition, canvasPosition))
+          break
+      }
     }
   }
 }

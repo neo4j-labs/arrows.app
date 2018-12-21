@@ -1,8 +1,11 @@
 import { getCommonCaption } from "../model/gang"
 import { nextAvailableId } from "../model/Id"
-import { moveNodes } from "./graph"
+import { moveNodes, tryMoveHandle, tryMoveNode } from "./graph"
 import { clearSelection, ensureDeselected } from "./selection";
 import { Guides } from "../graphics/Guides";
+import { activateRing, deactivateRing, tryDragRing } from "./dragToCreate";
+import { setMarquee } from "./selectionMarquee";
+import { pan } from "./viewTransformation";
 
 export const createClusterGang = (nodePositions, initialPositions) => (dispatch, getState) => {
   const { graph } = getState()
@@ -64,3 +67,12 @@ export const removeCluster = nodeId => ({
   type: 'REMOVE_CLUSTER',
   nodeId
 })
+
+export const mouseMove = ({mouse, dispatch}) => {
+  switch (mouse.dragType) {
+    case 'NODE_RING':
+      return true
+    default:
+      return false
+  }
+}
