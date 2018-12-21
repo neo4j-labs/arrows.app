@@ -1,5 +1,4 @@
 import {emptyGraph} from "../model/Graph";
-import {FETCHING_GRAPH_SUCCEEDED} from "../state/storageStatus";
 import { moveTo, setCaption } from "../model/Node";
 import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
