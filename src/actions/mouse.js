@@ -14,7 +14,7 @@ import {tryUpdateSelectionPath} from "./selectionPath"
 import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
 import {idsMatch} from "../model/Id";
 import {getStyleSelector} from "../selectors/style";
-import { createClusterGang, removeClusterGang } from "./gang";
+import { createClusterGang } from "./gang";
 
 const LongPressTime = 300
 
@@ -221,6 +221,7 @@ export const mouseUp = () => {
   return function (dispatch, getState) {
     const state = getState();
     const mouse = state.mouse
+    const graph = getGraph(state)
 
     switch (mouse.dragType) {
       case 'MARQUEE':
@@ -261,12 +262,15 @@ export const mouseUp = () => {
         const dragToCreate = state.gestures.dragToCreate;
 
         if (dragToCreate.sourceNodeId) {
-          if (dragToCreate.nodeType === 'cluster') {
-            dispatch(removeClusterGang(dragToCreate.sourceNodeId))
-          } else if (dragToCreate.targetNodeId) {
-            dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
+          const sourceNode = graph.nodes.find((node) => idsMatch(node.id, dragToCreate.sourceNodeId))
+          if (sourceNode.onMouseUpOnRing) {
+            sourceNode.onMouseUpOnRing(dispatch)
           } else {
-            dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
+            if (dragToCreate.targetNodeId) {
+              dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
+            } else {
+              dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
+            }
           }
         }
         break

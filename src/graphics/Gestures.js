@@ -3,7 +3,7 @@ import { ringMargin as defaultRingMargin } from "./constants";
 import { Vector } from "../model/Vector";
 import { getArrowGeometryData, getVoronoi, isPointInPolygon, sortPoints } from "./utils/geometryUtils";
 import {idsMatch} from "../model/Id";
-import { green, blueGreen, purple, redActive } from "../model/colors";
+import { green, blueGreen, purple } from "../model/colors";
 import { Point } from "../model/Point";
 import { getStyleSelector } from "../selectors/style";
 
@@ -121,8 +121,8 @@ export default class Gestures {
           const arrowData = getArrowGeometryData(sourcePoint, sourceBorderPoint, targetPoint, targetBorderPoint, 5)
           drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)
         } else {
-          const ringColor = sourceNode.type === 'cluster' ? redActive : purple
-          drawRing(ctx, transform(sourceNodeIdPosition), ringColor, outerRadius)
+          const drawNodeRing = sourceNode.drawRing || drawRing
+          drawNodeRing(ctx, transform(sourceNodeIdPosition), purple, outerRadius)
         }
       }
     }

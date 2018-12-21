@@ -122,8 +122,6 @@ class GraphDisplay extends Component {
       displayOptions: { canvasSize, viewTransformation }
     })
 
-    console.log('selection' , selection.selectedNodeIdMap)
-
 /*    if (Object.keys(childGraph.nodes).length > 0) {
       this.childCanvas.style.display = ''
       renderVisuals({
