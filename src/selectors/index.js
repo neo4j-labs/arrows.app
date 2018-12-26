@@ -62,7 +62,7 @@ export const getVisualGraph = createSelector(
 export const getVisualGraphForSelectedCluster = createSelector(
   [getGraph, getSelection, getChildViewTransformation],
   (graph, selection, viewTransformation) => {
-    let superNode = graph.nodes.find(node => selection.selectedNodeIdMap[node.id] && node.type === 'super')
+    let superNode = graph.nodes.find(node => selection.selectedNodeIdMap[node.id] && node.type === 'cluster')
 
     if (superNode) {
       const childNodes = graph.nodes.reduce((nodes, node) => {

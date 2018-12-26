@@ -1,6 +1,5 @@
 import { drawRing } from "../graphics/canvasRenderer";
 import { redActive } from "../model/colors";
-import { removeClusterGang } from "../actions/gang";
 
 export default (state) => {
   if (!state.gangs || state.gangs.length === 0) {
@@ -33,7 +32,6 @@ const applyCluster = (graph, cluster) => {
   }, {})
 
   cluster.drawRing = (ctx, position, color, outerRadius) => drawRing(ctx, position, redActive, outerRadius)
-  cluster.onMouseUpOnRing = dispatch => dispatch(removeClusterGang(cluster.id))
 
   const nodes = graph.nodes.filter(node => !memberIdsMap[node.id])
   nodes.push(cluster)

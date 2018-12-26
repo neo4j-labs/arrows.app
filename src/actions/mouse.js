@@ -1,6 +1,6 @@
 import { getVisualGraph, getTransformationHandles, getGraph } from "../selectors/"
-import {clearSelection, toggleSelection} from "./selection"
-import {showInspector} from "./applicationLayout";
+import { clearSelection, toggleSelection } from "./selection"
+import { showInspector } from "./applicationLayout";
 import {
   connectNodes,
   createNodeAndRelationship,
@@ -23,7 +23,7 @@ const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inve
 
 export const wheel = (canvasPosition, vector, ctrlKey) => {
   return function (dispatch, getState) {
-      const state = getState()
+    const state = getState()
     if (ctrlKey) {
       const graphPosition = toGraphPosition(state, canvasPosition)
       const scale = Math.max(state.viewTransformation.scale * (100 - vector.dy) / 100, 0.01)
@@ -230,58 +230,62 @@ export const mouseUp = () => {
     const mouse = state.mouse
     const graph = getGraph(state)
 
-    switch (mouse.dragType) {
-      case 'MARQUEE':
-        dispatch(selectNodesInMarquee())
-        break
+    const eventHandlers = getEventHandlers(state, 'mouseUp')
+    const preventDefault = eventHandlers.reduce((prevented, handler) => handler({
+      state,
+      dispatch
+    }) || prevented, false)
 
-      case 'HANDLE':
-        const shouldCombine = positions => {
-          if (positions.length < 2) {
-            return
-          }
+    if (!preventDefault) {
+      switch (mouse.dragType) {
+        case 'MARQUEE':
+          dispatch(selectNodesInMarquee())
+          break
 
-          let position = positions[0].position
-          let result = false
-          for (let i = 1; i < positions.length - 1; i++) {
-            if (positions[i].position.x === position.x && positions[i].position.y === position.y) {
-              result = true
-            } else {
-              result = false
-              break
+        case 'HANDLE':
+          const shouldCombine = positions => {
+            if (positions.length < 2) {
+              return
             }
+
+            let position = positions[0].position
+            let result = false
+            for (let i = 1; i < positions.length - 1; i++) {
+              if (positions[i].position.x === position.x && positions[i].position.y === position.y) {
+                result = true
+              } else {
+                result = false
+                break
+              }
+            }
+            return result
           }
-          return result
-        }
 
-        const nodePositions = positionsOfSelectedNodes(state)
+          const nodePositions = positionsOfSelectedNodes(state)
 
-        if (shouldCombine(nodePositions)) {
-          dispatch(createClusterGang(nodePositions, mouse.initialNodePositions))
-        } else {
-          dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
-        }
-        break
-      case 'NODE':
-        dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
-        break
-      case 'NODE_RING':
-        const dragToCreate = state.gestures.dragToCreate;
-
-        if (dragToCreate.sourceNodeId) {
-          const sourceNode = graph.nodes.find((node) => idsMatch(node.id, dragToCreate.sourceNodeId))
-          if (sourceNode.onMouseUpOnRing) {
-            sourceNode.onMouseUpOnRing(dispatch)
+          if (shouldCombine(nodePositions)) {
+            dispatch(createClusterGang(nodePositions, mouse.initialNodePositions))
           } else {
+            dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
+          }
+          break
+        case 'NODE':
+          dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
+          break
+        case 'NODE_RING':
+          const dragToCreate = state.gestures.dragToCreate;
+
+          if (dragToCreate.sourceNodeId) {
             if (dragToCreate.targetNodeId) {
               dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
             } else {
               dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
             }
           }
-        }
-        break
+          break
+      }
     }
+
     dispatch(endDrag())
   }
 }

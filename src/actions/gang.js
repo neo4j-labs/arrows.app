@@ -1,11 +1,12 @@
 import { getCommonCaption } from "../model/gang"
-import { nextAvailableId } from "../model/Id"
+import { idsMatch, nextAvailableId } from "../model/Id"
 import { moveNodes, tryMoveHandle, tryMoveNode } from "./graph"
 import { clearSelection, ensureDeselected } from "./selection";
 import { Guides } from "../graphics/Guides";
 import { activateRing, deactivateRing, tryDragRing } from "./dragToCreate";
 import { setMarquee } from "./selectionMarquee";
 import { pan } from "./viewTransformation";
+import { getGraph } from "../selectors";
 
 export const createClusterGang = (nodePositions, initialPositions) => (dispatch, getState) => {
   const { graph } = getState()
@@ -71,12 +72,33 @@ export const removeCluster = nodeId => ({
 export const mouseMove = ({mouse, dispatch}) => {
   switch (mouse.dragType) {
     case 'NODE_RING':
-      if (mouse.node && mouse.node.type !== 'super') {
-        return false
-      } else {
+      if (mouse.node && mouse.node.type === 'cluster') {
         return true
       }
     default:
       return false
   }
+  return false
+}
+
+export const mouseUp = ({state, dispatch}) => {
+  const { mouse, gestures } = state
+  const graph = getGraph(state)
+
+  switch (mouse.dragType) {
+    case 'NODE_RING':
+      const dragToCreate = gestures.dragToCreate;
+
+      if (dragToCreate.sourceNodeId) {
+        const sourceNode = graph.nodes.find((node) => idsMatch(node.id, dragToCreate.sourceNodeId))
+        if (sourceNode.type === 'cluster') {
+          dispatch(removeClusterGang(sourceNode.id))
+          return true
+        }
+      }
+      break
+    default:
+      break
+  }
+  return false
 }
