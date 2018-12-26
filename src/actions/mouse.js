@@ -184,9 +184,7 @@ export const mouseMove = (canvasPosition) => {
           break
 
         case 'NODE_RING':
-          if (mouse.node.type !== 'super') {
-            dispatch(tryDragRing(mouse.node.id, graphPosition))
-          }
+          dispatch(tryDragRing(mouse.node.id, graphPosition))
           break
 
         case 'CANVAS':

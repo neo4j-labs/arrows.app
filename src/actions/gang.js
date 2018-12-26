@@ -71,7 +71,11 @@ export const removeCluster = nodeId => ({
 export const mouseMove = ({mouse, dispatch}) => {
   switch (mouse.dragType) {
     case 'NODE_RING':
-      return true
+      if (mouse.node && mouse.node.type !== 'super') {
+        return false
+      } else {
+        return true
+      }
     default:
       return false
   }
