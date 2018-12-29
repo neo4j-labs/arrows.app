@@ -33,7 +33,7 @@ class ExportModal extends Component {
           <Message info icon>
             <Icon name='info'/>
             <p>
-              Below are a few renderings of the graph at different "pixel ratios".
+              Below are a few PNGs at different "pixel ratios".
               Choose your preferred resolution and then get hold of the image by:
               <ul>
                 <li>Clicking on the "Download" link to download a file to your computer, or</li>

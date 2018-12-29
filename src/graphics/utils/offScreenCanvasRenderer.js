@@ -21,15 +21,19 @@ export const renderGraphAtScaleFactor = (graph, scaleFactor, transparentBackgrou
   const visualGraph = getVisualGraph(renderState)
 
   const canvas = window.document.createElement('canvas')
-  const canvasWidth = Math.ceil(scaleFactor * boundingBox.width);
-  const canvasHeight = Math.ceil(scaleFactor * boundingBox.height);
-  canvas.width = canvasWidth
-  canvas.height = canvasHeight
+  const width = Math.ceil(scaleFactor * boundingBox.width);
+  const height = Math.ceil(scaleFactor * boundingBox.height);
+  canvas.width = width
+  canvas.height = height
   const ctx = canvas.getContext('2d')
   if (!transparentBackground) {
     ctx.fillStyle = 'white'
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+    ctx.fillRect(0, 0, width, height)
   }
   visualGraph.draw(ctx)
-  return canvas.toDataURL()
+  return {
+    width,
+    height,
+    dataUrl: canvas.toDataURL()
+  }
 }

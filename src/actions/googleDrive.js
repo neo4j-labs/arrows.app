@@ -90,7 +90,7 @@ export const saveFile = (graph, fileId, fileName, onFileSaved) => {
     'mimeType': contentType,
     'contentHints': {
       'thumbnail': {
-        'image': base64urlEncodeDataUrl(renderGraphAtScaleFactor(graph, 2, false)),
+        'image': base64urlEncodeDataUrl(renderGraphAtScaleFactor(graph, 2, false).dataUrl),
         'mimeType': 'image/png'
       }
     }

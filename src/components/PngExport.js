@@ -1,18 +1,21 @@
 import React, {Component} from 'react';
-import { Image, Segment, Label } from 'semantic-ui-react'
+import { Image, Segment, Label, Icon } from 'semantic-ui-react'
 import {renderGraphAtScaleFactor} from "../graphics/utils/offScreenCanvasRenderer";
 
 class PngExport extends Component {
 
   render() {
-    const dataUrl = renderGraphAtScaleFactor(this.props.graph, this.props.pixelRatio, this.props.transparentBackground)
+    const { width, height, dataUrl } = renderGraphAtScaleFactor(this.props.graph, this.props.pixelRatio, this.props.transparentBackground)
 
     return (
       <Segment style={{
         maxHeight: 200,
         overflow: 'hidden',
       }}>
-        <Label attached='top'>@{this.props.pixelRatio}x <a href={dataUrl} download="graph.png">Download</a></Label>
+        <Label attached='top'>
+          @{this.props.pixelRatio}x {width} × {height}
+          <a href={dataUrl} download="graph.png"><Icon name="download"/>Download</a>
+        </Label>
         <div style={{
           display: 'inline-block',
           backgroundImage: 'linear-gradient(45deg, #efefef 25%, transparent 25%), linear-gradient(-45deg, #efefef 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #efefef 75%), linear-gradient(-45deg, transparent 75%, #efefef 75%)',
