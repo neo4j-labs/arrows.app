@@ -3,7 +3,7 @@ import {ViewTransformation} from "../../state/ViewTransformation";
 import {getVisualGraph} from "../../selectors/index";
 import {Vector} from "../../model/Vector";
 
-export const renderGraphAtScaleFactor = (graph, scaleFactor) => {
+export const renderGraphAtScaleFactor = (graph, scaleFactor, transparentBackground) => {
   const boundingBox = calculateBoundingBox(graph.nodes, graph, 1) || {
       left: 0, top: 0, right: 100, bottom: 100
     }
@@ -26,8 +26,10 @@ export const renderGraphAtScaleFactor = (graph, scaleFactor) => {
   canvas.width = canvasWidth
   canvas.height = canvasHeight
   const ctx = canvas.getContext('2d')
-  ctx.fillStyle = 'white'
-  ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+  if (!transparentBackground) {
+    ctx.fillStyle = 'white'
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight)
+  }
   visualGraph.draw(ctx)
   return canvas.toDataURL()
 }

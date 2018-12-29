@@ -1,8 +1,21 @@
 import React, {Component} from 'react';
-import {Modal, Button, Message, Icon} from 'semantic-ui-react'
+import {Modal, Button, Message, Icon, Checkbox} from 'semantic-ui-react'
 import PngExport from "./PngExport";
 
 class ExportModal extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      transparentBackground: true
+    }
+  }
+
+  toggleTransparent = () => {
+    this.setState({
+      transparentBackground: !this.state.transparentBackground
+    })
+  }
 
   onCancel = () => {
     this.props.onCancel()
@@ -29,19 +42,18 @@ class ExportModal extends Component {
               </ul>
             </p>
           </Message>
+          <Checkbox label='Transparent background' checked={this.state.transparentBackground} onChange={this.toggleTransparent}/>
 
-          <PngExport
-            graph={this.props.graph}
-            pixelRatio={1}
-          />
-          <PngExport
-            graph={this.props.graph}
-            pixelRatio={2}
-          />
-          <PngExport
-            graph={this.props.graph}
-            pixelRatio={4}
-          />
+          {
+            [1, 2, 4].map((pixelRatio => (
+              <PngExport
+                graph={this.props.graph}
+                pixelRatio={pixelRatio}
+                transparentBackground={this.state.transparentBackground}
+              />
+            )))
+          }
+
         </Modal.Content>
         <Modal.Actions>
           <Button

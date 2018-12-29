@@ -5,7 +5,7 @@ import {renderGraphAtScaleFactor} from "../graphics/utils/offScreenCanvasRendere
 class PngExport extends Component {
 
   render() {
-    const dataUrl = renderGraphAtScaleFactor(this.props.graph, this.props.pixelRatio)
+    const dataUrl = renderGraphAtScaleFactor(this.props.graph, this.props.pixelRatio, this.props.transparentBackground)
 
     return (
       <Segment style={{
@@ -13,7 +13,14 @@ class PngExport extends Component {
         overflow: 'hidden',
       }}>
         <Label attached='top'>@{this.props.pixelRatio}x <a href={dataUrl} download="graph.png">Download</a></Label>
-        <Image src={dataUrl}/>
+        <div style={{
+          display: 'inline-block',
+          backgroundImage: 'linear-gradient(45deg, #efefef 25%, transparent 25%), linear-gradient(-45deg, #efefef 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #efefef 75%), linear-gradient(-45deg, transparent 75%, #efefef 75%)',
+          backgroundSize: '20px 20px',
+          backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px'
+        }}>
+          <Image src={dataUrl}/>
+        </div>
       </Segment>
     )
   }
