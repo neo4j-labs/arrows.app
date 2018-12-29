@@ -1,4 +1,4 @@
-import { getVisualGraph, getTransformationHandles, getGraph } from "../selectors/"
+import { getVisualGraph, getTransformationHandles, getGraph, getPositionsOfSelectedNodes } from "../selectors/"
 import { clearSelection, toggleSelection } from "./selection"
 import { showInspector } from "./applicationLayout";
 import {
@@ -72,7 +72,7 @@ export const mouseDown = (canvasPosition, metaKey) => {
 
     const handle = transformationHandles.handleAtPoint(canvasPosition)
     if (handle) {
-      dispatch(mouseDownOnHandle(handle.corner, canvasPosition, positionsOfSelectedNodes(state)))
+      dispatch(mouseDownOnHandle(handle.corner, canvasPosition, getPositionsOfSelectedNodes(state)))
     } else {
       const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
       if (item) {
@@ -228,7 +228,6 @@ export const mouseUp = () => {
   return function (dispatch, getState) {
     const state = getState();
     const mouse = state.mouse
-    const graph = getGraph(state)
 
     const eventHandlers = getEventHandlers(state, 'mouseUp')
     const preventDefault = eventHandlers.reduce((prevented, handler) => handler({
@@ -241,36 +240,11 @@ export const mouseUp = () => {
         case 'MARQUEE':
           dispatch(selectNodesInMarquee())
           break
-
         case 'HANDLE':
-          const shouldCombine = positions => {
-            if (positions.length < 2) {
-              return
-            }
-
-            let position = positions[0].position
-            let result = false
-            for (let i = 1; i < positions.length - 1; i++) {
-              if (positions[i].position.x === position.x && positions[i].position.y === position.y) {
-                result = true
-              } else {
-                result = false
-                break
-              }
-            }
-            return result
-          }
-
-          const nodePositions = positionsOfSelectedNodes(state)
-
-          if (shouldCombine(nodePositions)) {
-            dispatch(createClusterGang(nodePositions, mouse.initialNodePositions))
-          } else {
-            dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
-          }
+          dispatch(moveNodesEndDrag(getPositionsOfSelectedNodes(state)))
           break
         case 'NODE':
-          dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
+          dispatch(moveNodesEndDrag(getPositionsOfSelectedNodes(state)))
           break
         case 'NODE_RING':
           const dragToCreate = state.gestures.dragToCreate;

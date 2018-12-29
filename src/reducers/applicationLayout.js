@@ -14,7 +14,8 @@ const gangsLayer = {
 const applicationLayout = (state = {
   windowSize: new Size(window.innerWidth, window.innerHeight),
   inspectorVisible: true,
-  layers: [gangsLayer]
+  betaFeaturesEnabled: false,
+  layers: []
 }, action) => {
   switch (action.type) {
     case 'WINDOW_RESIZED':
@@ -35,6 +36,12 @@ const applicationLayout = (state = {
         inspectorVisible: false
       }
 
+    case 'SET_BETA_FEATURES_ENABLED':
+      return {
+        ...state,
+        layers: action.enabled ? [gangsLayer] : [],
+        betaFeaturesEnabled: action.enabled
+      }
     default:
       return state
   }

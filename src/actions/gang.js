@@ -1,12 +1,12 @@
 import { getCommonCaption } from "../model/gang"
 import { idsMatch, nextAvailableId } from "../model/Id"
-import { moveNodes, tryMoveHandle, tryMoveNode } from "./graph"
+import { moveNodes, moveNodesEndDrag, tryMoveHandle, tryMoveNode } from "./graph"
 import { clearSelection, ensureDeselected } from "./selection";
 import { Guides } from "../graphics/Guides";
 import { activateRing, deactivateRing, tryDragRing } from "./dragToCreate";
 import { setMarquee } from "./selectionMarquee";
 import { pan } from "./viewTransformation";
-import { getGraph } from "../selectors";
+import { getGraph, getPositionsOfSelectedNodes } from "../selectors";
 
 export const createClusterGang = (nodePositions, initialPositions) => (dispatch, getState) => {
   const { graph } = getState()
@@ -97,6 +97,36 @@ export const mouseUp = ({state, dispatch}) => {
         }
       }
       break
+
+    case 'HANDLE':
+      const shouldCombine = positions => {
+        if (positions.length < 2) {
+          return
+        }
+
+        let position = positions[0].position
+        let result = false
+        for (let i = 1; i < positions.length - 1; i++) {
+          if (positions[i].position.x === position.x && positions[i].position.y === position.y) {
+            result = true
+          } else {
+            result = false
+            break
+          }
+        }
+        return result
+      }
+
+      const nodePositions = getPositionsOfSelectedNodes(state)
+
+      if (shouldCombine(nodePositions)) {
+        dispatch(createClusterGang(nodePositions, mouse.initialNodePositions))
+        return true
+      } else {
+        return false
+      }
+      break
+
     default:
       break
   }

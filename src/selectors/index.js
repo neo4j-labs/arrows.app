@@ -8,6 +8,7 @@ import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 import NodeToolboxes from "../graphics/NodeToolboxes";
 import { ViewTransformation } from "../state/ViewTransformation";
 import { calculateViewportTranslation } from "../middlewares/viewportMiddleware";
+import { idsMatch } from "../model/Id";
 
 const getSelection = (state) => state.selection
 const getViewTransformation = (state) => state.viewTransformation
@@ -108,6 +109,21 @@ export const getTransformationHandles = createSelector(
     return new TransformationHandles(graph, selection, viewTransformation)
   }
 )
+
+export const getPositionsOfSelectedNodes = (state) => {
+  const graph = getGraph(state)
+  const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
+  const nodePositions = []
+  selectedNodes.forEach((nodeId) => {
+    const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
+    nodePositions.push({
+      nodeId: nodeId,
+      position: node.position,
+      radius: node.style && node.style.radius || graph.style.radius
+    })
+  })
+  return nodePositions
+}
 
 export const getToolboxes = createSelector(
   [getGraph],

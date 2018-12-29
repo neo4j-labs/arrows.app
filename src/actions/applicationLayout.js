@@ -17,3 +17,8 @@ export const hideInspector = () => {
     type: 'HIDE_INSPECTOR'
   }
 }
+
+export const setBetaFeaturesEnabled = enabled => ({
+  type: 'SET_BETA_FEATURES_ENABLED',
+  enabled
+})

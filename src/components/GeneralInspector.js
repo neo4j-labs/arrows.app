@@ -1,13 +1,12 @@
 import React, {Component} from 'react'
-import {Segment, Form, Menu, Icon} from 'semantic-ui-react'
+import {Segment, Form, Menu, Icon, Input, Label} from 'semantic-ui-react'
 import StyleTable from "./StyleTable"
 import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
 import {headerHeight} from "../model/applicationLayout"
 
 export default class GeneralInspector extends Component {
   render() {
-    const {graph} = this.props
-    const {onSaveGraphStyle} = this.props
+    const {graph, onSaveGraphStyle, betaFeaturesEnabled, onSetBetaFeaturesEnabled} = this.props
     const fields = []
 
       fields.push(
@@ -51,6 +50,12 @@ export default class GeneralInspector extends Component {
           <Form style={{textAlign: 'left'}}>
             {fields}
           </Form>
+        </Segment>
+        <Segment basic>
+          <Label basic style={{width: '100%'}} onClick={() => onSetBetaFeaturesEnabled(!betaFeaturesEnabled)}>
+            <Input style={{marginRight: '1em'}} type='checkbox' checked={betaFeaturesEnabled}/>
+            <span>Enable beta features (Graph simplification)</span>
+          </Label>
         </Segment>
       </React.Fragment>
     )
