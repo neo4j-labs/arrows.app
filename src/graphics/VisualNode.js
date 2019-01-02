@@ -6,20 +6,15 @@ import { Vector } from "../model/Vector";
 import {asKey} from "../model/Id";
 import { getStyleSelector } from "../selectors/style";
 import { nodeStyleAttributes } from "../model/styling";
-import { blue } from '../model/colors'
 
 export default class VisualNode {
-  constructor(node, viewTransformation, graph) {
+  constructor(node, graph) {
     this.node = node
-    this.viewTransformation = viewTransformation
     this.edges = []
     this.edgeMap = {}
 
     nodeStyleAttributes.forEach(styleAttribute => {
       this[styleAttribute] = getStyleSelector(node, styleAttribute)(graph)
-      if (styleAttribute === 'radius') {
-        this[styleAttribute] *= viewTransformation.scale
-      }
     })
   }
 
@@ -36,23 +31,15 @@ export default class VisualNode {
   }
 
   get x () {
-    if (this.viewTransformation) {
-      return this.viewTransformation.transform(this.node.position).x
-    } else {
-      return this.node.position.x
-    }
+    return this.node.position.x
   }
 
   get y () {
-    if (this.viewTransformation) {
-      return this.viewTransformation.transform(this.node.position).y
-    } else {
-      return this.node.position.y
-    }
+    return this.node.position.y
   }
 
   get position() {
-    return this.viewTransformation.transform(this.node.position)
+    return this.node.position
   }
 
   get status() {
@@ -104,7 +91,7 @@ export default class VisualNode {
 
   drawCaption(ctx, position, label, maxWidth, config) {
     ctx.save()
-    const fontSize = this['caption-font-size'] * this.viewTransformation.scale
+    const fontSize = this['caption-font-size']
     const fontColor = this['caption-color']
     const fontFace = get(config, 'font.face')
 

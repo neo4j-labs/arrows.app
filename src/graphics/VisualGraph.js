@@ -3,24 +3,25 @@ import {nodeAtPoint, nodeRingAtPoint} from "../model/Graph";
 import { drawAnnotation } from "./Annotation";
 
 export default class VisualGraph {
-  constructor(graph, nodes, relationshipBundles) {
+  constructor(graph, nodes, relationshipBundles, viewTransformation) {
     this.graph = graph
     this.nodes = nodes
     this.relationshipBundles = relationshipBundles
+    this.viewTransformation = viewTransformation
   }
 
   get style () {
     return this.graph.style
   }
 
-  entityAtPoint(canvasPosition, graphPosition) {
+  entityAtPoint(graphPosition) {
     const node = nodeAtPoint(this.graph, graphPosition)
     if (node) return { ...node, entityType: 'node' }
 
     const nodeRing = nodeRingAtPoint(this.graph, graphPosition)
     if (nodeRing) return { ...nodeRing, entityType: 'nodeRing' }
 
-    const relationship = this.relationshipAtPoint(canvasPosition)
+    const relationship = this.relationshipAtPoint(graphPosition)
     if (relationship) return { ...relationship, entityType: 'relationship' }
 
     return null
@@ -47,6 +48,9 @@ export default class VisualGraph {
   }
 
   draw(ctx) {
+    ctx.save()
+    ctx.translate(this.viewTransformation.offset.dx, this.viewTransformation.offset.dy)
+    ctx.scale(this.viewTransformation.scale, this.viewTransformation.scale)
     this.relationshipBundles.forEach(bundle => bundle.draw(ctx))
     Object.values(this.nodes).forEach(visualNode => {
       visualNode.draw(ctx)
@@ -56,5 +60,6 @@ export default class VisualGraph {
         drawAnnotation(ctx, visualNode, relationshipBundles)
       }
     })
+    ctx.restore()
   }
 }
