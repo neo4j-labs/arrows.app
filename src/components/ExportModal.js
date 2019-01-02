@@ -48,6 +48,7 @@ class ExportModal extends Component {
             [1, 2, 4].map((pixelRatio => (
               <PngExport
                 graph={this.props.graph}
+                diagramName={this.props.diagramName}
                 pixelRatio={pixelRatio}
                 transparentBackground={this.state.transparentBackground}
               />

@@ -4,7 +4,8 @@ import {hideExportDialog} from "../actions/exporting";
 
 const mapStateToProps = state => {
   return {
-    graph: state.graph
+    graph: state.graph,
+    diagramName: state.diagramName
   }
 }
 

@@ -14,7 +14,7 @@ class PngExport extends Component {
       }}>
         <Label attached='top'>
           @{this.props.pixelRatio}x {width} × {height}
-          <a href={dataUrl} download="graph.png"><Icon name="download"/>Download</a>
+          <a href={dataUrl} download={this.props.diagramName + ".png"}><Icon name="download"/>Download</a>
         </Label>
         <div style={{
           display: 'inline-block',
