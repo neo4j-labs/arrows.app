@@ -9,3 +9,15 @@ export const hideExportDialog = () => {
     type: 'HIDE_EXPORT_DIALOG'
   }
 }
+
+export const showHelpDialog = () => {
+  return {
+    type: 'SHOW_HELP_DIALOG'
+  }
+}
+
+export const hideHelpDialog = () => {
+  return {
+    type: 'HIDE_HELP_DIALOG'
+  }
+}

@@ -9,6 +9,7 @@ import help_caption from  '../help/help_caption.gif'
 import help_add_property from  '../help/help_add_property.gif'
 import help_duplicate from  '../help/help_duplicate.gif'
 import help_scale from  '../help/help_scale.gif'
+import {hideHelpDialog} from "../actions/applicationDialogs";
 
 class HelpModal extends Component {
 
@@ -81,13 +82,14 @@ class HelpModal extends Component {
 
 const mapStateToProps = state => {
   return {
-    showModal: true
+    showModal: state.applicationDialogs.showHelpDialog
   }
 }
 
-const mapDispatchToProps = () => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onCancel: () => {
+      dispatch(hideHelpDialog())
     }
   }
 }

@@ -74,7 +74,7 @@ const mapStateToProps = (state) => ({
   viewingConfig: state.storage.mode === 'NONE',
   editingConnectionParameters: state.storage.database.editingConnectionParameters,
   showDisconnectedDialog: state.storage.database.showDisconnectedDialog,
-  showExportDialog: state.exporting.showExportDialog
+  showExportDialog: state.applicationDialogs.showExportDialog
 })
 
 

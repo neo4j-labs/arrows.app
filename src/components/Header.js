@@ -55,6 +55,11 @@ const Header = (props) => (
           text='New Diagram'
           onClick={props.onNewDiagramClick}
         />
+        <Dropdown.Item
+          icon='help'
+          text='Help'
+          onClick={props.onHelpClick}
+        />
       </Dropdown.Menu>
     </Dropdown>
     <DiagramNameEditor
