@@ -25,39 +25,48 @@ class HelpModal extends Component {
       >
         <Modal.Header>Help</Modal.Header>
         <Modal.Content scrolling>
-          <Segment compact style={{ display: 'inline-block' }}>
+          <Message
+            icon='help'
+            header='New to Arrows?'
+            content="These looping GIFs might help you to work out what you can do."
+          />
+          <div style={{display: 'flex', flexFlow: 'row wrap', justifyContent: 'space-around'}}>
+          <Segment compact>
             <h3>Create a node</h3>
             <Image src={help_add_node}/>
           </Segment>
-          <Segment compact style={{ display: 'inline-block' }}>
+          <Segment compact>
             <h3>Drag to Create Nodes and Relationships</h3>
             <Image src={help_drag_to_create}/>
           </Segment>
-          <Segment compact style={{ display: 'inline-block' }}>
+          <Segment compact>
             <h3>Drag to Connect Nodes</h3>
             <Image src={help_drag_to_connect}/>
           </Segment>
-          <Segment compact style={{ display: 'inline-block' }}>
+          <Segment compact>
             <h3>Selection</h3>
             <Message>Tip: hold down the command key (Mac) to select multiple nodes.</Message>
             <Image src={help_select}/>
           </Segment>
-          <Segment compact style={{ display: 'inline-block' }}>
+          <Segment compact>
             <h3>Choose a Caption</h3>
             <Image src={help_caption}/>
           </Segment>
-          <Segment compact style={{ display: 'inline-block' }}>
+          <Segment compact>
             <h3>Add Properties</h3>
             <Image src={help_add_property}/>
           </Segment>
-          <Segment compact style={{ display: 'inline-block' }}>
+          <Segment compact>
             <h3>Duplicate Nodes and Relationships</h3>
+            <Message>Use ⌘D to duplicate nodes. This makes it easy to quickly create a large graph.</Message>
             <Image src={help_duplicate}/>
           </Segment>
-          <Segment compact style={{ display: 'inline-block' }}>
+          <Segment compact>
             <h3>Spread-out or flip the layout</h3>
+            <Message>Tip: Use ⌘A to select the whole graph.</Message>
             <Image src={help_scale}/>
           </Segment>
+          </div>
         </Modal.Content>
         <Modal.Actions>
           <Button
