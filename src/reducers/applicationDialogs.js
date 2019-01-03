@@ -1,6 +1,7 @@
+import {retrieveHelpDismissed} from "../actions/localStorage";
 export default function applicationDialogs(state = {
   showExportDialog: false,
-  showHelpDialog: true
+  showHelpDialog: !retrieveHelpDismissed()
 }, action) {
   switch (action.type) {
     case 'SHOW_EXPORT_DIALOG':

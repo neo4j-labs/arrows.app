@@ -10,6 +10,7 @@ import help_add_property from  '../help/help_add_property.gif'
 import help_duplicate from  '../help/help_duplicate.gif'
 import help_scale from  '../help/help_scale.gif'
 import {hideHelpDialog} from "../actions/applicationDialogs";
+import {rememberHelpDismissed} from "../actions/localStorage";
 
 class HelpModal extends Component {
 
@@ -89,6 +90,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = (dispatch) => {
   return {
     onCancel: () => {
+      rememberHelpDismissed()
       dispatch(hideHelpDialog())
     }
   }

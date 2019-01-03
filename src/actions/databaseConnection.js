@@ -1,19 +1,10 @@
 import {fetchGraphFromDatabase, updateDriver} from "../storage/neo4jStorage";
 import { subscribeToDatabaseCredentialsForActiveGraph } from 'graph-app-kit/components/GraphAppBase'
 import { useNeo4jStorage } from "./storage";
+import {rememberConnectionParameters, retrieveConnectionParameters} from "./localStorage";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 const integrationPoint = window.neo4jDesktopApi
-const localStorageKey = "neo4j-arrows-app.rememberedConnectionParameters";
-
-const rememberConnectionParameters = (connectionParameters) => {
-  const serializedVal = JSON.stringify(connectionParameters)
-  localStorage.setItem(localStorageKey, serializedVal)
-}
-
-export const forgetConnectionParameters = () => {
-  localStorage.removeItem(localStorageKey)
-}
 
 export const initializeConnection = () => {
   if (integrationPoint) {
@@ -44,8 +35,7 @@ const useConnectionParametersFromDesktopContext = () => {
 }
 
 const useRememberedConnectionParameters = () => {
-  const serializedVal = localStorage.getItem(localStorageKey)
-  const parsedVal = JSON.parse(serializedVal)
+  const parsedVal = retrieveConnectionParameters()
   if (parsedVal && parsedVal.connectionUri) {
     return updateConnectionParameters(parsedVal)
   } else {
