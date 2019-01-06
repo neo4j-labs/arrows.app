@@ -5,6 +5,24 @@ export const moveTo = (node, newPosition) => {
   }
 }
 
+export const addLabel = (node, label) => {
+  const labels = new Set(node.labels)
+  labels.add(label)
+  return {
+    ...node,
+    labels: [...labels]
+  }
+}
+
+export const removeLabel = (node, label) => {
+  const labels = new Set(node.labels)
+  labels.delete(label)
+  return {
+    ...node,
+    labels: [...labels]
+  }
+}
+
 export const setCaption = (node, caption) => {
   return {
     ...node,

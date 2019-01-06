@@ -1,5 +1,6 @@
 import {emptyGraph} from "../model/Graph";
 import { moveTo, setCaption } from "../model/Node";
+import {addLabel, moveTo, removeLabel, setCaption} from "../model/Node";
 import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
 import { idsMatch } from "../model/Id";
@@ -16,7 +17,8 @@ const graph = (state = emptyGraph(), action) => {
         id: action.newNodeId,
         position: action.newNodePosition,
         caption: action.caption,
-        style: {},
+        style: action.style,
+        labels: [],
         properties: {}
       })
       return {style: state.style, nodes: newNodes, relationships: state.relationships}
@@ -29,7 +31,8 @@ const graph = (state = emptyGraph(), action) => {
         id: action.targetNodeId,
         position: action.targetNodePosition,
         caption: action.caption,
-        style: {},
+        style: action.style,
+        labels: [],
         properties: {}
       }
       newNodes.push(newNode)
@@ -61,6 +64,22 @@ const graph = (state = emptyGraph(), action) => {
       return {
         style: state.style,
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setCaption(node, action.caption) : node),
+        relationships: state.relationships
+      }
+    }
+
+    case 'ADD_LABEL': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? addLabel(node, action.label) : node),
+        relationships: state.relationships
+      }
+    }
+
+    case 'REMOVE_LABEL': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeLabel(node, action.label) : node),
         relationships: state.relationships
       }
     }
@@ -155,6 +174,7 @@ const graph = (state = emptyGraph(), action) => {
           position: spec.position,
           caption: oldNode.caption,
           style: {...oldNode.style},
+          labels: [...oldNode.labels],
           properties: {...oldNode.properties}
         }
         newNodes.push(newNode)

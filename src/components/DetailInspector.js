@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Form, Input, Menu, Icon, Label} from 'semantic-ui-react'
+import {Segment, Form, Input, Menu, Icon} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
 import {selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle} from "../model/properties"
@@ -11,6 +11,8 @@ import { compose } from "recompose"
 import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
 import { DetailToolbox } from "./DetailToolbox"
 import {styleGroups, styleAttributes} from "../model/styling";
+import {combineLabels} from "../model/labels";
+import LabelCloud from "./LabelCloud";
 
 class DetailInspector extends Component {
   constructor(props) {
@@ -44,6 +46,7 @@ class DetailInspector extends Component {
 
   render() {
     const {selection, graph, onSaveCaption, onSaveType, reverseRelationships, selectedNodes} = this.props
+    const {onAddLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
@@ -56,6 +59,7 @@ class DetailInspector extends Component {
     }
 
     const properties = combineProperties(entities)
+    const labels = combineLabels(nodes)
 
     const handleKeyDown = (evt) => {
       if (evt.key === 'Escape' || (evt.key === 'Enter' && evt.metaKey)) {
@@ -82,16 +86,11 @@ class DetailInspector extends Component {
 
     if (selectionIncludes.nodes) {
       fields.push(
-        <Form.Field key='_labek'>
-          <label>Labels</label>
-          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
-          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
-          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
-          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
-          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
-          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
-          <Label basic circular>&nbsp;Person<Icon name='close' />&nbsp;</Label>
-        </Form.Field>
+        <LabelCloud
+          labels={labels}
+          onAddLabel={(label) => onAddLabel(selection, label)}
+          onRemoveLabel={(label) => onRemoveLabel(selection, label)}
+        />
       )
     }
 

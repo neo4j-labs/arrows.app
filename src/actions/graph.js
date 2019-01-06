@@ -213,6 +213,20 @@ export const setNodeCaption = (selection, caption) => ({
   caption
 })
 
+export const addLabel = (selection, label) => ({
+  category: 'GRAPH',
+  type: 'ADD_LABEL',
+  selection,
+  label
+})
+
+export const removeLabel = (selection, label) => ({
+  category: 'GRAPH',
+  type: 'REMOVE_LABEL',
+  selection,
+  label
+})
+
 export const renameProperty = (selection, oldPropertyKey, newPropertyKey) => ({
   category: 'GRAPH',
   type: 'RENAME_PROPERTY',
