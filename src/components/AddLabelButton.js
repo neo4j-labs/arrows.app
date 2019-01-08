@@ -12,7 +12,12 @@ export class AddLabelButton extends Component {
   }
 
   handleOpen = () => {
-    this.setState({isOpen: true})
+    this.setState({
+      label: '',
+      isOpen: true
+    }, () => {
+      this.inputRef.focus()
+    })
   }
 
   handleClose = () => {
@@ -63,12 +68,13 @@ export class AddLabelButton extends Component {
         position='bottom right'
       >
         <Input
-          size='mini'
+          transparent
           value={this.state.label}
           action={<Button content='Add' onClick={this.commit}/>}
           placeholder='Label'
           onChange={this.onChange}
           onKeyPress={this.onKeyPress}
+          ref={elm => this.inputRef = elm}
         />
       </Popup>
     )
