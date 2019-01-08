@@ -54,3 +54,15 @@ const applyCluster = (graph, cluster) => {
     style: graph.style
   }
 }
+
+export const selectorForInspection = state => {
+  const { graph, gangs, selection } = state
+  const simplifiedNodes = gangs.reduce((nodes, gang) => {
+    if (selection.selectedNodeIdMap[gang.id]) {
+      return nodes.concat(gang.members.map(member => graph.nodes.find(node => node.id === member.nodeId)))
+    } else {
+      return nodes
+    }
+  }, [])
+  return simplifiedNodes
+}

@@ -3,12 +3,13 @@ import {connect} from "react-redux";
 import {selectedNodes, selectedRelationships} from "../model/selection";
 import InspectorContainer from "./InspectorContainer";
 import GeneralInspectorContainer from "./GeneralInspectorContainer";
+import { getSelectedNodes } from "../selectors/inspection";
 
 const mapStateToProps = state => {
   const selection = state.selection
   const graph = state.graph
   return {
-    showSelectionInspector: selectedNodes(graph, selection).length > 0 || selectedRelationships(graph, selection).length > 0
+    showSelectionInspector: getSelectedNodes(state).length > 0 || selectedRelationships(graph, selection).length > 0
   }
 }
 

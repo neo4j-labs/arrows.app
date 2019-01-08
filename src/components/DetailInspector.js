@@ -11,6 +11,7 @@ import { compose } from "recompose"
 import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
 import { DetailToolbox } from "./DetailToolbox"
 import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
+import { getSelectedNodes } from "../selectors/inspection";
 
 class DetailInspector extends Component {
   constructor(props) {
@@ -43,23 +44,17 @@ class DetailInspector extends Component {
   }
 
   render() {
-    const {selection, graph, onSaveCaption, onSaveType, reverseRelationships} = this.props
+    const {selection, graph, onSaveCaption, onSaveType, reverseRelationships, selectedNodes} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
 
-    const nodes = selectedNodes(graph, selection)
+    const nodes = selectedNodes // getSelectedNodes({ graph, selection, applicationLayout })
     const relationships = selectedRelationships(graph, selection)
     const entities = [...nodes, ...relationships];
     const selectionIncludes = {
       nodes: nodes.length > 0,
-      relationships: relationships.length > 0,
-      cluster: nodes.filter(node => node.type === 'cluster').length > 0
-    }
-
-    if (selectionIncludes.cluster) {
-      // TODO
-      return null
+      relationships: relationships.length > 0
     }
 
     const properties = combineProperties(entities)

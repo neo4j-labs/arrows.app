@@ -1,10 +1,11 @@
 import {Size} from "../model/Size";
-import gangsSelector from '../selectors/gang'
+import gangsSelector, {selectorForInspection} from '../selectors/gang'
 import { mouseMove, mouseUp } from "../actions/gang";
 
 const gangsLayer = {
   name: 'gangs',
   selector: gangsSelector,
+  selectorForInspection,
   eventHandlers: {
     mouseMove,
     mouseUp
