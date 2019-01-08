@@ -1,13 +1,23 @@
+/**
+ * Combined function of pointOnLine and pointOnBezier. This gives the coordinates of a point on the line at a certain percentage of the way
+ * @param percentage
+ * @param lineStart
+ * @param lineEnd
+ * @param viaNode
+ * @returns {{x: number, y: number}}
+ * @private
+ */
 import { defaultNewNodeRadius } from "../constants";
 import Voronoi from "./voronoi";
+import {getStyleSelector} from "../../selectors/style";
 
-export const calculateBoundingBox = (nodes, defaultRadius, scale = 1) => {
+export const calculateBoundingBox = (nodes, graph, scale = 1) => {
   if (nodes.length === 0) {
     return null
   }
 
   const getPosition = node => node.position.scale(scale)
-  const radius = node => (node.style && node.style.radius || defaultRadius) * scale
+  const radius = node => getStyleSelector(node, 'radius')(graph) * scale
 
   const left = Math.min(...nodes.map(node => getPosition(node).x - radius(node)))
   const right = Math.max(...nodes.map(node => getPosition(node).x + radius(node)))
@@ -25,15 +35,6 @@ export const pointOnCircle = (x, y, radius, percentage) => {
   }
 }
 
-/**
- * Combined function of pointOnLine and pointOnBezier. This gives the coordinates of a point on the line at a certain percentage of the way
- * @param percentage
- * @param lineStart
- * @param lineEnd
- * @param viaNode
- * @returns {{x: number, y: number}}
- * @private
- */
 export const getPointAtRange = (percentage, lineStart, lineEnd, viaNode = getMidPoint(lineStart, lineEnd)) => {
   var t = percentage
   var x = Math.pow(1 - t, 2) * lineStart.x + (2 * t * (1 - t)) * viaNode.x + Math.pow(t, 2) * lineEnd.x

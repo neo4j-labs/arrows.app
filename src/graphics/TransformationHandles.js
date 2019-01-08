@@ -26,7 +26,7 @@ export default class TransformationHandles {
   constructor(graph, selection, viewTransformation) {
     const selectedNodes = graph.nodes.filter((node) => selection.selectedNodeIdMap.hasOwnProperty(node.id))
     if (selectedNodes.length > 1) {
-      const box = calculateBoundingBox(selectedNodes, graph.style.radius, 1)
+      const box = calculateBoundingBox(selectedNodes, graph, 1)
       const dimensions = ['x', 'y']
       const modes = {}
       dimensions.forEach(dimension => {

@@ -5,6 +5,7 @@ import { ViewTransformation } from "../state/ViewTransformation";
 import { Vector } from "../model/Vector";
 import { tryMoveNode } from "../actions/graph";
 import {computeCanvasSize} from "../model/applicationLayout";
+import {getStyleSelector} from "../selectors/style";
 
 const observedActionTypes = [
   'MOVE_NODES',
@@ -17,10 +18,10 @@ const observedActionTypes = [
   'HIDE_INSPECTOR'
 ]
 
-export const calculateScaling = (nodes, defaultRadius, canvasSize, viewTransformation, action) => {
+export const calculateScaling = (nodes, graph, canvasSize, viewTransformation, action) => {
   const node =  nodes.find(n => n.id === action.nodePositions[0].nodeId)
   const position = viewTransformation.transform(node.position)
-  let radius = viewTransformation.scale * ((node.style && node.style.radius) || defaultRadius)
+  let radius = viewTransformation.scale * getStyleSelector(node, 'radius')(graph)
 
   const leftOverflow = 0 - (position.x - radius)
   const rightOverflow =  (position.x + radius) - canvasSize.width
@@ -72,9 +73,9 @@ export const viewportMiddleware = store => next => action => {
     const canvasSize = computeCanvasSize(applicationLayout)
 
     if (action.type === 'MOVE_NODES') {
-      const shouldScaleUp = calculateScaling(nodes, graph.style.radius, canvasSize, viewTransformation, action)
+      const shouldScaleUp = calculateScaling(nodes, graph, canvasSize, viewTransformation, action)
       if (shouldScaleUp) {
-        let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, canvasSize)
+        let { scale, translateVector } = calculateViewportTranslation(nodes, graph, canvasSize)
 
         store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
 
@@ -111,7 +112,7 @@ export const viewportMiddleware = store => next => action => {
         }
       }
     } else {
-      let { scale, translateVector } = calculateViewportTranslation(nodes, graph.style.radius, canvasSize)
+      let { scale, translateVector } = calculateViewportTranslation(nodes, graph, canvasSize)
 
       if (scale) {
        if (action.type === 'MOVE_NODES_END_DRAG') {

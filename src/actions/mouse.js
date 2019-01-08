@@ -7,6 +7,7 @@ import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {tryUpdateSelectionPath} from "./selectionPath"
 import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
 import {idsMatch} from "../model/Id";
+import {getStyleSelector} from "../selectors/style";
 
 const LongPressTime = 300
 
@@ -201,7 +202,7 @@ const positionsOfSelectedNodes = (state) => {
     nodePositions.push({
       nodeId: nodeId,
       position: node.position,
-      radius: node.style && node.style.radius || graph.style.radius
+      radius: getStyleSelector(node, 'radius')(graph)
     })
   })
   return nodePositions
