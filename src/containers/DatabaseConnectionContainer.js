@@ -1,6 +1,7 @@
 import {connect} from "react-redux"
 import DatabaseConnectionForm from "../components/DatabaseConnectionForm";
-import {cancelEditing, forgetConnectionParameters, updateConnectionParameters} from "../actions/databaseConnection";
+import {cancelEditing, updateConnectionParameters} from "../actions/databaseConnection";
+import {forgetConnectionParameters} from "../actions/localStorage";
 
 const mapStateToProps = state => {
   return {

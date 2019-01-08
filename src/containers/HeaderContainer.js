@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import {editConnectionParameters} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
 import {setDiagramName} from "../actions/diagramName";
-import {showExportDialog} from "../actions/exporting";
+import {showExportDialog, showHelpDialog} from "../actions/applicationDialogs";
 import {newDiagram} from "../actions/diagram";
 import {reloadGraph} from "../actions/storage";
 
@@ -38,6 +38,9 @@ const mapDispatchToProps = dispatch => {
     },
     onExportClick: () => {
       dispatch(showExportDialog())
+    },
+    onHelpClick: () => {
+      dispatch(showHelpDialog())
     }
   }
 }

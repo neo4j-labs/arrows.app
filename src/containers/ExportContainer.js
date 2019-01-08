@@ -1,6 +1,6 @@
 import {connect} from "react-redux"
 import ExportModal from "../components/ExportModal";
-import {hideExportDialog} from "../actions/exporting";
+import {hideExportDialog} from "../actions/applicationDialogs";
 
 const mapStateToProps = state => {
   return {
