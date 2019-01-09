@@ -4,6 +4,7 @@ import { mouseMove, mouseUp } from "../actions/gang";
 
 const gangsLayer = {
   name: 'gangs',
+  persist: false,
   selector: gangsSelector,
   selectorForInspection,
   eventHandlers: {
@@ -42,6 +43,20 @@ const applicationLayout = (state = {
         ...state,
         layers: action.enabled ? [gangsLayer] : [],
         betaFeaturesEnabled: action.enabled
+      }
+    case 'SET_PERSIST_CLUSTERS':
+      const clusterLayer = state.layers.find(layer => layer.name === 'gangs')
+      if (clusterLayer && clusterLayer.persist !== action.enabled) {
+        const otherLayers = state.layers.filter(layer => layer.name !== 'gangs')
+        return {
+          ...state,
+          layers: otherLayers.concat([{
+            ...clusterLayer,
+            persist: action.enabled
+          }])
+        }
+      } else {
+        return state
       }
     default:
       return state

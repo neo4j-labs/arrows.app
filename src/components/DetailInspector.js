@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Segment, Form, Input, Menu, Icon} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
-import {selectedNodes, selectedRelationships} from "../model/selection"
+import {selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle} from "../model/properties"
 import {describeSelection} from "./SelectionCounters"
 import PropertyTable from "./PropertyTable"
@@ -11,7 +11,6 @@ import { compose } from "recompose"
 import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
 import { DetailToolbox } from "./DetailToolbox"
 import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
-import { getSelectedNodes } from "../selectors/inspection";
 
 class DetailInspector extends Component {
   constructor(props) {

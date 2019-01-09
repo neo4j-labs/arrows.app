@@ -1,13 +1,19 @@
 import {connect} from "react-redux";
 import {setGraphStyle} from "../actions/graph";
 import GeneralInspector from "../components/GeneralInspector";
-import {hideInspector, showInspector, setBetaFeaturesEnabled} from "../actions/applicationLayout";
+import {
+  hideInspector,
+  showInspector,
+  setBetaFeaturesEnabled,
+  setPersistClusters
+} from "../actions/applicationLayout";
 
 const mapStateToProps = state => {
   return {
     graph: state.graph,
     selection: state.selection,
-    betaFeaturesEnabled: state.applicationLayout.betaFeaturesEnabled
+    betaFeaturesEnabled: state.applicationLayout.betaFeaturesEnabled,
+    layers: state.applicationLayout.layers
   }
 }
 
@@ -16,7 +22,8 @@ const mapDispatchToProps = dispatch => {
     hideInspector: () => dispatch(hideInspector()),
     showInspector: () => dispatch(showInspector()),
     onSaveGraphStyle: (key, value) => dispatch(setGraphStyle(key, value)),
-    onSetBetaFeaturesEnabled: enabled => dispatch(setBetaFeaturesEnabled(enabled))
+    onSetBetaFeaturesEnabled: enabled => dispatch(setBetaFeaturesEnabled(enabled)),
+    onSetPersistClusters: enabled => dispatch(setPersistClusters(enabled))
   }
 }
 
