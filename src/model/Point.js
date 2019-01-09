@@ -32,4 +32,8 @@ export class Point {
   isEqual(point) {
     return this.x === point.x && this.y === point.y
   }
+
+  get xy() {
+    return [this.x, this.y]
+  }
 }

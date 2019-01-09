@@ -3,6 +3,7 @@ import {getLines} from "./utils/wordwrap";
 import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
+import { Point } from "../model/Point";
 import {asKey} from "../model/Id";
 import { getStyleSelector } from "../selectors/style";
 import { nodeStyleAttributes } from "../model/styling";
@@ -63,12 +64,11 @@ export default class VisualNode {
   }
 
   draw(ctx) {
-    const { caption } = this.node
-
     if (this.status === 'combined') {
       return
     }
 
+    const { caption, labels } = this.node
     drawSolidCircle(ctx, this.position, this['node-color'], this.radius)
 
     if (this['border-width'] > 0) {
@@ -77,6 +77,9 @@ export default class VisualNode {
 
     if (caption) {
       this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
+    }
+    if (labels) {
+      this.drawLabels(ctx, this.position, this.radius, labels)
     }
   }
 
@@ -108,6 +111,27 @@ export default class VisualNode {
       drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
       yPos += lineDistance
     }
+    ctx.restore()
+  }
+
+  drawLabels(ctx, position, radius, labels) {
+    ctx.save()
+    const fontSize = this['caption-font-size'] * this.viewTransformation.scale
+    const fontColor = 'black' //this['caption-color']
+    const fontFace = get(config, 'font.face')
+
+    ctx.fillStyle = fontColor
+    let fontWeight = 'normal'
+    ctx.font = fontWeight + fontSize + 'px ' + fontFace
+    ctx.textBaseline = 'middle'
+
+    ctx.translate(...position.translate(new Vector(0, radius).rotate(Math.PI / 4)).xy)
+    labels.forEach((label, i) => {
+      ctx.save()
+      ctx.translate(0, i * fontSize)
+      drawTextLine(ctx, label, new Point(0, 0))
+      ctx.restore()
+    })
     ctx.restore()
   }
 }
