@@ -2,6 +2,7 @@ import React from 'react'
 import {Input} from 'semantic-ui-react'
 import ColorPicker from './ColorPicker'
 import Slider from './Slider'
+import Dropdown from "./Dropdown";
 
 export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, onKeyPress, setFocusHandler) => {
   switch (styleKey) {
@@ -31,6 +32,13 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
           onChange={onChange}
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}
+        />
+      )
+    case 'caption-font-weight':
+      return (
+        <Dropdown
+          value={value}
+          onChange={onChange}
         />
       )
     default:

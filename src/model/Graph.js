@@ -17,6 +17,7 @@ export const emptyGraph = () => {
       'border-color': '#000000',
       'caption-color': '#ffffff',
       'caption-font-size': defaultFontSize,
+      'caption-font-weight': 'normal',
       'property-color': '#000000',
       'property-font-size': defaultFontSize * (4/5),
       'arrow-width': 1,

@@ -5,6 +5,7 @@ export const nodeStyleAttributes = [
   'border-color',
   'caption-color',
   'caption-font-size',
+  'caption-font-weight',
   'property-color',
   'property-font-size'
 ]
