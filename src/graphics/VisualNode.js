@@ -106,13 +106,13 @@ export default class VisualNode {
     ctx.save()
     const fontSize = this['caption-font-size'] * this.viewTransformation.scale
     const fontColor = this['caption-color']
+    const fontWeight = this['caption-font-weight']
     const fontFace = get(config, 'font.face')
 
     let lines = getLines(ctx, label, fontFace, fontSize, maxWidth, false)//this.hasIcon)
 
     ctx.fillStyle = fontColor
-    let fontWeight = 'normal' // this.boldText ? 'bold ' : 'normal '
-    ctx.font = fontWeight + fontSize + 'px ' + fontFace
+    ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
     ctx.textBaseline = 'middle'
 
     const lineDistance = fontSize
