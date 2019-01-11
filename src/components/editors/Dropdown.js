@@ -4,20 +4,20 @@ import {Form, Dropdown} from 'semantic-ui-react'
 export default class extends Component {
 
   render() {
-    const { value, onChange } = this.props
+    const { value, placeholder, options, onChange } = this.props
 
-    const options = ['normal', 'bold'].map(value => ({
+    const textAndValueOptions = options.map(value => ({
       text: value,
       value
     }))
     const trigger = (
-      <span>{value}</span>
+      <span>{placeholder || value}</span>
     )
     return (
       <Form.Field>
         <Dropdown
           trigger={trigger}
-          options={options}
+          options={textAndValueOptions}
           defaultValue={value}
           onChange={(e, { value }) => onChange(value)}
         />

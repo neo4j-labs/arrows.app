@@ -3,28 +3,27 @@ import {Input} from 'semantic-ui-react'
 import ColorPicker from './ColorPicker'
 import Slider from './Slider'
 import Dropdown from "./Dropdown";
+import {styleAttributes, styleTypes} from "../../model/styling";
 
 export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, onKeyPress, setFocusHandler) => {
-  switch (styleKey) {
-    case 'radius':
-    case 'border-width':
-    case 'caption-font-size':
-    case 'property-font-size':
-    case 'arrow-width':
+  const attribute = styleAttributes[styleKey]
+  const styleType = styleTypes[attribute.type]
+
+  switch (styleType.editor) {
+    case 'slider':
       return (
         <Slider
           value={value}
+          min={styleType.min}
+          max={styleType.max}
+          step={styleType.step}
           placeholder={placeholder}
           onChange={onChange}
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}
         />
       )
-    case 'node-color':
-    case 'border-color':
-    case 'caption-color':
-    case 'property-color':
-    case 'arrow-color':
+    case 'colorPicker':
       return (
         <ColorPicker
           value={value}
@@ -34,10 +33,12 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
           setFocusHandler={setFocusHandler}
         />
       )
-    case 'caption-font-weight':
+    case 'dropdown':
       return (
         <Dropdown
           value={value}
+          placeholder={placeholder}
+          options={styleType.options}
           onChange={onChange}
         />
       )

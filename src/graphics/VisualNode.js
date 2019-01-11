@@ -98,7 +98,7 @@ export default class VisualNode {
     ctx.save()
     ctx.strokeStyle = this['border-color'] || '#000'
     ctx.lineWidth = strokeWidth
-    drawCircle(ctx, this.position, this.radius - strokeWidth / 2, true)
+    drawCircle(ctx, this.position, Math.max(strokeWidth / 2, this.radius - strokeWidth / 2), true)
     ctx.restore()
   }
 
