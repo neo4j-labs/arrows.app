@@ -1,5 +1,6 @@
 import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
 import {renameGoogleDriveStore, saveFile} from "../actions/googleDrive";
+import {updatingGraph, updatingGraphSucceeded} from "../actions/neo4jStorage";
 
 const updateQueue = []
 
@@ -28,12 +29,17 @@ export const storageMiddleware = store => next => action => {
         const result = next(action)
         const newState = store.getState()
         if (oldState.graph !== newState.graph) {
+          if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
+            store.dispatch(updatingGraph())
+          }
           deBounce(() => {
             saveFile(
               newState.graph,
               storage.googleDrive.fileId,
               newState.diagramName,
-              () => {}
+              () => {
+                store.dispatch(updatingGraphSucceeded())
+              }
             )
           }, driveUpdateInterval)
         }
