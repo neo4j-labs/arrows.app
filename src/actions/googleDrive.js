@@ -2,6 +2,7 @@ import config from "../config";
 import {googleDriveSignInStatusChanged, updateGoogleDriveFileId, useGoogleDriveStorage} from "./storage";
 import {renderGraphAtScaleFactor} from "../graphics/utils/offScreenCanvasRenderer";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
+import {indexableText} from "../model/Graph";
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 export const SCOPES = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.install';
 
@@ -92,7 +93,8 @@ export const saveFile = (graph, fileId, fileName, onFileSaved) => {
       'thumbnail': {
         'image': base64urlEncodeDataUrl(renderGraphAtScaleFactor(graph, 2, false).dataUrl),
         'mimeType': 'image/png'
-      }
+      },
+      'indexableText': indexableText(graph)
     }
   };
 

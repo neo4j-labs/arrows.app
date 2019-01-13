@@ -174,3 +174,7 @@ export const removeArrowsProperty = (entity, keyToRemove) => {
     style
   }
 }
+
+export const indexablePropertyText = (entity) => {
+  return Object.keys(entity.properties).map((key) => `${key} ${entity.properties[key]}`)
+}

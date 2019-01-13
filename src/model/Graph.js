@@ -2,6 +2,7 @@ import { isPointInPolygon } from "../graphics/utils/geometryUtils";
 import { defaultNodeRadius, defaultFontSize } from "../graphics/constants";
 import { blueActive } from "./colors";
 import { getStyleSelector } from "../selectors/style";
+import {indexablePropertyText} from "./properties";
 
 const ringLength =  10
 
@@ -51,3 +52,19 @@ export const nodeRingAtPoint = (graph, point) => {
 export const nodesInsidePolygon = (graph, path) => graph.nodes
   .filter(node => isPointInPolygon(node.position, path))
   .map(node => node.id)
+
+export const indexableText = (graph) => {
+  const lines = []
+  graph.nodes.forEach(node => {
+    lines.push(node.caption)
+    lines.push(...indexablePropertyText(node))
+  })
+  graph.relationships.forEach(relationship => {
+    lines.push(relationship.type)
+    lines.push(...indexablePropertyText(relationship))
+  })
+
+  const text = lines.join('\n')
+  // size limit is 128K according to https://developers.google.com/drive/api/v3/file
+  return text.substr(0, 128000)
+}
