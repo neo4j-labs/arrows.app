@@ -5,9 +5,6 @@ import VisualGraph from "../graphics/VisualGraph";
 import TransformationHandles from "../graphics/TransformationHandles";
 import {bundle} from "../model/graph/relationshipBundling";
 import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
-import NodeToolboxes from "../graphics/NodeToolboxes";
-import { ViewTransformation } from "../state/ViewTransformation";
-import { calculateViewportTranslation } from "../middlewares/viewportMiddleware";
 import { idsMatch } from "../model/Id";
 
 const getSelection = (state) => state.selection
@@ -29,10 +26,6 @@ export const getGraph = (state) => {
     return state.graph
   }
 }
-
-export const getChildViewTransformation = (state) => new ViewTransformation(
-  state.viewTransformation.scale * (400 / state.applicationLayout.windowSize.width)
-)
 
 export const getVisualGraph = createSelector(
   [getGraph, getSelection, getViewTransformation],
@@ -58,51 +51,6 @@ export const getVisualGraph = createSelector(
   }
 )
 
-
-
-export const getVisualGraphForSelectedCluster = createSelector(
-  [getGraph, getSelection, getChildViewTransformation],
-  (graph, selection, viewTransformation) => {
-    let superNode = graph.nodes.find(node => selection.selectedNodeIdMap[node.id] && node.type === 'cluster')
-
-    if (superNode) {
-      const childNodes = graph.nodes.reduce((nodes, node) => {
-        const subNodePosition = superNode.initialPositions.find(ip => ip.nodeId === node.id)
-        if (subNodePosition) {
-          const subNode = { ...node, status: null, position: subNodePosition.position }
-          nodes.push(subNode)
-        }
-        return nodes
-      }, [])
-
-      const { scale, translateVector } = calculateViewportTranslation(childNodes, 50, { width: 400, height: 300 })
-      const adjustedViewTransformation = new ViewTransformation(scale, translateVector)
-
-      const nodes = childNodes.reduce((nodes, node) => {
-        nodes[node.id] = new VisualNode(node, adjustedViewTransformation, graph)
-        return nodes
-      }, {})
-
-      const relationships = graph.relationships.filter(relationship => nodes[relationship.fromId] && nodes[relationship.toId])
-        .map(relationship =>
-          new VisualEdge(
-            relationship,
-            nodes[relationship.fromId],
-            nodes[relationship.toId],
-            selection.selectedRelationshipIdMap[relationship.id],
-            graph),
-        )
-      const relationshipBundles = bundle(relationships).map(bundle => {
-        return new RoutedRelationshipBundle(bundle, adjustedViewTransformation, graph);
-      })
-
-      return new VisualGraph(graph, nodes, relationshipBundles)
-    } else {
-      return new VisualGraph(graph, {}, [])
-    }
-  }
-)
-
 export const getTransformationHandles = createSelector(
   [getGraph, getSelection, getViewTransformation],
   (graph, selection, viewTransformation) => {
@@ -124,10 +72,3 @@ export const getPositionsOfSelectedNodes = (state) => {
   })
   return nodePositions
 }
-
-export const getToolboxes = createSelector(
-  [getGraph],
-  (graph) => {
-    return new NodeToolboxes(graph)
-  }
-)
