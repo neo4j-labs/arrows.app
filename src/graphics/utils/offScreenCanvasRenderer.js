@@ -11,7 +11,6 @@ export const renderGraphAtScaleFactor = (graph, scaleFactor, transparentBackgrou
   boundingBox.height = boundingBox.bottom - boundingBox.top
   const renderState = {
     graph,
-    applicationLayout,
     selection: {
       selectedNodeIdMap: {},
       selectedRelationshipIdMap: {}
