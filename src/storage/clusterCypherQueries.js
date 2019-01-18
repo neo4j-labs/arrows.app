@@ -24,6 +24,24 @@ export const writeQueriesForAction = (action, state) => {
       })
     }
 
+    case 'MOVE_NODES_END_DRAG': {
+      if (action.nodePositions.length !== 0) {
+        return (session) => {
+          let result = session
+          action.nodePositions.forEach(({nodeId, position}) => {
+            result = session.run('MATCH (n:Diagram0_Cluster {_id: $id}) ' +
+              'SET n._x = $x, n._y = $y', {
+              id: nodeId,
+              x: position.x,
+              y: position.y
+            })
+          })
+          return result
+        }
+      }
+      return () => Promise.resolve("Nothing to do")
+    }
+
     case 'REMOVE_CLUSTER' : {
       console.log('removing cluster from db')
       return (session) => session.run(`MATCH (n:Diagram0_Cluster)
