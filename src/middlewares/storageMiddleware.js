@@ -59,11 +59,10 @@ export const storageMiddleware = store => next => action => {
 const drainUpdateQueue = (state) => {
   const applyHead = () => {
     if (updateQueue.length > 0) {
-      const action = updateQueue[0]
+      const action = updateQueue.shift()
 
       updateNeoStore(action, state)
         .then(() => {
-          updateQueue.shift()
           applyHead()
         })
         .catch(error => console.log(error))
