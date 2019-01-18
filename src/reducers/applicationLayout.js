@@ -1,23 +1,25 @@
 import {Size} from "../model/Size";
 import gangsSelector, {selectorForInspection} from '../selectors/gang'
 import { mouseMove, mouseUp } from "../actions/gang";
+import { writeQueriesForAction as clusterWriteQueryAction } from "../storage/clusterCypherQueries"
 
 const gangsLayer = {
   name: 'gangs',
-  persist: false,
+  persist: true,
   selector: gangsSelector,
   selectorForInspection,
   eventHandlers: {
     mouseMove,
     mouseUp
-  }
+  },
+  storageActionHandler: clusterWriteQueryAction
 }
 
 const applicationLayout = (state = {
   windowSize: new Size(window.innerWidth, window.innerHeight),
   inspectorVisible: true,
-  betaFeaturesEnabled: false,
-  layers: []
+  betaFeaturesEnabled: true,
+  layers: [gangsLayer]
 }, action) => {
   switch (action.type) {
     case 'WINDOW_RESIZED':

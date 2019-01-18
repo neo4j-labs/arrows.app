@@ -23,12 +23,14 @@ export const createClusterGang = (nodePositions, initialPositions) => (dispatch,
 
   const superNodeId = nextAvailableId(graph.nodes)
   dispatch(clearSelection())
+  
   dispatch(createCluster(superNodeId, caption, nodePositions[0].position, 'cluster', initialPositions))
   dispatch(moveNodes(null, null, initialPositions, new Guides(), true))
 }
 
-export const createCluster = (nodeId, caption, position, nodeType, initialPositions) => ({
+export const createCluster = (nodeId, caption, position, nodeType, initialPositions, initialClusterPosition = position) => ({
   type: 'CREATE_CLUSTER',
+  category: 'GRAPH',
   nodeId,
   caption,
   position,
@@ -41,7 +43,7 @@ export const createCluster = (nodeId, caption, position, nodeType, initialPositi
     'border-width': '2',
     'caption-color': '#000'
   },
-  initialPosition: position
+  initialPosition: initialClusterPosition
 })
 
 export const removeClusterGang = nodeId => (dispatch, getState) => {
@@ -66,6 +68,7 @@ export const removeClusterGang = nodeId => (dispatch, getState) => {
 
 export const removeCluster = nodeId => ({
   type: 'REMOVE_CLUSTER',
+  category: 'GRAPH',
   nodeId
 })
 
