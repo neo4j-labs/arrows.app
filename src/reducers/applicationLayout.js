@@ -1,5 +1,5 @@
 import {Size} from "../model/Size";
-import gangsSelector, {selectorForInspection} from '../selectors/gang'
+import gangsSelector, { getGangs, selectorForInspection } from '../selectors/gang'
 import { mouseMove, mouseUp } from "../actions/gang";
 import { writeQueriesForAction as clusterWriteQueryAction } from "../storage/clusterCypherQueries"
 
@@ -12,7 +12,10 @@ const gangsLayer = {
     mouseMove,
     mouseUp
   },
-  storageActionHandler: clusterWriteQueryAction
+  storageActionHandler: {
+    neo4j: clusterWriteQueryAction,
+    googleDrive: getGangs
+  },
 }
 
 const applicationLayout = (state = {

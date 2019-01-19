@@ -15,6 +15,22 @@ export default (state = initialState, action) => {
         members: action.members,
         initialPosition: action.initialPosition
       }])
+    case 'LOAD_CLUSTERS':
+      return action.clusters.map(cluster => ({
+        id: cluster.id,
+        position: cluster.position,
+        caption: cluster.caption,
+        properties: {},
+        type: cluster.type || cluster,
+        members: cluster.members,
+        initialPosition: cluster.initialPosition,
+        style: cluster.style || {
+          'radius': 50,
+          'node-color': '#FFF',
+          'border-width': '2',
+          'caption-color': '#000'
+        }
+      }))
     case 'REMOVE_CLUSTER':
       return state.filter(gang => gang.id !== action.nodeId)
 

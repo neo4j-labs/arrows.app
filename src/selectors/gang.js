@@ -24,6 +24,7 @@ export default (state) => {
   }
 }
 
+export const getGangs = state => state.gangs
 
 const applyCluster = (graph, cluster) => {
   const memberIdsMap = cluster.members.reduce((idMap, member) => {

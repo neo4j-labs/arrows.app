@@ -3,7 +3,7 @@ export const getCommonCaption = nodes => nodes.reduce((result, node) => {
     if (commonProps === null) {
       return {
         commonProps: { ...node.properties },
-        caption: node.caption + ', '
+        caption: node.caption
       }
     } else {
       Object.keys(commonProps).forEach(commonKey => {

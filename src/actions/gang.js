@@ -9,7 +9,7 @@ import { pan } from "./viewTransformation";
 import { getGraph, getPositionsOfSelectedNodes } from "../selectors";
 
 export const createClusterGang = (nodePositions, initialPositions) => (dispatch, getState) => {
-  const { graph } = getState()
+  const { graph, gangs } = getState()
   const combinedNodeIds = nodePositions.map(nodePos => nodePos.nodeId)
   const combinedNodes = graph.nodes.filter(node => combinedNodeIds.includes(node.id))
 
@@ -21,7 +21,7 @@ export const createClusterGang = (nodePositions, initialPositions) => (dispatch,
     caption = commonProps[commonKeys[0]]
   }
 
-  const superNodeId = nextAvailableId(graph.nodes)
+  const superNodeId = nextAvailableId(gangs || [], 'c')
   dispatch(clearSelection())
   
   dispatch(createCluster(superNodeId, caption, nodePositions[0].position, 'cluster', initialPositions))
@@ -44,6 +44,11 @@ export const createCluster = (nodeId, caption, position, nodeType, initialPositi
     'caption-color': '#000'
   },
   initialPosition: initialClusterPosition
+})
+
+export const loadClusters = clusters => ({
+  type: 'LOAD_CLUSTERS',
+  clusters
 })
 
 export const removeClusterGang = nodeId => (dispatch, getState) => {

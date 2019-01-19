@@ -10,11 +10,11 @@ export function nextId(id) {
   return 'n' + (parseInt(id.substring(1)) + 1)
 }
 
-export function nextAvailableId(entities) {
+export function nextAvailableId(entities, prefix = 'n') {
   const currentIds = entities.map((entity) => entity.id)
-    .filter((id) => /^n[0-9]+$/.test(id))
+    .filter((id) => new RegExp(`^${prefix}[0-9]+$`).test(id))
     .map((id) => parseInt(id.substring(1)))
     .sort((x, y) => x-y)
 
-  return 'n' + (currentIds.length > 0 ? currentIds.pop() + 1 : 0)
+  return prefix + (currentIds.length > 0 ? currentIds.pop() + 1 : 0)
 }
