@@ -46,7 +46,7 @@ const constructGraphFromFile = graphJson => {
 
   if (data.graph) {
     graph = data.graph
-    gangs = data.gangs
+    gangs = data.gangs || []
   } else {
     graph = data
   }
