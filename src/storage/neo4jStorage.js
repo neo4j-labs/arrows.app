@@ -32,8 +32,8 @@ export const updateStore = (action, state) => {
 
   if (layers && layers.length > 0) {
     layers.forEach(layer => {
-      if (layer.persist && layer.storageActionHandler) {
-        workList.push(layer.storageActionHandler(action, state))
+      if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['neo4j']) {
+        workList.push(layer.storageActionHandler['neo4j'](action, state))
       }
     })
   }

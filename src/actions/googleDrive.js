@@ -54,7 +54,7 @@ export const initializeGoogleDriveStorage = () => {
       const onFileSaved = (fileId) => {
         dispatch(updateGoogleDriveFileId(fileId))
       }
-      saveFile(state.graph, null, state.diagramName, onFileSaved)
+      saveFile({ graph: state.graph, gangs: state.gangs }, null, state.diagramName, onFileSaved)
     } else {
       window.gapi.auth2.getAuthInstance().signIn();
     }
@@ -79,10 +79,12 @@ const base64urlEncodeDataUrl = (dataUrl) => {
   return dataUrl.substring('data:image/png;base64,'.length).replace(/\+/g, '-').replace(/\//g, '_')
 }
 
-export const saveFile = (graph, fileId, fileName, onFileSaved) => {
+export const saveFile = (data, fileId, fileName, onFileSaved) => {
   const boundary = '-------314159265358979323846';
   const delimiter = "\r\n--" + boundary + "\r\n";
   const close_delim = "\r\n--" + boundary + "--";
+
+  const graph = data.graph
 
   const contentType = 'application/vnd.neo4j.arrows+json';
 
@@ -104,7 +106,7 @@ export const saveFile = (graph, fileId, fileName, onFileSaved) => {
     JSON.stringify(metadata) +
     delimiter +
     'Content-Type: ' + contentType + '\r\n\r\n' +
-    JSON.stringify(graph) +
+    JSON.stringify(data) +
     close_delim;
 
   const request = window.gapi.client.request({
