@@ -1,57 +1,16 @@
 import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
 import {renameGoogleDriveStore, saveFile} from "../actions/googleDrive";
+import {updatingGraph, updatingGraphSucceeded} from "../actions/neo4jStorage";
 
 const updateQueue = []
 
 const driveUpdateInterval = 1000 // ms
+let waiting
 
-const limitedUpdater = (() => {
-  let lastUpdateTime = new Date()
-  let nextUpdateTask = null
-  let lastUpdateRequestTime = null
-  let updating = false
-
-  return {
-    updateRequested: (updateRequest) => {
-      lastUpdateRequestTime = new Date()
-
-      const tryRun = (runRequestTime) => {
-        const timeToRun = driveUpdateInterval - (runRequestTime - lastUpdateTime)
-
-        if (timeToRun <= 0) {
-          updating = true
-          nextUpdateTask = null
-          updateRequest(getUpdateCallback(runRequestTime))
-        } else {
-          if (nextUpdateTask) {
-            clearInterval(nextUpdateTask)
-          }
-
-          nextUpdateTask = setTimeout(() => {
-            if (!updating) {
-              updating = true
-              updateRequest(getUpdateCallback(runRequestTime))
-            }
-          }, timeToRun)
-        }
-      }
-
-      const getUpdateCallback = runRequestTime => () => {
-        lastUpdateTime = new Date()
-        updating = false
-
-        if (lastUpdateRequestTime > runRequestTime) {
-          tryRun(lastUpdateRequestTime)
-        }
-      }
-
-      let requestTime = lastUpdateRequestTime
-      if (!updating) {
-        tryRun(requestTime)
-      }
-    }
-  }
-})()
+const deBounce = (func, delay) => {
+  clearTimeout(waiting)
+  waiting = setTimeout(func, delay)
+}
 
 export const storageMiddleware = store => next => action => {
   const state = store.getState()
@@ -70,7 +29,19 @@ export const storageMiddleware = store => next => action => {
         const result = next(action)
         const newState = store.getState()
         if (oldState.graph !== newState.graph) {
-          limitedUpdater.updateRequested(callback => saveFile(newState.graph, storage.googleDrive.fileId, newState.diagramName, callback))
+          if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
+            store.dispatch(updatingGraph())
+          }
+          deBounce(() => {
+            saveFile(
+              newState.graph,
+              storage.googleDrive.fileId,
+              newState.diagramName,
+              () => {
+                store.dispatch(updatingGraphSucceeded())
+              }
+            )
+          }, driveUpdateInterval)
         }
         return result
       case "DATABASE":
