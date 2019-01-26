@@ -51,7 +51,9 @@ export default class VisualGraph {
     Object.values(this.nodes).forEach(visualNode => {
       visualNode.draw(ctx)
       if (visualNode.node.properties && visualNode.node.status !== 'combined') {
-        drawAnnotation(ctx, visualNode)
+        const relationshipBundles = this.relationshipBundles.filter(rBundle => rBundle.routedRelationships.some(routedRelationship =>
+          routedRelationship.relationship.from.id === visualNode.id || routedRelationship.relationship.to.id === visualNode.id))
+        drawAnnotation(ctx, visualNode, relationshipBundles)
       }
     })
   }
