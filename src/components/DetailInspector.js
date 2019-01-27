@@ -48,11 +48,10 @@ class DetailInspector extends Component {
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
 
-    const nodes = selectedNodes // getSelectedNodes({ graph, selection, applicationLayout })
     const relationships = selectedRelationships(graph, selection)
-    const entities = [...nodes, ...relationships];
+    const entities = [...selectedNodes, ...relationships];
     const selectionIncludes = {
-      nodes: nodes.length > 0,
+      nodes: selectedNodes.length > 0,
       relationships: relationships.length > 0
     }
 
@@ -65,7 +64,7 @@ class DetailInspector extends Component {
     }
 
     if (selectionIncludes.nodes && !selectionIncludes.relationships) {
-      const value = commonValue(nodes.map((node) => node.caption));
+      const value = commonValue(selectedNodes.map((node) => node.caption));
       const fieldValue = value || ''
       const placeholder = value === undefined ? '<multiple values>' : null
       fields.push(
