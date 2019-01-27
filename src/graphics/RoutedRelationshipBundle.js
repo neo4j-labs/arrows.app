@@ -140,6 +140,11 @@ class RoutedRelationship {
   }
 
   draw(ctx) {
+    if (this.relationship.from.status === 'combined' && this.relationship.to.status === 'combined'
+      && this.relationship.from.superNodeId === this.relationship.to.superNodeId) {
+      return
+    }
+
     if (this.relationship.selected) {
       this.arrow.drawSelectionIndicator(ctx)
     }

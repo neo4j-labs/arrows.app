@@ -1,11 +1,21 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import { renderVisuals } from "../graphics/visualsRenderer";
-import { DELETE_SELECTION, DUPLICATE_SELECTION, MOVE_LEFT, MOVE_UP, MOVE_RIGHT, MOVE_DOWN,SELECT_ALL } from "../interactions/Keybindings";
+import {
+  DELETE_SELECTION,
+  DUPLICATE_SELECTION,
+  MOVE_LEFT,
+  MOVE_UP,
+  MOVE_RIGHT,
+  MOVE_DOWN,
+  SELECT_ALL
+} from "../interactions/Keybindings";
 import MouseHandler from "../interactions/MouseHandler";
+import { ViewTransformation } from "../state/ViewTransformation";
+import { Vector } from "../model/Vector";
 
 class GraphDisplay extends Component {
-  constructor (props) {
-    super (props)
+  constructor(props) {
+    super(props)
     props.registerAction(
       'REMOVE_SELECTION_PATH',
       () => this.props.removeSelectionPath()
@@ -40,14 +50,8 @@ class GraphDisplay extends Component {
     )
   }
 
-  fitToParent () {
-    const parent = this.canvas.parentElement
-    const rect = parent.getBoundingClientRect()
-  }
-
   componentDidMount() {
     this.touchHandler = new MouseHandler(this.canvas)
-    this.fitToParent()
     this.drawVisuals()
   }
 
@@ -58,9 +62,9 @@ class GraphDisplay extends Component {
 
   render() {
     return (
-      <canvas
-        ref={(elm) => this.canvas = elm}
-      />
+      <div>
+        <canvas ref={(elm) => this.canvas = elm}/>
+      </div>
     )
   }
 
@@ -97,9 +101,9 @@ class GraphDisplay extends Component {
   }
 
   drawVisuals() {
-    const { visualGraph, selection, gestures, guides, handles, viewTransformation, canvasSize } = this.props
+    const { visualGraph, selection, gestures, guides, handles, toolboxes, viewTransformation, canvasSize } = this.props
     renderVisuals({
-      visuals: {visualGraph, selection, gestures, guides, handles},
+      visuals: { visualGraph, selection, gestures, guides, handles, toolboxes },
       canvas: this.canvas,
       displayOptions: { canvasSize, viewTransformation }
     })

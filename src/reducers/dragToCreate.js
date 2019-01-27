@@ -6,7 +6,10 @@ export default function dragging(state = {
   switch (action.type) {
     case 'ACTIVATE_RING':
       return {
-        sourceNodeId: action.sourceNodeId, targetNodeId: null, newNodePosition: null
+        sourceNodeId: action.sourceNodeId,
+        nodeType: action.nodeType,
+        targetNodeId: null,
+        newNodePosition: null
       }
     case 'RING_DRAGGED':
       return {

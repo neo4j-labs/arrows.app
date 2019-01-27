@@ -5,11 +5,13 @@ import {
 } from "../actions/graph";
 import DetailInspector from "../components/DetailInspector"
 import {showInspector, hideInspector} from "../actions/applicationLayout";
+import { getSelectedNodes } from "../selectors/inspection";
 
 const mapStateToProps = state => {
   return {
     graph: state.graph,
     selection: state.selection,
+    selectedNodes: getSelectedNodes(state),
     inspectorVisible: state.applicationLayout.inspectorVisible
   }
 }

@@ -28,13 +28,24 @@ export const storageMiddleware = store => next => action => {
         const oldState = store.getState()
         const result = next(action)
         const newState = store.getState()
-        if (oldState.graph !== newState.graph) {
+        const data = {graph: newState.graph}
+        const layers = newState.applicationLayout.layers
+
+        if (layers && layers.length > 0) {
+          layers.forEach(layer => {
+            if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['googleDrive']) {
+              data[layer.name] = layer.storageActionHandler['googleDrive'](newState)
+            }
+          })
+        }
+
+        if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
           if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
             store.dispatch(updatingGraph())
           }
           deBounce(() => {
             saveFile(
-              newState.graph,
+              data,
               storage.googleDrive.fileId,
               newState.diagramName,
               () => {
@@ -59,11 +70,10 @@ export const storageMiddleware = store => next => action => {
 const drainUpdateQueue = (state) => {
   const applyHead = () => {
     if (updateQueue.length > 0) {
-      const action = updateQueue[0]
+      const action = updateQueue.shift()
 
       updateNeoStore(action, state)
         .then(() => {
-          updateQueue.shift()
           applyHead()
         })
         .catch(error => console.log(error))

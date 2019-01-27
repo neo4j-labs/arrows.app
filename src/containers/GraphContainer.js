@@ -2,7 +2,10 @@ import {connect} from "react-redux"
 import GraphDisplay from "../components/GraphDisplay"
 import {compose} from "recompose"
 import withKeyBindings from "../interactions/Keybindings"
-import {getVisualGraph, getTransformationHandles} from "../selectors/index"
+import {
+  getVisualGraph,
+  getTransformationHandles
+} from "../selectors/index"
 import {deleteSelection, duplicateSelection} from "../actions/graph"
 import {removeSelectionPath} from "../actions/selectionPath"
 import {selectAll, jumpToNextNode} from "../actions/selection";

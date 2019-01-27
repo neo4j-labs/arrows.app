@@ -121,7 +121,8 @@ export default class Gestures {
           const arrowData = getArrowGeometryData(sourcePoint, sourceBorderPoint, targetPoint, targetBorderPoint, 5)
           drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)
         } else {
-          drawRing(ctx, transform(sourceNodeIdPosition), purple, outerRadius)
+          const drawNodeRing = sourceNode.drawRing || drawRing
+          drawNodeRing(ctx, transform(sourceNodeIdPosition), purple, outerRadius)
         }
       }
     }

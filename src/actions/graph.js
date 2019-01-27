@@ -4,6 +4,8 @@ import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
+import { getCommonCaption } from "../model/gang";
+import { getGraph } from "../selectors";
 
 export const createNode = () => (dispatch, getState) => {
   const { viewTransformation, applicationLayout } = getState()
@@ -145,7 +147,9 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
 
 export const tryMoveNode = ({ nodeId, oldMousePosition, newMousePosition, forcedNodePosition }) => {
   return function (dispatch, getState) {
-    const { graph, viewTransformation, mouse } = getState()
+    const state = getState()
+    const { viewTransformation, mouse } = state
+    const graph = getGraph(state)
     let naturalPosition
     const otherSelectedNodes = Object.keys(getState().selection.selectedNodeIdMap).filter((selectedNodeId) => selectedNodeId !== nodeId)
     const activelyMovedNode = graph.nodes.find((node) => idsMatch(node.id, nodeId))

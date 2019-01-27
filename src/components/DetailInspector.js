@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Segment, Form, Input, Menu, Icon} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
-import {selectedNodes, selectedRelationships} from "../model/selection"
+import {selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle} from "../model/properties"
 import {describeSelection} from "./SelectionCounters"
 import PropertyTable from "./PropertyTable"
@@ -43,18 +43,18 @@ class DetailInspector extends Component {
   }
 
   render() {
-    const {selection, graph, onSaveCaption, onSaveType, reverseRelationships} = this.props
+    const {selection, graph, onSaveCaption, onSaveType, reverseRelationships, selectedNodes} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
 
-    const nodes = selectedNodes(graph, selection)
     const relationships = selectedRelationships(graph, selection)
-    const entities = [...nodes, ...relationships];
+    const entities = [...selectedNodes, ...relationships];
     const selectionIncludes = {
-      nodes: nodes.length > 0,
+      nodes: selectedNodes.length > 0,
       relationships: relationships.length > 0
     }
+
     const properties = combineProperties(entities)
 
     const handleKeyDown = (evt) => {
@@ -64,7 +64,7 @@ class DetailInspector extends Component {
     }
 
     if (selectionIncludes.nodes && !selectionIncludes.relationships) {
-      const value = commonValue(nodes.map((node) => node.caption));
+      const value = commonValue(selectedNodes.map((node) => node.caption));
       const fieldValue = value || ''
       const placeholder = value === undefined ? '<multiple values>' : null
       fields.push(

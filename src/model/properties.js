@@ -6,26 +6,28 @@ export const combineProperties = (entities) => {
   const properties = {}
   let firstKey = true;
   entities.forEach((entity) => {
-    Object.keys(entity.properties).forEach((key) => {
-      const currentEntry = properties[key];
-      if (currentEntry) {
-        if (currentEntry.status === 'CONSISTENT' && currentEntry.value !== entity.properties[key]) {
-          properties[key] = {status: 'INCONSISTENT'}
-        }
-      } else {
-        if (firstKey) {
-          properties[key] = {status: 'CONSISTENT', value: entity.properties[key]}
+    if (entity.properties) {
+      Object.keys(entity.properties).forEach((key) => {
+        const currentEntry = properties[key];
+        if (currentEntry) {
+          if (currentEntry.status === 'CONSISTENT' && currentEntry.value !== entity.properties[key]) {
+            properties[key] = { status: 'INCONSISTENT' }
+          }
         } else {
-          properties[key] = {status: 'PARTIAL'}
+          if (firstKey) {
+            properties[key] = { status: 'CONSISTENT', value: entity.properties[key] }
+          } else {
+            properties[key] = { status: 'PARTIAL' }
+          }
         }
-      }
-    })
-    Object.keys(properties).forEach((key) => {
-      if (!entity.properties.hasOwnProperty(key)) {
-        properties[key] = {status: 'PARTIAL'}
-      }
-    })
-    firstKey = false
+      })
+      Object.keys(properties).forEach((key) => {
+        if (!entity.properties.hasOwnProperty(key)) {
+          properties[key] = { status: 'PARTIAL' }
+        }
+      })
+      firstKey = false
+    }
   })
   return properties
 }

@@ -6,6 +6,7 @@ import { Vector } from "../model/Vector";
 import {asKey} from "../model/Id";
 import { getStyleSelector } from "../selectors/style";
 import { nodeStyleAttributes } from "../model/styling";
+import { blue } from '../model/colors'
 
 export default class VisualNode {
   constructor(node, viewTransformation, graph) {
@@ -54,25 +55,48 @@ export default class VisualNode {
     return this.viewTransformation.transform(this.node.position)
   }
 
+  get status() {
+    return this.node.status
+  }
+
+  get superNodeId() {
+    return this.node.superNodeId
+  }
+
+  get type() {
+    return this.node.type
+  }
+
+  get initialPositions () {
+    return this.node.initialPositions
+  }
+
   distanceToBorder () {
     return this.radius
   }
 
   draw(ctx) {
     const { caption } = this.node
+
+    if (this.status === 'combined') {
+      return
+    }
+
     drawSolidCircle(ctx, this.position, this['node-color'], this.radius)
+
     if (this['border-width'] > 0) {
       this.drawBorder(ctx)
     }
+
     if (caption) {
       this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
     }
   }
 
-  drawBorder(ctx) {
-    const strokeWidth = this['border-width']
+  drawBorder(ctx, borderWidth) {
+    const strokeWidth = borderWidth || this['border-width']
     ctx.save()
-    ctx.strokeStyle = this['border-color']
+    ctx.strokeStyle = this['border-color'] || '#000'
     ctx.lineWidth = strokeWidth
     drawCircle(ctx, this.position, this.radius - strokeWidth / 2, true)
     ctx.restore()

@@ -1,13 +1,21 @@
-import {getVisualGraph, getTransformationHandles} from "../selectors/"
-import {clearSelection, toggleSelection} from "./selection"
-import {showInspector} from "./applicationLayout";
-import {connectNodes, createNodeAndRelationship, moveNodesEndDrag, tryMoveNode, tryMoveHandle} from "./graph"
+import { getVisualGraph, getTransformationHandles, getGraph, getPositionsOfSelectedNodes } from "../selectors/"
+import { clearSelection, toggleSelection } from "./selection"
+import { showInspector } from "./applicationLayout";
+import {
+  connectNodes,
+  createNodeAndRelationship,
+  moveNodesEndDrag,
+  tryMoveNode,
+  tryMoveHandle
+} from "./graph"
 import {adjustViewport, pan, scroll} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {tryUpdateSelectionPath} from "./selectionPath"
 import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
 import {idsMatch} from "../model/Id";
 import {getStyleSelector} from "../selectors/style";
+import { createClusterGang } from "./gang";
+import { getEventHandlers } from "../selectors/layers";
 
 const LongPressTime = 300
 
@@ -15,7 +23,7 @@ const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inve
 
 export const wheel = (canvasPosition, vector, ctrlKey) => {
   return function (dispatch, getState) {
-      const state = getState()
+    const state = getState()
     if (ctrlKey) {
       const graphPosition = toGraphPosition(state, canvasPosition)
       const scale = Math.max(state.viewTransformation.scale * (100 - vector.dy) / 100, 0.01)
@@ -64,7 +72,7 @@ export const mouseDown = (canvasPosition, metaKey) => {
 
     const handle = transformationHandles.handleAtPoint(canvasPosition)
     if (handle) {
-      dispatch(mouseDownOnHandle(handle.corner, canvasPosition, positionsOfSelectedNodes(state)))
+      dispatch(mouseDownOnHandle(handle.corner, canvasPosition, getPositionsOfSelectedNodes(state)))
     } else {
       const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
       if (item) {
@@ -133,68 +141,76 @@ export const mouseMove = (canvasPosition) => {
     const mouse = state.mouse
     const previousPosition = mouse.mousePosition
 
-    switch (mouse.dragType) {
-      case 'NONE':
-        const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
-        if (item && item.entityType === 'nodeRing') {
-          if (dragging.sourceNodeId === null || (dragging.sourceNodeId && item.id !== dragging.sourceNodeId)) {
-            dispatch(activateRing(item.id))
-          }
-        } else {
-          if (dragging.sourceNodeId !== null) {
-            dispatch(deactivateRing())
-          }
-        }
-        break
+    const eventHandlers = getEventHandlers(state, 'mouseMove')
+    const preventDefault = eventHandlers.reduce((prevented, handler) => handler({
+      mouse,
+      dispatch
+    }) || prevented, false)
 
-      case 'HANDLE':
-        if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
-          dispatch(tryMoveHandle({
-            corner: mouse.corner,
-            initialNodePositions: mouse.initialNodePositions,
-            initialMousePosition: mouse.initialMousePosition,
-            newMousePosition: canvasPosition
-          }))
-        }
-        break
-
-      case 'NODE':
-        if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
-          dispatch(tryMoveNode({
-            nodeId: mouse.node.id,
-            oldMousePosition: previousPosition,
-            newMousePosition: canvasPosition
-          }))
-        }
-        break
-
-      case 'NODE_RING':
-        dispatch(tryDragRing(mouse.node.id, graphPosition))
-        break
-
-      case 'CANVAS':
-        if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
-          if (Date.now() - mouse.mouseDownTime > LongPressTime) {
-            dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
+    if (!preventDefault) {
+      switch (mouse.dragType) {
+        case 'NONE':
+          const item = visualGraph.entityAtPoint(canvasPosition, graphPosition)
+          if (item && item.entityType === 'nodeRing') {
+            if (dragging.sourceNodeId === null || (dragging.sourceNodeId && item.id !== dragging.sourceNodeId)) {
+              dispatch(activateRing(item.id, item.type))
+            }
           } else {
-            dispatch(pan(previousPosition, canvasPosition))
+            if (dragging.sourceNodeId !== null) {
+              dispatch(deactivateRing())
+            }
           }
-        }
-        break
+          break
 
-      case 'MARQUEE':
-        dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
-        break
+        case 'HANDLE':
+          if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
+            dispatch(tryMoveHandle({
+              corner: mouse.corner,
+              initialNodePositions: mouse.initialNodePositions,
+              initialMousePosition: mouse.initialMousePosition,
+              newMousePosition: canvasPosition
+            }))
+          }
+          break
 
-      case 'PAN':
-        dispatch(pan(previousPosition, canvasPosition))
-        break
+        case 'NODE':
+          if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
+            dispatch(tryMoveNode({
+              nodeId: mouse.node.id,
+              oldMousePosition: previousPosition,
+              newMousePosition: canvasPosition
+            }))
+          }
+          break
+
+        case 'NODE_RING':
+          dispatch(tryDragRing(mouse.node.id, graphPosition))
+          break
+
+        case 'CANVAS':
+          if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
+            if (Date.now() - mouse.mouseDownTime > LongPressTime) {
+              dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
+            } else {
+              dispatch(pan(previousPosition, canvasPosition))
+            }
+          }
+          break
+
+        case 'MARQUEE':
+          dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
+          break
+
+        case 'PAN':
+          dispatch(pan(previousPosition, canvasPosition))
+          break
+      }
     }
   }
 }
 
 const positionsOfSelectedNodes = (state) => {
-  const graph = state.graph
+  const graph = getGraph(state)
   const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
   const nodePositions = []
   selectedNodes.forEach((nodeId) => {
@@ -213,27 +229,37 @@ export const mouseUp = () => {
     const state = getState();
     const mouse = state.mouse
 
-    switch (mouse.dragType) {
-      case 'MARQUEE':
-        dispatch(selectNodesInMarquee())
-        break
+    const eventHandlers = getEventHandlers(state, 'mouseUp')
+    const preventDefault = eventHandlers.reduce((prevented, handler) => handler({
+      state,
+      dispatch
+    }) || prevented, false)
 
-      case 'HANDLE':
-      case 'NODE':
-        dispatch(moveNodesEndDrag(positionsOfSelectedNodes(state)))
-        break
+    if (!preventDefault) {
+      switch (mouse.dragType) {
+        case 'MARQUEE':
+          dispatch(selectNodesInMarquee())
+          break
+        case 'HANDLE':
+          dispatch(moveNodesEndDrag(getPositionsOfSelectedNodes(state)))
+          break
+        case 'NODE':
+          dispatch(moveNodesEndDrag(getPositionsOfSelectedNodes(state)))
+          break
+        case 'NODE_RING':
+          const dragToCreate = state.gestures.dragToCreate;
 
-      case 'NODE_RING':
-        const dragToCreate = state.gestures.dragToCreate;
-        if (dragToCreate.sourceNodeId) {
-          if (dragToCreate.targetNodeId) {
-            dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
-          } else {
-            dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
+          if (dragToCreate.sourceNodeId) {
+            if (dragToCreate.targetNodeId) {
+              dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
+            } else {
+              dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
+            }
           }
-        }
-        break
+          break
+      }
     }
+
     dispatch(endDrag())
   }
 }

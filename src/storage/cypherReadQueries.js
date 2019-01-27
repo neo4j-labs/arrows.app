@@ -1,8 +1,9 @@
-import {Point} from "../model/Point";
-import {databaseTypeToStringType} from "../model/Relationship";
-import {propertiesFromDatabaseEntity, styleFromDatabaseEntity} from "../model/properties";
-import {emptyGraph} from "../model/Graph";
-import {fetchingGraphFailed, fetchingGraphSucceeded} from "../actions/neo4jStorage";
+import { Point } from "../model/Point";
+import { databaseTypeToStringType } from "../model/Relationship";
+import { propertiesFromDatabaseEntity, styleFromDatabaseEntity } from "../model/properties";
+import { emptyGraph } from "../model/Graph";
+import { fetchingGraphFailed, fetchingGraphSucceeded } from "../actions/neo4jStorage";
+import { createCluster, loadClusters } from "../actions/gang"
 
 function toNumber(prop) {
   if (prop) {
@@ -57,10 +58,35 @@ export function readGraph(session, dispatch) {
         }
         relationships.push(newRelationship)
       })
-      session.close();
-      dispatch(fetchingGraphSucceeded({nodes, relationships, style}))
+      return session.readTransaction((tx) => tx.run(`MATCH (n:Diagram0_Cluster) RETURN n`))
     }, (error) => {
       console.log(error)
       dispatch(fetchingGraphFailed())
+    })
+    .then((result) => {
+      const clusters = []
+      result.records.forEach((record) => {
+        let neo4jNode = record.get('n');
+
+        clusters.push({
+          id: neo4jNode.properties['_id'],
+          position: new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
+          initialPosition: new Point(toNumber(neo4jNode.properties['_xInitial']), toNumber(neo4jNode.properties['_yInitial'])),
+          caption: neo4jNode.properties['_caption'],
+          type: neo4jNode.properties['_type'],
+          members: neo4jNode.properties['_members'].map(member => {
+            const node = nodes.find(node => node.id === member)
+            return {
+              position: node.position,
+              nodeId: node.id,
+              radius: node.style.radius || style.radius
+            }
+          })
+        })
+      })
+
+      dispatch(loadClusters(clusters))
+
+      dispatch(fetchingGraphSucceeded({ nodes, relationships, style }))
     })
 }

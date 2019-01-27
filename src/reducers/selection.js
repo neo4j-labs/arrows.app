@@ -31,13 +31,22 @@ export default function selection(state = {
       }
       return newState
 
-    case 'ENSURE_SELECTED':
-      const selectedNodeIdMap = {...state.selectedNodeIdMap}
+    case 'ENSURE_SELECTED': {
+      const selectedNodeIdMap = { ...state.selectedNodeIdMap }
       action.selectedNodeIds.forEach(nodeId => selectedNodeIdMap[nodeId] = true)
       return {
         ...state,
         selectedNodeIdMap
       }
+    }
+    case 'ENSURE_DESELECTED': {
+      const selectedNodeIdMap = { ...state.selectedNodeIdMap }
+      action.deselectedNodeIds.forEach(nodeId => delete selectedNodeIdMap[nodeId])
+      return {
+        ...state,
+        selectedNodeIdMap
+      }
+    }
     case 'CLEAR_SELECTION':
       return {
         ...state,

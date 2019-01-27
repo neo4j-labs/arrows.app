@@ -12,6 +12,11 @@ export const ensureSelected = (selectedNodeIds) => ({
   selectedNodeIds
 })
 
+export const ensureDeselected = (deselectedNodeIds) => ({
+  type: 'ENSURE_DESELECTED',
+  deselectedNodeIds
+})
+
 export const selectAll = () => {
   return function (dispatch, getState) {
     const graph = getState().graph

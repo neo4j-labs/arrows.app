@@ -33,5 +33,6 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
 
   layerManager.register('GUIDES SNAP LINES', guides.drawSnaplines.bind(guides))
 
+
   layerManager.renderAll(ctx, displayOptions)
 }

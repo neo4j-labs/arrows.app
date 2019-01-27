@@ -26,11 +26,22 @@ export function fetchGraphFromDatabase() {
 }
 
 export const updateStore = (action, state) => {
-  const work = writeQueriesForAction(action, state)
+  const workList = [writeQueriesForAction(action, state)]
+
+  const layers = state.applicationLayout.layers
+
+  if (layers && layers.length > 0) {
+    layers.forEach(layer => {
+      if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['neo4j']) {
+        workList.push(layer.storageActionHandler['neo4j'](action, state))
+      }
+    })
+  }
 
   if (driver) {
     const session = driver.session()
-    return work(session)
+
+    return Promise.all(workList.map(work => work(session)))
       .then(() => {
         session.close()
       })

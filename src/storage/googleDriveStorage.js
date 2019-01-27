@@ -1,14 +1,17 @@
 import { fetchingGraph, fetchingGraphSucceeded } from "../actions/neo4jStorage";
 import { Point } from "../model/Point";
 import { setDiagramName } from "../actions/diagramName";
+import { loadClusters } from "../actions/gang"
 
 export function fetchGraphFromDrive(fileId) {
   return function (dispatch) {
     dispatch(fetchingGraph())
 
     const fetchData = () => getFileInfo(fileId)
-      .then(graph => {
-        dispatch(fetchingGraphSucceeded(constructGraphFromFile(graph)))
+      .then(data => {
+        const layers = constructGraphFromFile(data)
+        layers.gangs && dispatch(loadClusters(layers.gangs))
+        dispatch(fetchingGraphSucceeded(layers.graph))
       })
 
     const fetchFileName = () =>
@@ -37,7 +40,17 @@ const getFileInfo = (fileId, metaOnly = false) => {
 }
 
 const constructGraphFromFile = graphJson => {
-  const graph = JSON.parse(graphJson)
+  const data = JSON.parse(graphJson)
+  let graph
+  let gangs = []
+
+  if (data.graph) {
+    graph = data.graph
+    gangs = data.gangs || []
+  } else {
+    graph = data
+  }
+
   const nodes = graph.nodes.map(node => ({
     id: node.id,
     position: new Point(node.position.x, node.position.y),
@@ -46,9 +59,20 @@ const constructGraphFromFile = graphJson => {
     properties: node.properties,
   }))
 
+  gangs.forEach(cluster => {
+    cluster.position = new Point(cluster.position.x, cluster.position.y)
+    cluster.initialPosition = new Point(cluster.initialPosition.x, cluster.initialPosition.y)
+    cluster.members.forEach(member => {
+      member.position = new Point(member.position.x, member.position.y)
+    })
+  })
+
   return {
-    nodes,
-    relationships: graph.relationships,
-    style: graph.style
+    graph: {
+      nodes,
+      relationships: graph.relationships,
+      style: graph.style
+    },
+    gangs
   }
 }

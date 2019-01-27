@@ -11,6 +11,7 @@ import viewTransformation from "./viewTransformation";
 import gestures from "./gestures";
 import actionMemos from "./actionMemos";
 import applicationDialogs from "./applicationDialogs";
+import gangs from './gangs'
 
 const arrowsApp = combineReducers({
   storage,
@@ -24,7 +25,8 @@ const arrowsApp = combineReducers({
   applicationLayout,
   viewTransformation,
   actionMemos,
-  applicationDialogs
+  applicationDialogs,
+  gangs
 })
 
 export default arrowsApp

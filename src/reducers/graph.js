@@ -1,8 +1,8 @@
 import {emptyGraph} from "../model/Graph";
-import {moveTo, setCaption} from "../model/Node";
+import { moveTo, setCaption } from "../model/Node";
 import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
-import {idsMatch} from "../model/Id";
+import { idsMatch } from "../model/Id";
 import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
 
 const graph = (state = emptyGraph(), action) => {
@@ -127,7 +127,9 @@ const graph = (state = emptyGraph(), action) => {
         nodeIdToNode[node.id] = node
       })
       action.nodePositions.forEach((nodePosition) => {
-        nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
+        if(nodeIdToNode[nodePosition.nodeId]) {
+          nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
+        }
       })
 
       return {
