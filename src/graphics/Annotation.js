@@ -4,7 +4,7 @@ import {getLines} from "./utils/wordwrap";
 import config from './config'
 import get from 'lodash.get'
 
-export const drawAnnotation = (ctx, visualNode) => {
+export const drawAnnotation = (ctx, visualNode, relationshipBundles) => {
   const position = visualNode.position
   let boxAngle = 0
   let orientation = null
@@ -16,50 +16,75 @@ export const drawAnnotation = (ctx, visualNode) => {
   const lineHeight = fontSize
   const maxLineWidth = lineHeight * 10
 
-  if (visualNode.edges.length === 1) {
-    const edgeAngle = Math.atan2(visualNode.edges[0].fromPoint.y - position.y, visualNode.edges[0].fromPoint.x - position.x)
-    boxAngle = edgeAngle + Math.PI
+  if (relationshipBundles && relationshipBundles.length === 1) {
+    const relationship = relationshipBundles[0].routedRelationships[0].relationship
+    let angle = relationshipBundles[0].routedRelationships[0].arrow.angle
+    if (relationship.to.id === visualNode.id) {
+      angle = angle - Math.PI
+    }
+
+    boxAngle = angle + Math.PI
     if (boxAngle > Math.PI) {
       boxAngle = boxAngle - 2 * Math.PI
     }
-  } else if (visualNode.edges.length > 1) {
+  } else if (relationshipBundles && relationshipBundles.length > 1) {
     // Sort the points around circle
-    const arcPoints = visualNode.edges.map(edge => ({
-      ...edge.fromPoint,
-      type: edge.relationship.type,
-      get angle() {
-        let rawAngle = Math.atan2(edge.fromPoint.y - position.y, edge.fromPoint.x - position.x)
-        return rawAngle < 0 ? 2 * Math.PI + rawAngle : rawAngle
+    const angles = relationshipBundles.map(relationshipBundle => {
+      const relationship = relationshipBundle.routedRelationships[0].relationship
+      let angle = relationshipBundle.routedRelationships[0].arrow.angle
+      if (angle <= 0) {
+        angle += 2 * Math.PI
       }
-    }))
-      .sort((point1, point2) => point1.angle - point2.angle)
+
+      if (relationship.to.id === visualNode.id) {
+        angle = Math.PI > angle > 0 ? angle + Math.PI : angle - Math.PI
+      }
+
+      // convert to degrees for convenience
+      return angle * 180 / Math.PI
+    })
+      .sort((angle1, angle2) => angle1 - angle2)
 
     let maxAngle = -1
     let maxArc = null
 
-    for (let i = 0; i < arcPoints.length; i++) {
-      const point1 = arcPoints[i]
-      const nextPoint = i === arcPoints.length - 1 ? 0 : i + 1
-      const point2 = arcPoints[nextPoint]
+    for (let i = 0; i < angles.length; i++) {
+      const angle1 = angles[i]
+      const pointZeroCross = i === angles.length - 1
+      let nextPoint
 
-      let angle = point2.angle - point1.angle
-      if (angle < 0) {
-        angle = 2 * Math.PI + angle
+      if (pointZeroCross) {
+        nextPoint = 0
+      } else {
+        nextPoint = i + 1
       }
+
+      const angle2 = angles[nextPoint]
+
+      let angle = pointZeroCross
+        ? (360 - angle1) + angle2
+        : angle2 - angle1
 
       if (angle > maxAngle) {
         maxAngle = angle
-        maxArc = {start: point1, end: point2, arcAngle: angle}
+        maxArc = {
+          startAngle: angle1,
+          endAngle: angle2,
+          arcAngle: angle,
+          pointZeroCross
+        }
       }
     }
 
     if (maxArc) {
-      // find midpoint in raw radians
-      let midAngle = maxArc.start.angle + maxArc.arcAngle / 2
-      if (midAngle > Math.PI) {
-        midAngle = midAngle - 2 * Math.PI
+      let midAngle = maxArc.pointZeroCross
+        ? (maxArc.arcAngle / 2) - (360 - maxArc.startAngle)
+        : maxArc.startAngle + maxArc.arcAngle / 2
+
+      boxAngle = midAngle * Math.PI / 180
+      if (boxAngle > Math.PI) {
+        boxAngle -= 2 * Math.PI
       }
-      boxAngle = midAngle
     }
   }
 

@@ -8,6 +8,7 @@ export class StraightArrow {
     const interNodeVector = endCentre.vectorFrom(startCentre);
     const centreDistance = interNodeVector.distance()
     this.startCentre = startCentre
+    this.endCentre = endCentre
     this.angle = interNodeVector.angle()
     this.foot = startRadius
     this.headHeight = headHeight
