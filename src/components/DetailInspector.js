@@ -59,7 +59,7 @@ class DetailInspector extends Component {
     }
 
     const properties = combineProperties(entities)
-    const labels = combineLabels(nodes)
+    const labels = combineLabels(selectedNodes)
 
     const handleKeyDown = (evt) => {
       if (evt.key === 'Escape' || (evt.key === 'Enter' && evt.metaKey)) {
