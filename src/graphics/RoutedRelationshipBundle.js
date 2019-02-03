@@ -5,8 +5,7 @@ import {SlantedArrow} from "./SlantedArrow";
 import {RelationshipCaption} from "./RelationshipCaption";
 
 export class RoutedRelationshipBundle {
-  constructor(relationships, viewTransformation, graph) {
-    const scale = (length) => length * viewTransformation.scale
+  constructor(relationships, graph) {
     this.routedRelationships = []
 
     const leftNode = relationships[0].from
@@ -25,9 +24,9 @@ export class RoutedRelationshipBundle {
 
     const leftRadius = leftNode.radius
     const rightRadius = rightNode.radius
-    const maxLeftHeadHeight = scale(Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? 0 : arrow.headHeight)))
-    const maxRightHeadHeight = scale(Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.headHeight : 0)))
-    const relationshipSeparation = scale(20)
+    const maxLeftHeadHeight = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? 0 : arrow.headHeight))
+    const maxRightHeadHeight = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.headHeight : 0))
+    const relationshipSeparation = 20
 
     const firstDisplacement = -(relationships.length - 1) * relationshipSeparation / 2
     const middleRelationshipIndex = (relationships.length - 1) / 2;
@@ -56,7 +55,7 @@ export class RoutedRelationshipBundle {
       const dimensions = arrowDimensions[i]
 
       const caption = (relationship.type && relationship.type.length > 0) ?
-        new RelationshipCaption(relationship.type, scale(10), scale(2), scale(1)) : null
+        new RelationshipCaption(relationship.type, 10, 2, 1) : null
 
       if (i === middleRelationshipIndex) {
         this.routedRelationships.push(new RoutedRelationship(
@@ -66,10 +65,10 @@ export class RoutedRelationshipBundle {
             relationship.to.position,
             relationship.from.radius,
             relationship.to.radius,
-            scale(dimensions.arrowWidth),
-            scale(dimensions.headWidth),
-            scale(dimensions.headHeight),
-            scale(dimensions.chinHeight),
+            dimensions.arrowWidth,
+            dimensions.headWidth,
+            dimensions.headHeight,
+            dimensions.chinHeight,
             dimensions.arrowColor
           ),
           caption
@@ -84,11 +83,11 @@ export class RoutedRelationshipBundle {
           displacement * (dimensions.leftToRight ? leftTightening / leftRadius : rightTightening / rightRadius),
           displacement * (dimensions.leftToRight ? rightTightening / rightRadius : leftTightening / leftRadius),
           displacement,
-          scale(10),
-          scale(dimensions.arrowWidth),
-          scale(dimensions.headWidth),
-          scale(dimensions.headHeight),
-          scale(dimensions.chinHeight),
+          10,
+          dimensions.arrowWidth,
+          dimensions.headWidth,
+          dimensions.headHeight,
+          dimensions.chinHeight,
           dimensions.arrowColor
         )
         possibleToDrawParallelArrows &= arrow.drawArcs

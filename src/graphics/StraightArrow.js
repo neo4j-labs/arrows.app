@@ -27,20 +27,22 @@ export class StraightArrow {
   }
 
   draw(ctx) {
-    ctx.save()
-    ctx.translate(this.startCentre.x, this.startCentre.y)
-    ctx.rotate(this.angle)
-    ctx.beginPath()
-    ctx.moveTo(this.foot, 0)
-    ctx.lineTo(this.neck, 0)
-    ctx.lineWidth = this.arrowWidth
-    ctx.strokeStyle = this.arrowColor
-    ctx.stroke()
-    ctx.translate(this.topOfHead, 0)
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth)
-    ctx.fillStyle = this.arrowColor
-    ctx.fill()
-    ctx.restore()
+    if (this.topOfHead > this.foot) {
+      ctx.save()
+      ctx.translate(this.startCentre.x, this.startCentre.y)
+      ctx.rotate(this.angle)
+      ctx.beginPath()
+      ctx.moveTo(this.foot, 0)
+      ctx.lineTo(this.neck, 0)
+      ctx.lineWidth = this.arrowWidth
+      ctx.strokeStyle = this.arrowColor
+      ctx.stroke()
+      ctx.translate(this.topOfHead, 0)
+      arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth)
+      ctx.fillStyle = this.arrowColor
+      ctx.fill()
+      ctx.restore()
+    }
   }
 
   drawSelectionIndicator(ctx) {

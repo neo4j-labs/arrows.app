@@ -1,11 +1,11 @@
-import { drawRing, drawStraightArrow, drawPolygon, drawCircle} from "./canvasRenderer";
+import { drawRing, drawPolygon, drawCircle} from "./canvasRenderer";
 import { ringMargin as defaultRingMargin } from "./constants";
-import { Vector } from "../model/Vector";
-import { getArrowGeometryData, getVoronoi, isPointInPolygon, sortPoints } from "./utils/geometryUtils";
+import { getVoronoi, isPointInPolygon, sortPoints } from "./utils/geometryUtils";
 import {idsMatch} from "../model/Id";
 import { green, blueGreen, purple } from "../model/colors";
 import { Point } from "../model/Point";
 import { getStyleSelector } from "../selectors/style";
+import {StraightArrow} from "./StraightArrow";
 
 export default class Gestures {
   constructor(graph, selection, gestures) {
@@ -113,13 +113,8 @@ export default class Gestures {
 
           const sourcePoint = transform(sourceNodeIdPosition)
           const targetPoint = transform(newNodePosition)
-          const arrowVector = new Vector(targetPoint.x - sourcePoint.x, targetPoint.y - sourcePoint.y)
-          const unitVector = arrowVector.unit()
-          const sourceBorderPoint = sourcePoint.translate(unitVector.scale(radius))
-          const targetBorderPoint = targetPoint.translate(unitVector.invert().scale(newNodeRadius))
-
-          const arrowData = getArrowGeometryData(sourcePoint, sourceBorderPoint, targetPoint, targetBorderPoint, 5)
-          drawStraightArrow(ctx, sourceBorderPoint, targetBorderPoint, arrowData)
+          const arrow = new StraightArrow(sourcePoint, targetPoint, radius, newNodeRadius, 4, 16, 24, 2.4, blueGreen)
+          arrow.draw(ctx)
         } else {
           const drawNodeRing = sourceNode.drawRing || drawRing
           drawNodeRing(ctx, transform(sourceNodeIdPosition), purple, outerRadius)
