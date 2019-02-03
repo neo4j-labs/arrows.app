@@ -116,20 +116,20 @@ export default class VisualNode {
 
   drawLabels(ctx, position, radius, labels) {
     ctx.save()
-    const fontSize = this['caption-font-size'] * this.viewTransformation.scale
+    const fontSize = this['caption-font-size']
     const fontColor = 'black' //this['caption-color']
     const fontFace = get(config, 'font.face')
 
     ctx.fillStyle = fontColor
     let fontWeight = 'normal'
-    ctx.font = fontWeight + fontSize + 'px ' + fontFace
+    ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
     ctx.textBaseline = 'middle'
 
-    ctx.translate(...position.translate(new Vector(0, radius).rotate(Math.PI / 4)).xy)
+    ctx.translate(...position.translate(new Vector(radius, 0).rotate(Math.PI / 4)).xy)
     labels.forEach((label, i) => {
       ctx.save()
       ctx.translate(0, i * fontSize)
-      drawTextLine(ctx, label, new Point(0, 0))
+      drawTextLine(ctx, label, new Point(0, 0), false)
       ctx.restore()
     })
     ctx.restore()
