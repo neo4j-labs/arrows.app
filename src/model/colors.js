@@ -1,3 +1,5 @@
+export const black = '#000000'
+export const white = '#ffffff'
 export const blue = '#50BEF7'
 export const blueActive = '#47a8dc'
 export const blueLight = '#3377C0'

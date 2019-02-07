@@ -2,6 +2,7 @@ import { fetchingGraph, fetchingGraphSucceeded } from "../actions/neo4jStorage";
 import { Point } from "../model/Point";
 import { setDiagramName } from "../actions/diagramName";
 import { loadClusters } from "../actions/gang"
+import {completeWithDefaults} from "../model/styling";
 
 export function fetchGraphFromDrive(fileId) {
   return function (dispatch) {
@@ -71,7 +72,7 @@ const constructGraphFromFile = graphJson => {
     graph: {
       nodes,
       relationships: graph.relationships,
-      style: graph.style
+      style: completeWithDefaults(graph.style)
     },
     gangs
   }

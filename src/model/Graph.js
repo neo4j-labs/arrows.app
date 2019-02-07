@@ -1,8 +1,7 @@
 import { isPointInPolygon } from "../graphics/utils/geometryUtils";
-import { defaultNodeRadius, defaultFontSize } from "../graphics/constants";
-import { blueActive } from "./colors";
 import { getStyleSelector } from "../selectors/style";
 import {indexablePropertyText} from "./properties";
+import {completeWithDefaults} from "./styling";
 
 const ringLength =  10
 
@@ -10,18 +9,7 @@ export const emptyGraph = () => {
   return {
     nodes: [],
     relationships: [],
-    style: {
-      radius: defaultNodeRadius,
-      'node-color': blueActive,
-      'border-width': 0,
-      'border-color': '#000000',
-      'caption-color': '#ffffff',
-      'caption-font-size': defaultFontSize,
-      'property-color': '#000000',
-      'property-font-size': defaultFontSize * (4/5),
-      'arrow-width': 1,
-      'arrow-color': '#000000'
-    }
+    style: completeWithDefaults({})
   }
 }
 

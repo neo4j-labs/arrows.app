@@ -85,7 +85,7 @@ export default class VisualNode {
     ctx.save()
     ctx.strokeStyle = this['border-color'] || '#000'
     ctx.lineWidth = strokeWidth
-    drawCircle(ctx, this.position, this.radius - strokeWidth / 2, true)
+    drawCircle(ctx, this.position, Math.max(strokeWidth / 2, this.radius - strokeWidth / 2), true)
     ctx.restore()
   }
 
@@ -93,13 +93,13 @@ export default class VisualNode {
     ctx.save()
     const fontSize = this['caption-font-size']
     const fontColor = this['caption-color']
+    const fontWeight = this['caption-font-weight']
     const fontFace = get(config, 'font.face')
 
     let lines = getLines(ctx, label, fontFace, fontSize, maxWidth, false)//this.hasIcon)
 
     ctx.fillStyle = fontColor
-    let fontWeight = 'normal' // this.boldText ? 'bold ' : 'normal '
-    ctx.font = fontWeight + fontSize + 'px ' + fontFace
+    ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
     ctx.textBaseline = 'middle'
 
     const lineDistance = fontSize
