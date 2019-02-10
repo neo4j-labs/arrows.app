@@ -1,3 +1,4 @@
+import {styleKeyToDatabaseKey} from "../model/properties";
 const plainIdentifier = new RegExp('^[A-Za-z][A-Za-z_]*$')
 
 const escape = name => {
@@ -20,10 +21,15 @@ const space = (left, right) => {
   return [left, right].filter(part => part).join(' ')
 }
 
-const entityProperties = entity => {
-  const entries = Object.entries(entity.properties)
+const entityProperties = (entity, includeStyling) => {
+  const propertyEntries = Object.entries(entity.properties)
+    .map(([key, value]) => `${escape(key)}: ${quote(value)}`)
+  const styleEntries = Object.entries(entity.style)
+    .map(([key, value]) => `${escape(styleKeyToDatabaseKey(key))}: ${quote(value)}`)
+
+  const entries = includeStyling ? propertyEntries.concat(styleEntries) : propertyEntries
   if (entries.length > 0) {
-    return '{' + entries.map(([key, value]) => `${escape(key)}: ${quote(value)}`).join(', ') + '}'
+    return '{' + entries.join(', ') + '}'
   } else {
     return null
   }
@@ -51,7 +57,7 @@ export const exportCypher = (graph, keyword, includeStyling) => {
   return [
     ...graph.nodes.map(node => {
       const labels = node.labels.map(label => `:${label}`).join('')
-      const properties = entityProperties(node)
+      const properties = entityProperties(node, includeStyling)
       return `${keyword} (${space(idMap[node.id] + labels, properties)})`;
     }),
     ...graph.relationships.map(relationship => {
@@ -59,7 +65,7 @@ export const exportCypher = (graph, keyword, includeStyling) => {
       if (type === '_RELATED' && keyword === 'MATCH') {
         type = null
       }
-      const properties = entityProperties(relationship)
+      const properties = entityProperties(relationship, includeStyling)
       const relationshipSpec = type || properties ? `[${space(type ? ':' + type : null, properties)}]` : ''
       return `${keyword} (${idMap[relationship.fromId]})-${relationshipSpec}->(${idMap[relationship.toId]})`;
     })
