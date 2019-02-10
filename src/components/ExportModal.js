@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
-import {Modal, Button} from 'semantic-ui-react'
+import {Modal, Button, Tab} from 'semantic-ui-react'
 import ExportPngPanel from "./ExportPngPanel";
+import ExportCypherPanel from "./ExportCypherPanel";
 
 class ExportModal extends Component {
 
@@ -9,18 +10,40 @@ class ExportModal extends Component {
   }
 
   render() {
+    const panes = [
+      {
+        menuItem: 'PNG',
+        render: () => (
+          <Tab.Pane attached={false}>
+            <ExportPngPanel
+              graph={this.props.graph}
+              diagramName={this.props.diagramName}
+            />
+          </Tab.Pane>
+        )
+      },
+      {
+        menuItem: 'Cypher',
+        render: () => (
+          <Tab.Pane attached={false}>
+            <ExportCypherPanel
+              graph={this.props.graph}
+            />
+          </Tab.Pane>
+        )
+      }
+    ]
+
     return (
       <Modal
         size="large"
+        centered={false}
         open={true}
         onClose={this.onCancel}
       >
         <Modal.Header>Export</Modal.Header>
         <Modal.Content scrolling>
-          <ExportPngPanel
-            graph={this.props.graph}
-            diagramName={this.props.diagramName}
-          />
+          <Tab menu={{secondary: true}} panes={panes}/>
         </Modal.Content>
         <Modal.Actions>
           <Button
