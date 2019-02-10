@@ -17,7 +17,8 @@ export const createNode = () => (dispatch, getState) => {
     type: 'CREATE_NODE',
     newNodeId: nextAvailableId(getState().graph.nodes),
     newNodePosition: viewTransformation.inverse(randomPosition),
-    caption: ''
+    caption: '',
+    style: {}
   })
 }
 
@@ -29,7 +30,8 @@ export const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (
     newRelationshipId: nextAvailableId(getState().graph.relationships),
     targetNodeId: nextAvailableId(getState().graph.nodes),
     targetNodePosition,
-    caption: ''
+    caption: '',
+    style: {}
   })
 }
 
