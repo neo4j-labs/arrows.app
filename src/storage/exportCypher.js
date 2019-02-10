@@ -1,3 +1,13 @@
+const plainIdentifier = new RegExp('^[A-Za-z][A-Za-z_]*$')
+
+const escape = name => {
+  if (plainIdentifier.test(name)) {
+    return name
+  } else {
+    return '`' + name + '`'
+  }
+}
+
 export const exportCypher = (graph, keyword, includeStyling) => {
   const captionMap = {}
   graph.nodes.forEach(node => {
@@ -12,7 +22,7 @@ export const exportCypher = (graph, keyword, includeStyling) => {
   const idMap = {}
   graph.nodes.forEach(node => {
     if (node.caption && captionMap[node.caption].length === 1) {
-      idMap[node.id] = node.caption
+      idMap[node.id] = escape(node.caption)
     } else {
       idMap[node.id] = node.id
     }
