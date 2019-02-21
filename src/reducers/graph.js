@@ -123,8 +123,6 @@ const graph = (state = emptyGraph(), action) => {
     }
 
     case 'MOVE_NODES':
-      /// HMMMM  ??????
-    case 'MOVE_NODES_END_DRAG':
       const nodeIdToNode = {}
       state.nodes.forEach((node) => {
         nodeIdToNode[node.id] = node
@@ -216,7 +214,7 @@ const historicActions = [
   'SET_RELATIONSHIP_TYPE',
   'CREATE_NODE_AND_RELATIONSHIP',
   'DELETE_NODES_AND_RELATIONSHIPS',
-  'DUPLICATE_NODES_AND_RELATIONSHIPS',
+  'DUPLICATE_NODES_AND_RELATIONSHIPS'
 ]
 
 export default undoable(graph, {
