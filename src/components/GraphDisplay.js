@@ -18,43 +18,43 @@ class GraphDisplay extends Component {
     super(props)
     props.registerAction(
       'REMOVE_SELECTION_PATH',
-      () => this.props.removeSelectionPath()
+      () => props.removeSelectionPath()
     )
     props.registerAction(
       DUPLICATE_SELECTION,
-      () => this.props.duplicateSelection()
+      () => props.duplicateSelection()
     )
     props.registerAction(
       DELETE_SELECTION,
-      () => this.props.deleteSelection()
+      () => props.deleteSelection()
     )
     props.registerAction(
       SELECT_ALL,
-      () => this.props.selectAll()
+      () => props.selectAll()
     )
     props.registerAction(
       MOVE_LEFT,
-      (extraKeys) => this.props.jumpToNextNode('LEFT', extraKeys)
+      (extraKeys) => props.jumpToNextNode('LEFT', extraKeys)
     )
     props.registerAction(
       MOVE_UP,
-      (extraKeys) => this.props.jumpToNextNode('UP', extraKeys)
+      (extraKeys) => props.jumpToNextNode('UP', extraKeys)
     )
     props.registerAction(
       MOVE_RIGHT,
-      (extraKeys) => this.props.jumpToNextNode('RIGHT', extraKeys)
+      (extraKeys) => props.jumpToNextNode('RIGHT', extraKeys)
     )
     props.registerAction(
       MOVE_DOWN,
-      (extraKeys) => this.props.jumpToNextNode('DOWN', extraKeys)
+      (extraKeys) => props.jumpToNextNode('DOWN', extraKeys)
     )
     props.registerAction(
       UNDO,
-      () => this.props.storage.mode !== '"DATABASE"' && this.props.undo()
+      (() => this.props.storage.mode === 'GOOGLE_DRIVE' && props.undo()).bind(this)
     )
     props.registerAction(
       REDO,
-      () => this.props.storage.mode !== '"DATABASE"' && this.props.redo()
+      (() => this.props.storage.mode === 'GOOGLE_DRIVE' && props.redo()).bind(this)
     )
   }
 
