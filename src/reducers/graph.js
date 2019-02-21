@@ -4,6 +4,7 @@ import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
 import { idsMatch } from "../model/Id";
 import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
+import undoable, { includeAction } from 'redux-undo'
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -122,6 +123,8 @@ const graph = (state = emptyGraph(), action) => {
     }
 
     case 'MOVE_NODES':
+      /// HMMMM  ??????
+    case 'MOVE_NODES_END_DRAG':
       const nodeIdToNode = {}
       state.nodes.forEach((node) => {
         nodeIdToNode[node.id] = node
@@ -198,4 +201,24 @@ const graph = (state = emptyGraph(), action) => {
   }
 }
 
-export default graph
+const historicActions = [
+  'CREATE_NODE',
+  'CONNECT_NODES',
+  'SET_NODE_CAPTION',
+  'RENAME_PROPERTY',
+  'SET_GRAPH_STYLE',
+  'SET_PROPERTY',
+  'MOVE_NODES_END_DRAG',
+  'SET_ARROWS_PROPERTY',
+  'REMOVE_PROPERTY',
+  'REMOVE_ARROWS_PROPERTY',
+  'REVERSE_RELATIONSHIPS',
+  'SET_RELATIONSHIP_TYPE',
+  'CREATE_NODE_AND_RELATIONSHIP',
+  'DELETE_NODES_AND_RELATIONSHIPS',
+  'DUPLICATE_NODES_AND_RELATIONSHIPS',
+]
+
+export default undoable(graph, {
+  filter: includeAction(historicActions)
+})
