@@ -10,6 +10,7 @@ import {deleteSelection, duplicateSelection} from "../actions/graph"
 import {removeSelectionPath} from "../actions/selectionPath"
 import {selectAll, jumpToNextNode} from "../actions/selection";
 import {computeCanvasSize} from "../model/applicationLayout";
+import { ActionCreators as UndoActionCreators } from 'redux-undo'
 
 const mapStateToProps = state => {
   return {
@@ -19,20 +20,21 @@ const mapStateToProps = state => {
     guides: state.guides,
     handles: getTransformationHandles(state),
     canvasSize: computeCanvasSize(state.applicationLayout),
-    viewTransformation: state.viewTransformation
+    viewTransformation: state.viewTransformation,
+    storage: state.storage
   }
 }
 
-const mapDispatchToProps = dispatch => {
-  return {
-    removeSelectionPath: () => dispatch(removeSelectionPath()),
-    duplicateSelection: () => dispatch(duplicateSelection()),
-    deleteSelection: () => dispatch(deleteSelection()),
-    selectAll: () => dispatch(selectAll()),
-    jumpToNextNode: (direction, extraKeys) => dispatch(jumpToNextNode(direction, extraKeys)),
-    dispatch: dispatch
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  removeSelectionPath: () => dispatch(removeSelectionPath()),
+  duplicateSelection: () => dispatch(duplicateSelection()),
+  deleteSelection: () => dispatch(deleteSelection()),
+  selectAll: () => dispatch(selectAll()),
+  jumpToNextNode: (direction, extraKeys) => dispatch(jumpToNextNode(direction, extraKeys)),
+  undo: () => dispatch(UndoActionCreators.undo()),
+  redo: () => dispatch(UndoActionCreators.redo()),
+  dispatch: dispatch
+})
 
 export default compose(
   connect(mapStateToProps, mapDispatchToProps),

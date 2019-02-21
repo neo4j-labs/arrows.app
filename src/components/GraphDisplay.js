@@ -7,11 +7,11 @@ import {
   MOVE_UP,
   MOVE_RIGHT,
   MOVE_DOWN,
-  SELECT_ALL
+  SELECT_ALL,
+  UNDO,
+  REDO
 } from "../interactions/Keybindings";
 import MouseHandler from "../interactions/MouseHandler";
-import { ViewTransformation } from "../state/ViewTransformation";
-import { Vector } from "../model/Vector";
 
 class GraphDisplay extends Component {
   constructor(props) {
@@ -47,6 +47,14 @@ class GraphDisplay extends Component {
     props.registerAction(
       MOVE_DOWN,
       (extraKeys) => this.props.jumpToNextNode('DOWN', extraKeys)
+    )
+    props.registerAction(
+      UNDO,
+      () => this.props.storage.mode !== '"DATABASE"' && this.props.undo()
+    )
+    props.registerAction(
+      REDO,
+      () => this.props.storage.mode !== '"DATABASE"' && this.props.redo()
     )
   }
 
