@@ -2,6 +2,7 @@ import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
 import {renameGoogleDriveStore, saveFile} from "../actions/googleDrive";
 import {updatingGraph, updatingGraphSucceeded} from "../actions/neo4jStorage";
 import { hideGraphHistory } from "../selectors"
+import { ActionCreators as UndoActionCreators } from "redux-undo"
 
 const updateQueue = []
 
@@ -13,6 +14,8 @@ const deBounce = (func, delay) => {
   waiting = setTimeout(func, delay)
 }
 
+const historyActions = [UndoActionCreators.undo().type, UndoActionCreators.redo().type]
+
 export const storageMiddleware = store => next => action => {
   const state = hideGraphHistory(store.getState())
   const storage = state.storage
@@ -22,8 +25,8 @@ export const storageMiddleware = store => next => action => {
       renameGoogleDriveStore(storage.googleDrive.fileId, action.diagramName)
     }
   }
-  if (action.category === 'GRAPH') {
 
+  if (action.category === 'GRAPH' || historyActions.includes(action.type)) {
     switch (storage.mode) {
       case "GOOGLE_DRIVE":
         const oldState = hideGraphHistory(store.getState())
@@ -57,8 +60,10 @@ export const storageMiddleware = store => next => action => {
         }
         return result
       case "DATABASE":
-        updateQueue.push(action)
-        drainUpdateQueue(state)
+        if (action.category === 'GRAPH') {
+          updateQueue.push(action)
+          drainUpdateQueue(state)
+        }
         return next(action)
       default:
         return next(action)
