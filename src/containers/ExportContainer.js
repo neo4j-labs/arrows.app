@@ -1,10 +1,11 @@
 import {connect} from "react-redux"
 import ExportModal from "../components/ExportModal";
 import {hideExportDialog} from "../actions/applicationDialogs";
+import { getPresentGraph } from "../selectors"
 
 const mapStateToProps = state => {
   return {
-    graph: state.graph,
+    graph: getPresentGraph(state.graph),
     diagramName: state.diagramName
   }
 }

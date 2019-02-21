@@ -10,6 +10,13 @@ import { idsMatch } from "../model/Id";
 const getSelection = (state) => state.selection
 const getViewTransformation = (state) => state.viewTransformation
 
+export const getPresentGraph = state => state.graph.present || state.graph
+
+export const hideGraphHistory = state => ({
+  ...state,
+  graph: getPresentGraph(state)
+})
+
 export const getGraph = (state) => {
   const { layers } = state.applicationLayout || { }
 
@@ -20,10 +27,10 @@ export const getGraph = (state) => {
       } else {
         return resultState
       }
-    }, state)
+    }, hideGraphHistory(state))
     return newState.graph
   } else {
-    return state.graph
+    return getPresentGraph(state)
   }
 }
 

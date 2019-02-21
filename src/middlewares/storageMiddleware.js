@@ -1,6 +1,7 @@
 import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
 import {renameGoogleDriveStore, saveFile} from "../actions/googleDrive";
 import {updatingGraph, updatingGraphSucceeded} from "../actions/neo4jStorage";
+import { hideGraphHistory } from "../selectors"
 
 const updateQueue = []
 
@@ -13,7 +14,7 @@ const deBounce = (func, delay) => {
 }
 
 export const storageMiddleware = store => next => action => {
-  const state = store.getState()
+  const state = hideGraphHistory(store.getState())
   const storage = state.storage
 
   if (action.type === 'SET_DIAGRAM_NAME') {
@@ -25,9 +26,9 @@ export const storageMiddleware = store => next => action => {
 
     switch (storage.mode) {
       case "GOOGLE_DRIVE":
-        const oldState = store.getState()
+        const oldState = hideGraphHistory(store.getState())
         const result = next(action)
-        const newState = store.getState()
+        const newState = hideGraphHistory(store.getState())
         const data = {graph: newState.graph}
         const layers = newState.applicationLayout.layers
 

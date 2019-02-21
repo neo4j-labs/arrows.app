@@ -6,12 +6,13 @@ import {
 import DetailInspector from "../components/DetailInspector"
 import {showInspector, hideInspector} from "../actions/applicationLayout";
 import { getSelectedNodes } from "../selectors/inspection";
+import { getPresentGraph, hideGraphHistory } from "../selectors"
 
 const mapStateToProps = state => {
   return {
-    graph: state.graph,
+    graph: getPresentGraph(state),
     selection: state.selection,
-    selectedNodes: getSelectedNodes(state),
+    selectedNodes: getSelectedNodes(hideGraphHistory(state)),
     inspectorVisible: state.applicationLayout.inspectorVisible
   }
 }

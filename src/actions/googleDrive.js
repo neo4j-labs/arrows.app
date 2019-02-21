@@ -3,6 +3,7 @@ import {googleDriveSignInStatusChanged, updateGoogleDriveFileId, useGoogleDriveS
 import {renderGraphAtScaleFactor} from "../graphics/utils/offScreenCanvasRenderer";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 import {indexableText} from "../model/Graph";
+import { hideGraphHistory } from "../selectors"
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 export const SCOPES = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.install';
 
@@ -25,7 +26,7 @@ export const initGoogleDriveApi = (store) => {
   const updateSignedInStatus = (signedIn) => {
     store.dispatch(googleDriveSignInStatusChanged(signedIn))
     if (signedIn) {
-      const state = store.getState()
+      const state = hideGraphHistory(store.getState())
       if (state.storage.mode === 'GOOGLE_DRIVE') {
         const fileId = state.storage.googleDrive.fileId;
         if (fileId) {
@@ -49,7 +50,7 @@ export const initGoogleDriveApi = (store) => {
 export const initializeGoogleDriveStorage = () => {
   return function (dispatch, getState) {
     dispatch(useGoogleDriveStorage())
-    const state = getState()
+    const state = hideGraphHistory(getState())
     if (state.storage.googleDrive.signedIn) {
       const onFileSaved = (fileId) => {
         dispatch(updateGoogleDriveFileId(fileId))
