@@ -33,11 +33,11 @@ export const styleAttributes = {
 }
 
 export const nodeStyleAttributes = Object.keys(styleAttributes).filter(key => {
-  return styleAttributes[key].appliesTo === 'Node'
+  return ['Node', 'Caption', 'Property'].includes(styleAttributes[key].appliesTo)
 })
 
 export const relationshipStyleAttributes = Object.keys(styleAttributes).filter(key => {
-  return styleAttributes[key].appliesTo === 'Relationship'
+  return ['Relationship', 'Property'].includes(styleAttributes[key].appliesTo)
 })
 
 export const styleTypes = {
