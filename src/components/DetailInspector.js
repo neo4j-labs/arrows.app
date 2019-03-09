@@ -10,7 +10,7 @@ import {headerHeight} from "../model/applicationLayout"
 import { compose } from "recompose"
 import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
 import { DetailToolbox } from "./DetailToolbox"
-import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
+import {styleGroups, styleAttributes} from "../model/styling";
 
 class DetailInspector extends Component {
   constructor(props) {
@@ -103,31 +103,20 @@ class DetailInspector extends Component {
       )
     }
 
-    if (selectionIncludes.nodes) {
-      fields.push(
-        <StyleTable key='nodeStyle'
-                    title='Node Style'
-                    style={combineStyle(entities)}
-                    graphStyle={graph.style}
-                    possibleStyleAttributes={nodeStyleAttributes}
-                    onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
-                    onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
-        />
-      )
-    }
-
-    if (selectionIncludes.relationships) {
-      fields.push(
-        <StyleTable key='relationshipStyle'
-                    title='Relationship Style'
-                    style={combineStyle(entities)}
-                    graphStyle={graph.style}
-                    possibleStyleAttributes={relationshipStyleAttributes}
-                    onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
-                    onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
-        />
-      )
-    }
+    Object.entries(styleGroups).forEach(([groupKey, styleGroup]) => {
+      if (styleGroup.relevantTo(selectedNodes, relationships)) {
+        fields.push(
+          <StyleTable key={groupKey + 'Style'}
+                      title={groupKey + ' Style'}
+                      style={combineStyle(entities)}
+                      graphStyle={graph.style}
+                      possibleStyleAttributes={Object.keys(styleAttributes).filter(key => styleAttributes[key].appliesTo === groupKey)}
+                      onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
+                      onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
+          />
+        )
+      }
+    })
 
     return (
       <React.Fragment>
