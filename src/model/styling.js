@@ -28,6 +28,7 @@ export const styleAttributes = {
   'caption-font-weight': {appliesTo: 'Caption', type: 'font-weight', defaultValue: 'normal'},
   'property-color': {appliesTo: 'Property', type: 'color', defaultValue: black},
   'property-font-size': {appliesTo: 'Property', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
+  'property-font-weight': {appliesTo: 'Property', type: 'font-weight', defaultValue: 'normal'},
   'arrow-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 1},
   'arrow-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black}
 }
