@@ -15,6 +15,7 @@ export default class LabelTable extends Component {
           key={'row-' + index}
           label={label}
           status={labels[label].status}
+          onAddLabel={() => onAddLabel(label)}
           onRenameLabel={(event) => onRenameLabel(label, event.target.value)}
           onRemoveLabel={() => onRemoveLabel(label)}
         />

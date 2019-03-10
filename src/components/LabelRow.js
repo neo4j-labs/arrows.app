@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Table, Form, Input, Icon} from 'semantic-ui-react'
+import {Table, Form, Input, Icon, Button, Popup} from 'semantic-ui-react'
 
 export class LabelRow extends Component {
 
@@ -23,7 +23,42 @@ export class LabelRow extends Component {
   }
 
   render = () => {
-    const { label, status, onRenameLabel, onRemoveLabel } = this.props
+    const { label, status, onAddLabel, onRenameLabel, onRemoveLabel } = this.props
+
+    let valueCell = null
+
+    if (status === 'PARTIAL') {
+      const textBox = (
+        <Input
+          size='small'
+          value=''
+          placeholder='<partially present>'
+          transparent
+          style={{ 'width': '8em' }}
+        />
+      )
+      const button = (
+        <Button
+          key='addLabel'
+          onClick={onAddLabel}
+          basic
+          floated='right'
+          size="tiny"
+          content='Add to all nodes'
+          type='button'
+        />
+      )
+      valueCell = (
+        <Form.Field>
+          <Popup
+            trigger={textBox}
+            content={button}
+            on='click'
+            position='bottom center'
+          />
+        </Form.Field>
+      )
+    }
 
     return (
       <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
@@ -37,7 +72,7 @@ export class LabelRow extends Component {
           </Form.Field>
         </Table.Cell>
         <Table.Cell width={3}>
-          {status}
+          {valueCell}
         </Table.Cell>
         <Table.Cell width={1}>
           <Icon
