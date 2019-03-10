@@ -14,6 +14,19 @@ export const addLabel = (node, label) => {
   }
 }
 
+export const renameLabel = (node, oldLabel, newLabel) => {
+  const labels = new Set(node.labels)
+  if (labels.has(oldLabel)) {
+    labels.delete(oldLabel)
+    labels.add(newLabel)
+    return {
+      ...node,
+      labels: [...labels]
+    }
+  }
+  return node
+}
+
 export const removeLabel = (node, label) => {
   const labels = new Set(node.labels)
   labels.delete(label)

@@ -1,7 +1,7 @@
 import {connect} from "react-redux";
 import {
   setProperty, setNodeCaption, setRelationshipType, renameProperty, removeProperty,
-  setArrowsProperty, removeArrowsProperty, reverseRelationships, addLabel, removeLabel
+  setArrowsProperty, removeArrowsProperty, reverseRelationships, addLabel, renameLabel, removeLabel
 } from "../actions/graph";
 import DetailInspector from "../components/DetailInspector"
 import {showInspector, hideInspector} from "../actions/applicationLayout";
@@ -26,6 +26,9 @@ const mapDispatchToProps = dispatch => {
     },
     onAddLabel: (selection, label) => {
       dispatch(addLabel(selection, label))
+    },
+    onRenameLabel: (selection, oldLabel, newLabel) => {
+      dispatch(renameLabel(selection, oldLabel, newLabel))
     },
     onRemoveLabel: (selection, label) => {
       dispatch(removeLabel(selection, label))

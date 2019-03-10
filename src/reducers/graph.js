@@ -1,5 +1,5 @@
 import {emptyGraph} from "../model/Graph";
-import {addLabel, moveTo, removeLabel, setCaption} from "../model/Node";
+import {addLabel, renameLabel, removeLabel, moveTo, setCaption} from "../model/Node";
 import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
 import { idsMatch } from "../model/Id";
@@ -71,6 +71,14 @@ const graph = (state = emptyGraph(), action) => {
       return {
         style: state.style,
         nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? addLabel(node, action.label) : node),
+        relationships: state.relationships
+      }
+    }
+
+    case 'RENAME_LABEL': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? renameLabel(node, action.oldLabel, action.newLabel) : node),
         relationships: state.relationships
       }
     }

@@ -4,7 +4,6 @@ import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
-import { getCommonCaption } from "../model/gang";
 import { getGraph } from "../selectors";
 
 export const createNode = () => (dispatch, getState) => {
@@ -220,6 +219,14 @@ export const addLabel = (selection, label) => ({
   type: 'ADD_LABEL',
   selection,
   label
+})
+
+export const renameLabel = (selection, oldLabel, newLabel) => ({
+  category: 'GRAPH',
+  type: 'RENAME_LABEL',
+  selection,
+  oldLabel,
+  newLabel
 })
 
 export const removeLabel = (selection, label) => ({

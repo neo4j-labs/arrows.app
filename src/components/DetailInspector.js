@@ -12,7 +12,7 @@ import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
 import { DetailToolbox } from "./DetailToolbox"
 import {styleGroups, styleAttributes} from "../model/styling";
 import {combineLabels} from "../model/labels";
-import LabelCloud from "./LabelCloud";
+import LabelTable from "./LabelTable";
 
 class DetailInspector extends Component {
   constructor(props) {
@@ -46,7 +46,7 @@ class DetailInspector extends Component {
 
   render() {
     const {selection, graph, onSaveCaption, onSaveType, reverseRelationships, selectedNodes} = this.props
-    const {onAddLabel, onRemoveLabel} = this.props
+    const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
@@ -86,10 +86,11 @@ class DetailInspector extends Component {
 
     if (selectionIncludes.nodes) {
       fields.push(
-        <LabelCloud
+        <LabelTable
           key='labels'
           labels={labels}
           onAddLabel={(label) => onAddLabel(selection, label)}
+          onRenameLabel={(oldLabel, newLabel) => onRenameLabel(selection, oldLabel, newLabel)}
           onRemoveLabel={(label) => onRemoveLabel(selection, label)}
         />
       )
