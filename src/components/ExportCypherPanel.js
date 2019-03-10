@@ -43,11 +43,9 @@ class ExportCypherPanel extends Component {
           <Checkbox label='Include style properties' checked={this.state.includeStyling}
                     onChange={this.toggleStyling}/>
         </Form.Field>
-        <pre>
-          <code>
-            {exportCypher(this.props.graph, this.state.keyword, this.state.includeStyling)}
-          </code>
-        </pre>
+        <code>
+          {exportCypher(this.props.graph, this.state.keyword, this.state.includeStyling)}
+        </code>
       </React.Fragment>
     )
   }
