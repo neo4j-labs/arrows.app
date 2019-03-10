@@ -87,6 +87,7 @@ class DetailInspector extends Component {
     if (selectionIncludes.nodes) {
       fields.push(
         <LabelCloud
+          key='labels'
           labels={labels}
           onAddLabel={(label) => onAddLabel(selection, label)}
           onRemoveLabel={(label) => onRemoveLabel(selection, label)}

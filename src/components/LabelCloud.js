@@ -10,6 +10,7 @@ export default class LabelCloud extends Component {
     const rows = Object.keys(labels).map(label => {
       return (
         <LabelPill
+          key={label}
           label={label}
           status={labels[label].status}
           onRemoveLabel={() => onRemoveLabel(label)}
