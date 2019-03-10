@@ -22,6 +22,7 @@ class ExportCypherPanel extends Component {
     const keywordButtons = ['CREATE', 'MERGE', 'MATCH'].map(keyword => {
       return (
         <Button
+          key={keyword}
           primary={this.state.keyword === keyword}
           onClick={() => {
             this.setState({
