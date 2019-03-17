@@ -3,6 +3,7 @@ import {getLines} from "./utils/wordwrap";
 import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
+import { Point } from "../model/Point";
 import {asKey} from "../model/Id";
 import { getStyleSelector } from "../selectors/style";
 import { nodeStyleAttributes } from "../model/styling";
@@ -63,12 +64,11 @@ export default class VisualNode {
   }
 
   draw(ctx) {
-    const { caption } = this.node
-
     if (this.status === 'combined') {
       return
     }
 
+    const { caption, labels } = this.node
     drawSolidCircle(ctx, this.position, this['node-color'], this.radius)
 
     if (this['border-width'] > 0) {
@@ -77,6 +77,9 @@ export default class VisualNode {
 
     if (caption) {
       this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
+    }
+    if (labels) {
+      this.drawLabels(ctx, this.position, this.radius, labels)
     }
   }
 
@@ -108,6 +111,45 @@ export default class VisualNode {
       drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
       yPos += lineDistance
     }
+    ctx.restore()
+  }
+
+  drawLabels(ctx, position, radius, labels) {
+    ctx.save()
+    const fontSize = this['caption-font-size']
+    const fontColor = 'black' //this['caption-color']
+    const fontFace = get(config, 'font.face')
+
+    ctx.fillStyle = fontColor
+    let fontWeight = 'normal'
+    ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
+    ctx.textBaseline = 'middle'
+
+    ctx.translate(...position.translate(new Vector(radius, 0).rotate(Math.PI / 4)).xy)
+    const padding = 5
+    const margin = 4
+    const pillHeight = fontSize + padding * 2
+    const pillRadius = pillHeight / 2
+    const lineHeight = pillHeight + margin
+
+    labels.forEach((label, i) => {
+      ctx.save()
+      ctx.translate(-pillRadius, i * lineHeight - pillRadius)
+      const metrics = ctx.measureText(label)
+      ctx.beginPath()
+      ctx.moveTo(pillRadius, 0)
+      ctx.lineTo(pillRadius + metrics.width, 0)
+      ctx.arc(pillRadius + metrics.width, pillRadius, pillRadius, -Math.PI / 2, Math.PI / 2)
+      ctx.lineTo(pillRadius, pillHeight)
+      ctx.arc(pillRadius, pillRadius, pillRadius, Math.PI / 2, -Math.PI / 2)
+      ctx.closePath()
+      ctx.fillStyle = 'white'
+      ctx.fill()
+      ctx.stroke()
+      ctx.fillStyle = 'black'
+      drawTextLine(ctx, label, new Point(pillRadius, pillRadius), false)
+      ctx.restore()
+    })
     ctx.restore()
   }
 }

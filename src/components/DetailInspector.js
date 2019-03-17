@@ -10,7 +10,9 @@ import {headerHeight} from "../model/applicationLayout"
 import { compose } from "recompose"
 import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
 import { DetailToolbox } from "./DetailToolbox"
-import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
+import {styleGroups, styleAttributes} from "../model/styling";
+import {combineLabels} from "../model/labels";
+import LabelTable from "./LabelTable";
 
 class DetailInspector extends Component {
   constructor(props) {
@@ -44,6 +46,7 @@ class DetailInspector extends Component {
 
   render() {
     const {selection, graph, onSaveCaption, onSaveType, reverseRelationships, selectedNodes} = this.props
+    const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
@@ -56,6 +59,7 @@ class DetailInspector extends Component {
     }
 
     const properties = combineProperties(entities)
+    const labels = combineLabels(selectedNodes)
 
     const handleKeyDown = (evt) => {
       if (evt.key === 'Escape' || (evt.key === 'Enter' && evt.metaKey)) {
@@ -77,6 +81,18 @@ class DetailInspector extends Component {
                  ref={elm => this.captionInput = elm}
                  onKeyDown={handleKeyDown.bind(this)}/>
         </Form.Field>
+      )
+    }
+
+    if (selectionIncludes.nodes) {
+      fields.push(
+        <LabelTable
+          key='labels'
+          labels={labels}
+          onAddLabel={(label) => onAddLabel(selection, label)}
+          onRenameLabel={(oldLabel, newLabel) => onRenameLabel(selection, oldLabel, newLabel)}
+          onRemoveLabel={(label) => onRemoveLabel(selection, label)}
+        />
       )
     }
 
@@ -103,31 +119,20 @@ class DetailInspector extends Component {
       )
     }
 
-    if (selectionIncludes.nodes) {
-      fields.push(
-        <StyleTable key='nodeStyle'
-                    title='Node Style'
-                    style={combineStyle(entities)}
-                    graphStyle={graph.style}
-                    possibleStyleAttributes={nodeStyleAttributes}
-                    onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
-                    onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
-        />
-      )
-    }
-
-    if (selectionIncludes.relationships) {
-      fields.push(
-        <StyleTable key='relationshipStyle'
-                    title='Relationship Style'
-                    style={combineStyle(entities)}
-                    graphStyle={graph.style}
-                    possibleStyleAttributes={relationshipStyleAttributes}
-                    onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
-                    onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
-        />
-      )
-    }
+    Object.entries(styleGroups).forEach(([groupKey, styleGroup]) => {
+      if (styleGroup.relevantTo(selectedNodes, relationships)) {
+        fields.push(
+          <StyleTable key={groupKey + 'Style'}
+                      title={groupKey + ' Style'}
+                      style={combineStyle(entities)}
+                      graphStyle={graph.style}
+                      possibleStyleAttributes={Object.keys(styleAttributes).filter(key => styleAttributes[key].appliesTo === groupKey)}
+                      onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
+                      onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
+          />
+        )
+      }
+    })
 
     return (
       <React.Fragment>

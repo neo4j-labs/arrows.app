@@ -16,7 +16,8 @@ export const createNode = () => (dispatch, getState) => {
     type: 'CREATE_NODE',
     newNodeId: nextAvailableId(getPresentGraph(getState()).nodes),
     newNodePosition: viewTransformation.inverse(randomPosition),
-    caption: ''
+    caption: '',
+    style: {}
   })
 }
 
@@ -28,7 +29,8 @@ export const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (
     newRelationshipId: nextAvailableId(getPresentGraph(getState()).relationships),
     targetNodeId: nextAvailableId(getPresentGraph(getState()).nodes),
     targetNodePosition,
-    caption: ''
+    caption: '',
+    style: {}
   })
 }
 
@@ -210,6 +212,28 @@ export const setNodeCaption = (selection, caption) => ({
   type: 'SET_NODE_CAPTION',
   selection,
   caption
+})
+
+export const addLabel = (selection, label) => ({
+  category: 'GRAPH',
+  type: 'ADD_LABEL',
+  selection,
+  label
+})
+
+export const renameLabel = (selection, oldLabel, newLabel) => ({
+  category: 'GRAPH',
+  type: 'RENAME_LABEL',
+  selection,
+  oldLabel,
+  newLabel
+})
+
+export const removeLabel = (selection, label) => ({
+  category: 'GRAPH',
+  type: 'REMOVE_LABEL',
+  selection,
+  label
 })
 
 export const renameProperty = (selection, oldPropertyKey, newPropertyKey) => ({

@@ -1,6 +1,7 @@
 import {stringTypeToDatabaseType} from "../model/Relationship";
 import {propertyKeyToDatabaseKey, styleKeyToDatabaseKey} from "../model/properties";
 import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
+import {labelToDatabaseLabel} from "../model/labels";
 
 export const writeQueriesForAction = (action, state) => {
 
@@ -59,6 +60,28 @@ export const writeQueriesForAction = (action, state) => {
         'SET n._caption = $caption', {
         ids: Object.keys(action.selection.selectedNodeIdMap),
         caption: action.caption
+      })
+    }
+
+    case 'ADD_LABEL': {
+      return (session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
+        'SET n:`' + labelToDatabaseLabel(action.label) + '`', {
+        ids: Object.keys(action.selection.selectedNodeIdMap)
+      })
+    }
+
+    case 'RENAME_LABEL': {
+      return (session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
+        'SET n:`' + labelToDatabaseLabel(action.newLabel) + '`' +
+        'REMOVE n:`' + labelToDatabaseLabel(action.oldLabel) + '`', {
+        ids: Object.keys(action.selection.selectedNodeIdMap)
+      })
+    }
+
+    case 'REMOVE_LABEL': {
+      return (session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
+        'REMOVE n:`' + labelToDatabaseLabel(action.label) + '`', {
+        ids: Object.keys(action.selection.selectedNodeIdMap)
       })
     }
 

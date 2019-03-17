@@ -4,6 +4,7 @@ import { propertiesFromDatabaseEntity, styleFromDatabaseEntity } from "../model/
 import { emptyGraph } from "../model/Graph";
 import { fetchingGraphFailed, fetchingGraphSucceeded } from "../actions/neo4jStorage";
 import { createCluster, loadClusters } from "../actions/gang"
+import {labelsFromDatabaseEntity} from "../model/labels";
 
 function toNumber(prop) {
   if (prop) {
@@ -36,6 +37,7 @@ export function readGraph(session, dispatch) {
           position: new Point(toNumber(neo4jNode.properties['_x']), toNumber(neo4jNode.properties['_y'])),
           caption: neo4jNode.properties['_caption'],
           style: styleFromDatabaseEntity(neo4jNode),
+          labels: labelsFromDatabaseEntity(neo4jNode),
           properties: propertiesFromDatabaseEntity(neo4jNode),
         })
       })
