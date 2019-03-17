@@ -4,7 +4,6 @@ import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
-import { getCommonCaption } from "../model/gang";
 import { getGraph } from "../selectors";
 
 export const createNode = () => (dispatch, getState) => {
@@ -17,7 +16,8 @@ export const createNode = () => (dispatch, getState) => {
     type: 'CREATE_NODE',
     newNodeId: nextAvailableId(getState().graph.nodes),
     newNodePosition: viewTransformation.inverse(randomPosition),
-    caption: ''
+    caption: '',
+    style: {}
   })
 }
 
@@ -29,7 +29,8 @@ export const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (
     newRelationshipId: nextAvailableId(getState().graph.relationships),
     targetNodeId: nextAvailableId(getState().graph.nodes),
     targetNodePosition,
-    caption: ''
+    caption: '',
+    style: {}
   })
 }
 
@@ -211,6 +212,28 @@ export const setNodeCaption = (selection, caption) => ({
   type: 'SET_NODE_CAPTION',
   selection,
   caption
+})
+
+export const addLabel = (selection, label) => ({
+  category: 'GRAPH',
+  type: 'ADD_LABEL',
+  selection,
+  label
+})
+
+export const renameLabel = (selection, oldLabel, newLabel) => ({
+  category: 'GRAPH',
+  type: 'RENAME_LABEL',
+  selection,
+  oldLabel,
+  newLabel
+})
+
+export const removeLabel = (selection, label) => ({
+  category: 'GRAPH',
+  type: 'REMOVE_LABEL',
+  selection,
+  label
 })
 
 export const renameProperty = (selection, oldPropertyKey, newPropertyKey) => ({

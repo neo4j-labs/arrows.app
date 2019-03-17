@@ -12,6 +12,7 @@ export const drawAnnotation = (ctx, visualNode, relationshipBundles) => {
   let textSide = null
   const fontSize = visualNode['property-font-size']
   const fontColor = visualNode['property-color']
+  const fontWeight = visualNode['property-font-weight']
   const fontFace = get(config, 'font.face')
   const lineHeight = fontSize
   const maxLineWidth = lineHeight * 10
@@ -164,17 +165,16 @@ export const drawAnnotation = (ctx, visualNode, relationshipBundles) => {
     lines.forEach((line, index) => {
       const dx = textAlignment === 'left' ? fontSize / 5 : -fontSize / 5
       const dy = (lineHeight * (index + .5))
-      drawPropertyLine(ctx, fontSize, fontColor, fontFace, topTextPoint.translate(new Vector(dx, dy)), line, boxWidth, textAlignment)
+      drawPropertyLine(ctx, fontSize, fontColor, fontWeight, fontFace, topTextPoint.translate(new Vector(dx, dy)), line, boxWidth, textAlignment)
     })
   }
 }
 
-const drawPropertyLine = (ctx, fontSize, fontColor, fontFace, position, line, boxWidth, align = 'left') => {
+const drawPropertyLine = (ctx, fontSize, fontColor, fontWeight, fontFace, position, line, boxWidth, align = 'left') => {
   ctx.save()
 
   ctx.fillStyle = fontColor
-  let fontWeight = 'normal' // this.boldText ? 'bold ' : 'normal '
-  ctx.font = fontWeight + fontSize + 'px ' + fontFace
+  ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
   ctx.textBaseline = 'middle'
 
   const offsetX = align === 'left' ? 0 : (boxWidth - ctx.measureText(line).width)

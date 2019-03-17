@@ -5,7 +5,7 @@ import {renderGraphAtScaleFactor} from "../graphics/utils/offScreenCanvasRendere
 class PngExport extends Component {
 
   render() {
-    const {width, height, dataUrl} = renderGraphAtScaleFactor(this.props.graph, this.props.pixelRatio, this.props.transparentBackground)
+    const {width, height, dataUrl} = renderGraphAtScaleFactor(this.props.graph, this.props.pixelRatio, this.props.includeStyling)
 
     return (
       <Segment style={{

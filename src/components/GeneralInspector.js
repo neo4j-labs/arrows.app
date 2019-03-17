@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {Segment, Form, Menu, Icon, Input, Label, Table} from 'semantic-ui-react'
 import StyleTable from "./StyleTable"
-import {nodeStyleAttributes, relationshipStyleAttributes} from "../model/styling";
+import {styleAttributes, styleGroups} from "../model/styling";
 import {headerHeight} from "../model/applicationLayout"
 
 export default class GeneralInspector extends Component {
@@ -10,25 +10,17 @@ export default class GeneralInspector extends Component {
     const clustersLayer = layers.find(layer => layer.name === 'gangs')
     const fields = []
 
+    Object.entries(styleGroups).forEach(([groupKey, styleGroup]) => {
       fields.push(
-        <StyleTable key='nodeStyle'
-                    title='Node Style'
+        <StyleTable key={groupKey + 'Style'}
+                    title={groupKey + ' Style'}
                     style={{}}
                     graphStyle={graph.style}
-                    possibleStyleAttributes={nodeStyleAttributes}
+                    possibleStyleAttributes={Object.keys(styleAttributes).filter(key => styleAttributes[key].appliesTo === groupKey)}
                     onSaveStyle={(styleKey, styleValue) => onSaveGraphStyle(styleKey, styleValue)}
         />
       )
-
-      fields.push(
-        <StyleTable key='relationshipStyle'
-                    title='Relationship Style'
-                    style={{}}
-                    graphStyle={graph.style}
-                    possibleStyleAttributes={relationshipStyleAttributes}
-                    onSaveStyle={(styleKey, styleValue) => onSaveGraphStyle(styleKey, styleValue)}
-        />
-      )
+    })
 
     return (
       <React.Fragment>

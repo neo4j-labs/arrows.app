@@ -57,6 +57,7 @@ const constructGraphFromFile = graphJson => {
     position: new Point(node.position.x, node.position.y),
     caption: node.caption,
     style: node.style || {},
+    labels: node.labels || [],
     properties: node.properties,
   }))
 
