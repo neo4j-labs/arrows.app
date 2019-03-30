@@ -5,7 +5,7 @@ import { getPresentGraph } from "../selectors"
 
 const mapStateToProps = state => {
   return {
-    graph: getPresentGraph(state.graph),
+    graph: getPresentGraph(state),
     diagramName: state.diagramName
   }
 }
