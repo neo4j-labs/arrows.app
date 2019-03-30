@@ -1,7 +1,7 @@
 import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
 import {renameGoogleDriveStore, saveFile} from "../actions/googleDrive";
 import {updatingGraph, updatingGraphSucceeded} from "../actions/neo4jStorage";
-import { hideGraphHistory } from "../selectors"
+import { getPresentGraph } from "../selectors"
 import { ActionCreators as UndoActionCreators } from "redux-undo"
 
 const updateQueue = []
@@ -17,6 +17,11 @@ const deBounce = (func, delay) => {
 const historyActions = [UndoActionCreators.undo().type, UndoActionCreators.redo().type]
 
 export const storageMiddleware = store => next => action => {
+  const hideGraphHistory = state => ({
+    ...state,
+    graph: getPresentGraph(state)
+  })
+
   const state = hideGraphHistory(store.getState())
   const storage = state.storage
 

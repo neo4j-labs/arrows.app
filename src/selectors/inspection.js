@@ -1,13 +1,12 @@
 import { selectedNodes } from "../model/selection";
 
-export const getSelectedNodes = state => {
-  const { graph, selection, applicationLayout } = state
+export const getSelectedNodes = ({graph, gangs, selection, applicationLayout}) => {
   const regularNodes = selectedNodes(graph, selection)
 
   if (applicationLayout.layers && applicationLayout.layers.length > 0) {
     const selectedNodes = applicationLayout.layers.reduce((resultNodes, layer) => {
       if (layer.selectorForInspection) {
-        return resultNodes.concat(layer.selectorForInspection(state))
+        return resultNodes.concat(layer.selectorForInspection({graph, gangs, selection}))
       } else {
         return resultNodes
       }

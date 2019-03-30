@@ -4,7 +4,7 @@ import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
-import { getGraph, getPresentGraph, hideGraphHistory } from "../selectors";
+import { getGraph, getPresentGraph } from "../selectors";
 
 export const createNode = () => (dispatch, getState) => {
   const { viewTransformation, applicationLayout } = getState()
@@ -343,9 +343,9 @@ const duplicateNodeOffset = (graph, selectedNodes, actionMemos) => {
 
 export const duplicateSelection = () => {
   return function (dispatch, getState) {
-    const state = hideGraphHistory(getState())
+    const state = getState()
     const selection = state.selection
-    const graph = state.graph
+    const graph = getPresentGraph(state)
     const actionMemos = state.actionMemos
 
     const selectedNodes = graph.nodes.filter(n => selection.selectedNodeIdMap.hasOwnProperty(n.id))

@@ -4,13 +4,13 @@ import {selectedRelationships} from "../model/selection";
 import InspectorContainer from "./InspectorContainer";
 import GeneralInspectorContainer from "./GeneralInspectorContainer";
 import { getSelectedNodes } from "../selectors/inspection";
-import { getPresentGraph, hideGraphHistory } from "../selectors"
+import { getPresentGraph } from "../selectors"
 
 const mapStateToProps = state => {
   const selection = state.selection
   const graph = getPresentGraph(state)
   return {
-    showSelectionInspector: getSelectedNodes(hideGraphHistory(state)).length > 0 || selectedRelationships(graph, selection).length > 0
+    showSelectionInspector: getSelectedNodes(({...state, graph})).length > 0 || selectedRelationships(graph, selection).length > 0
   }
 }
 

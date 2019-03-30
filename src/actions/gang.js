@@ -6,10 +6,11 @@ import { Guides } from "../graphics/Guides";
 import { activateRing, deactivateRing, tryDragRing } from "./dragToCreate";
 import { setMarquee } from "./selectionMarquee";
 import { pan } from "./viewTransformation";
-import { getGraph, getPositionsOfSelectedNodes } from "../selectors";
+import { getGraph, getPositionsOfSelectedNodes, getPresentGraph } from "../selectors";
 
 export const createClusterGang = (nodePositions, initialPositions) => (dispatch, getState) => {
-  const { graph, gangs } = getState()
+  const state = getState()
+  const graph = getPresentGraph(state)
   const combinedNodeIds = nodePositions.map(nodePos => nodePos.nodeId)
   const combinedNodes = graph.nodes.filter(node => combinedNodeIds.includes(node.id))
 
@@ -21,7 +22,7 @@ export const createClusterGang = (nodePositions, initialPositions) => (dispatch,
     caption = commonProps[commonKeys[0]]
   }
 
-  const superNodeId = nextAvailableId(gangs || [], 'c')
+  const superNodeId = nextAvailableId(state.gangs || [], 'c')
   dispatch(clearSelection())
   
   dispatch(createCluster(superNodeId, caption, nodePositions[0].position, 'cluster', initialPositions))

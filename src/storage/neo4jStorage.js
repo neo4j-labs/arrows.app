@@ -1,7 +1,7 @@
 import { fetchingGraph } from "../actions/neo4jStorage";
 import { readGraph } from "./cypherReadQueries";
 import { writeQueriesForAction } from "./cypherWriteQueries";
-import { hideGraphHistory } from "../selectors"
+import { getPresentGraph } from "../selectors"
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 
@@ -27,15 +27,15 @@ export function fetchGraphFromDatabase() {
 }
 
 export const updateStore = (action, state) => {
-  const actualState = hideGraphHistory(state)
-  const workList = [writeQueriesForAction(action, actualState)]
+  const graph = getPresentGraph(state)
+  const workList = [writeQueriesForAction(action, graph)]
 
-  const layers = actualState.applicationLayout.layers
+  const layers = state.applicationLayout.layers
 
   if (layers && layers.length > 0) {
     layers.forEach(layer => {
       if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['neo4j']) {
-        workList.push(layer.storageActionHandler['neo4j'](action, actualState))
+        workList.push(layer.storageActionHandler['neo4j'](action))
       }
     })
   }

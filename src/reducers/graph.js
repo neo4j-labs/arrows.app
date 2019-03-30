@@ -149,6 +149,7 @@ const graph = (state = emptyGraph(), action) => {
     }
 
     case 'MOVE_NODES':
+    case 'MOVE_NODES_END_DRAG':
       const nodeIdToNode = {}
       state.nodes.forEach((node) => {
         nodeIdToNode[node.id] = node

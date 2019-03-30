@@ -1,4 +1,4 @@
-export const writeQueriesForAction = (action, state) => {
+export const writeQueriesForAction = (action) => {
   switch (action.type) {
     case 'CREATE_CLUSTER': {
       console.log('creating cluster in db')
