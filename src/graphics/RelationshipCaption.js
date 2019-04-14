@@ -1,9 +1,12 @@
 export class RelationshipCaption {
-  constructor(text, fontSize, padding, borderWidth) {
+  constructor(text, style) {
     this.text = text
-    this.fontSize = fontSize
-    this.padding = padding
-    this.borderWidth = borderWidth
+    this.fontSize = style('type-font-size')
+    this.padding = style('type-padding')
+    this.borderWidth = style('type-border-width')
+    this.fontColor = style('type-color')
+    this.borderColor = style('type-border-color')
+    this.backgroundColor = style('type-background-color')
   }
 
   draw(arrow, ctx) {
@@ -15,8 +18,8 @@ export class RelationshipCaption {
     ctx.rotate(textAngle)
     ctx.font = this.fontSize + 'px sans-serif'
     const metrics = ctx.measureText(this.text)
-    const x = metrics.width / 2 + this.padding
-    const y = this.fontSize / 2 + this.padding
+    const x = metrics.width / 2 + this.padding + this.borderWidth / 2
+    const y = this.fontSize / 2 + this.padding + this.borderWidth / 2
     ctx.beginPath()
     ctx.moveTo(-x, 0)
     ctx.arcTo(-x, y, 0, y, this.padding)
@@ -24,13 +27,15 @@ export class RelationshipCaption {
     ctx.arcTo(x, -y, 0, -y, this.padding)
     ctx.arcTo(-x, -y, -x, 0, this.padding)
     ctx.closePath()
-    ctx.fillStyle = 'white'
-    ctx.strokeStyle = arrow.arrowColor
-    ctx.lineWidth = this.borderWidth
+    ctx.fillStyle = this.backgroundColor
     ctx.fill()
-    ctx.stroke()
+    if (this.borderWidth > 0) {
+      ctx.strokeStyle = this.borderColor
+      ctx.lineWidth = this.borderWidth
+      ctx.stroke()
+    }
     ctx.textBaseline = 'middle'
-    ctx.fillStyle = 'black'
+    ctx.fillStyle = this.fontColor
     ctx.fillText(this.text, -metrics.width / 2, 0)
     ctx.restore()
   }

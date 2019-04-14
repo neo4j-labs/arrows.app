@@ -120,7 +120,7 @@ export default class VisualNode {
     const fontColor = this['label-color']
     const backgroundColor = this['label-background-color']
     const strokeColor = this['label-border-color']
-    const strokeWidth = this['label-border-width']
+    const borderWidth = this['label-border-width']
     const fontFace = get(config, 'font.face')
     const padding = this['label-padding']
     const margin = this['label-margin']
@@ -130,9 +130,9 @@ export default class VisualNode {
     ctx.textBaseline = 'middle'
 
     ctx.translate(...position.translate(new Vector(radius, 0).rotate(Math.PI / 4)).xy)
-    const pillHeight = fontSize + padding * 2
+    const pillHeight = fontSize + padding * 2 + borderWidth
     const pillRadius = pillHeight / 2
-    const lineHeight = pillHeight + margin
+    const lineHeight = pillHeight + margin + borderWidth
 
     labels.forEach((label, i) => {
       ctx.save()
@@ -147,9 +147,11 @@ export default class VisualNode {
       ctx.closePath()
       ctx.fillStyle = backgroundColor
       ctx.fill()
-      ctx.strokeStyle = strokeColor
-      ctx.strokeWidth = strokeWidth
-      ctx.stroke()
+      if (borderWidth > 0) {
+        ctx.strokeStyle = strokeColor
+        ctx.lineWidth = borderWidth
+        ctx.stroke()
+      }
       ctx.fillStyle = fontColor
       drawTextLine(ctx, label, new Point(pillRadius, pillRadius), false)
       ctx.restore()

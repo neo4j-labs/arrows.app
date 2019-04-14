@@ -41,7 +41,13 @@ export const styleAttributes = {
   'property-font-size': {appliesTo: 'Property', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
   'property-font-weight': {appliesTo: 'Property', type: 'font-weight', defaultValue: 'normal'},
   'arrow-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 1},
-  'arrow-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black}
+  'arrow-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
+  'type-font-size': {appliesTo: 'Relationship', type: 'font-size', defaultValue: 10},
+  'type-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
+  'type-background-color': {appliesTo: 'Relationship', type: 'color', defaultValue: white},
+  'type-border-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 1},
+  'type-border-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
+  'type-padding': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 2},
 }
 
 export const nodeStyleAttributes = Object.keys(styleAttributes).filter(key => {
