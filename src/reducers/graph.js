@@ -228,5 +228,5 @@ const graph = (state = emptyGraph(), action) => {
 }
 
 export default undoable(graph, {
-  filter: action => action.category === 'GRAPH'
+  filter: action => action.category === 'GRAPH' && action.type !== 'MOVE_NODES'
 })
