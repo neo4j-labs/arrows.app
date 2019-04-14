@@ -1,14 +1,14 @@
 import { drawRing } from "../graphics/canvasRenderer";
 import { redActive } from "../model/colors";
 
-export default (state) => {
-  if (!state.gangs || state.gangs.length === 0) {
-    return state
+export default ({ graph, gangs }) => {
+  if (!gangs || gangs.length === 0) {
+    return graph
   }
 
-  let resultGraph = state.graph
+  let resultGraph = graph
 
-  state.gangs.forEach(gang => {
+  gangs.forEach(gang => {
     switch (gang.type) {
       case 'cluster': {
         resultGraph = applyCluster(resultGraph, gang)
@@ -18,10 +18,7 @@ export default (state) => {
     }
   })
 
-  return {
-    ...state,
-    graph: resultGraph
-  }
+  return resultGraph
 }
 
 export const getGangs = state => state.gangs
@@ -56,8 +53,7 @@ const applyCluster = (graph, cluster) => {
   }
 }
 
-export const selectorForInspection = state => {
-  const { graph, gangs, selection } = state
+export const selectorForInspection = ({ graph, gangs, selection }) => {
   const simplifiedNodes = gangs.reduce((nodes, gang) => {
     if (selection.selectedNodeIdMap[gang.id]) {
       return nodes.concat(gang.members.map(member => graph.nodes.find(node => node.id === member.nodeId)))

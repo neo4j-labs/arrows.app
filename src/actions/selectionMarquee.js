@@ -1,5 +1,6 @@
 import {nodesInsidePolygon} from "../model/Graph";
 import {ensureSelected} from "./selection";
+import { getPresentGraph } from "../selectors"
 
 export const setMarquee = (from, to) => ({
   type: 'SET_MARQUEE',
@@ -9,8 +10,9 @@ export const setMarquee = (from, to) => ({
 
 export const selectNodesInMarquee = () => {
   return function (dispatch, getState) {
-    const {graph, gestures} = getState()
-    const marquee = gestures.selectionMarquee
+    const state = getState()
+    const graph = getPresentGraph(state)
+    const marquee = state.gestures.selectionMarquee
     if (marquee) {
       const bBox = getBBoxFromCorners(marquee)
       const selectedNodeIds = nodesInsidePolygon(graph, bBox)

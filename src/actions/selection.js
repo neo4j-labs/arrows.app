@@ -1,4 +1,5 @@
 import { Vector } from "../model/Vector"
+import { getPresentGraph } from "../selectors"
 
 export const toggleSelection = (entity, additive) => ({
   type: 'TOGGLE_SELECTION',
@@ -19,7 +20,7 @@ export const ensureDeselected = (deselectedNodeIds) => ({
 
 export const selectAll = () => {
   return function (dispatch, getState) {
-    const graph = getState().graph
+    const graph = getPresentGraph(getState())
     dispatch(ensureSelected(graph.nodes.map(node => node.id)))
   }
 }

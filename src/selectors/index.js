@@ -10,20 +10,22 @@ import { idsMatch } from "../model/Id";
 const getSelection = (state) => state.selection
 const getViewTransformation = (state) => state.viewTransformation
 
+export const getPresentGraph = state => state.graph.present || state.graph
+
 export const getGraph = (state) => {
   const { layers } = state.applicationLayout || { }
 
   if (layers && layers.length > 0) {
     const newState = layers.reduce((resultState, layer) => {
       if (layer.selector) {
-        return layer.selector(resultState)
+        return layer.selector({ graph: resultState, [layer.name]: state[layer.name] })
       } else {
         return resultState
       }
-    }, state)
-    return newState.graph
+    }, getPresentGraph(state))
+    return newState
   } else {
-    return state.graph
+    return getPresentGraph(state)
   }
 }
 

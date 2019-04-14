@@ -4,7 +4,7 @@ import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
-import { getGraph } from "../selectors";
+import { getGraph, getPresentGraph } from "../selectors";
 
 export const createNode = () => (dispatch, getState) => {
   const { viewTransformation, applicationLayout } = getState()
@@ -14,7 +14,7 @@ export const createNode = () => (dispatch, getState) => {
   dispatch({
     category: 'GRAPH',
     type: 'CREATE_NODE',
-    newNodeId: nextAvailableId(getState().graph.nodes),
+    newNodeId: nextAvailableId(getPresentGraph(getState()).nodes),
     newNodePosition: viewTransformation.inverse(randomPosition),
     caption: '',
     style: {}
@@ -26,8 +26,8 @@ export const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (
     category: 'GRAPH',
     type: 'CREATE_NODE_AND_RELATIONSHIP',
     sourceNodeId,
-    newRelationshipId: nextAvailableId(getState().graph.relationships),
-    targetNodeId: nextAvailableId(getState().graph.nodes),
+    newRelationshipId: nextAvailableId(getPresentGraph(getState()).relationships),
+    targetNodeId: nextAvailableId(getPresentGraph(getState()).nodes),
     targetNodePosition,
     caption: '',
     style: {}
@@ -39,7 +39,7 @@ export const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState)
     category: 'GRAPH',
     type: 'CONNECT_NODES',
     sourceNodeId,
-    newRelationshipId: nextAvailableId(getState().graph.relationships),
+    newRelationshipId: nextAvailableId(getPresentGraph(getState()).relationships),
     targetNodeId
   })
 }
@@ -305,7 +305,7 @@ export const deleteNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
 export const deleteSelection = () => {
   return function (dispatch, getState) {
     const selection = getState().selection
-    const relationships = getState().graph.relationships
+    const relationships = getPresentGraph(getState()).relationships
 
     const nodeIdMap = {...selection.selectedNodeIdMap}
     const relationshipIdMap = {...selection.selectedRelationshipIdMap}
@@ -343,9 +343,9 @@ const duplicateNodeOffset = (graph, selectedNodes, actionMemos) => {
 
 export const duplicateSelection = () => {
   return function (dispatch, getState) {
-    const state = getState();
+    const state = getState()
     const selection = state.selection
-    const graph = state.graph
+    const graph = getPresentGraph(state)
     const actionMemos = state.actionMemos
 
     const selectedNodes = graph.nodes.filter(n => selection.selectedNodeIdMap.hasOwnProperty(n.id))

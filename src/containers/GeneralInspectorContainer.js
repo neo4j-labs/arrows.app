@@ -7,10 +7,11 @@ import {
   setBetaFeaturesEnabled,
   setPersistClusters
 } from "../actions/applicationLayout";
+import { getPresentGraph } from "../selectors"
 
 const mapStateToProps = state => {
   return {
-    graph: state.graph,
+    graph: getPresentGraph(state),
     selection: state.selection,
     betaFeaturesEnabled: state.applicationLayout.betaFeaturesEnabled,
     layers: state.applicationLayout.layers

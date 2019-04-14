@@ -15,6 +15,8 @@ export const MOVE_UP = 'MOVE_UP'
 export const MOVE_RIGHT = 'MOVE_RIGHT'
 export const MOVE_DOWN = 'MOVE_DOWN'
 export const TOGGLE_FOCUS = 'TOGGLE_FOCUS'
+export const UNDO = 'UNDO'
+export const REDO = 'REDO'
 
 const KeyBindings = {
   [SELECT_ALL]: [{ metaKey: true, code: 65 }],
@@ -30,7 +32,9 @@ const KeyBindings = {
   [MOVE_UP]: [{ metaKey: false, shiftKey: 'optional', code: 38 }],
   [MOVE_RIGHT]: [{ metaKey: false, shiftKey: 'optional', code: 39 }],
   [MOVE_DOWN]: [{ metaKey: false, shiftKey: 'optional', code: 40 }],
-  [TOGGLE_FOCUS]: [{ metaKey: false, code: 13, codeRange: {min: 48, max: 90}}]
+  [TOGGLE_FOCUS]: [{ metaKey: false, code: 13, codeRange: {min: 48, max: 90}}],
+  [UNDO]: [{metaKey: true, code: 90}],
+  [REDO]: [{metaKey: true, shiftKey: true, code: 90}]
 }
 
 const actions = {}

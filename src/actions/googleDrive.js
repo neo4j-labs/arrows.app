@@ -3,6 +3,7 @@ import {googleDriveSignInStatusChanged, updateGoogleDriveFileId, useGoogleDriveS
 import {renderGraphAtScaleFactor} from "../graphics/utils/offScreenCanvasRenderer";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 import {indexableText} from "../model/Graph";
+import { getPresentGraph } from "../selectors"
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 export const SCOPES = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.install';
 
@@ -26,12 +27,14 @@ export const initGoogleDriveApi = (store) => {
     store.dispatch(googleDriveSignInStatusChanged(signedIn))
     if (signedIn) {
       const state = store.getState()
+      const graph = getPresentGraph(state)
+
       if (state.storage.mode === 'GOOGLE_DRIVE') {
         const fileId = state.storage.googleDrive.fileId;
         if (fileId) {
           store.dispatch(fetchGraphFromDrive(fileId))
         } else {
-          saveFile(state.graph, null, state.diagramName, onFileSaved)
+          saveFile(graph, null, state.diagramName, onFileSaved)
         }
       }
     }
@@ -50,11 +53,12 @@ export const initializeGoogleDriveStorage = () => {
   return function (dispatch, getState) {
     dispatch(useGoogleDriveStorage())
     const state = getState()
+    const graph = getPresentGraph(state)
     if (state.storage.googleDrive.signedIn) {
       const onFileSaved = (fileId) => {
         dispatch(updateGoogleDriveFileId(fileId))
       }
-      saveFile({ graph: state.graph, gangs: state.gangs }, null, state.diagramName, onFileSaved)
+      saveFile({ graph, gangs: state.gangs }, null, state.diagramName, onFileSaved)
     } else {
       window.gapi.auth2.getAuthInstance().signIn();
     }

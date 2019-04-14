@@ -7210,7 +7210,14 @@ redux-thunk@^2.2.0:
   resolved "https://neo.jfrog.io/neo/api/npm/npm/redux-thunk/-/redux-thunk-2.3.0.tgz#51c2c19a185ed5187aaa9a2d08b666d0d6467622"
   integrity sha1-UcLBmhhe1Rh6qpotCLZm0NZGdiI=
 
-redux@^3.7.2:
+redux-undo@^0.6.1:
+  version "0.6.1"
+  resolved "https://registry.yarnpkg.com/redux-undo/-/redux-undo-0.6.1.tgz#ff407749b8f468bead636e413819e92c0982eeca"
+  integrity sha1-/0B3Sbj0aL6tY25BOBnpLAmC7so=
+  dependencies:
+    redux "^3.0.2"
+
+redux@^3.0.2, redux@^3.7.2:
   version "3.7.2"
   resolved "https://neo.jfrog.io/neo/api/npm/npm/redux/-/redux-3.7.2.tgz#06b73123215901d25d065be342eb026bc1c8537b"
   integrity sha1-BrcxIyFZAdJdBlvjQusCa8HIU3s=

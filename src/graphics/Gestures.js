@@ -85,8 +85,10 @@ export default class Gestures {
     Object.keys(selection.selectedNodeIdMap).forEach(nodeId => {
       if (!idsMatch(nodeId, dragToCreate.sourceNodeId)) {
         const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
-        const nodeRadius = getStyleSelector(node, 'radius')(graph)
-        drawRing(ctx, transform(node.position), green, (nodeRadius * viewTransformation.scale + ringMargin / 2))
+        if (node) {
+          const nodeRadius = getStyleSelector(node, 'radius')(graph)
+          drawRing(ctx, transform(node.position), green, (nodeRadius * viewTransformation.scale + ringMargin / 2))
+        }
       }
     })
 

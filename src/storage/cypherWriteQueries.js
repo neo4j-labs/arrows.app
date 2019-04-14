@@ -3,7 +3,7 @@ import {propertyKeyToDatabaseKey, styleKeyToDatabaseKey} from "../model/properti
 import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
 import {labelToDatabaseLabel} from "../model/labels";
 
-export const writeQueriesForAction = (action, state) => {
+export const writeQueriesForAction = (action, graph) => {
 
   switch (action.type) {
     case 'CREATE_NODE': {
@@ -288,7 +288,7 @@ export const writeQueriesForAction = (action, state) => {
       return (session) => {
         let result = session
         Object.keys(action.selection.selectedRelationshipIdMap).forEach((relationshipId) => {
-          const relationship = state.graph.relationships.find(rel => rel.id === relationshipId)
+          const relationship = graph.relationships.find(rel => rel.id === relationshipId)
           const type = stringTypeToDatabaseType(relationship.type)
           result = session.run(`MATCH (s1)-[old]->(s2)
             WHERE old._id = $id
