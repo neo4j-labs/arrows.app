@@ -27,6 +27,7 @@ export const styleAttributes = {
   'node-color': {appliesTo: 'Node', type: 'color', defaultValue: blueActive},
   'border-width': {appliesTo: 'Node', type: 'line-width', defaultValue: 0},
   'border-color': {appliesTo: 'Node', type: 'color', defaultValue: black},
+  'caption-position': {appliesTo: 'Caption', type: 'caption-position', defaultValue: 'inside'},
   'caption-color': {appliesTo: 'Caption', type: 'color', defaultValue: white},
   'caption-font-size': {appliesTo: 'Caption', type: 'font-size', defaultValue: defaultFontSize},
   'caption-font-weight': {appliesTo: 'Caption', type: 'font-weight', defaultValue: 'normal'},
@@ -66,6 +67,7 @@ export const styleTypes = {
   'font-size': {  editor: 'slider', min: 5, max: 100, step: 1 },
   'color': { editor: 'colorPicker' },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
+  'caption-position': { editor: 'dropdown', options: ['inside', 'outside'] },
   'type-orientation': { editor: 'dropdown', options: ['inline', 'horizontal'] }
 }
 
