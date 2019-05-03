@@ -4,27 +4,16 @@ import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
 import { Point } from "../model/Point";
-import {asKey} from "../model/Id";
 import { getStyleSelector } from "../selectors/style";
 import { nodeStyleAttributes } from "../model/styling";
 
 export default class VisualNode {
   constructor(node, graph) {
     this.node = node
-    this.edges = []
-    this.edgeMap = {}
 
     nodeStyleAttributes.forEach(styleAttribute => {
       this[styleAttribute] = getStyleSelector(node, styleAttribute)(graph)
     })
-  }
-
-  addEdge (edge, direction) {
-    this.edges.push(edge)
-    this.edgeMap[asKey(edge.id)] = {
-      edge,
-      direction
-    }
   }
 
   get id() {
@@ -57,10 +46,6 @@ export default class VisualNode {
 
   get initialPositions () {
     return this.node.initialPositions
-  }
-
-  distanceToBorder () {
-    return this.radius
   }
 
   draw(ctx) {
