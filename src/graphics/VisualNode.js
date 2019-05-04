@@ -1,9 +1,9 @@
-import {drawSolidCircle} from "./canvasRenderer";
 import { getStyleSelector } from "../selectors/style";
 import { nodeStyleAttributes } from "../model/styling";
 import {NodeLabels} from "./NodeLabels";
 import {NodeCaption} from "./NodeCaption";
 import {NodeBorder} from "./NodeBorder";
+import {NodeBackground} from "./NodeBackground";
 
 export default class VisualNode {
   constructor(node, graph) {
@@ -14,6 +14,7 @@ export default class VisualNode {
     })
 
     this.style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
+    this.background = new NodeBackground(this.style)
     if (this.style('border-width') > 0) {
       this.border = new NodeBorder(this.style)
     }
@@ -62,8 +63,7 @@ export default class VisualNode {
       return
     }
 
-    drawSolidCircle(ctx, this.position, this['node-color'], this.radius)
-
+    this.background.draw(this.position, this.radius, ctx)
     if (this.border) {
       this.border.draw(this.position, this.radius, ctx)
     }
