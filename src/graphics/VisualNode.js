@@ -1,11 +1,8 @@
-import {drawCaption, drawCircle, drawSolidCircle, drawTextLine} from "./canvasRenderer";
-import {getLines} from "./utils/wordwrap";
-import config from './config'
-import get from 'lodash.get'
-import { Vector } from "../model/Vector";
+import {drawCaption, drawCircle, drawSolidCircle} from "./canvasRenderer";
 import { getStyleSelector } from "../selectors/style";
 import { nodeStyleAttributes } from "../model/styling";
 import {NodeLabels} from "./NodeLabels";
+import {NodeCaption} from "./NodeCaption";
 
 export default class VisualNode {
   constructor(node, graph) {
@@ -16,6 +13,9 @@ export default class VisualNode {
     })
 
     this.style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
+    if (node.caption) {
+      this.caption = new NodeCaption(node.caption, this.style)
+    }
     if (node.labels && node.labels.length > 0) {
       this.labels = new NodeLabels(node.labels, this.style)
     }
@@ -58,15 +58,14 @@ export default class VisualNode {
       return
     }
 
-    const { caption } = this.node
     drawSolidCircle(ctx, this.position, this['node-color'], this.radius)
 
     if (this['border-width'] > 0) {
       this.drawBorder(ctx)
     }
 
-    if (caption) {
-      this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
+    if (this.caption) {
+      this.caption.draw(this.position, this.radius * 2, ctx)
     }
     if (this.labels) {
       this.labels.draw(this.position, this.radius, ctx)
@@ -79,28 +78,6 @@ export default class VisualNode {
     ctx.strokeStyle = this['border-color'] || '#000'
     ctx.lineWidth = strokeWidth
     drawCircle(ctx, this.position, Math.max(strokeWidth / 2, this.radius - strokeWidth / 2), true)
-    ctx.restore()
-  }
-
-  drawCaption(ctx, position, label, maxWidth, config) {
-    ctx.save()
-    const fontSize = this['caption-font-size']
-    const fontColor = this['caption-color']
-    const fontWeight = this['caption-font-weight']
-    const fontFace = get(config, 'font.face')
-
-    let lines = getLines(ctx, label, fontFace, fontSize, maxWidth, false)//this.hasIcon)
-
-    ctx.fillStyle = fontColor
-    ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
-    ctx.textBaseline = 'middle'
-
-    const lineDistance = fontSize
-    let yPos = -((lines.length - 1) * lineDistance) / 2
-    for (let line of lines) {
-      drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
-      yPos += lineDistance
-    }
     ctx.restore()
   }
 }
