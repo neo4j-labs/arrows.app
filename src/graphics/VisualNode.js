@@ -1,8 +1,9 @@
-import {drawCaption, drawCircle, drawSolidCircle} from "./canvasRenderer";
+import {drawSolidCircle} from "./canvasRenderer";
 import { getStyleSelector } from "../selectors/style";
 import { nodeStyleAttributes } from "../model/styling";
 import {NodeLabels} from "./NodeLabels";
 import {NodeCaption} from "./NodeCaption";
+import {NodeBorder} from "./NodeBorder";
 
 export default class VisualNode {
   constructor(node, graph) {
@@ -13,6 +14,9 @@ export default class VisualNode {
     })
 
     this.style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
+    if (this.style('border-width') > 0) {
+      this.border = new NodeBorder(this.style)
+    }
     if (node.caption) {
       this.caption = new NodeCaption(node.caption, this.style)
     }
@@ -60,24 +64,14 @@ export default class VisualNode {
 
     drawSolidCircle(ctx, this.position, this['node-color'], this.radius)
 
-    if (this['border-width'] > 0) {
-      this.drawBorder(ctx)
+    if (this.border) {
+      this.border.draw(this.position, this.radius, ctx)
     }
-
     if (this.caption) {
       this.caption.draw(this.position, this.radius * 2, ctx)
     }
     if (this.labels) {
       this.labels.draw(this.position, this.radius, ctx)
     }
-  }
-
-  drawBorder(ctx, borderWidth) {
-    const strokeWidth = borderWidth || this['border-width']
-    ctx.save()
-    ctx.strokeStyle = this['border-color'] || '#000'
-    ctx.lineWidth = strokeWidth
-    drawCircle(ctx, this.position, Math.max(strokeWidth / 2, this.radius - strokeWidth / 2), true)
-    ctx.restore()
   }
 }
