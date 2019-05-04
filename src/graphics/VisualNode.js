@@ -3,9 +3,9 @@ import {getLines} from "./utils/wordwrap";
 import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
-import { Point } from "../model/Point";
 import { getStyleSelector } from "../selectors/style";
 import { nodeStyleAttributes } from "../model/styling";
+import {NodeLabels} from "./NodeLabels";
 
 export default class VisualNode {
   constructor(node, graph) {
@@ -14,6 +14,11 @@ export default class VisualNode {
     nodeStyleAttributes.forEach(styleAttribute => {
       this[styleAttribute] = getStyleSelector(node, styleAttribute)(graph)
     })
+
+    this.style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
+    if (node.labels && node.labels.length > 0) {
+      this.labels = new NodeLabels(node.labels, this.style)
+    }
   }
 
   get id() {
@@ -53,7 +58,7 @@ export default class VisualNode {
       return
     }
 
-    const { caption, labels } = this.node
+    const { caption } = this.node
     drawSolidCircle(ctx, this.position, this['node-color'], this.radius)
 
     if (this['border-width'] > 0) {
@@ -63,8 +68,8 @@ export default class VisualNode {
     if (caption) {
       this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
     }
-    if (labels) {
-      this.drawLabels(ctx, this.position, this.radius, labels)
+    if (this.labels) {
+      this.labels.draw(this.position, this.radius, ctx)
     }
   }
 
@@ -96,51 +101,6 @@ export default class VisualNode {
       drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
       yPos += lineDistance
     }
-    ctx.restore()
-  }
-
-  drawLabels(ctx, position, radius, labels) {
-    ctx.save()
-    const fontSize = this['label-font-size']
-    const fontColor = this['label-color']
-    const backgroundColor = this['label-background-color']
-    const strokeColor = this['label-border-color']
-    const borderWidth = this['label-border-width']
-    const fontFace = get(config, 'font.face')
-    const padding = this['label-padding']
-    const margin = this['label-margin']
-
-    let fontWeight = 'normal'
-    ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
-    ctx.textBaseline = 'middle'
-
-    ctx.translate(...position.translate(new Vector(radius, 0).rotate(Math.PI / 4)).xy)
-    const pillHeight = fontSize + padding * 2 + borderWidth
-    const pillRadius = pillHeight / 2
-    const lineHeight = pillHeight + margin + borderWidth
-
-    labels.forEach((label, i) => {
-      ctx.save()
-      ctx.translate(-pillRadius, i * lineHeight - pillRadius)
-      const metrics = ctx.measureText(label)
-      ctx.beginPath()
-      ctx.moveTo(pillRadius, 0)
-      ctx.lineTo(pillRadius + metrics.width, 0)
-      ctx.arc(pillRadius + metrics.width, pillRadius, pillRadius, -Math.PI / 2, Math.PI / 2)
-      ctx.lineTo(pillRadius, pillHeight)
-      ctx.arc(pillRadius, pillRadius, pillRadius, Math.PI / 2, -Math.PI / 2)
-      ctx.closePath()
-      ctx.fillStyle = backgroundColor
-      ctx.fill()
-      if (borderWidth > 0) {
-        ctx.strokeStyle = strokeColor
-        ctx.lineWidth = borderWidth
-        ctx.stroke()
-      }
-      ctx.fillStyle = fontColor
-      drawTextLine(ctx, label, new Point(pillRadius, pillRadius), false)
-      ctx.restore()
-    })
     ctx.restore()
   }
 }
