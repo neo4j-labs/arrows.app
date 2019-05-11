@@ -1,29 +1,31 @@
 import { getStyleSelector } from "../selectors/style";
-import { nodeStyleAttributes } from "../model/styling";
 import {NodeLabels} from "./NodeLabels";
 import {NodeCaption} from "./NodeCaption";
 import {NodeBorder} from "./NodeBorder";
 import {NodeBackground} from "./NodeBackground";
+import {NodeProperties} from "./NodeProperties";
+import {connectedNodePositions} from "../model/Graph";
 
 export default class VisualNode {
   constructor(node, graph) {
     this.node = node
 
-    nodeStyleAttributes.forEach(styleAttribute => {
-      this[styleAttribute] = getStyleSelector(node, styleAttribute)(graph)
-    })
+    const style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
 
-    this.style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
-    this.background = new NodeBackground(this.style)
-    if (this.style('border-width') > 0) {
-      this.border = new NodeBorder(this.style)
+    this.radius = style('radius')
+    this.background = new NodeBackground(style)
+    if (style('border-width') > 0) {
+      this.border = new NodeBorder(style)
     }
     if (node.caption) {
-      this.caption = new NodeCaption(node.caption, this.style)
+      this.caption = new NodeCaption(node.caption, style)
     }
     if (node.labels && node.labels.length > 0) {
-      this.labels = new NodeLabels(node.labels, this.style)
+      this.labels = new NodeLabels(node.labels, style)
     }
+    this.properties = new NodeProperties(
+      node.properties, this.radius, node.position, connectedNodePositions(node, graph), style
+    )
   }
 
   get id() {
@@ -73,5 +75,6 @@ export default class VisualNode {
     if (this.labels) {
       this.labels.draw(this.position, this.radius, ctx)
     }
+    this.properties.draw(ctx)
   }
 }
