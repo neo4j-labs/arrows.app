@@ -32,14 +32,6 @@ export default class VisualNode {
     return this.node.id
   }
 
-  get x () {
-    return this.node.position.x
-  }
-
-  get y () {
-    return this.node.position.y
-  }
-
   get position() {
     return this.node.position
   }
