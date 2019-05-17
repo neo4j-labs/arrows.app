@@ -72,3 +72,7 @@ export const connectedNodePositions = (node, graph) => {
       return otherNode.position
     })
 }
+
+export const connectedNodeAngles = (node, graph) => {
+  return connectedNodePositions(node, graph).map(position => position.vectorFrom(node.position).angle())
+}

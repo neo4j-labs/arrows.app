@@ -3,13 +3,14 @@ import {drawStraightLine, drawTextLine} from "./canvasRenderer";
 import {getLines} from "./utils/wordwrap";
 import config from './config'
 import get from 'lodash.get'
+import {distribute} from "./circumferentialDistribution";
 
 export class NodeProperties {
-  constructor(properties, radius, nodePosition, connectedNodePositions, style) {
+  constructor(properties, radius, nodePosition, connectedNodeAngles, style) {
     this.properties = properties
     this.radius = radius
     this.nodePosition = nodePosition
-    this.connectedNodePositions = connectedNodePositions
+    this.connectedNodeAngles = connectedNodeAngles
     this.fontSize = style('property-font-size')
     this.fontColor = style('property-color')
     this.fontWeight = style('property-font-weight')
@@ -18,97 +19,38 @@ export class NodeProperties {
 
   draw(ctx) {
     const position = this.nodePosition
-    let boxAngle = 0
+    let boxAngle = distribute([
+      {preferredAngles: [Math.PI / 2, 3 * Math.PI / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4], payload: 'properties'}
+    ], this.connectedNodeAngles.map(angle => {return {angle}}))[0].angle
     let orientation = null
     let textStart = null
     let textSide = null
     const lineHeight = this.fontSize
     const maxLineWidth = lineHeight * 10
 
-    if (this.connectedNodePositions && this.connectedNodePositions.length === 1) {
-      let angle = this.connectedNodePositions[0].vectorFrom(position).angle()
-      boxAngle = angle + Math.PI
-      if (boxAngle > Math.PI) {
-        boxAngle = boxAngle - 2 * Math.PI
-      }
-    } else if (this.connectedNodePositions && this.connectedNodePositions.length > 1) {
-      // Sort the points around circle
-      const angles = this.connectedNodePositions.map(otherNodePosition => {
-        let angle = otherNodePosition.vectorFrom(position).angle()
-        if (angle <= 0) {
-          angle += 2 * Math.PI
-        }
-
-        // convert to degrees for convenience
-        return angle * 180 / Math.PI
-      })
-        .sort((angle1, angle2) => angle1 - angle2)
-
-      let maxAngle = -1
-      let maxArc = null
-
-      for (let i = 0; i < angles.length; i++) {
-        const angle1 = angles[i]
-        const pointZeroCross = i === angles.length - 1
-        let nextPoint
-
-        if (pointZeroCross) {
-          nextPoint = 0
-        } else {
-          nextPoint = i + 1
-        }
-
-        const angle2 = angles[nextPoint]
-
-        let angle = pointZeroCross
-          ? (360 - angle1) + angle2
-          : angle2 - angle1
-
-        if (angle > maxAngle) {
-          maxAngle = angle
-          maxArc = {
-            startAngle: angle1,
-            endAngle: angle2,
-            arcAngle: angle,
-            pointZeroCross
-          }
-        }
-      }
-
-      if (maxArc) {
-        let midAngle = maxArc.pointZeroCross
-          ? (maxArc.arcAngle / 2) - (360 - maxArc.startAngle)
-          : maxArc.startAngle + maxArc.arcAngle / 2
-
-        boxAngle = midAngle * Math.PI / 180
-        if (boxAngle > Math.PI) {
-          boxAngle -= 2 * Math.PI
-        }
-      }
-    }
-
-    const snapThreshold = 0.3
-    if (Math.abs(boxAngle - 0) < snapThreshold) {
-      boxAngle = 0
-      orientation = 'horizontal'
-      textStart = 'start'
-      textSide = 'right'
-    } else if (Math.abs(boxAngle - Math.PI / 2) < snapThreshold) {
-      boxAngle = Math.PI / 2
-      orientation = 'vertical'
-      textStart = 'start'
-      textSide = 'right'
-    } else if (Math.abs(boxAngle - Math.PI) < snapThreshold) {
-      boxAngle = Math.PI
-      orientation = 'horizontal'
-      textStart = 'end'
-      textSide = 'left'
-    } else if (Math.abs(boxAngle + Math.PI / 2) < snapThreshold) {
-      boxAngle = -Math.PI / 2
-      orientation = 'vertical'
-      textStart = 'end'
-      textSide = 'right'
-    }
+    //
+    // const snapThreshold = 0.3
+    // if (Math.abs(boxAngle - 0) < snapThreshold) {
+    //   boxAngle = 0
+    //   orientation = 'horizontal'
+    //   textStart = 'start'
+    //   textSide = 'right'
+    // } else if (Math.abs(boxAngle - Math.PI / 2) < snapThreshold) {
+    //   boxAngle = Math.PI / 2
+    //   orientation = 'vertical'
+    //   textStart = 'start'
+    //   textSide = 'right'
+    // } else if (Math.abs(boxAngle - Math.PI) < snapThreshold) {
+    //   boxAngle = Math.PI
+    //   orientation = 'horizontal'
+    //   textStart = 'end'
+    //   textSide = 'left'
+    // } else if (Math.abs(boxAngle + Math.PI / 2) < snapThreshold) {
+    //   boxAngle = -Math.PI / 2
+    //   orientation = 'vertical'
+    //   textStart = 'end'
+    //   textSide = 'right'
+    // }
 
     let boxVector = new Vector(Math.cos(boxAngle), Math.sin(boxAngle)).unit()
 
@@ -122,6 +64,10 @@ export class NodeProperties {
       const singlePropertyLines = getLines(ctx, `${property.key}: ${property.value}`, this.fontFace, this.fontSize, maxLineWidth, false)
       singlePropertyLines.forEach(line => lines.push(line))
     })
+
+    if (lines.length > 0) {
+      console.log(boxAngle)
+    }
 
     const attachedAt = position.translate(boxVector.scale(this.radius))
 

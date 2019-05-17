@@ -4,7 +4,7 @@ import {NodeCaption} from "./NodeCaption";
 import {NodeBorder} from "./NodeBorder";
 import {NodeBackground} from "./NodeBackground";
 import {NodeProperties} from "./NodeProperties";
-import {connectedNodePositions} from "../model/Graph";
+import {connectedNodeAngles} from "../model/Graph";
 
 export default class VisualNode {
   constructor(node, graph) {
@@ -24,7 +24,7 @@ export default class VisualNode {
       this.labels = new NodeLabels(node.labels, style)
     }
     this.properties = new NodeProperties(
-      node.properties, this.radius, node.position, connectedNodePositions(node, graph), style
+      node.properties, this.radius, node.position, connectedNodeAngles(node, graph), style
     )
   }
 

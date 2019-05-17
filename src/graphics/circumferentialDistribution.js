@@ -11,12 +11,14 @@ export const distribute = (items, obstacles) => {
     })
     currentObstacles.push({angle: itemAngle})
   })
+  if (obstacles[0] && result[0]) console.log(obstacles[0].angle, result[0].angle)
   return result
 }
 
 export const obstacleSeparation = (angle, obstacles) => {
   return Math.min(...obstacles.map(obstacle => Math.min(
     Math.abs(obstacle.angle - angle),
-    Math.abs(obstacle.angle - angle - Math.PI * 2)
+    Math.abs(obstacle.angle - (angle - Math.PI * 2)),
+    Math.abs(obstacle.angle - (angle + Math.PI * 2))
   )))
 }

@@ -17,6 +17,22 @@ it('considers wrapping', () => {
   expect(obstacleSeparation(angle, obstacles)).toEqual(3 * Math.PI / 4)
 })
 
+it('considers wrapping properly', () => {
+  const angle = Math.PI
+  const obstacles = [
+    {angle: 0}
+  ]
+  expect(obstacleSeparation(angle, obstacles)).toEqual(Math.PI)
+})
+
+it('really considers wrapping properly', () => {
+  const angle = 7 * Math.PI / 4
+  const obstacles = [
+    {angle: 0}
+  ]
+  expect(obstacleSeparation(angle, obstacles)).toEqual(Math.PI / 4)
+})
+
 it('places an item at its preferred angle when there are no obstacles', () => {
   const items = [
     {preferredAngles: [Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4], payload: 'labels'}
@@ -36,7 +52,7 @@ it('places an item at next preferred angle if first preference is blocked', () =
     {angle: Math.PI / 4}
   ]
   expect(distribute(items, obstacles)).toEqual([
-    {angle: 7 * Math.PI / 4, payload: 'labels'}
+    {angle: 5 * Math.PI / 4, payload: 'labels'}
   ])
 })
 
