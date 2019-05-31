@@ -20,37 +20,13 @@ export class NodeProperties {
   draw(ctx) {
     const position = this.nodePosition
     let boxAngle = distribute([
-      {preferredAngles: [Math.PI / 2, 3 * Math.PI / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, 5 * Math.PI / 4, 7 * Math.PI / 4], payload: 'properties'}
+      {preferredAngles: [Math.PI / 2, Math.PI * 3 / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'properties'}
     ], this.connectedNodeAngles.map(angle => {return {angle}}))[0].angle
     let orientation = null
     let textStart = null
     let textSide = null
     const lineHeight = this.fontSize
     const maxLineWidth = lineHeight * 10
-
-    //
-    // const snapThreshold = 0.3
-    // if (Math.abs(boxAngle - 0) < snapThreshold) {
-    //   boxAngle = 0
-    //   orientation = 'horizontal'
-    //   textStart = 'start'
-    //   textSide = 'right'
-    // } else if (Math.abs(boxAngle - Math.PI / 2) < snapThreshold) {
-    //   boxAngle = Math.PI / 2
-    //   orientation = 'vertical'
-    //   textStart = 'start'
-    //   textSide = 'right'
-    // } else if (Math.abs(boxAngle - Math.PI) < snapThreshold) {
-    //   boxAngle = Math.PI
-    //   orientation = 'horizontal'
-    //   textStart = 'end'
-    //   textSide = 'left'
-    // } else if (Math.abs(boxAngle + Math.PI / 2) < snapThreshold) {
-    //   boxAngle = -Math.PI / 2
-    //   orientation = 'vertical'
-    //   textStart = 'end'
-    //   textSide = 'right'
-    // }
 
     let boxVector = new Vector(Math.cos(boxAngle), Math.sin(boxAngle)).unit()
 
@@ -80,7 +56,7 @@ export class NodeProperties {
         orientation = 'vertical'
         textStart = 'start'
         textSide = 'left'
-      } else if (-Math.PI <= boxAngle && boxAngle < -Math.PI / 2) {
+      } else if (Math.PI <= boxAngle && boxAngle < -Math.PI / 2) {
         orientation = 'vertical'
         textStart = 'end'
         textSide = 'left'
