@@ -72,7 +72,3 @@ export const neighbourPositions = (node, graph) => {
       return otherNode.position
     })
 }
-
-export const neighbourAngles = (node, graph) => {
-  return neighbourPositions(node, graph).map(position => position.vectorFrom(node.position).angle())
-}
