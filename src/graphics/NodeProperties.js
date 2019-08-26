@@ -6,11 +6,11 @@ import get from 'lodash.get'
 import {distribute} from "./circumferentialDistribution";
 
 export class NodeProperties {
-  constructor(properties, radius, nodePosition, connectedNodeAngles, style) {
+  constructor(properties, radius, nodePosition, obstacles, style) {
     this.properties = properties
     this.radius = radius
     this.nodePosition = nodePosition
-    this.connectedNodeAngles = connectedNodeAngles
+    this.obstacles = obstacles
     this.fontSize = style('property-font-size')
     this.fontColor = style('property-color')
     this.fontWeight = style('property-font-weight')
@@ -21,7 +21,7 @@ export class NodeProperties {
     const position = this.nodePosition
     let boxAngle = distribute([
       {preferredAngles: [Math.PI / 2, Math.PI * 3 / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'properties'}
-    ], this.connectedNodeAngles.map(angle => {return {angle}}))[0].angle
+    ], this.obstacles)[0].angle
     let orientation = null
     let textStart = null
     let textSide = null
