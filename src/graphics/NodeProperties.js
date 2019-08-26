@@ -22,7 +22,6 @@ export class NodeProperties {
     let boxAngle = distribute([
       {preferredAngles: [Math.PI / 2, Math.PI * 3 / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'properties'}
     ], this.obstacles)[0].angle
-    let orientation = null
     let textStart = null
     let textSide = null
     const lineHeight = this.fontSize
@@ -47,21 +46,17 @@ export class NodeProperties {
 
     const attachedAt = position.translate(boxVector.scale(this.radius))
 
-    if (!orientation || !textStart) {
+    if (!textStart) {
       if (0 <= boxAngle && boxAngle < Math.PI / 2) {
-        orientation = 'vertical'
         textStart = 'start'
         textSide = 'right'
       } else if (Math.PI / 2 <= boxAngle && boxAngle < Math.PI) {
-        orientation = 'vertical'
         textStart = 'start'
         textSide = 'left'
       } else if (Math.PI <= boxAngle && boxAngle < -Math.PI / 2) {
-        orientation = 'vertical'
         textStart = 'end'
         textSide = 'left'
       } else if (-Math.PI / 2 <= boxAngle && boxAngle < 0) {
-        orientation = 'vertical'
         textStart = 'end'
         textSide = 'right'
       }
@@ -71,19 +66,16 @@ export class NodeProperties {
     const boxWidth = maxLineWidth
 
     const start = attachedAt.translate(boxVector.scale(this.radius / 2))
-    const end = start.translate(new Vector(orientation === 'vertical' ? 0 : (textStart === 'start' ? boxWidth : -boxWidth),
-      orientation === 'vertical' ? (textStart === 'start' ? boxHeight : -boxHeight) : 0))
+    const end = start.translate(new Vector(0, textStart === 'start' ? boxHeight : -boxHeight))
 
     const topTextPoint = (textStart === 'start' ? start : end)
-      .translate(new Vector((textSide === 'left' && orientation === 'vertical') ? -boxWidth : 0, 0))
+      .translate(new Vector(textSide === 'left' ? -boxWidth : 0, 0))
 
     if (lines.length > 0) {
       drawStraightLine(ctx, attachedAt, start)
       drawStraightLine(ctx, start, end)
 
-      const textAlignment = (textSide === 'left' && orientation === 'vertical')
-      || (textSide === 'right' && orientation === 'horizontal') ? 'right' : 'left'
-
+      const textAlignment = textSide === 'left' ? 'right' : 'left'
 
       lines.forEach((line, index) => {
         const dx = textAlignment === 'left' ? this.fontSize / 5 : -this.fontSize / 5
