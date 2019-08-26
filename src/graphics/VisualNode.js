@@ -4,7 +4,7 @@ import {NodeCaption} from "./NodeCaption";
 import {NodeBorder} from "./NodeBorder";
 import {NodeBackground} from "./NodeBackground";
 import {NodeProperties} from "./NodeProperties";
-import {connectedNodePositions} from "../model/Graph";
+import {neighbourPositions} from "../model/Graph";
 
 export default class VisualNode {
   constructor(node, graph) {
@@ -20,7 +20,7 @@ export default class VisualNode {
     if (node.caption) {
       this.caption = new NodeCaption(node.caption, style)
     }
-    const obstacles = connectedNodePositions(node, graph).map(position => {
+    const obstacles = neighbourPositions(node, graph).map(position => {
       return { angle: position.vectorFrom(node.position).angle() }
     })
     if (node.labels && node.labels.length > 0) {

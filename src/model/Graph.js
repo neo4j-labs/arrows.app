@@ -63,7 +63,7 @@ export const indexableText = (graph) => {
   return text.substr(0, 128000)
 }
 
-export const connectedNodePositions = (node, graph) => {
+export const neighbourPositions = (node, graph) => {
   return graph.relationships
     .filter(relationship => node.id === relationship.fromId || node.id === relationship.toId)
     .map(relationship => {
@@ -73,6 +73,6 @@ export const connectedNodePositions = (node, graph) => {
     })
 }
 
-export const connectedNodeAngles = (node, graph) => {
-  return connectedNodePositions(node, graph).map(position => position.vectorFrom(node.position).angle())
+export const neighbourAngles = (node, graph) => {
+  return neighbourPositions(node, graph).map(position => position.vectorFrom(node.position).angle())
 }
