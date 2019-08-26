@@ -20,12 +20,13 @@ export default class VisualNode {
     if (node.caption) {
       this.caption = new NodeCaption(node.caption, style)
     }
-    const obstacles = neighbourPositions(node, graph).map(position => {
+    const neighbourObstacles = neighbourPositions(node, graph).map(position => {
       return { angle: position.vectorFrom(node.position).angle() }
     })
     if (node.labels && node.labels.length > 0) {
-      this.labels = new NodeLabels(node.labels, style)
+      this.labels = new NodeLabels(node.labels, neighbourObstacles, style)
     }
+    const obstacles = this.labels ? [...neighbourObstacles, this.labels] : neighbourObstacles
     this.properties = new NodeProperties(
       node.properties, this.radius, node.position, obstacles, style
     )

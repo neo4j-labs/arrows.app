@@ -1,8 +1,12 @@
 import { Vector } from "../model/Vector";
+import {distribute} from "./circumferentialDistribution";
 
 export class NodeLabels {
-  constructor(labels, style) {
+  constructor(labels, obstacles, style) {
     this.labels = labels
+    this.angle = distribute([
+      {preferredAngles: [Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'labels'}
+    ], obstacles)[0].angle
     this.fontSize = style('label-font-size')
     this.fontColor = style('label-color')
     this.backgroundColor = style('label-background-color')
@@ -20,7 +24,7 @@ export class NodeLabels {
     ctx.font = `${fontWeight} ${this.fontSize}px ${this.fontFace}`
     ctx.textBaseline = 'middle'
 
-    ctx.translate(...position.translate(new Vector(radius, 0).rotate(Math.PI / 4)).xy)
+    ctx.translate(...position.translate(new Vector(radius, 0).rotate(this.angle)).xy)
     const pillHeight = this.fontSize + this.padding * 2 + this.borderWidth
     const pillRadius = pillHeight / 2
     const lineHeight = pillHeight + this.margin + this.borderWidth
