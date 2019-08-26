@@ -53,7 +53,7 @@ export class NodeProperties {
       } else if (Math.PI / 2 <= boxAngle && boxAngle < Math.PI) {
         textStart = 'start'
         textSide = 'left'
-      } else if (Math.PI <= boxAngle && boxAngle < -Math.PI / 2) {
+      } else if (-Math.PI <= boxAngle && boxAngle < -Math.PI / 2) {
         textStart = 'end'
         textSide = 'left'
       } else if (-Math.PI / 2 <= boxAngle && boxAngle < 0) {
