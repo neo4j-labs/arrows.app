@@ -1,6 +1,5 @@
 import { relationshipHitTolerance } from "./constants";
 import {nodeAtPoint, nodeRingAtPoint} from "../model/Graph";
-import { drawAnnotation } from "./Annotation";
 
 export default class VisualGraph {
   constructor(graph, nodes, relationshipBundles, viewTransformation) {
@@ -54,11 +53,6 @@ export default class VisualGraph {
     this.relationshipBundles.forEach(bundle => bundle.draw(ctx))
     Object.values(this.nodes).forEach(visualNode => {
       visualNode.draw(ctx)
-      if (visualNode.node.properties && visualNode.node.status !== 'combined') {
-        const relationshipBundles = this.relationshipBundles.filter(rBundle => rBundle.routedRelationships.some(routedRelationship =>
-          routedRelationship.relationship.from.id === visualNode.id || routedRelationship.relationship.to.id === visualNode.id))
-        drawAnnotation(ctx, visualNode, relationshipBundles)
-      }
     })
     ctx.restore()
   }

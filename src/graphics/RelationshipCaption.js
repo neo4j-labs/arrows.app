@@ -1,6 +1,7 @@
 export class RelationshipCaption {
   constructor(text, style) {
     this.text = text
+    this.orientation = style('type-orientation')
     this.fontSize = style('type-font-size')
     this.padding = style('type-padding')
     this.borderWidth = style('type-border-width')
@@ -13,7 +14,7 @@ export class RelationshipCaption {
     ctx.save()
     const midPoint = arrow.midPoint();
     ctx.translate(midPoint.x, midPoint.y)
-    let textAngle = arrow.shaftAngle()
+    let textAngle = this.orientation === 'inline' ? arrow.shaftAngle() : 0
     if (textAngle > Math.PI / 2 || textAngle < -Math.PI / 2) textAngle += Math.PI
     ctx.rotate(textAngle)
     ctx.font = this.fontSize + 'px sans-serif'

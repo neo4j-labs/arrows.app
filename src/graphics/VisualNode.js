@@ -1,42 +1,39 @@
-import {drawCaption, drawCircle, drawSolidCircle, drawTextLine} from "./canvasRenderer";
-import {getLines} from "./utils/wordwrap";
-import config from './config'
-import get from 'lodash.get'
-import { Vector } from "../model/Vector";
-import { Point } from "../model/Point";
-import {asKey} from "../model/Id";
 import { getStyleSelector } from "../selectors/style";
-import { nodeStyleAttributes } from "../model/styling";
+import {NodeLabels} from "./NodeLabels";
+import {NodeCaption} from "./NodeCaption";
+import {NodeBorder} from "./NodeBorder";
+import {NodeBackground} from "./NodeBackground";
+import {NodeProperties} from "./NodeProperties";
+import {neighbourPositions} from "../model/Graph";
 
 export default class VisualNode {
   constructor(node, graph) {
     this.node = node
-    this.edges = []
-    this.edgeMap = {}
 
-    nodeStyleAttributes.forEach(styleAttribute => {
-      this[styleAttribute] = getStyleSelector(node, styleAttribute)(graph)
-    })
-  }
+    const style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
 
-  addEdge (edge, direction) {
-    this.edges.push(edge)
-    this.edgeMap[asKey(edge.id)] = {
-      edge,
-      direction
+    this.radius = style('radius')
+    this.background = new NodeBackground(style)
+    if (style('border-width') > 0) {
+      this.border = new NodeBorder(style)
     }
+    if (node.caption) {
+      this.caption = new NodeCaption(node.caption, style)
+    }
+    const neighbourObstacles = neighbourPositions(node, graph).map(position => {
+      return { angle: position.vectorFrom(node.position).angle() }
+    })
+    if (node.labels && node.labels.length > 0) {
+      this.labels = new NodeLabels(node.labels, neighbourObstacles, style)
+    }
+    const obstacles = this.labels ? [...neighbourObstacles, this.labels] : neighbourObstacles
+    this.properties = new NodeProperties(
+      node.properties, this.radius, node.position, obstacles, style
+    )
   }
 
   get id() {
     return this.node.id
-  }
-
-  get x () {
-    return this.node.position.x
-  }
-
-  get y () {
-    return this.node.position.y
   }
 
   get position() {
@@ -59,103 +56,21 @@ export default class VisualNode {
     return this.node.initialPositions
   }
 
-  distanceToBorder () {
-    return this.radius
-  }
-
   draw(ctx) {
     if (this.status === 'combined') {
       return
     }
 
-    const { caption, labels } = this.node
-    drawSolidCircle(ctx, this.position, this['node-color'], this.radius)
-
-    if (this['border-width'] > 0) {
-      this.drawBorder(ctx)
+    this.background.draw(this.position, this.radius, ctx)
+    if (this.border) {
+      this.border.draw(this.position, this.radius, ctx)
     }
-
-    if (caption) {
-      this.drawCaption(ctx, this.position, caption, this.radius * 2, config)
+    if (this.caption) {
+      this.caption.draw(this.position, this.radius * 2, ctx)
     }
-    if (labels) {
-      this.drawLabels(ctx, this.position, this.radius, labels)
+    if (this.labels) {
+      this.labels.draw(this.position, this.radius, ctx)
     }
-  }
-
-  drawBorder(ctx, borderWidth) {
-    const strokeWidth = borderWidth || this['border-width']
-    ctx.save()
-    ctx.strokeStyle = this['border-color'] || '#000'
-    ctx.lineWidth = strokeWidth
-    drawCircle(ctx, this.position, Math.max(strokeWidth / 2, this.radius - strokeWidth / 2), true)
-    ctx.restore()
-  }
-
-  drawCaption(ctx, position, label, maxWidth, config) {
-    ctx.save()
-    const fontSize = this['caption-font-size']
-    const fontColor = this['caption-color']
-    const fontWeight = this['caption-font-weight']
-    const fontFace = get(config, 'font.face')
-
-    let lines = getLines(ctx, label, fontFace, fontSize, maxWidth, false)//this.hasIcon)
-
-    ctx.fillStyle = fontColor
-    ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
-    ctx.textBaseline = 'middle'
-
-    const lineDistance = fontSize
-    let yPos = -((lines.length - 1) * lineDistance) / 2
-    for (let line of lines) {
-      drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
-      yPos += lineDistance
-    }
-    ctx.restore()
-  }
-
-  drawLabels(ctx, position, radius, labels) {
-    ctx.save()
-    const fontSize = this['label-font-size']
-    const fontColor = this['label-color']
-    const backgroundColor = this['label-background-color']
-    const strokeColor = this['label-border-color']
-    const borderWidth = this['label-border-width']
-    const fontFace = get(config, 'font.face')
-    const padding = this['label-padding']
-    const margin = this['label-margin']
-
-    let fontWeight = 'normal'
-    ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
-    ctx.textBaseline = 'middle'
-
-    ctx.translate(...position.translate(new Vector(radius, 0).rotate(Math.PI / 4)).xy)
-    const pillHeight = fontSize + padding * 2 + borderWidth
-    const pillRadius = pillHeight / 2
-    const lineHeight = pillHeight + margin + borderWidth
-
-    labels.forEach((label, i) => {
-      ctx.save()
-      ctx.translate(-pillRadius, i * lineHeight - pillRadius)
-      const metrics = ctx.measureText(label)
-      ctx.beginPath()
-      ctx.moveTo(pillRadius, 0)
-      ctx.lineTo(pillRadius + metrics.width, 0)
-      ctx.arc(pillRadius + metrics.width, pillRadius, pillRadius, -Math.PI / 2, Math.PI / 2)
-      ctx.lineTo(pillRadius, pillHeight)
-      ctx.arc(pillRadius, pillRadius, pillRadius, Math.PI / 2, -Math.PI / 2)
-      ctx.closePath()
-      ctx.fillStyle = backgroundColor
-      ctx.fill()
-      if (borderWidth > 0) {
-        ctx.strokeStyle = strokeColor
-        ctx.lineWidth = borderWidth
-        ctx.stroke()
-      }
-      ctx.fillStyle = fontColor
-      drawTextLine(ctx, label, new Point(pillRadius, pillRadius), false)
-      ctx.restore()
-    })
-    ctx.restore()
+    this.properties.draw(ctx)
   }
 }

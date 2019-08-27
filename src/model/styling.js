@@ -27,6 +27,7 @@ export const styleAttributes = {
   'node-color': {appliesTo: 'Node', type: 'color', defaultValue: blueActive},
   'border-width': {appliesTo: 'Node', type: 'line-width', defaultValue: 0},
   'border-color': {appliesTo: 'Node', type: 'color', defaultValue: black},
+  'caption-position': {appliesTo: 'Caption', type: 'caption-position', defaultValue: 'inside'},
   'caption-color': {appliesTo: 'Caption', type: 'color', defaultValue: white},
   'caption-font-size': {appliesTo: 'Caption', type: 'font-size', defaultValue: defaultFontSize},
   'caption-font-weight': {appliesTo: 'Caption', type: 'font-weight', defaultValue: 'normal'},
@@ -42,6 +43,7 @@ export const styleAttributes = {
   'property-font-weight': {appliesTo: 'Property', type: 'font-weight', defaultValue: 'normal'},
   'arrow-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 1},
   'arrow-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
+  'type-orientation': {appliesTo: 'Relationship', type: 'type-orientation', defaultValue: 'inline'},
   'type-font-size': {appliesTo: 'Relationship', type: 'font-size', defaultValue: 10},
   'type-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
   'type-background-color': {appliesTo: 'Relationship', type: 'color', defaultValue: white},
@@ -64,7 +66,9 @@ export const styleTypes = {
   'spacing': {  editor: 'slider', min: 0, max: 25, step: 1 },
   'font-size': {  editor: 'slider', min: 5, max: 100, step: 1 },
   'color': { editor: 'colorPicker' },
-  'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] }
+  'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
+  'caption-position': { editor: 'dropdown', options: ['inside', 'outside'] },
+  'type-orientation': { editor: 'dropdown', options: ['inline', 'horizontal'] }
 }
 
 export const completeWithDefaults = (style) => {

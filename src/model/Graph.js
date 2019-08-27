@@ -1,9 +1,10 @@
-import { isPointInPolygon } from "../graphics/utils/geometryUtils";
-import { getStyleSelector } from "../selectors/style";
+import {isPointInPolygon} from "../graphics/utils/geometryUtils";
+import {getStyleSelector} from "../selectors/style";
 import {indexablePropertyText} from "./properties";
 import {completeWithDefaults} from "./styling";
+import {otherNodeId} from "./Relationship";
 
-const ringLength =  10
+const ringLength = 10
 
 export const emptyGraph = () => {
   return {
@@ -60,4 +61,14 @@ export const indexableText = (graph) => {
   const text = lines.join('\n')
   // size limit is 128K according to https://developers.google.com/drive/api/v3/file
   return text.substr(0, 128000)
+}
+
+export const neighbourPositions = (node, graph) => {
+  return graph.relationships
+    .filter(relationship => node.id === relationship.fromId || node.id === relationship.toId)
+    .map(relationship => {
+      const otherId = otherNodeId(relationship, node.id);
+      const otherNode = graph.nodes.find(otherNode => otherNode.id === otherId)
+      return otherNode.position
+    })
 }
