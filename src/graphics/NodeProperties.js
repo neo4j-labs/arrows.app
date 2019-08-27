@@ -20,10 +20,10 @@ export class NodeProperties {
   draw(ctx) {
     const position = this.nodePosition
     let boxAngle = distribute([
-      {preferredAngles: [Math.PI / 2, Math.PI * 3 / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'properties'}
+      {preferredAngles: [Math.PI / 2, -Math.PI / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'properties'}
     ], this.obstacles)[0].angle
-    let textStart = null
-    let textSide = null
+    let verticalAlignment = null
+    let horizontalAlignment = null
     const lineHeight = this.fontSize
     const maxLineWidth = lineHeight * 10
 
@@ -46,19 +46,19 @@ export class NodeProperties {
 
     const attachedAt = position.translate(boxVector.scale(this.radius))
 
-    if (!textStart) {
-      if (0 <= boxAngle && boxAngle < Math.PI / 2) {
-        textStart = 'start'
-        textSide = 'right'
-      } else if (Math.PI / 2 <= boxAngle && boxAngle < Math.PI) {
-        textStart = 'start'
-        textSide = 'left'
+    if (!verticalAlignment) {
+      if (0 <= boxAngle && boxAngle <= Math.PI / 2) {
+        verticalAlignment = 'top'
+        horizontalAlignment = 'left'
+      } else if (Math.PI / 2 < boxAngle && boxAngle <= Math.PI) {
+        verticalAlignment = 'top'
+        horizontalAlignment = 'right'
       } else if (-Math.PI <= boxAngle && boxAngle < -Math.PI / 2) {
-        textStart = 'end'
-        textSide = 'left'
+        verticalAlignment = 'bottom'
+        horizontalAlignment = 'right'
       } else if (-Math.PI / 2 <= boxAngle && boxAngle < 0) {
-        textStart = 'end'
-        textSide = 'right'
+        verticalAlignment = 'bottom'
+        horizontalAlignment = 'left'
       }
     }
 
@@ -66,34 +66,32 @@ export class NodeProperties {
     const boxWidth = maxLineWidth
 
     const start = attachedAt.translate(boxVector.scale(this.radius / 2))
-    const end = start.translate(new Vector(0, textStart === 'start' ? boxHeight : -boxHeight))
+    const end = start.translate(new Vector(0, verticalAlignment === 'top' ? boxHeight : -boxHeight))
 
-    const topTextPoint = (textStart === 'start' ? start : end)
-      .translate(new Vector(textSide === 'left' ? -boxWidth : 0, 0))
+    const topTextPoint = (verticalAlignment === 'top' ? start : end)
+      .translate(new Vector(horizontalAlignment === 'right' ? -boxWidth : 0, 0))
 
     if (lines.length > 0) {
       drawStraightLine(ctx, attachedAt, start)
       drawStraightLine(ctx, start, end)
 
-      const textAlignment = textSide === 'left' ? 'right' : 'left'
-
       lines.forEach((line, index) => {
-        const dx = textAlignment === 'left' ? this.fontSize / 5 : -this.fontSize / 5
+        const dx = horizontalAlignment === 'left' ? this.fontSize / 5 : -this.fontSize / 5
         const dy = (lineHeight * (index + .5))
-        drawPropertyLine(ctx, this.fontSize, this.fontColor, this.fontWeight, this.fontFace, topTextPoint.translate(new Vector(dx, dy)), line, boxWidth, textAlignment)
+        drawPropertyLine(ctx, this.fontSize, this.fontColor, this.fontWeight, this.fontFace, topTextPoint.translate(new Vector(dx, dy)), line, boxWidth, horizontalAlignment)
       })
     }
   }
 }
 
-const drawPropertyLine = (ctx, fontSize, fontColor, fontWeight, fontFace, position, line, boxWidth, align = 'left') => {
+const drawPropertyLine = (ctx, fontSize, fontColor, fontWeight, fontFace, position, line, boxWidth, horizontalAlignment) => {
   ctx.save()
 
   ctx.fillStyle = fontColor
   ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
   ctx.textBaseline = 'middle'
 
-  const offsetX = align === 'left' ? 0 : (boxWidth - ctx.measureText(line).width)
+  const offsetX = horizontalAlignment === 'left' ? 0 : (boxWidth - ctx.measureText(line).width)
   drawTextLine(ctx, line, position.translate(new Vector(offsetX, 0)), false)
 
   ctx.restore()
