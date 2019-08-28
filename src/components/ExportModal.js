@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {Modal, Button, Tab} from 'semantic-ui-react'
 import ExportPngPanel from "./ExportPngPanel";
 import ExportCypherPanel from "./ExportCypherPanel";
+import ExportSvgPanel from "./ExportSvgPanel";
 
 class ExportModal extends Component {
 
@@ -16,6 +17,17 @@ class ExportModal extends Component {
         render: () => (
           <Tab.Pane attached={false}>
             <ExportPngPanel
+              graph={this.props.graph}
+              diagramName={this.props.diagramName}
+            />
+          </Tab.Pane>
+        )
+      },
+      {
+        menuItem: 'SVG',
+        render: () => (
+          <Tab.Pane attached={false}>
+            <ExportSvgPanel
               graph={this.props.graph}
               diagramName={this.props.diagramName}
             />

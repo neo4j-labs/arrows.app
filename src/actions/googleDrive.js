@@ -1,6 +1,6 @@
 import config from "../config";
 import {googleDriveSignInStatusChanged, updateGoogleDriveFileId, useGoogleDriveStorage} from "./storage";
-import {renderGraphAtScaleFactor} from "../graphics/utils/offScreenCanvasRenderer";
+import {renderPngAtScaleFactor} from "../graphics/utils/offScreenCanvasRenderer";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 import {indexableText} from "../model/Graph";
 import { getPresentGraph } from "../selectors"
@@ -97,7 +97,7 @@ export const saveFile = (data, fileId, fileName, onFileSaved) => {
     'mimeType': contentType,
     'contentHints': {
       'thumbnail': {
-        'image': base64urlEncodeDataUrl(renderGraphAtScaleFactor(graph, 2, false).dataUrl),
+        'image': base64urlEncodeDataUrl(renderPngAtScaleFactor(graph, 2, false).dataUrl),
         'mimeType': 'image/png'
       },
       'indexableText': indexableText(graph)
