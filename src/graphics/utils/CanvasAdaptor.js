@@ -63,28 +63,16 @@ export default class CanvasAdaptor {
     return this.ctx.measureText(text)
   }
 
+  setLineDash(dash) {
+    this.ctx.setLineDash(dash)
+  }
+
   set fillStyle(color) {
     this.ctx.fillStyle = color
   }
 
-  set font(value) {
-    this.ctx.font = value
-  }
-
-  set fontSize(value) {
-    this.ctx.fontSize = value
-  }
-
-  set fontColor(value) {
-    this.ctx.fontColor = value
-  }
-
-  set fontWeight(value) {
-    this.ctx.fontWeight = value
-  }
-
-  set fontFace(value) {
-    this.ctx.fontFace = value
+  set font(style) {
+    this.ctx.font = `${style.fontWeight} ${style.fontSize}px ${style.fontFace}`
   }
 
   set textBaseline(value) {

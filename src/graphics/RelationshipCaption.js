@@ -17,7 +17,11 @@ export class RelationshipCaption {
     let textAngle = this.orientation === 'inline' ? arrow.shaftAngle() : 0
     if (textAngle > Math.PI / 2 || textAngle < -Math.PI / 2) textAngle += Math.PI
     ctx.rotate(textAngle)
-    ctx.font = this.fontSize + 'px sans-serif'
+    ctx.font = {
+      fontWeight: 'normal',
+      fontSize: this.fontSize,
+      fontFace: 'sans-serif'
+    }
     const metrics = ctx.measureText(this.text)
     const x = metrics.width / 2 + this.padding + this.borderWidth / 2
     const y = this.fontSize / 2 + this.padding + this.borderWidth / 2

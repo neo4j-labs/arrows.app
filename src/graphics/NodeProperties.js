@@ -72,7 +72,11 @@ const drawPropertyLine = (ctx, fontSize, fontColor, fontWeight, fontFace, positi
   ctx.save()
 
   ctx.fillStyle = fontColor
-  ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
+  ctx.font = {
+    fontWeight: fontWeight,
+    fontSize: fontSize,
+    fontFace: fontFace
+  }
   ctx.textBaseline = 'middle'
 
   const offsetX = horizontalAlignment === 'left' ? 0 : (boxWidth - ctx.measureText(line).width)

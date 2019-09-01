@@ -19,7 +19,11 @@ export class NodeCaption {
     const lines = getLines(ctx, this.caption, this.fontFace, this.fontSize, maxWidth, false)
 
     ctx.fillStyle = this.fontColor
-    ctx.font = `${this.fontWeight} ${this.fontSize}px ${this.fontFace}`
+    ctx.font = {
+      fontWeight: this.fontWeight,
+      fontSize: this.fontSize,
+      fontFace: this.fontFace
+    }
     ctx.textBaseline = 'middle'
 
     const lineDistance = this.fontSize

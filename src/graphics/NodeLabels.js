@@ -22,8 +22,11 @@ export class NodeLabels {
   draw(position, radius, ctx) {
     ctx.save()
 
-    const fontWeight = 'normal'
-    ctx.font = `${fontWeight} ${this.fontSize}px ${this.fontFace}`
+    ctx.font = {
+      fontWeight: 'normal',
+      fontSize: this.fontSize,
+      fontFace: this.fontFace
+    }
     ctx.textBaseline = 'middle'
     const widths = this.labels.map(label => ctx.measureText(label).width)
 
