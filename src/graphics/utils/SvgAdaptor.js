@@ -6,6 +6,7 @@ export default class SvgAdaptor {
         strokeColor: 'black'
       }
     ]
+    this.children = []
     const canvas = window.document.createElement('canvas')
     this.measureTextContext = canvas.getContext('2d')
   }
@@ -58,6 +59,16 @@ export default class SvgAdaptor {
     // this.ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
   }
 
+  circle(cx, cy, r, fill, stroke) {
+    this.children.push(this.e('circle', {
+      cx,
+      cy,
+      r,
+      fill: fill ? this.current().fillStyle : 'none',
+      stroke: stroke ? this.current().strokeStyle : 'none'
+    }))
+  }
+
   stroke() {
     // this.ctx.stroke()
   }
@@ -101,16 +112,16 @@ export default class SvgAdaptor {
   set strokeStyle(value) {
     this.current().strokeStyle = value
   }
-  
-  asSvg() {
+
+  asSvg(width, height) {
     return this.e('svg', {
         xmlns: 'http://www.w3.org/2000/svg',
         xmlnsXlink: 'http://www.w3.org/1999/xlink',
-        width: 100,
-        height: 100,
-        viewBox: '0 0 100 100'
+        width,
+        height,
+        viewBox: [0, 0, width, height].join(' ')
       },
-      this.e('circle', {cx: 50, cy: 50, r: 50})
+      this.children
     )
   }
 }

@@ -47,6 +47,14 @@ export default class CanvasAdaptor {
     this.ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise)
   }
 
+  circle(x, y, radius, fill, stroke) {
+    this.ctx.beginPath()
+    this.ctx.arc(x, y, radius, 0, Math.PI * 2, false)
+    this.ctx.closePath()
+    if (fill) this.ctx.fill()
+    if (stroke) this.ctx.stroke()
+  }
+
   stroke() {
     this.ctx.stroke()
   }

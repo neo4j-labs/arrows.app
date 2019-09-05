@@ -26,10 +26,9 @@ export const renderSvg = (graph) => {
   const e = React.createElement
   const svgAdaptor = new SvgAdaptor(e);
   visualGraph.draw(svgAdaptor)
-  const svgString = renderToStaticMarkup(svgAdaptor.asSvg())
-
   const width = Math.ceil(boundingBox.width)
   const height = Math.ceil(boundingBox.height)
+  const svgString = renderToStaticMarkup(svgAdaptor.asSvg(width, height))
 
   return {
     width,

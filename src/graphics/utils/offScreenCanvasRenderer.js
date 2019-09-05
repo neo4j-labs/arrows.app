@@ -2,6 +2,7 @@ import {calculateBoundingBox} from "./geometryUtils";
 import {ViewTransformation} from "../../state/ViewTransformation";
 import {getVisualGraph} from "../../selectors/index";
 import {Vector} from "../../model/Vector";
+import CanvasAdaptor from "./CanvasAdaptor";
 
 export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground) => {
   const boundingBox = calculateBoundingBox(graph.nodes, graph, 1) || {
@@ -30,7 +31,7 @@ export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground
     ctx.fillStyle = 'white'
     ctx.fillRect(0, 0, width, height)
   }
-  visualGraph.draw(ctx)
+  visualGraph.draw(new CanvasAdaptor(ctx))
   return {
     width,
     height,

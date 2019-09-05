@@ -7,8 +7,7 @@ export class NodeBackground {
     ctx.save()
 
     ctx.fillStyle = this.backgroundColor
-    ctx.beginPath()
-    ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI, false)
+    ctx.circle(position.x, position.y, radius, true, false)
     ctx.closePath()
     ctx.fill()
     ctx.restore()

@@ -78,7 +78,7 @@ export default class Gestures {
     if (selectionPath.length > 0) {
       const points = sortPoints(selectionPath.slice(0)).map(point => transform(new Point(point.x, point.y)))
       drawPolygon(ctx, points, green)
-      points.forEach(point => drawCircle(ctx, point, 3, true))
+      points.forEach(point => ctx.circle(point.x, point.y, 3, false, true))
     }
 
 
