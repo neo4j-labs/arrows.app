@@ -4,6 +4,7 @@ import {ViewTransformation} from "../../state/ViewTransformation";
 import {getVisualGraph} from "../../selectors/index";
 import {Vector} from "../../model/Vector";
 import {renderToStaticMarkup} from 'react-dom/server'
+import SvgAdaptor from "./SvgAdaptor";
 
 export const renderSvg = (graph) => {
   const boundingBox = calculateBoundingBox(graph.nodes, graph, 1) || {
@@ -21,22 +22,11 @@ export const renderSvg = (graph) => {
       new Vector(-boundingBox.left, -boundingBox.top))
   }
   const visualGraph = getVisualGraph(renderState)
-  // visualGraph.draw(ctx)
 
   const e = React.createElement
-  const element = e('svg', {
-    xmlns: 'http://www.w3.org/2000/svg',
-    xmlnsXlink: 'http://www.w3.org/1999/xlink',
-    width: 100,
-    height: 100,
-    viewBox: '0 0 100 100'
-  },
-    e('circle', {cx: 50, cy: 50, r: 50})
-  )
-
-  const reactSvg = renderToStaticMarkup(element)
-  console.log(reactSvg)
-
+  const svgAdaptor = new SvgAdaptor(e);
+  visualGraph.draw(svgAdaptor)
+  const svgString = renderToStaticMarkup(svgAdaptor.asSvg())
 
   const width = Math.ceil(boundingBox.width)
   const height = Math.ceil(boundingBox.height)
@@ -44,6 +34,6 @@ export const renderSvg = (graph) => {
   return {
     width,
     height,
-    dataUrl: 'data:image/svg+xml;base64,' + btoa(reactSvg)
+    dataUrl: 'data:image/svg+xml;base64,' + btoa(svgString)
   }
 }

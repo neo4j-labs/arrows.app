@@ -14,7 +14,7 @@ class SvgExport extends Component {
       }}>
         <Label attached='top'>
           {width} × {height}
-          <a href={dataUrl} download={this.props.diagramName + ".png"}><Icon name="download"/>Download</a>
+          <a href={dataUrl} download={this.props.diagramName + ".svg"}><Icon name="download"/>Download</a>
         </Label>
         <div style={{
           display: 'inline-block',
