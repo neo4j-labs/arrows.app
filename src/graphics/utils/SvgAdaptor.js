@@ -3,7 +3,8 @@ export default class SvgAdaptor {
     this.e = e
     this.stack = [
       {
-        strokeColor: 'black'
+        strokeColor: 'black',
+        transforms: []
       }
     ]
     this.children = []
@@ -16,7 +17,7 @@ export default class SvgAdaptor {
   }
 
   save() {
-    this.stack.unshift({...this.current()})
+    this.stack.unshift({...this.current(), transforms: [...this.current().transforms]})
   }
 
   restore() {
@@ -24,7 +25,7 @@ export default class SvgAdaptor {
   }
 
   translate(dx, dy) {
-    // this.ctx.translate(dx, dy)
+    this.current().transforms.push(`translate(${dx} ${dy})`)
   }
 
   scale(x, y) {
@@ -61,9 +62,24 @@ export default class SvgAdaptor {
 
   circle(cx, cy, r, fill, stroke) {
     this.children.push(this.e('circle', {
+      transform: this.current().transforms.join(' '),
       cx,
       cy,
       r,
+      fill: fill ? this.current().fillStyle : 'none',
+      stroke: stroke ? this.current().strokeStyle : 'none'
+    }))
+  }
+
+  rect(x, y, width, height, r, fill, stroke) {
+    this.children.push(this.e('rect', {
+      transform: this.current().transforms.join(' '),
+      x,
+      y,
+      width,
+      height,
+      rx: r,
+      ry: r,
       fill: fill ? this.current().fillStyle : 'none',
       stroke: stroke ? this.current().strokeStyle : 'none'
     }))

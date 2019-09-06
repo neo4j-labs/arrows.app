@@ -55,6 +55,21 @@ export default class CanvasAdaptor {
     if (stroke) this.ctx.stroke()
   }
 
+  rect(x, y, width, height, r, fill, stroke) {
+    this.ctx.beginPath()
+    this.ctx.moveTo(x, y + r)
+    this.ctx.arc(x + r, y + r, r, -Math.PI, -Math.PI / 2)
+    this.ctx.lineTo(x + width - r, y)
+    this.ctx.arc(x + width - r, y + r, r, -Math.PI / 2, 0)
+    this.ctx.lineTo(x + width, y + height - r)
+    this.ctx.arc(x + width - r, y + height - r, r, 0, Math.PI / 2)
+    this.ctx.lineTo(x + r, y + height)
+    this.ctx.arc(x + r, y + height - r, r, Math.PI / 2, Math.PI)
+    this.ctx.closePath()
+    if (fill) this.ctx.fill()
+    if (stroke) this.ctx.stroke()
+  }
+
   stroke() {
     this.ctx.stroke()
   }

@@ -39,20 +39,10 @@ export class NodeLabels {
     this.labels.forEach((label, i) => {
       ctx.save()
       ctx.translate(this.alignment.horizontal === 'right' ? -pillRadius - widths[i] : -pillRadius, i * lineHeight - pillRadius)
-      ctx.beginPath()
-      ctx.moveTo(pillRadius, 0)
-      ctx.lineTo(pillRadius + widths[i], 0)
-      ctx.arc(pillRadius + widths[i], pillRadius, pillRadius, -Math.PI / 2, Math.PI / 2)
-      ctx.lineTo(pillRadius, pillHeight)
-      ctx.arc(pillRadius, pillRadius, pillRadius, Math.PI / 2, -Math.PI / 2)
-      ctx.closePath()
       ctx.fillStyle = this.backgroundColor
-      ctx.fill()
-      if (this.borderWidth > 0) {
-        ctx.strokeStyle = this.strokeColor
-        ctx.lineWidth = this.borderWidth
-        ctx.stroke()
-      }
+      ctx.strokeStyle = this.strokeColor
+      ctx.lineWidth = this.borderWidth
+      ctx.rect(0, 0, widths[i] + pillRadius * 2, pillRadius * 2, pillRadius, true, this.borderWidth > 0)
       ctx.fillStyle = this.fontColor
       ctx.fillText(label, pillRadius, pillRadius)
       ctx.restore()
