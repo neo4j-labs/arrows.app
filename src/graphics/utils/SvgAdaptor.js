@@ -94,7 +94,16 @@ export default class SvgAdaptor {
   }
 
   fillText(text, x, y) {
-    // this.ctx.fillText(text, x, y)
+    this.children.push(this.e('text', {
+      transform: this.current().transforms.join(' '),
+      x,
+      y,
+      fontFamily: this.current().font.fontFace,
+      fontSize: this.current().font.fontSize,
+      fontWeight: this.current().font.fontWeight,
+      alignmentBaseline: this.current().textBaseline,
+      fill: this.current().fillStyle
+    }, text))
   }
 
   measureText(text) {
@@ -110,7 +119,7 @@ export default class SvgAdaptor {
   }
 
   set font(style) {
-    this.current().font = `${style.fontWeight} ${style.fontSize}px ${style.fontFace}`
+    this.current().font = style
   }
 
   set textBaseline(value) {
