@@ -33,7 +33,7 @@ export default class SvgAdaptor {
   }
 
   rotate(angle) {
-    // this.ctx.rotate(angle)
+    this.current().transforms.push(`rotate(${angle * 180 / Math.PI})`)
   }
 
   beginPath() {
@@ -82,6 +82,14 @@ export default class SvgAdaptor {
       ry: r,
       fill: fill ? this.current().fillStyle : 'none',
       stroke: stroke ? this.current().strokeStyle : 'none'
+    }))
+  }
+
+  polyLine(points) {
+    this.children.push(this.e('polyline', {
+      transform: this.current().transforms.join(' '),
+      points: points.map(point => `${point.x},${point.y}`).join(' '),
+      stroke: this.current().strokeStyle
     }))
   }
 
