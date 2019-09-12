@@ -56,8 +56,12 @@ export class NodeProperties {
       .translate(new Vector(alignment.horizontal === 'right' ? -boxWidth : 0, 0))
 
     if (lines.length > 0) {
-      drawStraightLine(ctx, attachedAt, start)
-      drawStraightLine(ctx, start, end)
+      ctx.strokeStyle = 'black'
+      ctx.polyLine([
+        attachedAt,
+        start,
+        end
+      ])
 
       lines.forEach((line, index) => {
         const dx = alignment.horizontal === 'left' ? this.fontSize / 5 : -this.fontSize / 5

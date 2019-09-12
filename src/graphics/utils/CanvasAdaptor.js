@@ -80,7 +80,6 @@ export default class CanvasAdaptor {
       const point = points[i]
       this.ctx.lineTo(point.x, point.y)
     }
-    this.ctx.closePath()
     this.ctx.stroke()
   }
 

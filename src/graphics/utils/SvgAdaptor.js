@@ -89,6 +89,7 @@ export default class SvgAdaptor {
     this.children.push(this.e('polyline', {
       transform: this.current().transforms.join(' '),
       points: points.map(point => `${point.x},${point.y}`).join(' '),
+      fill: 'none',
       stroke: this.current().strokeStyle
     }))
   }
