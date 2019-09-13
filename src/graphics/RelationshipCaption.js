@@ -25,20 +25,10 @@ export class RelationshipCaption {
     const metrics = ctx.measureText(this.text)
     const x = metrics.width / 2 + this.padding + this.borderWidth / 2
     const y = this.fontSize / 2 + this.padding + this.borderWidth / 2
-    ctx.beginPath()
-    ctx.moveTo(-x, 0)
-    ctx.arcTo(-x, y, 0, y, this.padding)
-    ctx.arcTo(x, y, x, 0, this.padding)
-    ctx.arcTo(x, -y, 0, -y, this.padding)
-    ctx.arcTo(-x, -y, -x, 0, this.padding)
-    ctx.closePath()
     ctx.fillStyle = this.backgroundColor
-    ctx.fill()
-    if (this.borderWidth > 0) {
-      ctx.strokeStyle = this.borderColor
-      ctx.lineWidth = this.borderWidth
-      ctx.stroke()
-    }
+    ctx.strokeStyle = this.borderColor
+    ctx.lineWidth = this.borderWidth
+    ctx.rect(-x, -y, 2 * x, 2 * y, this.padding, true, this.borderWidth > 0)
     ctx.textBaseline = 'middle'
     ctx.fillStyle = this.fontColor
     ctx.fillText(this.text, -metrics.width / 2, 0)
