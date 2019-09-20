@@ -38,9 +38,8 @@ export class StraightArrow {
         {x: this.neck, y: 0}
       ])
       ctx.translate(this.topOfHead, 0)
-      arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth)
       ctx.fillStyle = this.arrowColor
-      ctx.fill()
+      arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, true, false)
       ctx.restore()
     }
   }
@@ -57,10 +56,9 @@ export class StraightArrow {
     ctx.lineWidth = this.arrowWidth + indicatorWidth
     ctx.stroke()
     ctx.translate(this.topOfHead, 0)
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth)
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
-    ctx.stroke()
+    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, false, true)
     ctx.restore()
   }
 

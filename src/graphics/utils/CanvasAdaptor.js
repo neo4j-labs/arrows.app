@@ -83,6 +83,21 @@ export default class CanvasAdaptor {
     this.ctx.stroke()
   }
 
+  polygon(points, fill, stroke) {
+    this.ctx.beginPath()
+    if (points.length > 0) {
+      const startPoint = points[0]
+      this.ctx.moveTo(startPoint.x, startPoint.y)
+    }
+    for (let i = 1; i < points.length; i++) {
+      const point = points[i]
+      this.ctx.lineTo(point.x, point.y)
+    }
+    this.ctx.closePath()
+    if (fill) this.ctx.fill()
+    if (stroke) this.ctx.stroke()
+  }
+
   stroke() {
     this.ctx.stroke()
   }

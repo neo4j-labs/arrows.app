@@ -95,6 +95,16 @@ export default class SvgAdaptor {
     }))
   }
 
+  polygon(points, fill, stroke) {
+    this.children.push(this.e('polygon', {
+      transform: this.current().transforms.join(' '),
+      points: points.map(point => `${point.x},${point.y}`).join(' '),
+      fill: fill ? this.current().fillStyle : 'none',
+      stroke: stroke ? this.current().strokeStyle : 'none',
+      strokeWidth: this.current().lineWidth
+    }))
+  }
+
   stroke() {
     // this.ctx.stroke()
   }
