@@ -30,8 +30,8 @@ export const getGraph = (state) => {
 }
 
 export const getVisualGraph = createSelector(
-  [getGraph, getSelection, getViewTransformation],
-  (graph, selection, viewTransformation) => {
+  [getGraph, getSelection],
+  (graph, selection) => {
     const visualNodes = graph.nodes.reduce((nodeMap, node) => {
       nodeMap[node.id] = new VisualNode(node, graph)
       return nodeMap
@@ -49,7 +49,7 @@ export const getVisualGraph = createSelector(
       return new RoutedRelationshipBundle(bundle, graph);
     })
 
-    return new VisualGraph(graph, visualNodes, relationshipBundles, viewTransformation)
+    return new VisualGraph(graph, visualNodes, relationshipBundles)
   }
 )
 

@@ -2,11 +2,10 @@ import { relationshipHitTolerance } from "./constants";
 import {nodeAtPoint, nodeRingAtPoint} from "../model/Graph";
 
 export default class VisualGraph {
-  constructor(graph, nodes, relationshipBundles, viewTransformation) {
+  constructor(graph, nodes, relationshipBundles) {
     this.graph = graph
     this.nodes = nodes
     this.relationshipBundles = relationshipBundles
-    this.viewTransformation = viewTransformation
   }
 
   get style () {
@@ -46,10 +45,11 @@ export default class VisualGraph {
     return closestRelationship
   }
 
-  draw(ctx) {
+  draw(ctx, displayOptions) {
     ctx.save()
-    ctx.translate(this.viewTransformation.offset.dx, this.viewTransformation.offset.dy)
-    ctx.scale(this.viewTransformation.scale, this.viewTransformation.scale)
+    const viewTransformation = displayOptions.viewTransformation
+    ctx.translate(viewTransformation.offset.dx, viewTransformation.offset.dy)
+    ctx.scale(viewTransformation.scale, viewTransformation.scale)
     this.relationshipBundles.forEach(bundle => bundle.draw(ctx))
     Object.values(this.nodes).forEach(visualNode => {
       visualNode.draw(ctx)

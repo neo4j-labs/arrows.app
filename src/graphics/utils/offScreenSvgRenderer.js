@@ -17,15 +17,16 @@ export const renderSvg = (graph) => {
     selection: {
       selectedNodeIdMap: {},
       selectedRelationshipIdMap: {}
-    },
-    viewTransformation: new ViewTransformation(1,
-      new Vector(-boundingBox.left, -boundingBox.top))
+    }
   }
   const visualGraph = getVisualGraph(renderState)
 
   const e = React.createElement
   const svgAdaptor = new SvgAdaptor(e);
-  visualGraph.draw(svgAdaptor)
+  visualGraph.draw(svgAdaptor, {
+    viewTransformation: new ViewTransformation(1,
+      new Vector(-boundingBox.left, -boundingBox.top))
+  })
   const width = Math.ceil(boundingBox.width)
   const height = Math.ceil(boundingBox.height)
   const svgString = renderToStaticMarkup(svgAdaptor.asSvg(width, height))

@@ -15,9 +15,7 @@ export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground
     selection: {
       selectedNodeIdMap: {},
       selectedRelationshipIdMap: {}
-    },
-    viewTransformation: new ViewTransformation(scaleFactor,
-      new Vector(-scaleFactor * boundingBox.left, -scaleFactor * boundingBox.top))
+    }
   }
   const visualGraph = getVisualGraph(renderState)
 
@@ -31,7 +29,10 @@ export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground
     ctx.fillStyle = 'white'
     ctx.fillRect(0, 0, width, height)
   }
-  visualGraph.draw(new CanvasAdaptor(ctx))
+  visualGraph.draw(new CanvasAdaptor(ctx), {
+    viewTransformation: new ViewTransformation(scaleFactor,
+      new Vector(-scaleFactor * boundingBox.left, -scaleFactor * boundingBox.top))
+  })
   return {
     width,
     height,
