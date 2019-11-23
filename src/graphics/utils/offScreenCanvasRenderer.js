@@ -5,11 +5,6 @@ import {Vector} from "../../model/Vector";
 import CanvasAdaptor from "./CanvasAdaptor";
 
 export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground) => {
-  const boundingBox = calculateBoundingBox(graph.nodes, graph, 1) || {
-      left: 0, top: 0, right: 100, bottom: 100
-    }
-  boundingBox.width = boundingBox.right - boundingBox.left
-  boundingBox.height = boundingBox.bottom - boundingBox.top
   const renderState = {
     graph,
     selection: {
@@ -18,6 +13,11 @@ export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground
     }
   }
   const visualGraph = getVisualGraph(renderState)
+  const boundingBox = visualGraph.boundingBox() || {
+      left: 0, top: 0, right: 100, bottom: 100
+    }
+  boundingBox.width = boundingBox.right - boundingBox.left
+  boundingBox.height = boundingBox.bottom - boundingBox.top
 
   const canvas = window.document.createElement('canvas')
   const width = Math.ceil(scaleFactor * boundingBox.width);

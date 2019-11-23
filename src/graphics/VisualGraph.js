@@ -56,4 +56,10 @@ export default class VisualGraph {
     })
     ctx.restore()
   }
+
+  boundingBox() {
+    return Object.values(this.nodes)
+      .map(node => node.boundingBox())
+      .reduce((accumulator, value) => accumulator ? accumulator.combine(value) : value, null)
+  }
 }

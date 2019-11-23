@@ -5,6 +5,7 @@ import {NodeBorder} from "./NodeBorder";
 import {NodeBackground} from "./NodeBackground";
 import {NodeProperties} from "./NodeProperties";
 import {neighbourPositions} from "../model/Graph";
+import BoundingBox from "./utils/BoundingBox";
 
 export default class VisualNode {
   constructor(node, graph) {
@@ -72,5 +73,14 @@ export default class VisualNode {
       this.labels.draw(this.position, this.radius, ctx)
     }
     this.properties.draw(ctx)
+  }
+
+  boundingBox() {
+    return new BoundingBox(
+      this.position.x - this.radius,
+      this.position.x + this.radius,
+      this.position.y - this.radius,
+      this.position.y + this.radius
+    )
   }
 }
