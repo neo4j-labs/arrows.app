@@ -114,10 +114,12 @@ export default class SvgAdaptor {
   }
 
   fillText(text, x, y) {
+    const oMetrics = this.measureText('o')
+    const middleHeight = (oMetrics.actualBoundingBoxAscent + oMetrics.actualBoundingBoxDescent) / 2
     this.children.push(this.e('text', {
       transform: this.current().transforms.join(' '),
       x,
-      y: this.current().textBaseline === 'middle' ? y + this.current().font.fontSize * .3 : y,
+      y: this.current().textBaseline === 'middle' ? y + middleHeight : y,
       fontFamily: this.current().font.fontFace,
       fontSize: this.current().font.fontSize,
       fontWeight: this.current().font.fontWeight,
@@ -140,6 +142,7 @@ export default class SvgAdaptor {
 
   set font(style) {
     this.current().font = style
+    this.measureTextContext.font = `${style.fontWeight} ${style.fontSize}px ${style.fontFace}`
   }
 
   set textBaseline(value) {
