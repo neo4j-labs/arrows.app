@@ -117,11 +117,10 @@ export default class SvgAdaptor {
     this.children.push(this.e('text', {
       transform: this.current().transforms.join(' '),
       x,
-      y,
+      y: this.current().textBaseline === 'middle' ? y + this.current().font.fontSize * .3 : y,
       fontFamily: this.current().font.fontFace,
       fontSize: this.current().font.fontSize,
       fontWeight: this.current().font.fontWeight,
-      alignmentBaseline: this.current().textBaseline,
       textAnchor: ((a) => a === 'center' ? 'middle' : a )(this.current().textAlign),
       fill: this.current().fillStyle
     }, text))
