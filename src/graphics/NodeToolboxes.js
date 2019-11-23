@@ -28,7 +28,7 @@ export default class NodeToolboxes {
         fontFace: 'FontAwesome'
       }
       ctx.fillStyle = blue
-      drawTextLine(ctx, '\uf0b2', position)
+      drawTextLine(ctx, '\uf0b2', position, 'center')
       ctx.restore()
     })
   }

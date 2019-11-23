@@ -29,7 +29,7 @@ export class NodeCaption {
     const lineDistance = this.fontSize
     let yPos = -((lines.length - 1) * lineDistance) / 2
     for (let line of lines) {
-      drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
+      drawTextLine(ctx, line, position.translate(new Vector(0, yPos)), 'center')
       yPos += lineDistance
     }
 

@@ -84,7 +84,7 @@ const drawPropertyLine = (ctx, fontSize, fontColor, fontWeight, fontFace, positi
   ctx.textBaseline = 'middle'
 
   const offsetX = horizontalAlignment === 'left' ? 0 : (boxWidth - ctx.measureText(line).width)
-  drawTextLine(ctx, line, position.translate(new Vector(offsetX, 0)), false)
+  drawTextLine(ctx, line, position.translate(new Vector(offsetX, 0)), 'start')
 
   ctx.restore()
 }

@@ -130,6 +130,10 @@ export default class CanvasAdaptor {
     this.ctx.textBaseline = value
   }
 
+  set textAlign(value) {
+    this.ctx.textAlign = value
+  }
+
   set lineWidth(value) {
     this.ctx.lineWidth = value
   }

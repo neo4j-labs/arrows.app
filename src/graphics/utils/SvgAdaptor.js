@@ -122,6 +122,7 @@ export default class SvgAdaptor {
       fontSize: this.current().font.fontSize,
       fontWeight: this.current().font.fontWeight,
       alignmentBaseline: this.current().textBaseline,
+      textAnchor: ((a) => a === 'center' ? 'middle' : a )(this.current().textAlign),
       fill: this.current().fillStyle
     }, text))
   }
@@ -144,6 +145,10 @@ export default class SvgAdaptor {
 
   set textBaseline(value) {
     this.current().textBaseline = value
+  }
+
+  set textAlign(value) {
+    this.current().textAlign = value
   }
 
   set lineWidth(value) {
