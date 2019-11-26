@@ -26,10 +26,10 @@ export default class Pill {
 
   boundingBox() {
     return new BoundingBox(
-      this.position.x,
-      this.position.x + this.width + this.radius * 2,
-      this.position.y,
-      this.position.y + this.radius * 2
+      this.position.x - this.borderWidth / 2,
+      this.position.x + this.width + this.radius * 2 + this.borderWidth / 2,
+      this.position.y - this.borderWidth / 2,
+      this.position.y + this.radius * 2 + this.borderWidth / 2
     )
   }
 }
