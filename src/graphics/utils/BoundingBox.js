@@ -6,6 +6,14 @@ export default class BoundingBox {
     this.bottom = bottom
   }
 
+  get width() {
+    return this.right - this.left
+  }
+
+  get height() {
+    return this.bottom - this.top
+  }
+
   combine(other) {
     return new BoundingBox(
       Math.min(this.left, other.left),

@@ -8,7 +8,7 @@ import {neighbourPositions} from "../model/Graph";
 import BoundingBox from "./utils/BoundingBox";
 
 export default class VisualNode {
-  constructor(node, graph) {
+  constructor(node, graph, measureTextContext) {
     this.node = node
 
     const style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
@@ -25,7 +25,7 @@ export default class VisualNode {
       return { angle: position.vectorFrom(node.position).angle() }
     })
     if (node.labels && node.labels.length > 0) {
-      this.labels = new NodeLabels(node.labels, neighbourObstacles, style)
+      this.labels = new NodeLabels(node.labels, this.radius, node.position, neighbourObstacles, style, measureTextContext)
     }
     const obstacles = this.labels ? [...neighbourObstacles, this.labels] : neighbourObstacles
     this.properties = new NodeProperties(
@@ -70,17 +70,23 @@ export default class VisualNode {
       this.caption.draw(this.position, this.radius * 2, ctx)
     }
     if (this.labels) {
-      this.labels.draw(this.position, this.radius, ctx)
+      this.labels.draw(ctx)
     }
     this.properties.draw(ctx)
   }
 
   boundingBox() {
-    return new BoundingBox(
+    let box = new BoundingBox(
       this.position.x - this.radius,
       this.position.x + this.radius,
       this.position.y - this.radius,
       this.position.y + this.radius
     )
+
+    if (this.labels) {
+      box = box.combine(this.labels.boundingBox())
+    }
+
+    return box
   }
 }
