@@ -279,8 +279,8 @@ export const getLines = (ctx, text, fontFace, fontSize, maxWidth, hasIcon) => {
   // temporary set the font to bold to make the calculations not differ when bold is used
   ctx.font = {
     fontWeight: 'normal',
-    fontSize: this.fontSize,
-    fontFace: this.fontFace
+    fontSize: fontSize,
+    fontFace: fontFace
   }
 
   const measureWidth = (...params) => { return ctx.measureText(...params).width }
