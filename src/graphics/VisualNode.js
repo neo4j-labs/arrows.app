@@ -67,7 +67,7 @@ export default class VisualNode {
       this.border.draw(this.position, this.radius, ctx)
     }
     if (this.caption) {
-      this.caption.draw(this.position, this.radius * 2, ctx)
+      this.caption.draw(this.position, this.radius, ctx)
     }
     if (this.labels) {
       this.labels.draw(ctx)

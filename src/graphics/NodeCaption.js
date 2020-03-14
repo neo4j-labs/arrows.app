@@ -1,5 +1,5 @@
 import {drawTextLine} from "./canvasRenderer";
-import {getLines} from "./utils/wordwrap";
+import {splitIntoLines} from "./utils/circleWordWrap";
 import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
@@ -13,10 +13,8 @@ export class NodeCaption {
     this.fontFace = get(config, 'font.face')
   }
 
-  draw(position, maxWidth, ctx) {
+  draw(position, radius, ctx) {
     ctx.save()
-
-    const lines = getLines(ctx, this.caption, this.fontFace, this.fontSize, maxWidth, false)
 
     ctx.fillStyle = this.fontColor
     ctx.font = {
@@ -25,6 +23,9 @@ export class NodeCaption {
       fontFace: this.fontFace
     }
     ctx.textBaseline = 'middle'
+
+    const measureWidth = (string) => ctx.measureText(string).width;
+    const lines = splitIntoLines(this.caption, radius, measureWidth, this.fontSize)
 
     const lineDistance = this.fontSize
     let yPos = -((lines.length - 1) * lineDistance) / 2
