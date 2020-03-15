@@ -277,7 +277,11 @@ const tryBreakingOnSpaces = (text, measureWidth, getAvailableWidth, numberOfLine
  */
 export const getLines = (ctx, text, fontFace, fontSize, maxWidth, hasIcon) => {
   // temporary set the font to bold to make the calculations not differ when bold is used
-  ctx.font = ('bold ' + fontSize + 'px ' + fontFace).replace(/"/g, '')
+  ctx.font = {
+    fontWeight: 'normal',
+    fontSize: fontSize,
+    fontFace: fontFace
+  }
 
   const measureWidth = (...params) => { return ctx.measureText(...params).width }
 

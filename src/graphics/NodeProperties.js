@@ -56,8 +56,12 @@ export class NodeProperties {
       .translate(new Vector(alignment.horizontal === 'right' ? -boxWidth : 0, 0))
 
     if (lines.length > 0) {
-      drawStraightLine(ctx, attachedAt, start)
-      drawStraightLine(ctx, start, end)
+      ctx.strokeStyle = 'black'
+      ctx.polyLine([
+        attachedAt,
+        start,
+        end
+      ])
 
       lines.forEach((line, index) => {
         const dx = alignment.horizontal === 'left' ? this.fontSize / 5 : -this.fontSize / 5
@@ -72,11 +76,15 @@ const drawPropertyLine = (ctx, fontSize, fontColor, fontWeight, fontFace, positi
   ctx.save()
 
   ctx.fillStyle = fontColor
-  ctx.font = `${fontWeight} ${fontSize}px ${fontFace}`
+  ctx.font = {
+    fontWeight: fontWeight,
+    fontSize: fontSize,
+    fontFace: fontFace
+  }
   ctx.textBaseline = 'middle'
 
   const offsetX = horizontalAlignment === 'left' ? 0 : (boxWidth - ctx.measureText(line).width)
-  drawTextLine(ctx, line, position.translate(new Vector(offsetX, 0)), false)
+  drawTextLine(ctx, line, position.translate(new Vector(offsetX, 0)), 'start')
 
   ctx.restore()
 }

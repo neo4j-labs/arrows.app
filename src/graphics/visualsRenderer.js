@@ -1,4 +1,5 @@
 import Gestures from "./Gestures";
+import CanvasAdaptor from "./utils/CanvasAdaptor";
 
 const layerManager = (() => {
   let layers = []
@@ -33,6 +34,5 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
 
   layerManager.register('GUIDES SNAP LINES', guides.drawSnaplines.bind(guides))
 
-
-  layerManager.renderAll(ctx, displayOptions)
+  layerManager.renderAll(new CanvasAdaptor(ctx), displayOptions)
 }

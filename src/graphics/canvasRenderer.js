@@ -67,11 +67,9 @@ export function drawStraightLine(ctx, sourcePoint, targetPoint, options = { dash
   }
 }
 
-export const drawTextLine = (ctx, line, position, centered = true) => {
-  let lineWidth = ctx.measureText(line).width
-  let xPos = centered ? -lineWidth / 2 : 0
-  ctx.fillText(line, position.x + xPos, position.y)
-  return {lineWidth, xPos};
+export const drawTextLine = (ctx, line, position, alignment) => {
+  ctx.textAlign = alignment
+  ctx.fillText(line, position.x, position.y)
 }
 
 export const drawPolygon = (ctx, points, fill, stroke) => {

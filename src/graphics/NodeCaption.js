@@ -1,5 +1,5 @@
 import {drawTextLine} from "./canvasRenderer";
-import {getLines} from "./utils/wordwrap";
+import {fitTextToCircle} from "./utils/circleWordWrap";
 import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
@@ -13,20 +13,24 @@ export class NodeCaption {
     this.fontFace = get(config, 'font.face')
   }
 
-  draw(position, maxWidth, ctx) {
+  draw(position, radius, ctx) {
     ctx.save()
 
-    const lines = getLines(ctx, this.caption, this.fontFace, this.fontSize, maxWidth, false)
-
     ctx.fillStyle = this.fontColor
-    ctx.font = `${this.fontWeight} ${this.fontSize}px ${this.fontFace}`
+    ctx.font = {
+      fontWeight: this.fontWeight,
+      fontSize: this.fontSize,
+      fontFace: this.fontFace
+    }
     ctx.textBaseline = 'middle'
 
-    const lineDistance = this.fontSize
-    let yPos = -((lines.length - 1) * lineDistance) / 2
-    for (let line of lines) {
-      drawTextLine(ctx, line, position.translate(new Vector(0, yPos)))
-      yPos += lineDistance
+    const measureWidth = (string) => ctx.measureText(string).width;
+    const lineHeight = this.fontSize * 1.2
+    const layout = fitTextToCircle(this.caption, radius, measureWidth, lineHeight)
+
+    for (let i = 0; i< layout.lines.length; i++) {
+      const yPos = layout.top + (i + 0.5) * lineHeight
+      drawTextLine(ctx, layout.lines[i], position.translate(new Vector(0, yPos)), 'center')
     }
 
     ctx.restore()

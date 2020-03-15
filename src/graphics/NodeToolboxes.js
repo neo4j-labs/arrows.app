@@ -22,9 +22,13 @@ export default class NodeToolboxes {
       const radius = viewTransformation.scale * 50 // (50 + tb.subNodes.length * 10)
       const position = tb.node.position.translate(viewTransformation.offset).translate(new Vector(radius, -radius))
       ctx.save()
-      ctx.font = '16px FontAwesome'
+      ctx.font = {
+        fontWeight: 'normal',
+        fontSize: 16,
+        fontFace: 'FontAwesome'
+      }
       ctx.fillStyle = blue
-      drawTextLine(ctx, '\uf0b2', position)
+      drawTextLine(ctx, '\uf0b2', position, 'center')
       ctx.restore()
     })
   }

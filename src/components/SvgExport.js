@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
 import {Image, Segment, Label, Icon} from 'semantic-ui-react'
-import {renderPngAtScaleFactor} from "../graphics/utils/offScreenCanvasRenderer";
+import {renderSvg} from "../graphics/utils/offScreenSvgRenderer";
 
-class PngExport extends Component {
+class SvgExport extends Component {
 
   render() {
-    const {width, height, dataUrl} = renderPngAtScaleFactor(this.props.graph, this.props.pixelRatio, this.props.includeStyling)
+    const {width, height, dataUrl} = renderSvg(this.props.graph)
 
     return (
       <Segment style={{
@@ -13,8 +13,8 @@ class PngExport extends Component {
         overflow: 'hidden',
       }}>
         <Label attached='top'>
-          @{this.props.pixelRatio}x {width} × {height}
-          <a href={dataUrl} download={this.props.diagramName + ".png"}><Icon name="download"/>Download</a>
+          {width} × {height}
+          <a href={dataUrl} download={this.props.diagramName + ".svg"}><Icon name="download"/>Download</a>
         </Label>
         <div style={{
           display: 'inline-block',
@@ -32,4 +32,4 @@ class PngExport extends Component {
   }
 }
 
-export default PngExport
+export default SvgExport

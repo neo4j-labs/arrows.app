@@ -1,59 +1,63 @@
 import { Vector } from "../model/Vector";
 import {distribute} from "./circumferentialDistribution";
 import {textAlignmentAtAngle} from "./circumferentialTextAlignment";
+import Pill from "./Pill";
 
 export class NodeLabels {
-  constructor(labels, obstacles, style) {
-    this.labels = labels
+  constructor(labels, nodeRadius, nodePosition, obstacles, style, textMeasurement) {
     this.angle = distribute([
       {preferredAngles: [Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'labels'}
     ], obstacles)[0].angle
     this.alignment = textAlignmentAtAngle(this.angle)
-    this.fontSize = style('label-font-size')
-    this.fontColor = style('label-color')
-    this.backgroundColor = style('label-background-color')
-    this.strokeColor = style('label-border-color')
-    this.borderWidth = style('label-border-width')
-    this.fontFace = 'sans-serif'
-    this.padding = style('label-padding')
-    this.margin = style('label-margin')
+    this.font = {
+      fontWeight: 'normal',
+      fontSize: style('label-font-size'),
+      fontFace: 'sans-serif'
+    }
+    textMeasurement.font = this.font
+
+    const backgroundColor = style('label-background-color')
+    const strokeColor = style('label-border-color')
+    const fontColor = style('label-color')
+    const borderWidth = style('label-border-width')
+    const padding = style('label-padding')
+    const margin = style('label-margin')
+    const pillHeight = this.font.fontSize + padding * 2 + borderWidth
+    const pillRadius = pillHeight / 2
+    const lineHeight = pillHeight + margin + borderWidth
+
+    this.pills = labels.map((label, i) => {
+      const pillWidth = textMeasurement.measureText(label).width
+      let pillPosition = nodePosition.translate(new Vector(nodeRadius, 0).rotate(this.angle))
+      if (this.alignment.vertical === 'bottom') {
+        pillPosition = pillPosition.translate(new Vector(0, -lineHeight * (labels.length - 1)))
+      }
+      pillPosition = pillPosition.translate(new Vector(
+        this.alignment.horizontal === 'right' ? -pillRadius - pillWidth : -pillRadius,
+        i * lineHeight - pillRadius
+      ))
+      return new Pill(label, pillPosition, pillWidth, pillRadius, borderWidth, backgroundColor, strokeColor, fontColor)
+    })
+    if (labels.length > 0) {
+      console.log(this.pills)
+    }
   }
 
-  draw(position, radius, ctx) {
+  draw(ctx) {
     ctx.save()
 
-    const fontWeight = 'normal'
-    ctx.font = `${fontWeight} ${this.fontSize}px ${this.fontFace}`
+    ctx.font = this.font
     ctx.textBaseline = 'middle'
-    const widths = this.labels.map(label => ctx.measureText(label).width)
 
-    const pillHeight = this.fontSize + this.padding * 2 + this.borderWidth
-    const pillRadius = pillHeight / 2
-    const lineHeight = pillHeight + this.margin + this.borderWidth
-    ctx.translate(...position.translate(new Vector(radius, 0).rotate(this.angle)).xy)
-    ctx.translate(0, this.alignment.vertical === 'bottom' ? -lineHeight * (this.labels.length - 1) : 0)
-
-    this.labels.forEach((label, i) => {
-      ctx.save()
-      ctx.translate(this.alignment.horizontal === 'right' ? -pillRadius - widths[i] : -pillRadius, i * lineHeight - pillRadius)
-      ctx.beginPath()
-      ctx.moveTo(pillRadius, 0)
-      ctx.lineTo(pillRadius + widths[i], 0)
-      ctx.arc(pillRadius + widths[i], pillRadius, pillRadius, -Math.PI / 2, Math.PI / 2)
-      ctx.lineTo(pillRadius, pillHeight)
-      ctx.arc(pillRadius, pillRadius, pillRadius, Math.PI / 2, -Math.PI / 2)
-      ctx.closePath()
-      ctx.fillStyle = this.backgroundColor
-      ctx.fill()
-      if (this.borderWidth > 0) {
-        ctx.strokeStyle = this.strokeColor
-        ctx.lineWidth = this.borderWidth
-        ctx.stroke()
-      }
-      ctx.fillStyle = this.fontColor
-      ctx.fillText(label, pillRadius, pillRadius)
-      ctx.restore()
+    this.pills.forEach((pill) => {
+      pill.draw(ctx)
     })
     ctx.restore()
+  }
+
+  boundingBox() {
+    return this.pills
+      .map(pill => pill.boundingBox())
+      .reduce((accumulator, value) => accumulator ? accumulator.combine(value) : value, null)
   }
 }

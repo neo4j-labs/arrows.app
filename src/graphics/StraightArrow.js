@@ -31,16 +31,15 @@ export class StraightArrow {
       ctx.save()
       ctx.translate(this.startCentre.x, this.startCentre.y)
       ctx.rotate(this.angle)
-      ctx.beginPath()
-      ctx.moveTo(this.foot, 0)
-      ctx.lineTo(this.neck, 0)
       ctx.lineWidth = this.arrowWidth
       ctx.strokeStyle = this.arrowColor
-      ctx.stroke()
+      ctx.polyLine([
+        {x: this.foot, y: 0},
+        {x: this.neck, y: 0}
+      ])
       ctx.translate(this.topOfHead, 0)
-      arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth)
       ctx.fillStyle = this.arrowColor
-      ctx.fill()
+      arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, true, false)
       ctx.restore()
     }
   }
@@ -57,10 +56,9 @@ export class StraightArrow {
     ctx.lineWidth = this.arrowWidth + indicatorWidth
     ctx.stroke()
     ctx.translate(this.topOfHead, 0)
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth)
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
-    ctx.stroke()
+    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, false, true)
     ctx.restore()
   }
 

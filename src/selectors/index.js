@@ -6,6 +6,7 @@ import TransformationHandles from "../graphics/TransformationHandles";
 import {bundle} from "../model/graph/relationshipBundling";
 import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 import { idsMatch } from "../model/Id";
+import CanvasAdaptor from "../graphics/utils/CanvasAdaptor";
 
 const getSelection = (state) => state.selection
 const getViewTransformation = (state) => state.viewTransformation
@@ -29,11 +30,16 @@ export const getGraph = (state) => {
   }
 }
 
+const measureTextContext = (() => {
+  const canvas = window.document.createElement('canvas')
+  return new CanvasAdaptor(canvas.getContext('2d'))
+})()
+
 export const getVisualGraph = createSelector(
-  [getGraph, getSelection, getViewTransformation],
-  (graph, selection, viewTransformation) => {
+  [getGraph, getSelection],
+  (graph, selection) => {
     const visualNodes = graph.nodes.reduce((nodeMap, node) => {
-      nodeMap[node.id] = new VisualNode(node, graph)
+      nodeMap[node.id] = new VisualNode(node, graph, measureTextContext)
       return nodeMap
     }, {})
 
@@ -49,7 +55,7 @@ export const getVisualGraph = createSelector(
       return new RoutedRelationshipBundle(bundle, graph);
     })
 
-    return new VisualGraph(graph, visualNodes, relationshipBundles, viewTransformation)
+    return new VisualGraph(graph, visualNodes, relationshipBundles, measureTextContext)
   }
 )
 
