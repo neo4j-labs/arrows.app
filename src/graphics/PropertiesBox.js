@@ -40,6 +40,6 @@ export class PropertiesBox {
   }
 
   boundingBox() {
-    return new BoundingBox(0, 0, this.boxWidth, this.boxHeight)
+    return new BoundingBox(0, this.boxWidth, 0, this.boxHeight)
   }
 }
