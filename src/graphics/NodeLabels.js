@@ -38,9 +38,6 @@ export class NodeLabels {
       ))
       return new Pill(label, pillPosition, pillWidth, pillRadius, borderWidth, backgroundColor, strokeColor, fontColor)
     })
-    if (labels.length > 0) {
-      console.log(this.pills)
-    }
   }
 
   draw(ctx) {

@@ -24,9 +24,12 @@ export default class VisualNode {
       this.labels = new NodeLabels(node.labels, this.radius, node.position, neighbourObstacles, style, measureTextContext)
     }
     const obstacles = this.labels ? [...neighbourObstacles, this.labels] : neighbourObstacles
-    this.properties = new NodeProperties(
-      node.properties, this.radius, node.position, obstacles, style, measureTextContext
-    )
+
+    if (Object.keys(node.properties).length > 0) {
+      this.properties = new NodeProperties(
+        node.properties, this.radius, node.position, obstacles, style, measureTextContext
+      )
+    }
   }
 
   get id() {
@@ -65,7 +68,9 @@ export default class VisualNode {
     if (this.labels) {
       this.labels.draw(ctx)
     }
-    this.properties.draw(ctx)
+    if (this.properties) {
+      this.properties.draw(ctx)
+    }
   }
 
   boundingBox() {
@@ -78,6 +83,10 @@ export default class VisualNode {
 
     if (this.labels) {
       box = box.combine(this.labels.boundingBox())
+    }
+
+    if (this.properties) {
+      box = box.combine(this.properties.boundingBox())
     }
 
     return box

@@ -22,4 +22,13 @@ export default class BoundingBox {
       Math.max(this.bottom, other.bottom)
     )
   }
+
+  translate(vector) {
+    return new BoundingBox(
+      this.left + vector.dx,
+      this.right + vector.dx,
+      this.top + vector.dy,
+      this.bottom + vector.dy
+    )
+  }
 }
