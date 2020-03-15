@@ -67,7 +67,8 @@ export default class SvgAdaptor {
       cy,
       r,
       fill: fill ? this.current().fillStyle : 'none',
-      stroke: stroke ? this.current().strokeStyle : 'none'
+      stroke: stroke ? this.current().strokeStyle : 'none',
+      strokeWidth: this.current().lineWidth
     }))
   }
 

@@ -1,7 +1,6 @@
 import { getStyleSelector } from "../selectors/style";
 import {NodeLabels} from "./NodeLabels";
 import {NodeCaption} from "./NodeCaption";
-import {NodeBorder} from "./NodeBorder";
 import {NodeBackground} from "./NodeBackground";
 import {NodeProperties} from "./NodeProperties";
 import {neighbourPositions} from "../model/Graph";
@@ -15,9 +14,6 @@ export default class VisualNode {
 
     this.radius = style('radius')
     this.background = new NodeBackground(style)
-    if (style('border-width') > 0) {
-      this.border = new NodeBorder(style)
-    }
     if (node.caption) {
       this.caption = new NodeCaption(node.caption, style)
     }
@@ -63,9 +59,6 @@ export default class VisualNode {
     }
 
     this.background.draw(this.position, this.radius, ctx)
-    if (this.border) {
-      this.border.draw(this.position, this.radius, ctx)
-    }
     if (this.caption) {
       this.caption.draw(this.position, this.radius, ctx)
     }
