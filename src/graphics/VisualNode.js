@@ -25,7 +25,7 @@ export default class VisualNode {
     }
     const obstacles = this.labels ? [...neighbourObstacles, this.labels] : neighbourObstacles
     this.properties = new NodeProperties(
-      node.properties, this.radius, node.position, obstacles, style
+      node.properties, this.radius, node.position, obstacles, style, measureTextContext
     )
   }
 

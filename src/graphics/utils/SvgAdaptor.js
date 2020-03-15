@@ -118,6 +118,7 @@ export default class SvgAdaptor {
     const oMetrics = this.measureText('o')
     const middleHeight = (oMetrics.actualBoundingBoxAscent + oMetrics.actualBoundingBoxDescent) / 2
     this.children.push(this.e('text', {
+      xmlSpace: 'preserve',
       transform: this.current().transforms.join(' '),
       x,
       y: this.current().textBaseline === 'middle' ? y + middleHeight : y,
