@@ -1,4 +1,4 @@
-export const splitIntoLines = (text, radius, measureWidth, lineHeight) => {
+export const fitTextToCircle = (text, radius, measureWidth, lineHeight) => {
 
   const sq = (n) => n * n;
   const range = (n) => {
@@ -122,5 +122,8 @@ export const splitIntoLines = (text, radius, measureWidth, lineHeight) => {
   })();
 
   const bestLayout = moreLayouts.slice(0).sort((a, b) => biggestGap(a) - biggestGap(b))[0]
-  return bestLayout.lines.map(line => line.text);
+  return {
+    top: Math.min(...bestLayout.lines.map(line => line.extent.top)),
+    lines: bestLayout.lines.sort((a, b) => a.index - b.index).map(line => line.text)
+  }
 }
