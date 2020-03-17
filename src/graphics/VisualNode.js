@@ -22,7 +22,7 @@ export default class VisualNode {
           this.caption = new NodeCaptionInsideNode(node.caption, node.position, this.radius, style)
           break
         case 'outside':
-          this.caption = new NodeCaptionOutsideNode(node.caption, node.position, this.radius, style)
+          this.caption = new NodeCaptionOutsideNode(node.caption, node.position, this.radius, style, measureTextContext)
           break
       }
     }

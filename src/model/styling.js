@@ -31,6 +31,7 @@ export const styleAttributes = {
   'caption-color': {appliesTo: 'Caption', type: 'color', defaultValue: white},
   'caption-font-size': {appliesTo: 'Caption', type: 'font-size', defaultValue: defaultFontSize},
   'caption-font-weight': {appliesTo: 'Caption', type: 'font-weight', defaultValue: 'normal'},
+  'caption-max-width': {appliesTo: 'Caption', type: 'radius', defaultValue: 200},
   'label-color': {appliesTo: 'Label', type: 'color', defaultValue: black},
   'label-background-color': {appliesTo: 'Label', type: 'color', defaultValue: white},
   'label-border-color': {appliesTo: 'Label', type: 'color', defaultValue: black},
