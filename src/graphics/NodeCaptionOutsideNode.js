@@ -2,6 +2,7 @@ import {drawTextLine} from "./canvasRenderer";
 import {fitTextToRectangle} from "./utils/rectangleWordWrap";
 import { Vector } from "../model/Vector";
 import {orientationFromName} from "./circumferentialTextAlignment";
+import BoundingBox from "./utils/BoundingBox";
 
 export class NodeCaptionOutsideNode {
   constructor(caption, nodePosition, radius, captionPosition, style, textMeasurement) {
@@ -19,6 +20,7 @@ export class NodeCaptionOutsideNode {
     this.layout = fitTextToRectangle(caption, style('caption-max-width'), measureWidth)
     this.attachedAt = this.nodePosition.translate(
       new Vector(1, 0).rotate(this.orientation.angle).scale(radius + this.layout.margin))
+    this.lineHeight = this.font.fontSize * 1.2
   }
 
   draw(ctx) {
@@ -28,7 +30,6 @@ export class NodeCaptionOutsideNode {
     ctx.font = this.font
     ctx.textBaseline = 'middle'
 
-    const lineHeight = this.font.fontSize * 1.2
     const lines = this.layout.lines
 
     const verticalLineNumberOffset = (() => {
@@ -42,11 +43,39 @@ export class NodeCaptionOutsideNode {
       }
     })()
     for (let i = 0; i< lines.length; i++) {
-      const yPos = (i + 0.5 + verticalLineNumberOffset) * lineHeight
+      const yPos = (i + 0.5 + verticalLineNumberOffset) * this.lineHeight
       const position = this.attachedAt.translate(new Vector(0, yPos))
       drawTextLine(ctx, lines[i], position, this.orientation.horizontal)
     }
 
     ctx.restore()
+  }
+
+  boundingBox() {
+    const width = this.layout.actualWidth
+    const height = this.layout.lines.length * this.lineHeight
+
+    const left = (() => {
+      switch (this.orientation.horizontal) {
+        case 'end':
+          return -width
+        case 'center':
+          return -width / 2
+        case 'start':
+          return 0
+      }
+    })() + this.attachedAt.x
+    const top = (() => {
+      switch (this.orientation.vertical) {
+        case 'top':
+          return -height
+        case 'center':
+          return -height / 2
+        case 'bottom':
+          return 0
+      }
+    })() + this.attachedAt.y
+
+    return new BoundingBox(left, left + width, top, top + height)
   }
 }

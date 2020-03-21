@@ -3,6 +3,7 @@ import {fitTextToCircle} from "./utils/circleWordWrap";
 import config from './config'
 import get from 'lodash.get'
 import { Vector } from "../model/Vector";
+import BoundingBox from "./utils/BoundingBox";
 
 export class NodeCaptionInsideNode {
   constructor(caption, nodePosition, radius, style) {
@@ -36,5 +37,14 @@ export class NodeCaptionInsideNode {
     }
 
     ctx.restore()
+  }
+
+  boundingBox() {
+    return new BoundingBox(
+      this.nodePosition.x - this.radius,
+      this.nodePosition.x + this.radius,
+      this.nodePosition.y - this.radius,
+      this.nodePosition.y + this.radius
+    )
   }
 }

@@ -90,6 +90,10 @@ export default class VisualNode {
       this.position.y + this.radius
     )
 
+    if (this.caption) {
+      box = box.combine(this.caption.boundingBox())
+    }
+
     if (this.labels) {
       box = box.combine(this.labels.boundingBox())
     }
