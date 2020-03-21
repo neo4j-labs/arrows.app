@@ -68,7 +68,7 @@ export const styleTypes = {
   'font-size': {  editor: 'slider', min: 5, max: 100, step: 1 },
   'color': { editor: 'colorPicker' },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
-  'caption-position': { editor: 'dropdown', options: ['inside', 'outside'] },
+  'caption-position': { editor: 'dropdown', options: ['inside', 'top-left', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left'] },
   'type-orientation': { editor: 'dropdown', options: ['inline', 'horizontal'] }
 }
 
