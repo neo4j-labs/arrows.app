@@ -1,4 +1,3 @@
-import { calculateBoundingBox } from "../graphics/utils/geometryUtils"
 import { adjustViewport } from "../actions/viewTransformation"
 import { Point } from "../model/Point"
 import { ViewTransformation } from "../state/ViewTransformation";
@@ -7,6 +6,7 @@ import { tryMoveNode } from "../actions/graph";
 import {computeCanvasSize} from "../model/applicationLayout";
 import { getGraph } from "../selectors";
 import {getStyleSelector} from "../selectors/style";
+import {getVisualGraph} from "../selectors/index";
 
 const observedActionTypes = [
   'MOVE_NODES',
@@ -37,8 +37,8 @@ export const calculateScaling = (nodes, graph, canvasSize, viewTransformation, a
   return expansionRatio > 1
 }
 
-export const calculateViewportTranslation = (nodes, radius, canvasSize) => {
-  const boundingBox = calculateBoundingBox(nodes, radius, 1)
+export const calculateViewportTranslation = (visualGraph, canvasSize) => {
+  const boundingBox = visualGraph.boundingBox()
 
   if (boundingBox) {
     let visualsWidth = (boundingBox.right - boundingBox.left)
@@ -52,8 +52,7 @@ export const calculateViewportTranslation = (nodes, radius, canvasSize) => {
     let scale = Math.min(1, Math.min(viewportHeight / visualsHeight, viewportWidth / visualsWidth))
 
     if (scale !== 1) {
-      const scaledbbox = calculateBoundingBox(nodes, radius, scale)
-      visualsCenter = new Point((scaledbbox.right + scaledbbox.left) / 2, (scaledbbox.bottom + scaledbbox.top) / 2)
+      visualsCenter = new Point(scale * (boundingBox.right + boundingBox.left) / 2, scale * (boundingBox.bottom + boundingBox.top) / 2)
     }
 
     return {
@@ -73,11 +72,12 @@ export const viewportMiddleware = store => next => action => {
     const { applicationLayout, viewTransformation, mouse } = state
     const graph = getGraph(state)
     const canvasSize = computeCanvasSize(applicationLayout)
+    const visualGraph = getVisualGraph(state)
 
     if (action.type === 'MOVE_NODES') {
       const shouldScaleUp = calculateScaling(graph.nodes, graph, canvasSize, viewTransformation, action)
       if (shouldScaleUp) {
-        let { scale, translateVector } = calculateViewportTranslation(graph.nodes, graph, canvasSize)
+        let { scale, translateVector } = calculateViewportTranslation(visualGraph, canvasSize)
 
         store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
 
@@ -114,7 +114,7 @@ export const viewportMiddleware = store => next => action => {
         }
       }
     } else {
-      let { scale, translateVector } = calculateViewportTranslation(graph.nodes, graph, canvasSize)
+      let { scale, translateVector } = calculateViewportTranslation(visualGraph, canvasSize)
 
       if (scale) {
        if (action.type === 'MOVE_NODES_END_DRAG') {
