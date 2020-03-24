@@ -23,6 +23,15 @@ export default class BoundingBox {
     )
   }
 
+  scale(scaleFactor) {
+    return new BoundingBox(
+      this.left * scaleFactor,
+      this.right * scaleFactor,
+      this.top * scaleFactor,
+      this.bottom * scaleFactor
+    )
+  }
+
   translate(vector) {
     return new BoundingBox(
       this.left + vector.dx,

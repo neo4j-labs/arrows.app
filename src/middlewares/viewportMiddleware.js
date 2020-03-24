@@ -5,7 +5,6 @@ import { Vector } from "../model/Vector";
 import { tryMoveNode } from "../actions/graph";
 import {computeCanvasSize} from "../model/applicationLayout";
 import { getGraph } from "../selectors";
-import {getStyleSelector} from "../selectors/style";
 import {getVisualGraph} from "../selectors/index";
 
 const observedActionTypes = [
@@ -19,15 +18,16 @@ const observedActionTypes = [
   'HIDE_INSPECTOR'
 ]
 
-export const calculateScaling = (nodes, graph, canvasSize, viewTransformation, action) => {
-  const node =  nodes.find(n => n.id === action.nodePositions[0].nodeId)
-  const position = viewTransformation.transform(node.position)
-  let radius = viewTransformation.scale * getStyleSelector(node, 'radius')(graph)
+export const calculateScaling = (visualGraph, canvasSize, viewTransformation, action) => {
+  const node = visualGraph.nodes[action.nodePositions[0].nodeId]
+  const boundingBox = node.boundingBox()
+    .scale(viewTransformation.scale)
+    .translate(viewTransformation.offset)
 
-  const leftOverflow = 0 - (position.x - radius)
-  const rightOverflow =  (position.x + radius) - canvasSize.width
-  const topOverflow = 0 - (position.y - radius)
-  const bottomOverflow = (position.y + radius) - canvasSize.height
+  const leftOverflow = 0 - boundingBox.left
+  const rightOverflow = boundingBox.right - canvasSize.width
+  const topOverflow = 0 - boundingBox.top
+  const bottomOverflow = boundingBox.bottom - canvasSize.height
 
   const horizontalExp = leftOverflow > 0 ? -1 * leftOverflow : (rightOverflow > 0 ? rightOverflow : 0)
   const verticalExp = topOverflow > 0 ? -1 * topOverflow : (bottomOverflow > 0 ? bottomOverflow : 0)
@@ -75,7 +75,7 @@ export const viewportMiddleware = store => next => action => {
     const visualGraph = getVisualGraph(state)
 
     if (action.type === 'MOVE_NODES') {
-      const shouldScaleUp = calculateScaling(graph.nodes, graph, canvasSize, viewTransformation, action)
+      const shouldScaleUp = calculateScaling(visualGraph, canvasSize, viewTransformation, action)
       if (shouldScaleUp) {
         let { scale, translateVector } = calculateViewportTranslation(visualGraph, canvasSize)
 
