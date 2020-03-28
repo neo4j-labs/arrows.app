@@ -14,8 +14,6 @@ import {tryUpdateSelectionPath} from "./selectionPath"
 import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
 import { getEventHandlers } from "../selectors/layers";
 
-const LongPressTime = 300
-
 const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inverse(canvasPosition)
 
 export const wheel = (canvasPosition, vector, ctrlKey) => {
@@ -119,7 +117,6 @@ const mouseDownOnNodeRing = (node, canvasPosition) => ({
 
 const mouseDownOnCanvas = (canvasPosition, graphPosition) => ({
   type: 'MOUSE_DOWN_ON_CANVAS',
-  mouseDownTime: Date.now(),
   canvasPosition,
   graphPosition
 })
@@ -185,21 +182,8 @@ export const mouseMove = (canvasPosition) => {
           break
 
         case 'CANVAS':
-          if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
-            if (Date.now() - mouse.mouseDownTime > LongPressTime) {
-              dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
-            } else {
-              dispatch(pan(previousPosition, canvasPosition))
-            }
-          }
-          break
-
         case 'MARQUEE':
           dispatch(setMarquee(mouse.mouseDownPosition, graphPosition))
-          break
-
-        case 'PAN':
-          dispatch(pan(previousPosition, canvasPosition))
           break
       }
     }

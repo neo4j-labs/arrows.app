@@ -31,7 +31,6 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
     case 'MOUSE_DOWN_ON_CANVAS': {
       return {
         dragType: 'CANVAS',
-        mouseDownTime: action.mouseDownTime,
         dragged: false,
         mousePosition: action.canvasPosition,
         mouseDownPosition: action.graphPosition
@@ -57,14 +56,6 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
       return {
         ...state,
         dragType: 'MARQUEE',
-        dragged: true,
-        mousePosition: action.newMousePosition
-      }
-
-    case 'PAN':
-      return {
-        ...state,
-        dragType: 'PAN',
         dragged: true,
         mousePosition: action.newMousePosition
       }
