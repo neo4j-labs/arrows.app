@@ -10,7 +10,7 @@ import {
 } from "./graph"
 import {adjustViewport, pan, scroll} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
-import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
+import {selectItemsInMarquee, setMarquee} from "./selectionMarquee"
 import { getEventHandlers } from "../selectors/layers";
 
 const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inverse(canvasPosition)
@@ -187,7 +187,7 @@ export const mouseUp = () => {
     if (!preventDefault) {
       switch (mouse.dragType) {
         case 'MARQUEE':
-          dispatch(selectNodesInMarquee())
+          dispatch(selectItemsInMarquee())
           break
         case 'HANDLE':
           dispatch(moveNodesEndDrag(getPositionsOfSelectedNodes(state)))

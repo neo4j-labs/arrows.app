@@ -43,27 +43,6 @@ export const getDistanceToLine = (x1, y1, x2, y2, x3, y3) => {
   return Math.sqrt(dx * dx + dy * dy)
 }
 
-export const isPointInPolygon = (point, vertices) => {
-  const x = point.x
-  const y = point.y
-
-  let inside = false
-  for (let i = 0, j = vertices.length - 1; i < vertices.length; j = i++) {
-    const xi = vertices[i].x
-    const xj = vertices[j].x
-
-    const yi = vertices[i].y
-    const yj = vertices[j].y
-
-    const intersect = yi > y != yj > y && x < (xj - xi) * (y - yi) / (yj - yi) + xi
-    if (intersect) {
-      inside = !inside
-    }
-  }
-
-  return inside
-}
-
 export const getVoronoi = (nodes, bbox = {xl: 0, xr: 1000, yt: 0, yb: 800}) => {
   const voronoi = new Voronoi();
   if (nodes.length > 0) {
@@ -100,7 +79,7 @@ const isLeft = (p0, a, b) => {
 }
 
 const distCompare = (p0, a, b) => {
-  var distA = (p0.x - a.x) * (p0.x - a.x) + (p0.y - a.y) * (p0.y - a.y)
-  var distB = (p0.x - b.x) * (p0.x - b.x) + (p0.y - b.y) * (p0.y - b.y)
+  const distA = (p0.x - a.x) * (p0.x - a.x) + (p0.y - a.y) * (p0.y - a.y)
+  const distB = (p0.x - b.x) * (p0.x - b.x) + (p0.y - b.y) * (p0.y - b.y)
   return distA - distB
 }

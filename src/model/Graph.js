@@ -1,4 +1,3 @@
-import {isPointInPolygon} from "../graphics/utils/geometryUtils";
 import {getStyleSelector} from "../selectors/style";
 import {indexablePropertyText} from "./properties";
 import {completeWithDefaults} from "./styling";
@@ -42,10 +41,6 @@ export const nodeRingAtPoint = (graph, point) => {
     return distance > nodeRadius && distance < nodeRadius + ringLength
   })
 }
-
-export const nodesInsidePolygon = (graph, path) => graph.nodes
-  .filter(node => node.status !== 'combined' && isPointInPolygon(node.position, path))
-  .map(node => node.id)
 
 export const indexableText = (graph) => {
   const lines = []

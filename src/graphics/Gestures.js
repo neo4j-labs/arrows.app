@@ -1,11 +1,12 @@
-import { drawRing, drawPolygon, drawCircle} from "./canvasRenderer";
+import { drawRing, drawPolygon } from "./canvasRenderer";
 import { ringMargin as defaultRingMargin } from "./constants";
-import { getVoronoi, isPointInPolygon, sortPoints } from "./utils/geometryUtils";
+import { getVoronoi, sortPoints } from "./utils/geometryUtils";
 import {idsMatch} from "../model/Id";
 import { green, blueGreen, purple } from "../model/colors";
 import { Point } from "../model/Point";
 import { getStyleSelector } from "../selectors/style";
 import {StraightArrow} from "./StraightArrow";
+import {getBBoxFromCorners} from "../actions/selectionMarquee";
 
 export default class Gestures {
   constructor(graph, selection, gestures) {
@@ -37,13 +38,13 @@ export default class Gestures {
 
     if (selectionMarquee && graph.nodes.length > 0) {
       const marqueeScreen = {from: transform(selectionMarquee.from), to: transform(selectionMarquee.to)}
-      const bBox = getBbox(selectionMarquee.from, selectionMarquee.to)
+      const boundingBox = getBBoxFromCorners(selectionMarquee)
       const bBoxScreen = getBbox(marqueeScreen.from, marqueeScreen.to)
 
       drawPolygon(ctx, bBoxScreen, null, 'black')
 
       const points = graph.nodes.map(node => node.position)
-        .filter(point => isPointInPolygon(point, bBox))
+        .filter(point => boundingBox.contains(point))
       const voronoi = getVoronoi(points,
         selectionMarquee ? {
           xl: Math.min(selectionMarquee.from.x, selectionMarquee.to.x),

@@ -40,4 +40,11 @@ export default class BoundingBox {
       this.bottom + vector.dy
     )
   }
+
+  contains(point) {
+    return (
+      point.x >= this.left && point.x <= this.right &&
+      point.y >= this.top && point.y <= this.bottom
+    )
+  }
 }
