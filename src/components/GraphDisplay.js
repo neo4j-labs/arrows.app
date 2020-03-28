@@ -17,10 +17,6 @@ class GraphDisplay extends Component {
   constructor(props) {
     super(props)
     props.registerAction(
-      'REMOVE_SELECTION_PATH',
-      () => props.removeSelectionPath()
-    )
-    props.registerAction(
       DUPLICATE_SELECTION,
       () => props.duplicateSelection()
     )

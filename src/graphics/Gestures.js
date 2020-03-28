@@ -16,7 +16,7 @@ export default class Gestures {
 
   draw (ctx, displayOptions) {
     const { graph, selection, gestures } = this
-    const { dragToCreate, selectionPath, selectionMarquee } = gestures
+    const { dragToCreate, selectionMarquee } = gestures
     const viewTransformation = displayOptions.viewTransformation
     const transform = (position) => viewTransformation.transform(position)
     const getBbox = (from, to) => [
@@ -74,13 +74,6 @@ export default class Gestures {
         }
       }
     }
-
-    if (selectionPath.length > 0) {
-      const points = sortPoints(selectionPath.slice(0)).map(point => transform(new Point(point.x, point.y)))
-      drawPolygon(ctx, points, green)
-      points.forEach(point => ctx.circle(point.x, point.y, 3, false, true))
-    }
-
 
     Object.keys(selection.selectedNodeIdMap).forEach(nodeId => {
       if (!idsMatch(nodeId, dragToCreate.sourceNodeId)) {

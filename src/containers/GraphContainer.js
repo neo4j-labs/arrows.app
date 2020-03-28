@@ -7,7 +7,6 @@ import {
   getTransformationHandles
 } from "../selectors/index"
 import {deleteSelection, duplicateSelection} from "../actions/graph"
-import {removeSelectionPath} from "../actions/selectionPath"
 import {selectAll, jumpToNextNode} from "../actions/selection";
 import {computeCanvasSize} from "../model/applicationLayout";
 import { ActionCreators as UndoActionCreators } from 'redux-undo'
@@ -26,7 +25,6 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  removeSelectionPath: () => dispatch(removeSelectionPath()),
   duplicateSelection: () => dispatch(duplicateSelection()),
   deleteSelection: () => dispatch(deleteSelection()),
   selectAll: () => dispatch(selectAll()),

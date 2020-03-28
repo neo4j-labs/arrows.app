@@ -8,7 +8,6 @@ export const DUPLICATE_SELECTION = 'DUPLICATE_SELECTION'
 export const INSPECT = 'INSPECT'
 export const ZOOM_IN = 'ZOOM_IN'
 export const ZOOM_OUT = 'ZOOM_OUT'
-export const REMOVE_SELECTION_PATH = 'REMOVE_SELECTION_PATH'
 export const DELETE_SELECTION = 'DELETE_SELECTION'
 export const MOVE_LEFT = 'MOVE_LEFT'
 export const MOVE_UP = 'MOVE_UP'
@@ -26,7 +25,6 @@ const KeyBindings = {
   [INSPECT]: [{ metaKey: true, code: 73 }],
   [ZOOM_IN]: [{ metaKey: true, code: 187 }],
   [ZOOM_OUT]: [{ metaKey: true, code: 189 }],
-  [REMOVE_SELECTION_PATH]: [{ metaKey: false, code: 27 }],
   [DELETE_SELECTION]: [{ metaKey: false, code: 46 }, { metaKey: false, code: 8 }],
   [MOVE_LEFT]: [{ metaKey: false, shiftKey: 'optional', code: 37 }],
   [MOVE_UP]: [{ metaKey: false, shiftKey: 'optional', code: 38 }],

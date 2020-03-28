@@ -10,7 +10,6 @@ import {
 } from "./graph"
 import {adjustViewport, pan, scroll} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
-import {tryUpdateSelectionPath} from "./selectionPath"
 import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
 import { getEventHandlers } from "../selectors/layers";
 
@@ -30,20 +29,6 @@ export const wheel = (canvasPosition, vector, ctrlKey) => {
   }
 }
 
-export const click = (canvasPosition) => {
-  return function (dispatch, getState) {
-    const state = getState()
-    const mouse = state.mouse
-    const visualGraph = getVisualGraph(state)
-    const graphPosition = toGraphPosition(state, canvasPosition)
-
-    const item = visualGraph.entityAtPoint(graphPosition)
-    if (!mouse.dragging && item === null) {
-      dispatch(tryUpdateSelectionPath(canvasPosition, false))
-    }
-  }
-}
-
 export const doubleClick = (canvasPosition) => {
   return function (dispatch, getState) {
     const state = getState()
@@ -52,8 +37,6 @@ export const doubleClick = (canvasPosition) => {
     const item = visualGraph.entityAtPoint(graphPosition)
     if (item) {
       dispatch(showInspector())
-    } else {
-      dispatch(tryUpdateSelectionPath(canvasPosition, true))
     }
   }
 }
