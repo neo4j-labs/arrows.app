@@ -1,4 +1,4 @@
-import { getVisualGraph, getTransformationHandles, getGraph, getPositionsOfSelectedNodes } from "../selectors/"
+import { getVisualGraph, getTransformationHandles, getPositionsOfSelectedNodes } from "../selectors/"
 import { clearSelection, toggleSelection } from "./selection"
 import { showInspector } from "./applicationLayout";
 import {
@@ -12,9 +12,6 @@ import {adjustViewport, pan, scroll} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {tryUpdateSelectionPath} from "./selectionPath"
 import {selectNodesInMarquee, setMarquee} from "./selectionMarquee"
-import {idsMatch} from "../model/Id";
-import {getStyleSelector} from "../selectors/style";
-import { createClusterGang } from "./gang";
 import { getEventHandlers } from "../selectors/layers";
 
 const LongPressTime = 300
@@ -207,21 +204,6 @@ export const mouseMove = (canvasPosition) => {
       }
     }
   }
-}
-
-const positionsOfSelectedNodes = (state) => {
-  const graph = getGraph(state)
-  const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
-  const nodePositions = []
-  selectedNodes.forEach((nodeId) => {
-    const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
-    nodePositions.push({
-      nodeId: nodeId,
-      position: node.position,
-      radius: getStyleSelector(node, 'radius')(graph)
-    })
-  })
-  return nodePositions
 }
 
 export const mouseUp = () => {
