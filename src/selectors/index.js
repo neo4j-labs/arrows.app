@@ -66,17 +66,19 @@ export const getTransformationHandles = createSelector(
   }
 )
 
-export const getPositionsOfSelectedNodes = (state) => {
-  const graph = getGraph(state)
-  const selectedNodes = Object.keys(state.selection.selectedNodeIdMap)
-  const nodePositions = []
-  selectedNodes.forEach((nodeId) => {
-    const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
-    nodePositions.push({
-      nodeId: nodeId,
-      position: node.position,
-      radius: node.style && node.style.radius || graph.style.radius
+export const getPositionsOfSelectedNodes = createSelector(
+  [getGraph, getSelection],
+  (graph, selection) => {
+    const selectedNodes = Object.keys(selection.selectedNodeIdMap)
+    const nodePositions = []
+    selectedNodes.forEach((nodeId) => {
+      const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
+      nodePositions.push({
+        nodeId: nodeId,
+        position: node.position,
+        radius: node.style && node.style.radius || graph.style.radius
+      })
     })
-  })
-  return nodePositions
-}
+    return nodePositions
+  }
+)
