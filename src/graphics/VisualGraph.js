@@ -25,6 +25,17 @@ export default class VisualGraph {
     return null
   }
 
+  entitiesInBoundingBox(boundingBox) {
+    const nodes = this.graph.nodes.filter(node => boundingBox.contains(node.position))
+      .map(node => ({ ...node, entityType: 'node' }))
+    const relationships = this.relationshipBundles.flatMap(bundle => bundle.routedRelationships)
+      .filter(routedRelationship => boundingBox.contains(routedRelationship.arrow.midPoint()))
+      .map(routedRelationship => routedRelationship.relationship)
+      .map(relationship => ({ ...relationship, entityType: 'relationship' }))
+
+    return [...nodes, ...relationships]
+  }
+
   relationshipAtPoint(point) {
     return this.closestRelationship(point, (relationship, distance) => distance <= relationshipHitTolerance)
   }

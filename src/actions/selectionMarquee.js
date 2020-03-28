@@ -1,6 +1,6 @@
-import {ensureSelected} from "./selection";
-import { getPresentGraph } from "../selectors"
+import {toggleSelection} from "./selection";
 import BoundingBox from "../graphics/utils/BoundingBox";
+import {getVisualGraph} from "../selectors/index";
 
 export const setMarquee = (from, to) => ({
   type: 'SET_MARQUEE',
@@ -11,14 +11,13 @@ export const setMarquee = (from, to) => ({
 export const selectItemsInMarquee = () => {
   return function (dispatch, getState) {
     const state = getState()
-    const graph = getPresentGraph(state)
     const marquee = state.gestures.selectionMarquee
     if (marquee) {
+      const visualGraph = getVisualGraph(state)
       const boundingBox = getBBoxFromCorners(marquee)
-      const selectedNodeIds = graph.nodes.filter(node => boundingBox.contains(node.position))
-        .map(node => node.id)
-      if (selectedNodeIds.length > 0) {
-        dispatch(ensureSelected(selectedNodeIds))
+      const entities = visualGraph.entitiesInBoundingBox(boundingBox)
+      if (entities.length > 0) {
+        dispatch(toggleSelection(entities, 'or'))
       }
     }
   }

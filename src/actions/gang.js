@@ -1,10 +1,8 @@
 import { getCommonCaption } from "../model/gang"
 import { idsMatch, nextAvailableId } from "../model/Id"
-import { moveNodes, moveNodesEndDrag, tryMoveHandle, tryMoveNode } from "./graph"
-import { clearSelection, ensureDeselected } from "./selection";
+import { moveNodes } from "./graph"
+import { clearSelection } from "./selection";
 import { Guides } from "../graphics/Guides";
-import { activateRing, deactivateRing, tryDragRing } from "./dragToCreate";
-import { setMarquee } from "./selectionMarquee";
 import { pan } from "./viewTransformation";
 import { getGraph, getPositionsOfSelectedNodes, getPresentGraph } from "../selectors";
 
@@ -66,7 +64,7 @@ export const removeClusterGang = nodeId => (dispatch, getState) => {
   }
 
   if(selection.selectedNodeIdMap[nodeId]) {
-    dispatch(ensureDeselected([nodeId]))
+    dispatch(clearSelection())
   }
 
   dispatch(removeCluster(nodeId))

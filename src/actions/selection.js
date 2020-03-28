@@ -1,27 +1,19 @@
 import { Vector } from "../model/Vector"
 import { getPresentGraph } from "../selectors"
 
-export const toggleSelection = (entity, additive) => ({
+export const toggleSelection = (entities, mode) => ({
   type: 'TOGGLE_SELECTION',
-  entityType: entity.entityType,
-  id: entity.id,
-  additive
-})
-
-export const ensureSelected = (selectedNodeIds) => ({
-  type: 'ENSURE_SELECTED',
-  selectedNodeIds
-})
-
-export const ensureDeselected = (deselectedNodeIds) => ({
-  type: 'ENSURE_DESELECTED',
-  deselectedNodeIds
+  entities: entities.map(entity => ({
+    entityType: entity.entityType,
+    id: entity.id
+  })),
+  mode
 })
 
 export const selectAll = () => {
   return function (dispatch, getState) {
     const graph = getPresentGraph(getState())
-    dispatch(ensureSelected(graph.nodes.map(node => node.id)))
+    dispatch(toggleSelection(graph.nodes.map(node => ({...node, entityType: 'node'})), 'replace'))
   }
 }
 
@@ -44,16 +36,7 @@ export const jumpToNextNode = (direction, extraKeys) => {
 
       if (nextNode) {
         const multiSelect = extraKeys.shiftKey === true
-        if (multiSelect) {
-          if (currentSelection.selectedNodeIdMap[nextNode.id]) {
-            dispatch(toggleSelection({...currentNode, entityType: 'node'}, true))
-          } else {
-            dispatch(ensureSelected([nextNode.id]))
-          }
-        } else {
-          dispatch(clearSelection())
-          dispatch(ensureSelected([nextNode.id]))
-        }
+        dispatch(toggleSelection({...currentNode, entityType: 'node'}, multiSelect ? 'xor' : 'replace'))
       }
     }
   }

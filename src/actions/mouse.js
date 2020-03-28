@@ -56,12 +56,12 @@ export const mouseDown = (canvasPosition, metaKey) => {
       if (item) {
         switch (item.entityType) {
           case 'node':
-            dispatch(toggleSelection(item, metaKey))
+            dispatch(toggleSelection([item], metaKey ? 'xor' : 'at-least'))
             dispatch(mouseDownOnNode(item, canvasPosition, graphPosition))
             break
 
           case 'relationship':
-            dispatch(toggleSelection(item, metaKey))
+            dispatch(toggleSelection([item], metaKey ? 'xor' : 'at-least'))
             break
 
           case 'nodeRing':
