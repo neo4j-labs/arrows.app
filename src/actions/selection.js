@@ -1,4 +1,3 @@
-import { Vector } from "../model/Vector"
 import { getPresentGraph } from "../selectors"
 
 export const toggleSelection = (entities, mode) => ({
@@ -23,8 +22,8 @@ export const clearSelection = () => ({
 
 export const jumpToNextNode = (direction, extraKeys) => {
   return function (dispatch, getState) {
-    const { viewTransformation, applicationLayout, graph } = getState()
-    const maxDimension = Math.max(applicationLayout.windowSize.width, applicationLayout.windowSize.height) / viewTransformation.scale
+    const state = getState()
+    const graph = getPresentGraph(state)
 
     const currentSelection = getState().selection
     const nodeIds = Object.keys(currentSelection.selectedNodeIdMap)
@@ -32,87 +31,35 @@ export const jumpToNextNode = (direction, extraKeys) => {
 
     if (currentNodeId) {
       const currentNode = graph.nodes.find(node => node.id === currentNodeId)
-      const nextNode = getNextNode(currentNode, graph.nodes, direction, maxDimension)
+      const nextNode = getNextNode(currentNode, graph.nodes, direction)
 
       if (nextNode) {
         const multiSelect = extraKeys.shiftKey === true
-        dispatch(toggleSelection({...currentNode, entityType: 'node'}, multiSelect ? 'xor' : 'replace'))
+        dispatch(toggleSelection([{...nextNode, entityType: 'node'}], multiSelect ? 'xor' : 'replace'))
       }
     }
   }
 }
 
-const getNextNode = (node, nodes, direction, maxDimension) => {
-  let nextNode
-  const position = node.position
-
-  const isPointBetween = (center, point1, point2, candidate) => {
-    const sign1 = (candidate.x - center.x) * (point1.y - center.y) - (candidate.y - center.y) * (point1.x - center.x)
-    const sign2 = (candidate.x - center.x) * (point2.y - center.y) - (candidate.y - center.y) * (point2.x - center.x)
-    return sign1 > 0 && sign2 < 0 || sign1 < 0 && sign2 > 0 || (sign1 * sign2 === 0)
+const getNextNode = (node, nodes, direction) => {
+  const angles = {
+    LEFT: -Math.PI,
+    UP: -Math.PI / 2,
+    RIGHT: 0,
+    DOWN: Math.PI / 2
   }
-
-  const getCandidates = direction => {
-    switch (direction) {
-      case 'LEFT': {
-        const topVector = new Vector(-1, -1)
-        const bottomVector = new Vector(-1, 1)
-
-        const topPoint = node.position.translate(topVector.scale(maxDimension))
-        const bottomPoint = node.position.translate(bottomVector.scale(maxDimension))
-
-        return nodes.filter(candidate =>
-          candidate.position.x < node.position.x && isPointBetween(node.position, topPoint, bottomPoint, candidate.position)
-        )
-      }
-      case 'UP': {
-        const leftVector = new Vector(-1, -1)
-        const rightVector = new Vector(1, -1)
-
-        const leftPoint = node.position.translate(leftVector.scale(maxDimension))
-        const rightPoint = node.position.translate(rightVector.scale(maxDimension))
-
-        return nodes.filter(candidate =>
-          candidate.position.y < node.position.y && isPointBetween(node.position, leftPoint, rightPoint, candidate.position)
-        )
-      }
-      case 'RIGHT': {
-        const topVector = new Vector(1, -1)
-        const bottomVector = new Vector(1, 1)
-
-        const topPoint = node.position.translate(topVector.scale(maxDimension))
-        const bottomPoint = node.position.translate(bottomVector.scale(maxDimension))
-
-        return nodes.filter(candidate => {
-          return candidate.position.x > node.position.x && isPointBetween(node.position, topPoint, bottomPoint, candidate.position)
-        })
-      }
-      case 'DOWN': {
-        const leftVector = new Vector(-1, 1)
-        const rightVector = new Vector(1, 1)
-
-        const leftPoint = node.position.translate(leftVector.scale(maxDimension))
-        const rightPoint = node.position.translate(rightVector.scale(maxDimension))
-
-        return nodes.filter(candidate =>
-          candidate.position.y > node.position.y && isPointBetween(node.position, leftPoint, rightPoint, candidate.position)
-        )
-        return nodes.filter(candidate => candidate.position.y > node.position.y)
-      }
-      default:
-        return []
-    }
-  }
-
-  const candidates = getCandidates(direction)
-
-  nextNode = candidates.reduce((closest, candidate) => {
-    if (position.vectorFrom(candidate.position).distance() < position.vectorFrom(closest.position).distance()) {
-      return candidate
-    } else {
-      return closest
-    }
-  }, candidates[0])
-
-  return nextNode
+  const idealAngle = angles[direction]
+  return nodes
+    .filter(candidateNode => candidateNode.id !== node.id)
+    .map(candidateNode => ({
+      node: candidateNode,
+      vector: candidateNode.position.vectorFrom(node.position),
+    }))
+    .filter(candidate => {
+      const angle = candidate.vector.angle()
+      return (angle > idealAngle - Math.PI / 4 && angle < idealAngle + Math.PI / 4) ||
+        (angle > idealAngle + Math.PI * 7 / 4 && angle < idealAngle + Math.PI * 9 / 4)
+    })
+    .sort((a, b) => a.vector.distance() - b.vector.distance())
+    .map(candidate => candidate.node)[0]
 }

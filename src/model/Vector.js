@@ -35,11 +35,6 @@ export class Vector {
     return Math.sqrt(this.dx * this.dx + this.dy * this.dy)
   }
 
-  unit() {
-    const distance = this.distance()
-    return new Vector(this.dx / distance, this.dy / distance)
-  }
-
   angle() {
     return Math.atan2(this.dy, this.dx)
   }
