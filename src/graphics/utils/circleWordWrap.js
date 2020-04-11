@@ -122,6 +122,8 @@ export const fitTextToCircle = (text, radius, measureWidth, lineHeight) => {
   })();
 
   const bestLayout = moreLayouts.slice(0).sort((a, b) => biggestGap(a) - biggestGap(b))[0]
+    || ({ lines: [] })
+
   return {
     top: Math.min(...bestLayout.lines.map(line => line.extent.top)),
     lines: bestLayout.lines.sort((a, b) => a.index - b.index).map(line => line.text)
