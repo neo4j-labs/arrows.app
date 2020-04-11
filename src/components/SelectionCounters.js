@@ -1,11 +1,12 @@
 import React from 'react'
 import {Menu, Icon} from 'semantic-ui-react'
+import {selectedNodeIds, selectedRelationshipIds} from "../model/selection";
 
 export const describeSelection = (selection, headerHeight) => {
   const parts = []
 
-  const pushSelectionPart = (map, entityType, iconName) => {
-    const length = Object.keys(map).length
+  const pushSelectionPart = (ids, entityType, iconName) => {
+    const length = ids.length
     switch (length) {
       case 0:
         break
@@ -25,8 +26,8 @@ export const describeSelection = (selection, headerHeight) => {
     }
   }
 
-  pushSelectionPart(selection.selectedNodeIdMap, "node", 'circle')
-  pushSelectionPart(selection.selectedRelationshipIdMap, "relationship", 'long arrow alternate right')
+  pushSelectionPart(selectedNodeIds(selection), "node", 'circle')
+  pushSelectionPart(selectedRelationshipIds(selection), "relationship", 'long arrow alternate right')
 
   return parts
 }

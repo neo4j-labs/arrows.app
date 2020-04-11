@@ -5,8 +5,8 @@ import VisualGraph from "../graphics/VisualGraph";
 import TransformationHandles from "../graphics/TransformationHandles";
 import {bundle} from "../model/graph/relationshipBundling";
 import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
-import { idsMatch } from "../model/Id";
 import CanvasAdaptor from "../graphics/utils/CanvasAdaptor";
+import {relationshipSelected, selectedNodes} from "../model/selection";
 
 const getSelection = (state) => state.selection
 const getViewTransformation = (state) => state.viewTransformation
@@ -48,7 +48,7 @@ export const getVisualGraph = createSelector(
         relationship,
         visualNodes[relationship.fromId],
         visualNodes[relationship.toId],
-        selection.selectedRelationshipIdMap[relationship.id],
+        relationshipSelected(selection, relationship.id),
         graph),
     )
     const relationshipBundles = bundle(visualRelationships).map(bundle => {
@@ -69,12 +69,10 @@ export const getTransformationHandles = createSelector(
 export const getPositionsOfSelectedNodes = createSelector(
   [getGraph, getSelection],
   (graph, selection) => {
-    const selectedNodes = Object.keys(selection.selectedNodeIdMap)
     const nodePositions = []
-    selectedNodes.forEach((nodeId) => {
-      const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
+    selectedNodes(graph, selection).forEach((node) => {
       nodePositions.push({
-        nodeId: nodeId,
+        nodeId: node.id,
         position: node.position,
         radius: node.style && node.style.radius || graph.style.radius
       })

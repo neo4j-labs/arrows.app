@@ -7,6 +7,7 @@ import { Point } from "../model/Point";
 import { getStyleSelector } from "../selectors/style";
 import {StraightArrow} from "./StraightArrow";
 import {getBBoxFromCorners} from "../actions/selectionMarquee";
+import {selectedNodeIds} from "../model/selection";
 
 export default class Gestures {
   constructor(graph, selection, gestures) {
@@ -76,7 +77,7 @@ export default class Gestures {
       }
     }
 
-    Object.keys(selection.selectedNodeIdMap).forEach(nodeId => {
+    selectedNodeIds(selection).forEach(nodeId => {
       if (!idsMatch(nodeId, dragToCreate.sourceNodeId)) {
         const node = graph.nodes.find((node) => idsMatch(node.id, nodeId))
         if (node) {

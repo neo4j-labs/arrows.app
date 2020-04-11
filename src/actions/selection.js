@@ -1,4 +1,5 @@
 import { getPresentGraph } from "../selectors"
+import {nodeSelected, selectedNodeIds} from "../model/selection";
 
 export const toggleSelection = (entities, mode) => ({
   type: 'TOGGLE_SELECTION',
@@ -26,7 +27,7 @@ export const jumpToNextNode = (direction, extraKeys) => {
     const graph = getPresentGraph(state)
 
     const currentSelection = getState().selection
-    const nodeIds = Object.keys(currentSelection.selectedNodeIdMap)
+    const nodeIds = selectedNodeIds(currentSelection)
     const currentNodeId = nodeIds[nodeIds.length - 1]
 
     if (currentNodeId) {
@@ -35,7 +36,15 @@ export const jumpToNextNode = (direction, extraKeys) => {
 
       if (nextNode) {
         const multiSelect = extraKeys.shiftKey === true
-        dispatch(toggleSelection([{...nextNode, entityType: 'node'}], multiSelect ? 'xor' : 'replace'))
+        if (multiSelect) {
+          if (nodeSelected(currentSelection, nextNode.id)) {
+            dispatch(toggleSelection([{...currentNode, entityType: 'node'}], 'xor'))
+          } else {
+            dispatch(toggleSelection([{...nextNode, entityType: 'node'}], 'or'))
+          }
+        } else {
+          dispatch(toggleSelection([{...nextNode, entityType: 'node'}], 'replace'))
+        }
       }
     }
   }

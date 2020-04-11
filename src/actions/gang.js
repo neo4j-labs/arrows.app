@@ -5,6 +5,7 @@ import { clearSelection } from "./selection";
 import { Guides } from "../graphics/Guides";
 import { pan } from "./viewTransformation";
 import { getGraph, getPositionsOfSelectedNodes, getPresentGraph } from "../selectors";
+import {nodeSelected} from "../model/selection";
 
 export const createClusterGang = (nodePositions, initialPositions) => (dispatch, getState) => {
   const state = getState()
@@ -63,7 +64,7 @@ export const removeClusterGang = nodeId => (dispatch, getState) => {
     dispatch(moveNodes(null, null, newMemberPositions, new Guides(), true))
   }
 
-  if(selection.selectedNodeIdMap[nodeId]) {
+  if (nodeSelected(selection, nodeId)) {
     dispatch(clearSelection())
   }
 

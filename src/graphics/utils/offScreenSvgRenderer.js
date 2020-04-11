@@ -9,8 +9,7 @@ export const renderSvg = (graph) => {
   const renderState = {
     graph,
     selection: {
-      selectedNodeIdMap: {},
-      selectedRelationshipIdMap: {}
+      entities: []
     }
   }
   const visualGraph = getVisualGraph(renderState)

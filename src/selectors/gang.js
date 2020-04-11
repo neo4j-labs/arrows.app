@@ -1,5 +1,6 @@
 import { drawRing } from "../graphics/canvasRenderer";
 import { redActive } from "../model/colors";
+import {nodeSelected} from "../model/selection";
 
 export default ({ graph, gangs }) => {
   if (!gangs || gangs.length === 0) {
@@ -55,7 +56,7 @@ const applyCluster = (graph, cluster) => {
 
 export const selectorForInspection = ({ graph, gangs, selection }) => {
   const simplifiedNodes = gangs.reduce((nodes, gang) => {
-    if (selection.selectedNodeIdMap[gang.id]) {
+    if (nodeSelected(selection, gang.id)) {
       return nodes.concat(gang.members.map(member => graph.nodes.find(node => node.id === member.nodeId)))
     } else {
       return nodes

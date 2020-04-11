@@ -5,6 +5,11 @@ import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
 import { getGraph, getPresentGraph } from "../selectors";
+import {
+  nodeSelected,
+  selectedNodeIdMap, selectedNodeIds, selectedNodes,
+  selectedRelationshipIdMap, selectedRelationshipIds
+} from "../model/selection";
 
 export const createNode = () => (dispatch, getState) => {
   const { viewTransformation, applicationLayout } = getState()
@@ -152,7 +157,7 @@ export const tryMoveNode = ({ nodeId, oldMousePosition, newMousePosition, forced
     const { viewTransformation, mouse } = state
     const graph = getGraph(state)
     let naturalPosition
-    const otherSelectedNodes = Object.keys(getState().selection.selectedNodeIdMap).filter((selectedNodeId) => selectedNodeId !== nodeId)
+    const otherSelectedNodes = selectedNodeIds(state.selection).filter((selectedNodeId) => selectedNodeId !== nodeId)
     const activelyMovedNode = graph.nodes.find((node) => idsMatch(node.id, nodeId))
 
     if (forcedNodePosition) {
@@ -307,8 +312,8 @@ export const deleteSelection = () => {
     const selection = getState().selection
     const relationships = getPresentGraph(getState()).relationships
 
-    const nodeIdMap = {...selection.selectedNodeIdMap}
-    const relationshipIdMap = {...selection.selectedRelationshipIdMap}
+    const nodeIdMap = selectedNodeIdMap(selection)
+    const relationshipIdMap = selectedRelationshipIdMap(selection)
 
     relationships.forEach(relationship => {
       if (!relationshipIdMap[relationship.id] && (nodeIdMap[relationship.fromId] || nodeIdMap[relationship.toId])) {
@@ -348,30 +353,29 @@ export const duplicateSelection = () => {
     const graph = getPresentGraph(state)
     const actionMemos = state.actionMemos
 
-    const selectedNodes = graph.nodes.filter(n => selection.selectedNodeIdMap.hasOwnProperty(n.id))
-    if (selectedNodes.length > 0) {
-      const offset = duplicateNodeOffset(graph, selectedNodes, actionMemos)
+    const nodesToDuplicate = selectedNodes(graph, selection)
+    if (nodesToDuplicate.length > 0) {
+      const offset = duplicateNodeOffset(graph, nodesToDuplicate, actionMemos)
 
       const nodeIdMap = {}
       const oldNodeToNewNodeMap = {}
       let newNodeId = nextAvailableId(graph.nodes)
-      Object.keys(selection.selectedNodeIdMap).forEach((nodeId) => {
-        const oldNode = graph.nodes.find(r => idsMatch(nodeId, r.id))
+      nodesToDuplicate.forEach((oldNode) => {
         nodeIdMap[newNodeId] = {
-          oldNodeId: nodeId,
+          oldNodeId: oldNode.id,
           position: oldNode.position.translate(offset)
         }
-        oldNodeToNewNodeMap[nodeId] = newNodeId
+        oldNodeToNewNodeMap[oldNode.id] = newNodeId
         newNodeId = nextId(newNodeId)
       })
 
       const relationshipsToBeDuplicated = {}
       graph.relationships.forEach(relationship => {
-        if (selection.selectedNodeIdMap[relationship.fromId] || selection.selectedNodeIdMap[relationship.toId]) {
+        if (nodeSelected(selection, relationship.fromId) || nodeSelected(selection, relationship.toId)) {
           relationshipsToBeDuplicated[relationship.id] = true
         }
       })
-      Object.keys(selection.selectedRelationshipIdMap).forEach((relationshipId) => {
+      selectedRelationshipIds(selection).forEach((relationshipId) => {
         relationshipsToBeDuplicated[relationshipId] = true
       })
 

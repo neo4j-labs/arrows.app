@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
 import {Menu, Icon, Button } from 'semantic-ui-react'
+import {selectedNodeIds, selectedRelationshipIds} from "../model/selection";
 
 const visibleMode = selection => {
-  const { selectedNodeIdMap, selectedRelationshipIdMap } = selection
   let visible = 0
-  if (selectedNodeIdMap && Object.keys(selectedNodeIdMap).length > 0) {
+  if (selectedNodeIds(selection).length > 0) {
     visible |= 1
   }
-  if (selectedRelationshipIdMap && Object.keys(selectedRelationshipIdMap).length > 0) {
+  if (selectedRelationshipIds(selection).length > 0) {
     visible |= 2
   }
 

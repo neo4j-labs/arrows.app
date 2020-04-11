@@ -7,8 +7,7 @@ export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground
   const renderState = {
     graph,
     selection: {
-      selectedNodeIdMap: {},
-      selectedRelationshipIdMap: {}
+      entities: []
     }
   }
   const visualGraph = getVisualGraph(renderState)

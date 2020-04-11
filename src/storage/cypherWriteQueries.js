@@ -2,6 +2,7 @@ import {stringTypeToDatabaseType} from "../model/Relationship";
 import {propertyKeyToDatabaseKey, styleKeyToDatabaseKey} from "../model/properties";
 import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
 import {labelToDatabaseLabel} from "../model/labels";
+import {selectedNodeIds, selectedRelationshipIds} from "../model/selection";
 
 export const writeQueriesForAction = (action, graph) => {
 
@@ -58,7 +59,7 @@ export const writeQueriesForAction = (action, graph) => {
     case 'SET_NODE_CAPTION': {
       return (session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
         'SET n._caption = $caption', {
-        ids: Object.keys(action.selection.selectedNodeIdMap),
+        ids: selectedNodeIds(action.selection),
         caption: action.caption
       })
     }
@@ -66,7 +67,7 @@ export const writeQueriesForAction = (action, graph) => {
     case 'ADD_LABEL': {
       return (session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
         'SET n:`' + labelToDatabaseLabel(action.label) + '`', {
-        ids: Object.keys(action.selection.selectedNodeIdMap)
+        ids: selectedNodeIds(action.selection)
       })
     }
 
@@ -74,14 +75,14 @@ export const writeQueriesForAction = (action, graph) => {
       return (session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
         'SET n:`' + labelToDatabaseLabel(action.newLabel) + '`' +
         'REMOVE n:`' + labelToDatabaseLabel(action.oldLabel) + '`', {
-        ids: Object.keys(action.selection.selectedNodeIdMap)
+        ids: selectedNodeIds(action.selection)
       })
     }
 
     case 'REMOVE_LABEL': {
       return (session) => session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
         'REMOVE n:`' + labelToDatabaseLabel(action.label) + '`', {
-        ids: Object.keys(action.selection.selectedNodeIdMap)
+        ids: selectedNodeIds(action.selection)
       })
     }
 
@@ -90,12 +91,12 @@ export const writeQueriesForAction = (action, graph) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'SET n.`' + propertyKeyToDatabaseKey(action.newPropertyKey) + '` = n.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
           'REMOVE n.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '`', {
-          ids: Object.keys(action.selection.selectedNodeIdMap)
+          ids: selectedNodeIds(action.selection)
         });
         return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
           'SET r.`' + propertyKeyToDatabaseKey(action.newPropertyKey) + '` = r.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '` ' +
           'REMOVE r.`' + propertyKeyToDatabaseKey(action.oldPropertyKey) + '`', {
-          ids: Object.keys(action.selection.selectedRelationshipIdMap)
+          ids: selectedRelationshipIds(action.selection)
         });
       }
     }
@@ -106,12 +107,12 @@ export const writeQueriesForAction = (action, graph) => {
       return (session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'SET n += $properties', {
-          ids: Object.keys(action.selection.selectedNodeIdMap),
+          ids: selectedNodeIds(action.selection),
           properties: properties
         });
         return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
           'SET r += $properties', {
-          ids: Object.keys(action.selection.selectedRelationshipIdMap),
+          ids: selectedRelationshipIds(action.selection),
           properties: properties
         });
       }
@@ -126,7 +127,7 @@ export const writeQueriesForAction = (action, graph) => {
         queries.push({
           cypher: 'MATCH (n:Diagram0) WHERE n._id IN $ids SET n += $properties',
           params: {
-            ids: Object.keys(action.selection.selectedNodeIdMap),
+            ids: selectedNodeIds(action.selection),
             properties: styleProperties
           }
         })
@@ -136,7 +137,7 @@ export const writeQueriesForAction = (action, graph) => {
         queries.push({
           cypher: 'MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids SET r += $properties',
           params: {
-            ids: Object.keys(action.selection.selectedRelationshipIdMap),
+            ids: selectedRelationshipIds(action.selection),
             properties: styleProperties
           }
         })
@@ -152,11 +153,11 @@ export const writeQueriesForAction = (action, graph) => {
       return (session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'REMOVE n.`' + styleKeyToDatabaseKey(action.key) + '`', {
-          ids: Object.keys(action.selection.selectedNodeIdMap)
+          ids: selectedNodeIds(action.selection)
         });
         return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
           'REMOVE r.`' + styleKeyToDatabaseKey(action.key) + '`', {
-          ids: Object.keys(action.selection.selectedRelationshipIdMap)
+          ids: selectedRelationshipIds(action.selection)
         });
       }
     }
@@ -165,11 +166,11 @@ export const writeQueriesForAction = (action, graph) => {
       return (session) => {
         session.run('MATCH (n:Diagram0) WHERE n._id IN $ids ' +
           'REMOVE n.`' + propertyKeyToDatabaseKey(action.key) + '`', {
-          ids: Object.keys(action.selection.selectedNodeIdMap)
+          ids: selectedNodeIds(action.selection)
         });
         return session.run('MATCH (:Diagram0)-[r]->(:Diagram0) WHERE r._id IN $ids ' +
           'REMOVE r.`' + propertyKeyToDatabaseKey(action.key) + '`', {
-          ids: Object.keys(action.selection.selectedRelationshipIdMap)
+          ids: selectedRelationshipIds(action.selection)
         });
       }
     }
@@ -207,7 +208,7 @@ export const writeQueriesForAction = (action, graph) => {
       const newType = stringTypeToDatabaseType(action.relationshipType)
       return (session) => {
         let result = session
-        Object.keys(action.selection.selectedRelationshipIdMap).forEach((relationshipId) => {
+        selectedRelationshipIds(action.selection).forEach((relationshipId) => {
           result = session.run(`MATCH (n)-[r]->(m)
             WHERE r._id = $id
             CREATE (n)-[r2:\`${newType}\`]->(m)
@@ -287,7 +288,7 @@ export const writeQueriesForAction = (action, graph) => {
     case 'REVERSE_RELATIONSHIPS': {
       return (session) => {
         let result = session
-        Object.keys(action.selection.selectedRelationshipIdMap).forEach((relationshipId) => {
+        selectedRelationshipIds(action.selection).forEach((relationshipId) => {
           const relationship = graph.relationships.find(rel => rel.id === relationshipId)
           const type = stringTypeToDatabaseType(relationship.type)
           result = session.run(`MATCH (s1)-[old]->(s2)

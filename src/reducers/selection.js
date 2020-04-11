@@ -1,19 +1,18 @@
-const entitySelection = (entityType) => {
-  switch (entityType) {
-    case 'node':
-      return 'selectedNodeIdMap'
-    case 'relationship':
-      return 'selectedRelationshipIdMap'
-  }
+const allEntitiesSelected = (state, entities) => {
+  return entities.every(oldEntity =>
+    state.entities.some(newEntity =>
+      entitiesMatch(oldEntity, newEntity)
+    )
+  )
 }
 
-const allEntitiesSelected = (state, entities) => {
-  return entities.every(entity => state[entitySelection(entity.entityType)][entity.id])
-}
+const entitiesMatch = (entity1, entity2) => (
+  entity1.entityType === entity2.entityType &&
+  entity1.id === entity2.id
+)
 
 export default function selection(state = {
-  selectedNodeIdMap: {},
-  selectedRelationshipIdMap: {}
+  entities: []
 }, action) {
   switch (action.type) {
     case 'TOGGLE_SELECTION':
@@ -21,102 +20,79 @@ export default function selection(state = {
         return state
       }
 
-      const newState = {...state}
       switch (action.mode) {
         case 'xor':
-          newState.selectedNodeIdMap = {...state.selectedNodeIdMap}
-          newState.selectedRelationshipIdMap = {...state.selectedRelationshipIdMap}
-          action.entities.forEach(entity => {
-            const newSelection = newState[entitySelection(entity.entityType)]
-            if (newSelection[entity.id]) {
-              delete newSelection[entity.id]
-            } else {
-              newSelection[entity.id] = true
-            }
-          })
-          break
-
+          return {
+            entities: state.entities
+              .filter(oldEntity => {
+                return !action.entities.some(newEntity =>
+                  entitiesMatch(oldEntity, newEntity)
+                )
+              }).concat(action.entities.filter(newEntity => {
+                return !state.entities.some(oldEntity =>
+                  entitiesMatch(oldEntity, newEntity)
+                )
+              }))
+          }
         case 'or':
-          newState.selectedNodeIdMap = {...state.selectedNodeIdMap}
-          newState.selectedRelationshipIdMap = {...state.selectedRelationshipIdMap}
-          action.entities.forEach(entity => {
-            const newSelection = newState[entitySelection(entity.entityType)]
-            newSelection[entity.id] = true
-          })
-          break
+          return {
+            entities: state.entities
+              .concat(action.entities.filter(newEntity => {
+                return !state.entities.some(oldEntity =>
+                  entitiesMatch(oldEntity, newEntity)
+                )
+              }))
+          }
 
         case 'replace':
         case 'at-least':
-          newState.selectedNodeIdMap = {}
-          newState.selectedRelationshipIdMap = {}
-          action.entities.forEach(entity => {
-            const newSelection = newState[entitySelection(entity.entityType)]
-            newSelection[entity.id] = true
-          })
-          break
+          return {
+            entities: action.entities
+          }
       }
-      return newState
+      break
 
     case 'CLEAR_SELECTION':
+    case 'DELETE_NODES_AND_RELATIONSHIPS' :
       return {
-        ...state,
-        selectedNodeIdMap: {},
-        selectedRelationshipIdMap: {}
+        entities: []
       }
     case 'CREATE_NODE': {
-      const oneNodeSelected = {}
-      oneNodeSelected[action.newNodeId] = true
       return {
-        ...state,
-        selectedNodeIdMap: oneNodeSelected,
-        selectedRelationshipIdMap: {}
+        entities: [{
+          entityType: 'node',
+          id: action.newNodeId
+        }]
       }
     }
     case 'CREATE_NODE_AND_RELATIONSHIP': {
-      const oneNodeSelected = {}
-      oneNodeSelected[action.targetNodeId] = true
       return {
-        ...state,
-        selectedNodeIdMap: oneNodeSelected,
-        selectedRelationshipIdMap: {}
+        entities: [{
+          entityType: 'node',
+          id: action.targetNodeId
+        }]
       }
     }
     case 'CONNECT_NODES': {
-      const oneRelationshipSelected = {}
-      oneRelationshipSelected[action.newRelationshipId] = true
       return {
-        ...state,
-        selectedNodeIdMap: {},
-        selectedRelationshipIdMap: oneRelationshipSelected
+        entities: [{
+          entityType: 'relationship',
+          id: action.newRelationshipId
+        }]
       }
     }
     case 'DUPLICATE_NODES_AND_RELATIONSHIPS' :
       return {
-        ...state,
-        selectedNodeIdMap: Object.keys(action.nodeIdMap).reduce((newMap, nodeId) => {
-          newMap[nodeId] = true
-          return newMap
-        }, {}),
-        selectedRelationshipIdMap: Object.keys(action.relationshipIdMap).reduce((newMap, relId) => {
-          newMap[relId] = true
-          return newMap
-        }, {})
-      }
-    case 'DELETE_NODES_AND_RELATIONSHIPS' :
-      return {
-        ...state,
-        selectedNodeIdMap: Object.keys(state.selectedNodeIdMap).reduce((newMap, nodeId) => {
-          if (!action.nodeIdMap[nodeId]) {
-            newMap[nodeId] = true
-          }
-          return newMap
-        }, {}),
-        selectedRelationshipIdMap: Object.keys(state.selectedRelationshipIdMap).reduce((newMap, relId) => {
-          if (!action.relationshipIdMap[relId]) {
-            newMap[relId] = true
-          }
-          return newMap
-        }, {})
+        entities: [
+          ...Object.keys(action.nodeIdMap).map(nodeId => ({
+            entityType: 'node',
+            id: nodeId
+          })),
+          ...Object.keys(action.relationshipIdMap).map(relId => ({
+            entityType: 'relationship',
+            id: relId
+          }))
+        ]
       }
     default:
       return state

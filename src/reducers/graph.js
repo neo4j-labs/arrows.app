@@ -5,6 +5,7 @@ import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeA
 import { idsMatch } from "../model/Id";
 import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
 import undoable from 'redux-undo'
+import {nodeSelected, relationshipSelected} from "../model/selection";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
@@ -63,7 +64,7 @@ const graph = (state = emptyGraph(), action) => {
     case 'SET_NODE_CAPTION': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setCaption(node, action.caption) : node),
+        nodes: state.nodes.map((node) => nodeSelected(action.selection, node.id) ? setCaption(node, action.caption) : node),
         relationships: state.relationships
       }
     }
@@ -71,7 +72,7 @@ const graph = (state = emptyGraph(), action) => {
     case 'ADD_LABEL': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? addLabel(node, action.label) : node),
+        nodes: state.nodes.map((node) => nodeSelected(action.selection, node.id) ? addLabel(node, action.label) : node),
         relationships: state.relationships
       }
     }
@@ -79,7 +80,7 @@ const graph = (state = emptyGraph(), action) => {
     case 'RENAME_LABEL': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? renameLabel(node, action.oldLabel, action.newLabel) : node),
+        nodes: state.nodes.map((node) => nodeSelected(action.selection, node.id) ? renameLabel(node, action.oldLabel, action.newLabel) : node),
         relationships: state.relationships
       }
     }
@@ -87,7 +88,7 @@ const graph = (state = emptyGraph(), action) => {
     case 'REMOVE_LABEL': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeLabel(node, action.label) : node),
+        nodes: state.nodes.map((node) => nodeSelected(action.selection, node.id) ? removeLabel(node, action.label) : node),
         relationships: state.relationships
       }
     }
@@ -95,16 +96,16 @@ const graph = (state = emptyGraph(), action) => {
     case 'RENAME_PROPERTY': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? renameProperty(node, action.oldPropertyKey, action.newPropertyKey) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? renameProperty(relationship, action.oldPropertyKey, action.newPropertyKey) : relationship)
+        nodes: state.nodes.map((node) => nodeSelected(action.selection, node.id) ? renameProperty(node, action.oldPropertyKey, action.newPropertyKey) : node),
+        relationships: state.relationships.map((relationship) => relationshipSelected(action.selection, relationship.id) ? renameProperty(relationship, action.oldPropertyKey, action.newPropertyKey) : relationship)
       }
     }
 
     case 'SET_PROPERTY': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? setProperty(node, action.key, action.value) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? setProperty(relationship, action.key, action.value) : relationship)
+        nodes: state.nodes.map((node) => nodeSelected(action.selection, node.id) ? setProperty(node, action.key, action.value) : node),
+        relationships: state.relationships.map((relationship) => relationshipSelected(action.selection, relationship.id) ? setProperty(relationship, action.key, action.value) : relationship)
       }
     }
 
@@ -112,11 +113,11 @@ const graph = (state = emptyGraph(), action) => {
       return {
         style: state.style,
         nodes: state.nodes.map((node) =>
-          nodeStyleAttributes.includes(action.key) && action.selection.selectedNodeIdMap[node.id]
+          nodeStyleAttributes.includes(action.key) && nodeSelected(action.selection, node.id)
             ? setArrowsProperty(node, action.key, action.value)
             : node),
         relationships: state.relationships.map((relationship) =>
-          relationshipStyleAttributes.includes(action.key) && action.selection.selectedRelationshipIdMap[relationship.id]
+          relationshipStyleAttributes.includes(action.key) && relationshipSelected(action.selection, relationship.id)
             ? setArrowsProperty(relationship, action.key, action.value)
             : relationship)
       }
@@ -125,16 +126,16 @@ const graph = (state = emptyGraph(), action) => {
     case 'REMOVE_PROPERTY': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeProperty(node, action.key) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? removeProperty(relationship, action.key) : relationship)
+        nodes: state.nodes.map((node) => nodeSelected(action.selection, node.id) ? removeProperty(node, action.key) : node),
+        relationships: state.relationships.map((relationship) => relationshipSelected(action.selection, relationship.id) ? removeProperty(relationship, action.key) : relationship)
       }
     }
 
     case 'REMOVE_ARROWS_PROPERTY': {
       return {
         style: state.style,
-        nodes: state.nodes.map((node) => action.selection.selectedNodeIdMap[node.id] ? removeArrowsProperty(node, action.key) : node),
-        relationships: state.relationships.map((relationship) => action.selection.selectedRelationshipIdMap[relationship.id] ? removeArrowsProperty(relationship, action.key) : relationship)
+        nodes: state.nodes.map((node) => nodeSelected(action.selection, node.id) ? removeArrowsProperty(node, action.key) : node),
+        relationships: state.relationships.map((relationship) => relationshipSelected(action.selection, relationship.id) ? removeArrowsProperty(relationship, action.key) : relationship)
       }
     }
 
@@ -170,7 +171,7 @@ const graph = (state = emptyGraph(), action) => {
       return {
         style: state.style,
         nodes: state.nodes,
-        relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? setType(relationship, action.relationshipType) : relationship)
+        relationships: state.relationships.map(relationship => relationshipSelected(action.selection, relationship.id) ? setType(relationship, action.relationshipType) : relationship)
       }
 
     case 'DUPLICATE_NODES_AND_RELATIONSHIPS' :
@@ -216,7 +217,7 @@ const graph = (state = emptyGraph(), action) => {
     case 'REVERSE_RELATIONSHIPS':
       return {
         ...state,
-        relationships: state.relationships.map(relationship => action.selection.selectedRelationshipIdMap[relationship.id] ? reverse(relationship) : relationship)
+        relationships: state.relationships.map(relationship => relationshipSelected(action.selection, relationship.id) ? reverse(relationship) : relationship)
       }
 
     case 'FETCHING_GRAPH_SUCCEEDED':
