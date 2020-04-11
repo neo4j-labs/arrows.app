@@ -51,6 +51,9 @@ export const styleAttributes = {
   'type-border-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 1},
   'type-border-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
   'type-padding': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 2},
+  'margin-start': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
+  'margin-end': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
+  'margin-peer': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 20},
 }
 
 export const nodeStyleAttributes = Object.keys(styleAttributes).filter(key => {
@@ -64,7 +67,7 @@ export const relationshipStyleAttributes = Object.keys(styleAttributes).filter(k
 export const styleTypes = {
   'radius': { editor: 'slider', min: 1, max: 1000, step: 5 },
   'line-width': {  editor: 'slider', min: 0, max: 25, step: 1 },
-  'spacing': {  editor: 'slider', min: 0, max: 25, step: 1 },
+  'spacing': {  editor: 'slider', min: 0, max: 50, step: 1 },
   'font-size': {  editor: 'slider', min: 5, max: 100, step: 1 },
   'color': { editor: 'colorPicker' },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },

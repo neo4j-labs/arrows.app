@@ -9,24 +9,26 @@ export class RoutedRelationshipBundle {
     this.routedRelationships = []
 
     const leftNode = relationships[0].from
-    const rightNode = relationships[0].to
-    
+
     const arrowDimensions = relationships.map(relationship => {
       const style = styleKey => getStyleSelector(relationship.relationship, styleKey)(graph)
+      const startRadius = relationship.from.radius + style('margin-start')
+      const endRadius = relationship.to.radius + style('margin-end')
       const arrowWidth = style('arrow-width')
       const arrowColor = style('arrow-color')
       const headWidth = arrowWidth + 6 * Math.sqrt(arrowWidth)
       const headHeight = headWidth * 1.5
       const chinHeight = headHeight / 10
+      const separation = style('margin-peer')
       const leftToRight = relationship.from === leftNode
-      return { arrowWidth, arrowColor, headWidth, headHeight, chinHeight, leftToRight }
+      return { startRadius, endRadius, arrowWidth, arrowColor, headWidth, headHeight, chinHeight, separation, leftToRight }
     })
 
-    const leftRadius = leftNode.radius
-    const rightRadius = rightNode.radius
+    const leftRadius = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.startRadius : arrow.endRadius))
+    const rightRadius = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.endRadius : arrow.startRadius))
     const maxLeftHeadHeight = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? 0 : arrow.headHeight))
     const maxRightHeadHeight = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.headHeight : 0))
-    const relationshipSeparation = 20
+    const relationshipSeparation = Math.max(...arrowDimensions.map(arrow => arrow.separation))
 
     const firstDisplacement = -(relationships.length - 1) * relationshipSeparation / 2
     const middleRelationshipIndex = (relationships.length - 1) / 2;
@@ -63,8 +65,8 @@ export class RoutedRelationshipBundle {
           new StraightArrow(
             relationship.from.position,
             relationship.to.position,
-            relationship.from.radius,
-            relationship.to.radius,
+            dimensions.startRadius,
+            dimensions.endRadius,
             dimensions.arrowWidth,
             dimensions.headWidth,
             dimensions.headHeight,
@@ -78,8 +80,8 @@ export class RoutedRelationshipBundle {
         const arrow = new ParallelArrow(
           relationship.from.position,
           relationship.to.position,
-          relationship.from.radius,
-          relationship.to.radius,
+          dimensions.startRadius,
+          dimensions.endRadius,
           displacement * (dimensions.leftToRight ? leftTightening / leftRadius : rightTightening / rightRadius),
           displacement * (dimensions.leftToRight ? rightTightening / rightRadius : leftTightening / leftRadius),
           displacement,
