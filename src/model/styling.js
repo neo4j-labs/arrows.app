@@ -1,5 +1,5 @@
 import {defaultFontSize, defaultNodeRadius} from "../graphics/constants";
-import {black, white, blueActive} from "./colors";
+import {black, white} from "./colors";
 
 export const styleGroups = {
   'Node': {
@@ -24,11 +24,11 @@ export const styleGroups = {
 
 export const styleAttributes = {
   'radius': {appliesTo: 'Node', type: 'radius', defaultValue: defaultNodeRadius},
-  'node-color': {appliesTo: 'Node', type: 'color', defaultValue: blueActive},
-  'border-width': {appliesTo: 'Node', type: 'line-width', defaultValue: 0},
+  'node-color': {appliesTo: 'Node', type: 'color', defaultValue: white},
+  'border-width': {appliesTo: 'Node', type: 'line-width', defaultValue: 4},
   'border-color': {appliesTo: 'Node', type: 'color', defaultValue: black},
   'caption-position': {appliesTo: 'Caption', type: 'caption-position', defaultValue: 'inside'},
-  'caption-color': {appliesTo: 'Caption', type: 'color', defaultValue: white},
+  'caption-color': {appliesTo: 'Caption', type: 'color', defaultValue: black},
   'caption-font-size': {appliesTo: 'Caption', type: 'font-size', defaultValue: defaultFontSize},
   'caption-font-weight': {appliesTo: 'Caption', type: 'font-weight', defaultValue: 'normal'},
   'caption-max-width': {appliesTo: 'Caption', type: 'radius', defaultValue: 200},
@@ -42,15 +42,15 @@ export const styleAttributes = {
   'property-color': {appliesTo: 'Property', type: 'color', defaultValue: black},
   'property-font-size': {appliesTo: 'Property', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
   'property-font-weight': {appliesTo: 'Property', type: 'font-weight', defaultValue: 'normal'},
-  'arrow-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 1},
+  'arrow-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 5},
   'arrow-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
   'type-orientation': {appliesTo: 'Relationship', type: 'type-orientation', defaultValue: 'inline'},
-  'type-font-size': {appliesTo: 'Relationship', type: 'font-size', defaultValue: 10},
+  'type-font-size': {appliesTo: 'Relationship', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
   'type-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
   'type-background-color': {appliesTo: 'Relationship', type: 'color', defaultValue: white},
-  'type-border-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 1},
+  'type-border-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 0},
   'type-border-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
-  'type-padding': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 2},
+  'type-padding': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
   'margin-start': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
   'margin-end': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
   'margin-peer': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 20},
