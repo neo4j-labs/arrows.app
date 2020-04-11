@@ -13,7 +13,10 @@ export const toggleSelection = (entities, mode) => ({
 export const selectAll = () => {
   return function (dispatch, getState) {
     const graph = getPresentGraph(getState())
-    dispatch(toggleSelection(graph.nodes.map(node => ({...node, entityType: 'node'})), 'replace'))
+    dispatch(toggleSelection([
+      ...graph.nodes.map(node => ({id: node.id, entityType: 'node'})),
+      ...graph.relationships.map(relationship => ({id: relationship.id, entityType: 'relationship'}))
+    ], 'replace'))
   }
 }
 
