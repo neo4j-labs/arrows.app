@@ -1,4 +1,4 @@
-export default class VisualEdge {
+export default class VisualRelationship {
   constructor(relationship, from, to, selected) {
     this.relationship = relationship
     this.id = relationship.id
