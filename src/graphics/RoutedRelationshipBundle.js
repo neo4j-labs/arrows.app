@@ -57,7 +57,7 @@ export class RoutedRelationshipBundle {
       const dimensions = arrowDimensions[i]
 
       const caption = (relationship.type && relationship.type.length > 0) ?
-        new RelationshipCaption(relationship.type, styleKey => getStyleSelector(relationship, styleKey)(graph)) : null
+        new RelationshipCaption(relationship.type, styleKey => getStyleSelector(relationship.relationship, styleKey)(graph)) : null
 
       if (i === middleRelationshipIndex) {
         this.routedRelationships.push(new RoutedRelationship(

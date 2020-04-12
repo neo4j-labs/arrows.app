@@ -72,7 +72,7 @@ export const styleTypes = {
   'color': { editor: 'colorPicker' },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
   'caption-position': { editor: 'dropdown', options: ['inside', 'top-left', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left'] },
-  'type-orientation': { editor: 'dropdown', options: ['inline', 'horizontal'] }
+  'type-orientation': { editor: 'dropdown', options: ['inline', 'above', 'horizontal'] }
 }
 
 export const completeWithDefaults = (style) => {
