@@ -1,42 +1,42 @@
 import {drawTextLine} from "./canvasRenderer";
 import {fitTextToCircle} from "./utils/circleWordWrap";
-import config from './config'
-import get from 'lodash.get'
 import { Vector } from "../model/Vector";
 import BoundingBox from "./utils/BoundingBox";
 
 export class NodeCaptionInsideNode {
-  constructor(caption, nodePosition, radius, style) {
+  constructor(caption, nodePosition, radius, style, textMeasurement) {
     this.caption = caption
     this.nodePosition = nodePosition
     this.radius = radius
-    this.fontSize = style('caption-font-size')
+    this.font = {
+      fontWeight: style('caption-font-weight'),
+      fontSize: style('caption-font-size'),
+      fontFace: 'sans-serif'
+    }
+    textMeasurement.font = this.font
     this.fontColor = style('caption-color')
-    this.fontWeight = style('caption-font-weight')
-    this.fontFace = get(config, 'font.face')
+    this.lineHeight = this.font.fontSize * 1.2
+    const measureWidth = (string) => textMeasurement.measureText(string).width;
+    this.layout = fitTextToCircle(this.caption, this.radius, measureWidth, this.lineHeight)
   }
 
   draw(ctx) {
     ctx.save()
 
+    ctx.font = this.font
     ctx.fillStyle = this.fontColor
-    ctx.font = {
-      fontWeight: this.fontWeight,
-      fontSize: this.fontSize,
-      fontFace: this.fontFace
-    }
     ctx.textBaseline = 'middle'
 
-    const measureWidth = (string) => ctx.measureText(string).width;
-    const lineHeight = this.fontSize * 1.2
-    const layout = fitTextToCircle(this.caption, this.radius, measureWidth, lineHeight)
-
-    for (let i = 0; i< layout.lines.length; i++) {
-      const yPos = layout.top + (i + 0.5) * lineHeight
-      drawTextLine(ctx, layout.lines[i], this.nodePosition.translate(new Vector(0, yPos)), 'center')
+    for (let i = 0; i< this.layout.lines.length; i++) {
+      const yPos = this.layout.top + (i + 0.5) * this.lineHeight
+      drawTextLine(ctx, this.layout.lines[i], this.nodePosition.translate(new Vector(0, yPos)), 'center')
     }
 
     ctx.restore()
+  }
+
+  captionFits() {
+    return this.layout.allTextFits
   }
 
   boundingBox() {

@@ -19,7 +19,7 @@ export default class VisualNode {
       const captionPosition = style('caption-position')
       switch (captionPosition) {
         case 'inside':
-          this.caption = new NodeCaptionInsideNode(node.caption, node.position, this.radius, style)
+          this.caption = new NodeCaptionInsideNode(node.caption, node.position, this.radius, style, measureTextContext)
           break
         default:
           this.caption = new NodeCaptionOutsideNode(node.caption, node.position, this.radius, captionPosition, style, measureTextContext)
@@ -61,8 +61,15 @@ export default class VisualNode {
     return this.node.type
   }
 
-  get initialPositions () {
+  get initialPositions() {
     return this.node.initialPositions
+  }
+
+  get captionFits() {
+    if (this.caption) {
+      return this.caption.captionFits()
+    }
+    return true
   }
 
   draw(ctx) {

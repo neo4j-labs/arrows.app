@@ -51,6 +51,10 @@ export class NodeCaptionOutsideNode {
     ctx.restore()
   }
 
+  captionFits() {
+    return true
+  }
+
   boundingBox() {
     const width = this.layout.actualWidth
     const height = this.layout.lines.length * this.lineHeight

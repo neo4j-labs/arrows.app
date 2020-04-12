@@ -30,7 +30,7 @@ export const getGraph = (state) => {
   }
 }
 
-const measureTextContext = (() => {
+export const measureTextContext = (() => {
   const canvas = window.document.createElement('canvas')
   return new CanvasAdaptor(canvas.getContext('2d'))
 })()
