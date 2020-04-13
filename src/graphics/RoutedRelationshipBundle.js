@@ -85,7 +85,7 @@ export class RoutedRelationshipBundle {
           displacement * (dimensions.leftToRight ? leftTightening / leftRadius : rightTightening / rightRadius),
           displacement * (dimensions.leftToRight ? rightTightening / rightRadius : leftTightening / leftRadius),
           displacement,
-          10,
+          30,
           dimensions.arrowWidth,
           dimensions.headWidth,
           dimensions.headHeight,

@@ -1,3 +1,4 @@
+import {Point} from "../../model/Point";
 export default class SvgAdaptor {
   constructor(e) {
     this.e = e
@@ -10,6 +11,7 @@ export default class SvgAdaptor {
     this.children = []
     const canvas = window.document.createElement('canvas')
     this.measureTextContext = canvas.getContext('2d')
+    this.beginPath()
   }
 
   current() {
@@ -37,7 +39,8 @@ export default class SvgAdaptor {
   }
 
   beginPath() {
-    // this.ctx.beginPath()
+    this.currentPath = []
+    this.currentPoint = new Point(0, 0)
   }
 
   closePath() {
@@ -45,15 +48,28 @@ export default class SvgAdaptor {
   }
 
   moveTo(x, y) {
-    // this.ctx.moveTo(x, y)
+    this.currentPath.push(['M', x, y].join(' '))
+    this.currentPoint = new Point(x, y)
   }
 
   lineTo(x, y) {
-    // this.ctx.lineTo(x, y)
+    this.currentPath.push(['L', x, y].join(' '))
+    this.currentPoint = new Point(x, y)
   }
 
   arcTo(x1, y1, x2, y2, radius) {
-    // this.ctx.arcTo(x1, y1, x2, y2, radius)
+    const controlPoint = new Point(x1, y1)
+    const controlFromCurrent = controlPoint.vectorFrom(this.currentPoint)
+    const destination = new Point(x2, y2)
+    const destinationFromControl = destination.vectorFrom(controlPoint)
+    const deflection = controlFromCurrent.angle() - destinationFromControl.angle()
+    const indent = radius * Math.abs(Math.tan(deflection / 2))
+    const point1 = controlPoint.translate(controlFromCurrent.scale(-indent / controlFromCurrent.distance()))
+    const point2 = controlPoint.translate(destinationFromControl.scale(indent / destinationFromControl.distance()))
+    this.currentPath.push(['L', ...point1.xy].join(' '))
+    this.currentPath.push(['A', radius, radius, 0, 0, deflection > 0 ? 0 : 1, ...point2.xy].join(' '))
+    this.currentPath.push(['L', ...destination.xy].join(' '))
+    this.currentPoint = destination
   }
 
   arc(x, y, radius, startAngle, endAngle, anticlockwise) {
@@ -107,7 +123,15 @@ export default class SvgAdaptor {
   }
 
   stroke() {
-    // this.ctx.stroke()
+    if (this.currentPath) {
+      this.children.push(this.e('path', {
+        transform: this.current().transforms.join(' '),
+        d: this.currentPath.join(' '),
+        fill: 'none',
+        stroke: this.current().strokeStyle,
+        strokeWidth: this.current().lineWidth
+      }))
+    }
   }
 
   fill() {

@@ -64,8 +64,8 @@ export class ParallelArrow {
     ctx.translate(this.centreDistance, 0)
     ctx.rotate(-this.endDeflection)
     ctx.translate(-this.endRadius, 0)
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth)
     ctx.fillStyle = this.arrowColor
+    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, true, false)
     ctx.fill()
     ctx.restore()
   }
@@ -86,9 +86,9 @@ export class ParallelArrow {
     ctx.translate(this.centreDistance, 0)
     ctx.rotate(-this.endDeflection)
     ctx.translate(-this.endRadius, 0)
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth)
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
+    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, false, true)
     ctx.stroke()
     ctx.restore()
   }
