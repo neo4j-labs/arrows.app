@@ -13,8 +13,9 @@ export default class VisualNode {
 
     const style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
 
-    this.radius = style('radius')
-    this.background = new NodeBackground(style)
+    this.internalRadius = style('radius')
+    this.radius = this.internalRadius + style('border-width')
+    this.background = new NodeBackground(node.position, this.internalRadius, style)
     if (node.caption) {
       const captionPosition = style('caption-position')
       switch (captionPosition) {
@@ -77,7 +78,7 @@ export default class VisualNode {
       return
     }
 
-    this.background.draw(this.position, this.radius, ctx)
+    this.background.draw(ctx)
     if (this.caption) {
       this.caption.draw(ctx)
     }
