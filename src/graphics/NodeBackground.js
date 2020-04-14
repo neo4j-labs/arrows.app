@@ -1,19 +1,17 @@
 export class NodeBackground {
-  constructor(position, internalRadius, style) {
-    this.position = position;
-    this.internalRadius = internalRadius;
+  constructor(style) {
     this.backgroundColor = style('node-color')
     this.borderWidth = style('border-width')
     this.borderColor = style('border-color')
   }
 
-  draw(ctx) {
+  draw(position, radius, ctx) {
     ctx.save()
 
     ctx.fillStyle = this.backgroundColor
     ctx.strokeStyle = this.borderColor
     ctx.lineWidth = this.borderWidth
-    ctx.circle(this.position.x, this.position.y, this.internalRadius + this.borderWidth / 2, true, this.borderWidth > 0)
+    ctx.circle(position.x, position.y, radius, true, this.borderWidth > 0)
     ctx.restore()
   }
 }
