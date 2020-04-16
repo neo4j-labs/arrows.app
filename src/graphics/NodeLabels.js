@@ -2,6 +2,7 @@ import { Vector } from "../model/Vector";
 import {distribute} from "./circumferentialDistribution";
 import {textAlignmentAtAngle} from "./circumferentialTextAlignment";
 import Pill from "./Pill";
+import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class NodeLabels {
   constructor(labels, nodeRadius, nodePosition, obstacles, style, textMeasurement) {
@@ -53,8 +54,6 @@ export class NodeLabels {
   }
 
   boundingBox() {
-    return this.pills
-      .map(pill => pill.boundingBox())
-      .reduce((accumulator, value) => accumulator ? accumulator.combine(value) : value, null)
+    return combineBoundingBoxes(this.pills.map(pill => pill.boundingBox()))
   }
 }

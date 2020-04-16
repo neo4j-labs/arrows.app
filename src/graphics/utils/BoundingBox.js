@@ -48,3 +48,7 @@ export default class BoundingBox {
     )
   }
 }
+
+export const combineBoundingBoxes = (boundingBoxes) => {
+  return boundingBoxes.reduce((accumulator, value) => accumulator ? accumulator.combine(value) : value, null)
+}

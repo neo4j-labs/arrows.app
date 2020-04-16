@@ -1,5 +1,6 @@
 import {relationshipHitTolerance, ringMargin} from "./constants";
 import { closestNode } from "../model/Graph";
+import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export default class VisualGraph {
   constructor(graph, nodes, relationshipBundles) {
@@ -87,8 +88,6 @@ export default class VisualGraph {
   }
 
   boundingBox() {
-    return Object.values(this.nodes)
-      .map(node => node.boundingBox())
-      .reduce((accumulator, value) => accumulator ? accumulator.combine(value) : value, null)
+    return combineBoundingBoxes(Object.values(this.nodes).map(node => node.boundingBox()))
   }
 }

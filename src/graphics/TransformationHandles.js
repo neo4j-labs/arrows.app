@@ -3,6 +3,7 @@ import {drawSolidRectangle} from "./canvasRenderer";
 import {Vector} from "../model/Vector";
 import {green} from "../model/colors";
 import {selectedNodeIds} from "../model/selection";
+import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 const handleSize = 20
 const handlePadding = 2
@@ -26,8 +27,7 @@ export default class TransformationHandles {
   constructor(visualGraph, selection, viewTransformation) {
     const nodeIds = selectedNodeIds(selection)
     if (nodeIds.length > 1) {
-      const box = nodeIds.map(nodeId => visualGraph.nodes[nodeId].boundingBox())
-        .reduce((accumulator, value) => accumulator ? accumulator.combine(value) : value, null)
+      const box = combineBoundingBoxes(nodeIds.map(nodeId => visualGraph.nodes[nodeId].boundingBox()))
       const dimensions = ['x', 'y']
       const modes = {}
       dimensions.forEach(dimension => {
