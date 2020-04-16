@@ -1,9 +1,8 @@
-import {calculateBoundingBox} from "./utils/geometryUtils";
 import {Point} from "../model/Point";
 import {drawSolidRectangle} from "./canvasRenderer";
 import {Vector} from "../model/Vector";
 import {green} from "../model/colors";
-import {selectedNodes} from "../model/selection";
+import {selectedNodeIds} from "../model/selection";
 
 const handleSize = 20
 const handlePadding = 2
@@ -24,14 +23,15 @@ const inRange = (value, min, max) => {
 }
 
 export default class TransformationHandles {
-  constructor(graph, selection, viewTransformation) {
-    const nodes = selectedNodes(graph, selection)
-    if (nodes.length > 1) {
-      const box = calculateBoundingBox(nodes, graph, 1)
+  constructor(visualGraph, selection, viewTransformation) {
+    const nodeIds = selectedNodeIds(selection)
+    if (nodeIds.length > 1) {
+      const box = nodeIds.map(nodeId => visualGraph.nodes[nodeId].boundingBox())
+        .reduce((accumulator, value) => accumulator ? accumulator.combine(value) : value, null)
       const dimensions = ['x', 'y']
       const modes = {}
       dimensions.forEach(dimension => {
-        const coordinates = nodes.map(node => node.position[dimension])
+        const coordinates = nodeIds.map(nodeId => visualGraph.nodes[nodeId].position[dimension])
         const min = Math.min(...coordinates)
         const max = Math.max(...coordinates)
         const spread = max - min
