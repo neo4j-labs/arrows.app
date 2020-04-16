@@ -201,7 +201,7 @@ export const mouseUp = () => {
           if (dragToCreate.sourceNodeId) {
             if (dragToCreate.targetNodeId) {
               dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
-            } else {
+            } else if (dragToCreate.newNodePosition) {
               dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
             }
           }
