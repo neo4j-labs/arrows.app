@@ -1,5 +1,5 @@
-import { relationshipHitTolerance } from "./constants";
-import {nodeAtPoint, nodeRingAtPoint} from "../model/Graph";
+import {relationshipHitTolerance, ringMargin} from "./constants";
+import { closestNode } from "../model/Graph";
 
 export default class VisualGraph {
   constructor(graph, nodes, relationshipBundles) {
@@ -12,17 +12,35 @@ export default class VisualGraph {
     return this.graph.style
   }
 
-  entityAtPoint(graphPosition) {
-    const node = nodeAtPoint(this.graph, graphPosition)
+  entityAtPoint(point) {
+    const node = this.nodeAtPoint(point)
     if (node) return { ...node, entityType: 'node' }
 
-    const nodeRing = nodeRingAtPoint(this.graph, graphPosition)
+    const nodeRing = this.nodeRingAtPoint(point)
     if (nodeRing) return { ...nodeRing, entityType: 'nodeRing' }
 
-    const relationship = this.relationshipAtPoint(graphPosition)
+    const relationship = this.relationshipAtPoint(point)
     if (relationship) return { ...relationship, entityType: 'relationship' }
 
     return null
+  }
+
+  nodeAtPoint(point) {
+    const nodeMap = this.nodes
+
+    return closestNode(this.graph, point, (node, distance) => {
+      const nodeRadius = nodeMap[node.id].radius
+      return distance < nodeRadius
+    })
+  }
+
+  nodeRingAtPoint(point) {
+    const nodeMap = this.nodes
+
+    return closestNode(this.graph, point, (node, distance) => {
+      const nodeRadius = nodeMap[node.id].radius
+      return distance > nodeRadius && distance < nodeRadius + ringMargin
+    })
   }
 
   entitiesInBoundingBox(boundingBox) {

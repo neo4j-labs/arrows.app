@@ -1,9 +1,6 @@
-import {getStyleSelector} from "../selectors/style";
 import {indexablePropertyText} from "./properties";
 import {completeWithDefaults} from "./styling";
 import {otherNodeId} from "./Relationship";
-
-const ringLength = 10
 
 export const emptyGraph = () => {
   return {
@@ -29,17 +26,6 @@ export const closestNode = (graph, point, nodeTest) => {
     }
   })
   return closestNode
-}
-
-export const nodeAtPoint = (graph, point) => {
-  return closestNode(graph, point, (node, distance) => distance < getStyleSelector(node, 'radius')(graph))
-}
-
-export const nodeRingAtPoint = (graph, point) => {
-  return closestNode(graph, point, (node, distance) => {
-    const nodeRadius = getStyleSelector(node, 'radius')(graph)
-    return distance > nodeRadius && distance < nodeRadius + ringLength
-  })
 }
 
 export const indexableText = (graph) => {

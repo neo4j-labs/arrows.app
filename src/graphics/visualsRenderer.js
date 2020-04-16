@@ -23,7 +23,7 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
 
-  const visualGestures = new Gestures(visualGraph.graph, selection, gestures)
+  const visualGestures = new Gestures(visualGraph, selection, gestures)
 
   layerManager.clear()
 
