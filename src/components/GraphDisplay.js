@@ -12,6 +12,7 @@ import {
   REDO
 } from "../interactions/Keybindings";
 import MouseHandler from "../interactions/MouseHandler";
+import {CaptionEditor} from "./CaptionEditor";
 
 class GraphDisplay extends Component {
   constructor(props) {
@@ -68,6 +69,7 @@ class GraphDisplay extends Component {
     return (
       <div>
         <canvas ref={(elm) => this.canvas = elm}/>
+        <CaptionEditor/>
       </div>
     )
   }
