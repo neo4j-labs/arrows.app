@@ -11,7 +11,6 @@ export const distribute = (items, obstacles) => {
     })
     currentObstacles.push({angle: itemAngle})
   })
-  if (obstacles[0] && result[0]) console.log(obstacles[0].angle, result[0].angle)
   return result
 }
 
