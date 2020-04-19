@@ -26,3 +26,14 @@ const orientations = [
 export const orientationFromName = (name) => {
   return orientations.find(orientation => orientation.name === name)
 }
+
+export const cssAlignFromSvgAlign = (svgAlign) => {
+  switch (svgAlign) {
+    case 'center':
+      return 'center'
+    case 'end':
+      return 'right'
+    default:
+      return 'left'
+  }
+}
