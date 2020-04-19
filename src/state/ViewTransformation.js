@@ -25,4 +25,8 @@ export class ViewTransformation {
   adjust(scale, panX, panY) {
     return new ViewTransformation(scale, new Vector(panX, panY))
   }
+
+  asCSSTransform() {
+    return `translate(${this.offset.dx}px,${this.offset.dy}px) scale(${this.scale})`
+  }
 }

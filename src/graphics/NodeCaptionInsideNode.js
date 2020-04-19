@@ -15,6 +15,7 @@ export class NodeCaptionInsideNode {
     }
     textMeasurement.font = this.font
     this.fontColor = style('caption-color')
+    this.orientation = { horizontal: 'center', vertical: 'center' }
     this.lineHeight = this.font.fontSize * 1.2
     const measureWidth = (string) => textMeasurement.measureText(string).width;
     this.layout = fitTextToCircle(this.caption, this.radius, measureWidth, this.lineHeight)
@@ -40,11 +41,12 @@ export class NodeCaptionInsideNode {
   }
 
   boundingBox() {
+    const height = this.layout.lines.length * this.lineHeight
     return new BoundingBox(
       this.nodePosition.x - this.radius,
       this.nodePosition.x + this.radius,
-      this.nodePosition.y - this.radius,
-      this.nodePosition.y + this.radius
+      this.nodePosition.y - height / 2,
+      this.nodePosition.y + height / 2
     )
   }
 }

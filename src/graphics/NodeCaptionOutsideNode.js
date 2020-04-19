@@ -16,11 +16,11 @@ export class NodeCaptionOutsideNode {
     textMeasurement.font = this.font
     this.fontColor = style('caption-color')
     this.orientation = orientationFromName(captionPosition)
+    this.lineHeight = this.font.fontSize * 1.2
     const measureWidth = (string) => textMeasurement.measureText(string).width;
     this.layout = fitTextToRectangle(caption, style('caption-max-width'), measureWidth)
     this.attachedAt = this.nodePosition.translate(
       new Vector(1, 0).rotate(this.orientation.angle).scale(radius + this.layout.margin))
-    this.lineHeight = this.font.fontSize * 1.2
   }
 
   draw(ctx) {

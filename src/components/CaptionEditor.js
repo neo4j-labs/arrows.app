@@ -8,19 +8,25 @@ export class CaptionEditor extends Component {
   }
 
   render() {
+    const caption = this.props.visualNode.caption
+    const boundingBox = caption.boundingBox()
+    const textLines = caption.layout.lines
+    const padding = 10
     return (
       <textarea ref={this.textArea} style={{
         position: 'absolute',
-        top: 0,
-        left: 0,
-        width: 200,
-        height: 100,
+        left: boundingBox.left - (caption.orientation.horizontal === 'center' ? padding : 0),
+        top: boundingBox.top,
+        width: boundingBox.width + padding * 2,
+        height: boundingBox.height + padding,
         resize: 'none',
         outline: 'none',
         border: 'none',
         background: 'transparent',
-        textAlign: 'center'
-      }} //value={lines.join('\n')} onChange={this.handleChange}
+        textAlign: 'center',
+        ...caption.font,
+        lineHeight: 1.2
+      }} value={textLines.join('\n')} //onChange={this.handleChange}
       >
       </textarea>
     )
