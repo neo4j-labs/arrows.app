@@ -12,7 +12,10 @@ export class GraphTextEditors extends Component {
       .filter(visualNode => visualNode.caption)
       .map(visualNode => {
         return (
-          <CaptionEditor visualNode={visualNode}/>
+          <CaptionEditor
+            visualNode={visualNode}
+            onSetNodeCaption={this.props.onSetNodeCaption}
+          />
         )
       })
 

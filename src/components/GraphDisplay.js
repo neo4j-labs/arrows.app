@@ -74,6 +74,7 @@ class GraphDisplay extends Component {
         <GraphTextEditors
           visualGraph={this.props.visualGraph}
           viewTransformation={this.props.viewTransformation}
+          onSetNodeCaption={this.props.onSetNodeCaption}
         />
       </div>
     )
