@@ -45,8 +45,8 @@ export class NodeCaptionInsideNode {
     return new BoundingBox(
       this.nodePosition.x - this.radius,
       this.nodePosition.x + this.radius,
-      this.nodePosition.y - height / 2,
-      this.nodePosition.y + height / 2
+      this.nodePosition.y + this.layout.top,
+      this.nodePosition.y + this.layout.top + height
     )
   }
 }
