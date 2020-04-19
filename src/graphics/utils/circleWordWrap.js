@@ -22,7 +22,7 @@ export const fitTextToCircle = (text, radius, measureWidth, lineHeight) => {
   const maxLines = Math.floor(radius * 2 / lineHeight);
 
   const linesForStaringPoint = (availableLines, startingLine) => {
-    const words = text.split(' ');
+    const words = text.split(/\s+/);
     const lines = [];
     let lineIndex = startingLine;
     const newLine = () => ({
@@ -31,7 +31,7 @@ export const fitTextToCircle = (text, radius, measureWidth, lineHeight) => {
     });
     let currentLine = newLine();
     const pushCurrentLineUnlessEmpty = () => {
-      if (currentLine.text) {
+      if (currentLine.hasOwnProperty('text')) {
         lines.push(currentLine);
       }
     };
