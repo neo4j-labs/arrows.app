@@ -7,7 +7,7 @@ export const fitTextToRectangle = (text, maxWidth, measureWidth) => {
   });
   let currentLine = newLine();
   const pushCurrentLineUnlessEmpty = () => {
-    if (currentLine.text) {
+    if (currentLine.hasOwnProperty('text')) {
       lines.push(currentLine);
     }
   };

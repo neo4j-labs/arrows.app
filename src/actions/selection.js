@@ -1,6 +1,11 @@
 import { getPresentGraph } from "../selectors"
 import {nodeSelected, selectedNodeIds} from "../model/selection";
 
+export const edit = (entity) => ({
+  type: 'EDIT',
+  editing: entity
+})
+
 export const toggleSelection = (entities, mode) => ({
   type: 'TOGGLE_SELECTION',
   entities: entities.map(entity => ({

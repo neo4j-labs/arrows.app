@@ -1,5 +1,5 @@
 import { getVisualGraph, getTransformationHandles, getPositionsOfSelectedNodes } from "../selectors/"
-import { clearSelection, toggleSelection } from "./selection"
+import {clearSelection, edit, toggleSelection} from "./selection"
 import { showInspector } from "./applicationLayout";
 import {
   connectNodes,
@@ -36,7 +36,7 @@ export const doubleClick = (canvasPosition) => {
     const graphPosition = toGraphPosition(state, canvasPosition)
     const item = visualGraph.entityAtPoint(graphPosition)
     if (item) {
-      dispatch(showInspector())
+      dispatch(edit(item))
     }
   }
 }

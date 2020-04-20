@@ -8,16 +8,19 @@ export class GraphTextEditors extends Component {
   }
 
   render() {
-    const captionEditors = Object.values(this.props.visualGraph.nodes)
-      .filter(visualNode => visualNode.caption)
-      .map(visualNode => {
-        return (
+    let captionEditor = null
+
+    if (this.props.selection.editing) {
+      const visualNode = this.props.visualGraph.nodes[this.props.selection.editing.id]
+      if (visualNode.caption) {
+        captionEditor = (
           <CaptionEditor
             visualNode={visualNode}
             onSetNodeCaption={this.props.onSetNodeCaption}
           />
         )
-      })
+      }
+    }
 
     return (
       <div style={{
@@ -26,7 +29,7 @@ export class GraphTextEditors extends Component {
         left: 0,
         top: 0
       }}>
-        {captionEditors}
+        {captionEditor}
       </div>
     )
   }

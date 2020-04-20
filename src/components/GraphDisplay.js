@@ -75,6 +75,7 @@ class GraphDisplay extends Component {
           visualGraph={this.props.visualGraph}
           viewTransformation={this.props.viewTransformation}
           onSetNodeCaption={this.props.onSetNodeCaption}
+          selection={this.props.selection}
         />
       </div>
     )
