@@ -9,6 +9,11 @@ export class CaptionEditor extends Component {
     this.textArea = React.createRef()
   }
 
+  componentDidMount() {
+    const textArea = this.textArea.current
+    textArea.select()
+  }
+
   componentDidUpdate() {
     const textArea = this.textArea.current
     textArea.selectionStart = this.state.selectionStart
