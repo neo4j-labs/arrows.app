@@ -1,6 +1,6 @@
 import {createSelector} from "reselect";
 import VisualNode from "../graphics/VisualNode";
-import VisualRelationship from "../graphics/VisualRelationship";
+import ResolvedRelationship from "../graphics/ResolvedRelationship";
 import VisualGraph from "../graphics/VisualGraph";
 import TransformationHandles from "../graphics/TransformationHandles";
 import {bundle} from "../model/graph/relationshipBundling";
@@ -49,7 +49,7 @@ export const getVisualGraph = createSelector(
     }, {})
 
     const visualRelationships = graph.relationships.map(relationship =>
-      new VisualRelationship(
+      new ResolvedRelationship(
         relationship,
         visualNodes[relationship.fromId],
         visualNodes[relationship.toId],

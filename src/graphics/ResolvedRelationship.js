@@ -1,4 +1,4 @@
-export default class VisualRelationship {
+export default class ResolvedRelationship {
   constructor(relationship, from, to, selected) {
     this.relationship = relationship
     this.id = relationship.id
