@@ -16,6 +16,11 @@ export const nodeSelected = (selection, nodeId) => {
   )
 }
 
+export const nodeEditing = (selection, nodeId) => {
+  return selection.editing &&
+    selection.editing.entityType === 'node' && selection.editing.id === nodeId
+}
+
 export const selectedNodes = (graph, selection) => {
   return graph.nodes.filter(node =>
     selection.entities.some(entity =>

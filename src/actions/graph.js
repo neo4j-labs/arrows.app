@@ -221,7 +221,7 @@ export const trySetNodeCaption = (selection, caption) => {
     const graph = getGraph(state)
     const nodes = selectedNodes(graph, selection)
     let visualNodes = nodes.map(node =>
-      new VisualNode({...node, caption}, graph, measureTextContext))
+      new VisualNode({...node, caption}, graph, false, measureTextContext))
     let biggerRadius = undefined
     while (
     (biggerRadius === undefined || biggerRadius < styleTypes.radius.max) &&
@@ -231,7 +231,7 @@ export const trySetNodeCaption = (selection, caption) => {
       const step = 10
       biggerRadius = step * (Math.floor(maxRadius / step) + 1)
       visualNodes = nodes.map(node =>
-        new VisualNode({...node, caption, style: {...node.style, radius: biggerRadius}}, graph, measureTextContext))
+        new VisualNode({...node, caption, style: {...node.style, radius: biggerRadius}}, graph, false, measureTextContext))
     }
     if (biggerRadius) {
       dispatch(setArrowsProperty(selection, 'radius', biggerRadius))

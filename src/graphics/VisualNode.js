@@ -8,24 +8,24 @@ import BoundingBox from "./utils/BoundingBox";
 import {NodeCaptionOutsideNode} from "./NodeCaptionOutsideNode";
 
 export default class VisualNode {
-  constructor(node, graph, measureTextContext) {
+  constructor(node, graph, editing, measureTextContext) {
     this.node = node
+    this.editing = editing
 
     const style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
 
     this.internalRadius = style('radius')
     this.radius = this.internalRadius + style('border-width')
     this.background = new NodeBackground(node.position, this.internalRadius, style)
-    if (node.caption) {
-      const captionPosition = style('caption-position')
-      switch (captionPosition) {
-        case 'inside':
-          this.caption = new NodeCaptionInsideNode(node.caption, node.position, this.radius, style, measureTextContext)
-          break
-        default:
-          this.caption = new NodeCaptionOutsideNode(node.caption, node.position, this.radius, captionPosition, style, measureTextContext)
-          break
-      }
+    const caption = node.caption || ''
+    const captionPosition = style('caption-position')
+    switch (captionPosition) {
+      case 'inside':
+        this.caption = new NodeCaptionInsideNode(caption, node.position, this.radius, style, measureTextContext)
+        break
+      default:
+        this.caption = new NodeCaptionOutsideNode(caption, node.position, this.radius, captionPosition, style, measureTextContext)
+        break
     }
     const neighbourObstacles = neighbourPositions(node, graph).map(position => {
       return { angle: position.vectorFrom(node.position).angle() }
@@ -79,7 +79,7 @@ export default class VisualNode {
     }
 
     this.background.draw(ctx)
-    if (this.caption) {
+    if (!this.editing && this.caption) {
       this.caption.draw(ctx)
     }
     if (this.labels) {
