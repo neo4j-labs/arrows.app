@@ -1,7 +1,7 @@
-import React, {PureComponent} from 'react';
+import React, {Component} from 'react';
 import {cssAlignFromSvgAlign} from "../graphics/circumferentialTextAlignment";
 
-export class CaptionEditor extends PureComponent {
+export class CaptionEditor extends Component {
 
   constructor(props) {
     super(props)
@@ -12,6 +12,10 @@ export class CaptionEditor extends PureComponent {
   componentDidMount() {
     const textArea = this.textArea.current
     textArea.select()
+  }
+
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return nextProps.visualNode !== this.props.visualNode
   }
 
   componentDidUpdate() {
