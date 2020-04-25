@@ -6,8 +6,8 @@ import {RelationshipCaption} from "./RelationshipCaption";
 import {VisualRelationship} from "./VisualRelationship";
 
 export class RoutedRelationshipBundle {
-  constructor(relationships, graph) {
-    this.routedRelationships = []
+  constructor(relationships, graph, measureTextContext) {
+    const arrows = []
 
     const leftNode = relationships[0].from
 
@@ -57,25 +57,18 @@ export class RoutedRelationshipBundle {
       const relationship = relationships[i]
       const dimensions = arrowDimensions[i]
 
-      const caption = (relationship.type && relationship.type.length > 0) ?
-        new RelationshipCaption(relationship.type, styleKey => getStyleSelector(relationship.relationship, styleKey)(graph)) : null
-
       if (i === middleRelationshipIndex) {
-        this.routedRelationships.push(new VisualRelationship(
-          relationship,
-          new StraightArrow(
-            relationship.from.position,
-            relationship.to.position,
-            dimensions.startRadius,
-            dimensions.endRadius,
-            dimensions.arrowWidth,
-            dimensions.headWidth,
-            dimensions.headHeight,
-            dimensions.chinHeight,
-            dimensions.arrowColor
-          ),
-          caption
-        ))
+        arrows[i] = new StraightArrow(
+          relationship.from.position,
+          relationship.to.position,
+          dimensions.startRadius,
+          dimensions.endRadius,
+          dimensions.arrowWidth,
+          dimensions.headWidth,
+          dimensions.headHeight,
+          dimensions.chinHeight,
+          dimensions.arrowColor
+        )
       } else {
         const displacement = (firstDisplacement + i * relationshipSeparation) * (dimensions.leftToRight ? 1 : -1)
         const arrow = new ParallelArrow(
@@ -94,20 +87,15 @@ export class RoutedRelationshipBundle {
           dimensions.arrowColor
         )
         possibleToDrawParallelArrows &= arrow.drawArcs
-        this.routedRelationships.push(new VisualRelationship(
-          relationship,
-          arrow,
-          caption
-        ))
+        arrows[i] = arrow
       }
     }
 
     if (!possibleToDrawParallelArrows) {
-      for (let i = 0; i < this.routedRelationships.length; i++) {
-        const routedRelationship = this.routedRelationships[i]
+      for (let i = 0; i < this.arrows.length; i++) {
         if (i !== middleRelationshipIndex) {
-          const parallelArrow = routedRelationship.arrow
-          routedRelationship.arrow = new SlantedArrow(
+          const parallelArrow = arrows[i]
+          arrows[i] = new SlantedArrow(
             parallelArrow.startCentre,
             parallelArrow.endCentre,
             parallelArrow.startAttach,
@@ -120,6 +108,22 @@ export class RoutedRelationshipBundle {
           )
         }
       }
+    }
+
+    this.routedRelationships = []
+    for (let i = 0; i < relationships.length; i++) {
+      const relationship = relationships[i]
+
+      const caption = new RelationshipCaption(
+        relationship.type,
+        arrows[i],
+        styleKey => getStyleSelector(relationship.relationship, styleKey)(graph),
+        measureTextContext
+      )
+
+      this.routedRelationships.push(new VisualRelationship(
+        relationship, arrows[i], caption
+      ))
     }
   }
 

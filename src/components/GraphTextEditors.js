@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {CaptionEditor} from "./CaptionEditor";
+import {RelationshipTypeEditor} from "./RelationshipTypeEditor";
 
 export class GraphTextEditors extends Component {
 
@@ -7,21 +8,44 @@ export class GraphTextEditors extends Component {
     super(props)
   }
 
-  render() {
-    let captionEditor = null
+  editor(entity) {
+    if (entity) {
+      switch (entity.entityType) {
+        case 'node':
+          const visualNode = this.props.visualGraph.nodes[entity.id]
+          if (visualNode.caption) {
+            return (
+              <CaptionEditor
+                visualNode={visualNode}
+                onSetNodeCaption={(caption) => this.props.onSetNodeCaption(this.props.selection, caption)}
+              />
+            )
+          }
+          break
 
-    if (this.props.selection.editing) {
-      const visualNode = this.props.visualGraph.nodes[this.props.selection.editing.id]
-      if (visualNode.caption) {
-        captionEditor = (
-          <CaptionEditor
-            visualNode={visualNode}
-            onSetNodeCaption={this.props.onSetNodeCaption}
-          />
-        )
+        case 'relationship':
+          let visualRelationship = null
+          this.props.visualGraph.relationshipBundles.forEach(relationshipBundle => {
+            relationshipBundle.routedRelationships.forEach(candidateRelationship => {
+              if (candidateRelationship.relationship.id === entity.id) {
+                visualRelationship = candidateRelationship
+              }
+            })
+          })
+          if (visualRelationship) {
+            return (
+              <RelationshipTypeEditor
+                visualRelationship={visualRelationship}
+                onSetRelationshipType={(type) => this.props.onSetRelationshipType(this.props.selection, type)}
+              />
+            )
+          }
+          break
       }
     }
-
+    return null
+  }
+  render() {
     return (
       <div style={{
         transform: this.props.viewTransformation.asCSSTransform(),
@@ -29,7 +53,7 @@ export class GraphTextEditors extends Component {
         left: 0,
         top: 0
       }}>
-        {captionEditor}
+        {this.editor(this.props.selection.editing)}
       </div>
     )
   }

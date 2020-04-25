@@ -64,7 +64,7 @@ export const getVisualGraph = createSelector(
         graph),
     )
     const relationshipBundles = bundle(visualRelationships).map(bundle => {
-      return new RoutedRelationshipBundle(bundle, graph);
+      return new RoutedRelationshipBundle(bundle, graph, measureTextContext);
     })
 
     return new VisualGraph(graph, visualNodes, relationshipBundles, measureTextContext)

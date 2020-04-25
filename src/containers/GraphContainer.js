@@ -6,7 +6,7 @@ import {
   getVisualGraph,
   getTransformationHandles
 } from "../selectors/index"
-import {deleteSelection, duplicateSelection, trySetNodeCaption} from "../actions/graph"
+import {deleteSelection, duplicateSelection, setRelationshipType, trySetNodeCaption} from "../actions/graph"
 import {selectAll, jumpToNextNode} from "../actions/selection";
 import {computeCanvasSize} from "../model/applicationLayout";
 import { ActionCreators as UndoActionCreators } from 'redux-undo'
@@ -32,6 +32,7 @@ const mapDispatchToProps = dispatch => ({
   undo: () => dispatch(UndoActionCreators.undo()),
   redo: () => dispatch(UndoActionCreators.redo()),
   onSetNodeCaption: (selection, caption) => { dispatch(trySetNodeCaption(selection, caption)) },
+  onSetRelationshipType: (selection, type) => { dispatch(setRelationshipType(selection, type)) },
   dispatch: dispatch
 })
 

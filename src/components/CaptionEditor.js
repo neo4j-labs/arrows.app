@@ -25,11 +25,7 @@ export class CaptionEditor extends PureComponent {
     const selectionStart = normalise(e.target.value.substring(0, e.target.selectionStart)).length
     const caption = normalise(e.target.value)
     this.setState({selectionStart})
-    this.props.onSetNodeCaption({
-      entities: [
-        {entityType: 'node', id: this.props.visualNode.id}
-      ]
-    }, caption)
+    this.props.onSetNodeCaption(caption)
   }
 
   render() {

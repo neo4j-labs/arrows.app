@@ -1,42 +1,45 @@
 export class RelationshipCaption {
-  constructor(text, style) {
+  constructor(text, arrow, style, textMeasurement) {
     this.text = text
     this.orientation = style('type-orientation')
-    this.fontSize = style('type-font-size')
     this.padding = style('type-padding')
     this.borderWidth = style('type-border-width')
     this.fontColor = style('type-color')
     this.borderColor = style('type-border-color')
     this.backgroundColor = style('type-background-color')
-  }
-
-  draw(arrow, ctx) {
-    ctx.save()
-    const midPoint = arrow.midPoint();
-    ctx.translate(midPoint.x, midPoint.y)
-    let textAngle = this.orientation === 'horizontal' ? 0 : arrow.shaftAngle()
-    if (textAngle > Math.PI / 2 || textAngle < -Math.PI / 2) textAngle += Math.PI
-    ctx.rotate(textAngle)
-    ctx.font = {
+    this.midPoint = arrow.midPoint()
+    this.textAngle = this.orientation === 'horizontal' ? 0 : arrow.shaftAngle()
+    if (this.textAngle > Math.PI / 2 || this.textAngle < -Math.PI / 2) this.textAngle += Math.PI
+    this.font = {
       fontWeight: 'normal',
-      fontSize: this.fontSize,
+      fontSize: style('type-font-size'),
       fontFace: 'sans-serif'
     }
-    const metrics = ctx.measureText(this.text)
-    const x = metrics.width / 2 + this.padding + this.borderWidth / 2
-    const y = this.fontSize / 2 + this.padding + this.borderWidth / 2
-    if (this.orientation === 'above') {
-      ctx.translate(0, -y)
+    textMeasurement.font = this.font
+    this.textWidth = textMeasurement.measureText(text).width
+  }
+
+  draw(ctx) {
+    if (this.text) {
+      ctx.save()
+      ctx.translate(this.midPoint.x, this.midPoint.y)
+      ctx.rotate(this.textAngle)
+      const x = this.textWidth / 2 + this.padding + this.borderWidth / 2
+      const y = this.font.fontSize / 2 + this.padding + this.borderWidth / 2
+      if (this.orientation === 'above') {
+        ctx.translate(0, -y)
+      }
+      ctx.fillStyle = this.backgroundColor
+      ctx.strokeStyle = this.borderColor
+      ctx.lineWidth = this.borderWidth
+      if (this.orientation !== 'above') {
+        ctx.rect(-x, -y, 2 * x, 2 * y, this.padding, true, this.borderWidth > 0)
+      }
+      ctx.textBaseline = 'middle'
+      ctx.font = this.font
+      ctx.fillStyle = this.fontColor
+      ctx.fillText(this.text, -this.textWidth / 2, 0)
+      ctx.restore()
     }
-    ctx.fillStyle = this.backgroundColor
-    ctx.strokeStyle = this.borderColor
-    ctx.lineWidth = this.borderWidth
-    if (this.orientation !== 'above') {
-      ctx.rect(-x, -y, 2 * x, 2 * y, this.padding, true, this.borderWidth > 0)
-    }
-    ctx.textBaseline = 'middle'
-    ctx.fillStyle = this.fontColor
-    ctx.fillText(this.text, -metrics.width / 2, 0)
-    ctx.restore()
   }
 }
