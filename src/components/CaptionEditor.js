@@ -1,7 +1,7 @@
-import React, {Component} from 'react';
+import React, {PureComponent} from 'react';
 import {cssAlignFromSvgAlign} from "../graphics/circumferentialTextAlignment";
 
-export class CaptionEditor extends Component {
+export class CaptionEditor extends PureComponent {
 
   constructor(props) {
     super(props)

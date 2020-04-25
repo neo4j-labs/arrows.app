@@ -1,4 +1,5 @@
 import {createSelector} from "reselect";
+import memoize from "memoizee";
 import VisualNode from "../graphics/VisualNode";
 import ResolvedRelationship from "../graphics/ResolvedRelationship";
 import VisualGraph from "../graphics/VisualGraph";
@@ -34,16 +35,23 @@ export const measureTextContext = (() => {
   return new CanvasAdaptor(canvas.getContext('2d'))
 })()
 
+export const getVisualNode = (() => {
+  const factory = (node, graph, selection) => {
+    return new VisualNode(
+      node,
+      graph,
+      nodeEditing(selection, node.id),
+      measureTextContext
+    )
+  }
+  return memoize(factory, { max: 10000 })
+})()
+
 export const getVisualGraph = createSelector(
   [getGraph, getSelection],
   (graph, selection) => {
     const visualNodes = graph.nodes.reduce((nodeMap, node) => {
-      nodeMap[node.id] = new VisualNode(
-        node,
-        graph,
-        nodeEditing(selection, node.id),
-        measureTextContext
-      )
+      nodeMap[node.id] = getVisualNode(node, graph, selection)
       return nodeMap
     }, {})
 
