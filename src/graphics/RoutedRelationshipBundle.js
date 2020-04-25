@@ -3,6 +3,7 @@ import {StraightArrow} from "./StraightArrow";
 import {ParallelArrow} from "./ParallelArrow";
 import {SlantedArrow} from "./SlantedArrow";
 import {RelationshipCaption} from "./RelationshipCaption";
+import {VisualRelationship} from "./VisualRelationship";
 
 export class RoutedRelationshipBundle {
   constructor(relationships, graph) {
@@ -60,7 +61,7 @@ export class RoutedRelationshipBundle {
         new RelationshipCaption(relationship.type, styleKey => getStyleSelector(relationship.relationship, styleKey)(graph)) : null
 
       if (i === middleRelationshipIndex) {
-        this.routedRelationships.push(new RoutedRelationship(
+        this.routedRelationships.push(new VisualRelationship(
           relationship,
           new StraightArrow(
             relationship.from.position,
@@ -93,7 +94,7 @@ export class RoutedRelationshipBundle {
           dimensions.arrowColor
         )
         possibleToDrawParallelArrows &= arrow.drawArcs
-        this.routedRelationships.push(new RoutedRelationship(
+        this.routedRelationships.push(new VisualRelationship(
           relationship,
           arrow,
           caption
@@ -126,32 +127,5 @@ export class RoutedRelationshipBundle {
     this.routedRelationships.forEach(routedRelationship => {
       routedRelationship.draw(ctx)
     })
-  }
-}
-
-class RoutedRelationship {
-  constructor(relationship, arrow, caption) {
-    this.relationship = relationship
-    this.arrow = arrow
-    this.caption = caption
-  }
-
-  distanceFrom(point) {
-    return this.arrow.distanceFrom(point)
-  }
-
-  draw(ctx) {
-    if (this.relationship.from.status === 'combined' && this.relationship.to.status === 'combined'
-      && this.relationship.from.superNodeId === this.relationship.to.superNodeId) {
-      return
-    }
-
-    if (this.relationship.selected) {
-      this.arrow.drawSelectionIndicator(ctx)
-    }
-    this.arrow.draw(ctx)
-    if (this.caption) {
-      this.caption.draw(this.arrow, ctx)
-    }
   }
 }
