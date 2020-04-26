@@ -92,6 +92,12 @@ export default class Gestures {
         const radius = sourceNode.radius * viewTransformation.scale
         const outerRadius = radius + ringMargin
         const sourceNodeIdPosition = sourceNode.position
+
+        const targetNode = visualGraph.nodes[dragToCreate.targetNodeId]
+        if (targetNode) {
+          newNodeRadius = targetNode.radius * viewTransformation.scale
+        }
+
         if (dragToCreate.newNodePosition) {
           const delta = dragToCreate.newNodePosition.vectorFrom(sourceNodeIdPosition)
           let newNodePosition = sourceNodeIdPosition;

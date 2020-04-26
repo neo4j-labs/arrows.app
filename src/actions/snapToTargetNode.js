@@ -1,11 +1,8 @@
-import {closestNode} from "../model/Graph";
 import {idsMatch} from "../model/Id";
 
-const snapTolerance = 20
-
-const snapToTargetNode = (graph, excludedNodeId, naturalPosition) => {
-  const targetNode = closestNode(graph, naturalPosition, (node, distance) => {
-    return !idsMatch(node.id, excludedNodeId) && distance < snapTolerance
+const snapToTargetNode = (visualGraph, excludedNodeId, naturalPosition) => {
+  const targetNode = visualGraph.closestNode(naturalPosition, (visualNode, distance) => {
+    return !idsMatch(visualNode.id, excludedNodeId) && distance < visualNode.radius
   })
 
   return {

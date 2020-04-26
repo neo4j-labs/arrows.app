@@ -15,19 +15,6 @@ export const getNodeIdMap = graph => graph.nodes.reduce((nodeIdMap, node) => {
   return nodeIdMap
 }, {})
 
-export const closestNode = (graph, point, nodeTest) => {
-  let closestDistance = Number.POSITIVE_INFINITY
-  let closestNode = null
-  graph.nodes.filter(node => node.status !== 'combined').forEach((node) => {
-    const distance = node.position.vectorFrom(point).distance()
-    if (distance < closestDistance && nodeTest(node, distance)) {
-      closestDistance = distance
-      closestNode = node
-    }
-  })
-  return closestNode
-}
-
 export const indexableText = (graph) => {
   const lines = []
   graph.nodes.forEach(node => {

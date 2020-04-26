@@ -1,5 +1,4 @@
 import {relationshipHitTolerance, ringMargin} from "./constants";
-import { closestNode } from "../model/Graph";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export default class VisualGraph {
@@ -27,19 +26,14 @@ export default class VisualGraph {
   }
 
   nodeAtPoint(point) {
-    const nodeMap = this.nodes
-
-    return closestNode(this.graph, point, (node, distance) => {
-      const nodeRadius = nodeMap[node.id].radius
-      return distance < nodeRadius
+    return this.closestNode(point, (visualNode, distance) => {
+      return distance < visualNode.radius
     })
   }
 
   nodeRingAtPoint(point) {
-    const nodeMap = this.nodes
-
-    return closestNode(this.graph, point, (node, distance) => {
-      const nodeRadius = nodeMap[node.id].radius
+    return this.closestNode(point, (visualNode, distance) => {
+      const nodeRadius = visualNode.radius
       return distance > nodeRadius && distance < nodeRadius + ringMargin
     })
   }
@@ -53,6 +47,20 @@ export default class VisualGraph {
       .map(relationship => ({ ...relationship, entityType: 'relationship' }))
 
     return [...nodes, ...relationships]
+  }
+
+  closestNode(point, hitTest) {
+    let closestDistance = Number.POSITIVE_INFINITY
+    let closestNode = null
+    this.graph.nodes.filter(node => node.status !== 'combined').forEach((node) => {
+      const distance = node.position.vectorFrom(point).distance()
+      const visualNode = this.nodes[node.id]
+      if (distance < closestDistance && hitTest(visualNode, distance)) {
+        closestDistance = distance
+        closestNode = node
+      }
+    })
+    return closestNode
   }
 
   relationshipAtPoint(point) {

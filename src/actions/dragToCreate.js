@@ -2,7 +2,7 @@ import snapToTargetNode from "./snapToTargetNode"
 import {snapToDistancesAndAngles} from "./geometricSnapping"
 import {idsMatch} from "../model/Id"
 import {Guides} from "../graphics/Guides"
-import { getPresentGraph } from "../selectors"
+import {getVisualGraph} from "../selectors"
 
 export const activateRing = (sourceNodeId, nodeType) => {
   return {
@@ -20,8 +20,10 @@ export const deactivateRing = () => {
 
 export const tryDragRing = (sourceNodeId, mousePosition) => {
   return function (dispatch, getState) {
-    let graph = getPresentGraph(getState())
-    let targetSnaps = snapToTargetNode(graph, sourceNodeId, mousePosition)
+    const state = getState()
+    const visualGraph = getVisualGraph(state)
+    const graph = visualGraph.graph
+    const targetSnaps = snapToTargetNode(visualGraph, sourceNodeId, mousePosition)
     if (targetSnaps.snapped) {
       dispatch(ringDraggedConnected(
         sourceNodeId,
@@ -30,7 +32,7 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
         mousePosition
       ))
     } else {
-      let snaps = snapToDistancesAndAngles(
+      const snaps = snapToDistancesAndAngles(
         graph,
         [graph.nodes.find((node) => idsMatch(node.id, sourceNodeId))],
         (nodeId) => true,
