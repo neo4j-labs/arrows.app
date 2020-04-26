@@ -3,6 +3,7 @@ import {fitTextToRectangle} from "./utils/rectangleWordWrap";
 import { Vector } from "../model/Vector";
 import {orientationFromName} from "./circumferentialTextAlignment";
 import BoundingBox from "./utils/BoundingBox";
+import {green} from "../model/colors";
 
 export class NodeCaptionOutsideNode {
   constructor(caption, nodePosition, radius, captionPosition, style, textMeasurement) {
@@ -48,6 +49,17 @@ export class NodeCaptionOutsideNode {
       drawTextLine(ctx, lines[i], position, this.orientation.horizontal)
     }
 
+    ctx.restore()
+  }
+
+  drawSelectionIndicator(ctx) {
+    const indicatorWidth = 10
+    const boundingBox = this.boundingBox()
+    ctx.save()
+    ctx.strokeStyle = green
+    ctx.lineWidth = indicatorWidth
+    ctx.lineJoin = 'round'
+    ctx.rect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height, 0, false, true)
     ctx.restore()
   }
 

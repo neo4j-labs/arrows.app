@@ -36,6 +36,10 @@ export class NodeCaptionInsideNode {
     ctx.restore()
   }
 
+  drawSelectionIndicator() {
+    // Nothing to do here; we're inside a node.
+  }
+
   captionFits() {
     return this.layout.allTextFits
   }
