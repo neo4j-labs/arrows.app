@@ -1,3 +1,5 @@
+import {green} from "../model/colors";
+
 export class RelationshipCaption {
   constructor(text, arrow, editing, style, textMeasurement) {
     this.text = text
@@ -50,6 +52,28 @@ export class RelationshipCaption {
         ctx.fillStyle = this.fontColor
         ctx.fillText(this.text, 0, 0)
       }
+      ctx.restore()
+    }
+  }
+
+  drawSelectionIndicator(ctx) {
+    if (this.text) {
+      const indicatorWidth = 10
+      ctx.save()
+      ctx.translate(this.midPoint.x, this.midPoint.y)
+      ctx.rotate(this.textAngle)
+      ctx.translate(0, this.offset)
+      ctx.strokeStyle = green
+      ctx.lineWidth = indicatorWidth
+      ctx.rect(
+        -this.width / 2 -this.borderWidth / 2,
+        -this.height / 2 -this.borderWidth / 2,
+        this.width + this.borderWidth,
+        this.height + this.borderWidth,
+        this.padding,
+        false,
+        true
+      )
       ctx.restore()
     }
   }

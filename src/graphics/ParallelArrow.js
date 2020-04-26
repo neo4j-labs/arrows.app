@@ -81,6 +81,7 @@ export class ParallelArrow {
     ctx.arcTo(this.endControl, this.displacement, this.endShaft.x, this.endShaft.y, this.arcRadius)
     ctx.lineTo(this.endShaft.x, this.endShaft.y)
     ctx.lineWidth = this.arrowWidth + indicatorWidth
+    ctx.lineCap = 'round'
     ctx.strokeStyle = green
     ctx.stroke()
     ctx.translate(this.centreDistance, 0)

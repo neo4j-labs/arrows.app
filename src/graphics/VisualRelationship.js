@@ -17,6 +17,7 @@ export class VisualRelationship {
 
     if (this.relationship.selected) {
       this.arrow.drawSelectionIndicator(ctx)
+      this.caption.drawSelectionIndicator(ctx)
     }
     this.arrow.draw(ctx)
     this.caption.draw(ctx)

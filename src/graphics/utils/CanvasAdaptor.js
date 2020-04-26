@@ -142,6 +142,10 @@ export default class CanvasAdaptor {
     this.ctx.lineJoin = value
   }
 
+  set lineCap(value) {
+    this.ctx.lineCap = value
+  }
+
   set strokeStyle(value) {
     this.ctx.strokeStyle = value
   }

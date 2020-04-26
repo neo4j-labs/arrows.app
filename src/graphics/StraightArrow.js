@@ -50,10 +50,11 @@ export class StraightArrow {
     ctx.strokeStyle = green
     ctx.translate(this.startCentre.x, this.startCentre.y)
     ctx.rotate(this.angle)
+    ctx.lineWidth = this.arrowWidth + indicatorWidth
+    ctx.lineCap = 'round'
     ctx.beginPath()
     ctx.moveTo(this.foot, 0)
     ctx.lineTo(this.neck, 0)
-    ctx.lineWidth = this.arrowWidth + indicatorWidth
     ctx.stroke()
     ctx.translate(this.topOfHead, 0)
     ctx.lineWidth = indicatorWidth
