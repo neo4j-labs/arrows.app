@@ -53,4 +53,8 @@ export class NodeCaptionInsideNode {
       this.nodePosition.y + this.layout.top + height
     )
   }
+
+  distanceFrom(point) {
+    return this.nodePosition.vectorFrom(point).distance()
+  }
 }

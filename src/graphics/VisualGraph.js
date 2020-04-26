@@ -53,8 +53,8 @@ export default class VisualGraph {
     let closestDistance = Number.POSITIVE_INFINITY
     let closestNode = null
     this.graph.nodes.filter(node => node.status !== 'combined').forEach((node) => {
-      const distance = node.position.vectorFrom(point).distance()
       const visualNode = this.nodes[node.id]
+      const distance = visualNode.distanceFrom(point)
       if (distance < closestDistance && hitTest(visualNode, distance)) {
         closestDistance = distance
         closestNode = node

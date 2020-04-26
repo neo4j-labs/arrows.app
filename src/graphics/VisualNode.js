@@ -117,4 +117,8 @@ export default class VisualNode {
 
     return box
   }
+
+  distanceFrom(point) {
+    return Math.min(this.position.vectorFrom(point).distance(), this.caption.distanceFrom(point))
+  }
 }

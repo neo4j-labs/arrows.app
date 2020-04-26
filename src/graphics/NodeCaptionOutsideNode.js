@@ -94,4 +94,8 @@ export class NodeCaptionOutsideNode {
 
     return new BoundingBox(left, left + width, top, top + height)
   }
+
+  distanceFrom(point) {
+    return this.boundingBox().contains(point) ? 0 : Infinity
+  }
 }
