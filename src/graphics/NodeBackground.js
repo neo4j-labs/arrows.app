@@ -11,7 +11,6 @@ export class NodeBackground {
 
   draw(ctx) {
     ctx.save()
-
     ctx.fillStyle = this.backgroundColor
     ctx.strokeStyle = this.borderColor
     ctx.lineWidth = this.borderWidth
