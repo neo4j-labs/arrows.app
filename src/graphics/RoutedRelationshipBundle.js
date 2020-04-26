@@ -93,7 +93,7 @@ export class RoutedRelationshipBundle {
     }
 
     if (!possibleToDrawParallelArrows) {
-      for (let i = 0; i < this.arrows.length; i++) {
+      for (let i = 0; i < arrows.length; i++) {
         if (i !== middleRelationshipIndex) {
           const parallelArrow = arrows[i]
           arrows[i] = new SlantedArrow(
