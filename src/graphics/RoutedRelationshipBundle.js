@@ -4,9 +4,10 @@ import {ParallelArrow} from "./ParallelArrow";
 import {SlantedArrow} from "./SlantedArrow";
 import {RelationshipCaption} from "./RelationshipCaption";
 import {VisualRelationship} from "./VisualRelationship";
+import {relationshipEditing} from "../model/selection";
 
 export class RoutedRelationshipBundle {
-  constructor(relationships, graph, measureTextContext) {
+  constructor(relationships, graph, selection, measureTextContext) {
     const arrows = []
 
     const leftNode = relationships[0].from
@@ -117,6 +118,7 @@ export class RoutedRelationshipBundle {
       const caption = new RelationshipCaption(
         relationship.type,
         arrows[i],
+        relationshipEditing(selection, relationship.id),
         styleKey => getStyleSelector(relationship.relationship, styleKey)(graph),
         measureTextContext
       )

@@ -47,6 +47,10 @@ export const relationshipSelected = (selection, relationshipId) => {
   )
 }
 
+export const relationshipEditing = (selection, relationshipId) => {
+  return selection.editing &&
+    selection.editing.entityType === 'relationship' && selection.editing.id === relationshipId
+}
 
 export const selectedRelationships = (graph, selection) => {
   return graph.relationships.filter(node =>

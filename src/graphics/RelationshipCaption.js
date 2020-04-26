@@ -1,6 +1,7 @@
 export class RelationshipCaption {
-  constructor(text, arrow, style, textMeasurement) {
+  constructor(text, arrow, editing, style, textMeasurement) {
     this.text = text
+    this.editing = editing
     this.orientation = style('type-orientation')
     this.padding = style('type-padding')
     this.borderWidth = style('type-border-width')
@@ -42,11 +43,13 @@ export class RelationshipCaption {
           this.borderWidth > 0
         )
       }
-      ctx.textBaseline = 'middle'
-      ctx.textAlign = 'center'
-      ctx.font = this.font
-      ctx.fillStyle = this.fontColor
-      ctx.fillText(this.text, 0, 0)
+      if (!this.editing) {
+        ctx.textBaseline = 'middle'
+        ctx.textAlign = 'center'
+        ctx.font = this.font
+        ctx.fillStyle = this.fontColor
+        ctx.fillText(this.text, 0, 0)
+      }
       ctx.restore()
     }
   }
