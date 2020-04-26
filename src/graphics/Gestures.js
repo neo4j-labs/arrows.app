@@ -1,22 +1,19 @@
 import { drawRing, drawPolygon } from "./canvasRenderer";
 import { ringMargin as defaultRingMargin } from "./constants";
 import { getVoronoi, sortPoints } from "./utils/geometryUtils";
-import {idsMatch} from "../model/Id";
-import { green, blueGreen, purple } from "../model/colors";
+import { blueGreen, purple } from "../model/colors";
 import { Point } from "../model/Point";
 import {StraightArrow} from "./StraightArrow";
 import {getBBoxFromCorners} from "../actions/selectionMarquee";
-import {selectedNodeIds} from "../model/selection";
 
 export default class Gestures {
-  constructor(visualGraph, selection, gestures) {
+  constructor(visualGraph, gestures) {
     this.visualGraph = visualGraph
-    this.selection = selection
     this.gestures = gestures
   }
 
   draw (ctx, displayOptions) {
-    const { visualGraph, selection, gestures } = this
+    const { visualGraph, gestures } = this
     const { dragToCreate, selectionMarquee } = gestures
     const viewTransformation = displayOptions.viewTransformation
     const transform = (position) => viewTransformation.transform(position)
@@ -75,16 +72,6 @@ export default class Gestures {
         }
       }
     }
-
-    selectedNodeIds(selection).forEach(nodeId => {
-      if (!idsMatch(nodeId, dragToCreate.sourceNodeId)) {
-        const visualNode = visualGraph.nodes[nodeId]
-        if (visualNode) {
-          const nodeRadius = visualNode.radius
-          drawRing(ctx, transform(visualNode.position), green, (nodeRadius * viewTransformation.scale + ringMargin / 2))
-        }
-      }
-    })
 
     if (dragToCreate.sourceNodeId) {
       const sourceNode = visualGraph.nodes[dragToCreate.sourceNodeId]

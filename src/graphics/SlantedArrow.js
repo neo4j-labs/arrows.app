@@ -53,6 +53,7 @@ export class SlantedArrow {
     ctx.moveTo(this.startAttach.x, this.startAttach.y)
     ctx.lineTo(this.endShaft.x, this.endShaft.y)
     ctx.lineWidth = this.arrowWidth + indicatorWidth
+    ctx.lineCap = 'round'
     ctx.strokeStyle = green
     ctx.stroke()
     ctx.translate(this.endAttach.x, this.endAttach.y)

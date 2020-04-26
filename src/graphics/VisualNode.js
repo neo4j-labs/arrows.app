@@ -8,8 +8,9 @@ import BoundingBox from "./utils/BoundingBox";
 import {NodeCaptionOutsideNode} from "./NodeCaptionOutsideNode";
 
 export default class VisualNode {
-  constructor(node, graph, editing, measureTextContext) {
+  constructor(node, graph, selected, editing, measureTextContext) {
     this.node = node
+    this.selected = selected
     this.editing = editing
 
     const style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
@@ -78,8 +79,11 @@ export default class VisualNode {
       return
     }
 
+    if (this.selected) {
+      this.background.drawSelectionIndicator(ctx)
+    }
     this.background.draw(ctx)
-    if (!this.editing && this.caption) {
+    if (!this.editing) {
       this.caption.draw(ctx)
     }
     if (this.labels) {

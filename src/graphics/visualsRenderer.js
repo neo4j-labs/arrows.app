@@ -18,12 +18,12 @@ const layerManager = (() => {
 })()
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
-  const { visualGraph, selection, gestures, guides, handles } = visuals
+  const { visualGraph, gestures, guides, handles } = visuals
 
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
 
-  const visualGestures = new Gestures(visualGraph, selection, gestures)
+  const visualGestures = new Gestures(visualGraph, gestures)
 
   layerManager.clear()
 

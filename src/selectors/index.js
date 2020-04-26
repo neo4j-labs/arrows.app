@@ -7,7 +7,7 @@ import TransformationHandles from "../graphics/TransformationHandles";
 import {bundle} from "../model/graph/relationshipBundling";
 import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 import CanvasAdaptor from "../graphics/utils/CanvasAdaptor";
-import {nodeEditing, relationshipSelected, selectedNodeIds} from "../model/selection";
+import {nodeEditing, nodeSelected, relationshipSelected, selectedNodeIds} from "../model/selection";
 
 const getSelection = (state) => state.selection
 const getViewTransformation = (state) => state.viewTransformation
@@ -40,6 +40,7 @@ export const getVisualNode = (() => {
     return new VisualNode(
       node,
       graph,
+      nodeSelected(selection, node.id),
       nodeEditing(selection, node.id),
       measureTextContext
     )
