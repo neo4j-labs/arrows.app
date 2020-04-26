@@ -22,7 +22,7 @@ export class RelationshipTypeEditor extends PureComponent {
     const text = caption.text
     const padding = 10
     const midPoint = caption.midPoint
-    const textWidth = caption.textWidth
+    const textWidth = caption.width
     return (
       <input
         ref={this.input}
@@ -30,11 +30,12 @@ export class RelationshipTypeEditor extends PureComponent {
         onChange={this.handleChange}
         style={{
           position: 'absolute',
+          transform: `rotate(${caption.textAngle}rad) translate(0, ${caption.offset}px)`,
           padding: 0,
           left: midPoint.x - (textWidth / 2 + padding),
-          top: midPoint.y,
-          width: textWidth,
-          height: 20,
+          top: midPoint.y - caption.font.fontSize * 0.6,
+          width: textWidth + padding * 2,
+          height: caption.font.fontSize * 1.2,
           resize: 'none',
           outline: 'none',
           border: 'none',

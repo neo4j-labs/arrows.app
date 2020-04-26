@@ -16,7 +16,10 @@ export class RelationshipCaption {
       fontFace: 'sans-serif'
     }
     textMeasurement.font = this.font
-    this.textWidth = textMeasurement.measureText(text).width
+    const textWidth = textMeasurement.measureText(text).width
+    this.width = textWidth + this.padding * 2 + this.borderWidth
+    this.height = this.font.fontSize + this.padding * 2 + this.borderWidth
+    this.offset = this.orientation === 'above' ? -this.height / 2 : 0
   }
 
   draw(ctx) {
@@ -24,21 +27,26 @@ export class RelationshipCaption {
       ctx.save()
       ctx.translate(this.midPoint.x, this.midPoint.y)
       ctx.rotate(this.textAngle)
-      const x = this.textWidth / 2 + this.padding + this.borderWidth / 2
-      const y = this.font.fontSize / 2 + this.padding + this.borderWidth / 2
-      if (this.orientation === 'above') {
-        ctx.translate(0, -y)
-      }
+      ctx.translate(0, this.offset)
       ctx.fillStyle = this.backgroundColor
       ctx.strokeStyle = this.borderColor
       ctx.lineWidth = this.borderWidth
       if (this.orientation !== 'above') {
-        ctx.rect(-x, -y, 2 * x, 2 * y, this.padding, true, this.borderWidth > 0)
+        ctx.rect(
+          -this.width / 2,
+          -this.height / 2,
+          this.width,
+          this.height,
+          this.padding,
+          true,
+          this.borderWidth > 0
+        )
       }
       ctx.textBaseline = 'middle'
+      ctx.textAlign = 'center'
       ctx.font = this.font
       ctx.fillStyle = this.fontColor
-      ctx.fillText(this.text, -this.textWidth / 2, 0)
+      ctx.fillText(this.text, 0, 0)
       ctx.restore()
     }
   }
