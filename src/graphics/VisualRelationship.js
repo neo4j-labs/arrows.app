@@ -6,7 +6,7 @@ export class VisualRelationship {
   }
 
   distanceFrom(point) {
-    return this.arrow.distanceFrom(point)
+    return Math.min(this.arrow.distanceFrom(point), this.caption.distanceFrom(point))
   }
 
   draw(ctx) {

@@ -1,4 +1,6 @@
 import {green} from "../model/colors";
+import {Point} from "../model/Point";
+import {getDistanceToLine} from "./utils/geometryUtils";
 
 export class RelationshipCaption {
   constructor(text, arrow, editing, style, textMeasurement) {
@@ -23,6 +25,14 @@ export class RelationshipCaption {
     this.width = textWidth + this.padding * 2 + this.borderWidth
     this.height = this.font.fontSize + this.padding * 2 + this.borderWidth
     this.offset = this.orientation === 'above' ? -this.height / 2 : 0
+  }
+
+  distanceFrom(point) {
+    const [startPoint, endPoint] = (
+      [new Point(-this.width / 2, this.offset), new Point(this.width / 2, this.offset)])
+      .map(point => point.rotate(this.textAngle).translate(this.midPoint.vectorFromOrigin()))
+    const distance = getDistanceToLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, point.x, point.y)
+    return Math.max(0, distance - (this.text ? this.height / 2 : 0))
   }
 
   draw(ctx) {
