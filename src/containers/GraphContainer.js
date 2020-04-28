@@ -31,8 +31,6 @@ const mapDispatchToProps = dispatch => ({
   jumpToNextNode: (direction, extraKeys) => dispatch(jumpToNextNode(direction, extraKeys)),
   undo: () => dispatch(UndoActionCreators.undo()),
   redo: () => dispatch(UndoActionCreators.redo()),
-  onSetNodeCaption: (selection, caption) => { dispatch(trySetNodeCaption(selection, caption)) },
-  onSetRelationshipType: (selection, type) => { dispatch(setRelationshipType(selection, type)) },
   dispatch: dispatch
 })
 

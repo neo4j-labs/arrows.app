@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {CaptionEditor} from "./CaptionEditor";
 import {RelationshipTypeEditor} from "./RelationshipTypeEditor";
+import {PropertiesEditor} from "./PropertiesEditor";
 
 export class GraphTextEditors extends Component {
 
@@ -14,12 +15,20 @@ export class GraphTextEditors extends Component {
         case 'node':
           const visualNode = this.props.visualGraph.nodes[entity.id]
           if (visualNode.caption) {
-            return (
+            return [
               <CaptionEditor
+                key={'caption-' + visualNode.id}
                 visualNode={visualNode}
                 onSetNodeCaption={(caption) => this.props.onSetNodeCaption(this.props.selection, caption)}
+              />,
+              <PropertiesEditor
+                key={'properties-' + visualNode.id}
+                visualNode={visualNode}
+                selection={this.props.selection}
+                onSetPropertyKey={this.props.onSetPropertyKey}
+                onSetPropertyValue={this.props.onSetPropertyValue}
               />
-            )
+            ]
           }
           break
 

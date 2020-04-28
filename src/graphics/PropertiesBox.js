@@ -13,13 +13,14 @@ export class PropertiesBox {
     this.fontColor = style('property-color')
     this.lineHeight = this.font.fontSize * 1.2
     this.properties = Object.keys(properties).map(key => ({
-      key: ` ${key}:`,
-      value: `${properties[key]} `
+      key,
+      value: properties[key]
     }))
-    this.keysWidth = Math.max(...this.properties.map(property => textMeasurement.measureText(property.key).width))
     this.spaceWidth = textMeasurement.measureText(' ').width
-    this.valuesWidth = Math.max(...this.properties.map(property => textMeasurement.measureText(property.value).width))
-    this.boxWidth = this.keysWidth + this.spaceWidth + this.valuesWidth
+    this.colonWidth = textMeasurement.measureText(':').width
+    this.keysWidth = Math.max(...this.properties.map(property => textMeasurement.measureText(property.key).width)) + this.spaceWidth
+    this.valuesWidth = Math.max(...this.properties.map(property => textMeasurement.measureText(property.value).width)) + this.spaceWidth
+    this.boxWidth = this.keysWidth + this.colonWidth + this.spaceWidth + this.valuesWidth
     this.boxHeight = this.lineHeight * this.properties.length
   }
 
@@ -32,8 +33,8 @@ export class PropertiesBox {
 
     this.properties.forEach((property, index) => {
       const yPosition = (index + 0.5) * this.lineHeight
-      drawTextLine(ctx, property.key, new Point(this.keysWidth, yPosition), 'end')
-      drawTextLine(ctx, property.value, new Point(this.keysWidth + this.spaceWidth, yPosition), 'start')
+      drawTextLine(ctx, property.key + ':', new Point(this.keysWidth + this.colonWidth, yPosition), 'end')
+      drawTextLine(ctx, property.value, new Point(this.keysWidth + this.colonWidth + this.spaceWidth, yPosition), 'start')
     })
 
     ctx.restore()
