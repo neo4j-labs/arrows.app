@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Button } from 'semantic-ui-react'
 import {PropertyKeyEditor} from "./PropertyKeyEditor";
 import {PropertyValueEditor} from "./PropertyValueEditor";
 
@@ -41,16 +42,20 @@ export class PropertiesEditor extends Component {
             />
           ]
         })}
-        {/*<Button*/}
-        {/*  key='addProperty'*/}
-        {/*  onClick={addEmptyProperty}*/}
-        {/*  basic*/}
-        {/*  floated='right'*/}
-        {/*  size="tiny"*/}
-        {/*  icon="plus"*/}
-        {/*  content='Property'*/}
-        {/*  type='button'*/}
-        {/*/>*/}
+        <Button
+          basic
+          key='addProperty'
+          onClick={() => onSetPropertyValue(selection, '', '')}
+          size="tiny"
+          icon="plus"
+          content='Property'
+          type='button'
+          style={{
+            position: 'absolute',
+            left: boxPosition.x,
+            top: boxPosition.y + propertiesBox.boxHeight
+          }}
+        />
       </div>
     )
   }
