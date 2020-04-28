@@ -1,9 +1,11 @@
 import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
 import {drawTextLine} from "./canvasRenderer";
+import {green} from "../model/colors";
 
 export class PropertiesBox {
-  constructor(properties, style, textMeasurement) {
+  constructor(properties, editing, style, textMeasurement) {
+    this.editing = editing
     this.font = {
       fontWeight: style('property-font-weight'),
       fontSize: style('property-font-size'),
@@ -18,8 +20,14 @@ export class PropertiesBox {
     }))
     this.spaceWidth = textMeasurement.measureText(' ').width
     this.colonWidth = textMeasurement.measureText(':').width
-    this.keysWidth = Math.max(...this.properties.map(property => textMeasurement.measureText(property.key).width)) + this.spaceWidth
-    this.valuesWidth = Math.max(...this.properties.map(property => textMeasurement.measureText(property.value).width)) + this.spaceWidth
+    const maxWidth = (selector) => {
+      if (this.properties.length === 0) return 0
+      return Math.max(...this.properties.map(property => {
+        return textMeasurement.measureText(selector(property)).width
+      }))
+    }
+    this.keysWidth = maxWidth(property => property.key) + this.spaceWidth
+    this.valuesWidth = maxWidth(property => property.value) + this.spaceWidth
     this.boxWidth = this.keysWidth + this.colonWidth + this.spaceWidth + this.valuesWidth
     this.boxHeight = this.lineHeight * this.properties.length
   }
@@ -33,10 +41,25 @@ export class PropertiesBox {
 
     this.properties.forEach((property, index) => {
       const yPosition = (index + 0.5) * this.lineHeight
-      drawTextLine(ctx, property.key + ':', new Point(this.keysWidth + this.colonWidth, yPosition), 'end')
-      drawTextLine(ctx, property.value, new Point(this.keysWidth + this.colonWidth + this.spaceWidth, yPosition), 'start')
+      if (this.editing) {
+        drawTextLine(ctx, ':', new Point(this.keysWidth + this.colonWidth, yPosition), 'end')
+      } else {
+        drawTextLine(ctx, property.key + ':', new Point(this.keysWidth + this.colonWidth, yPosition), 'end')
+        drawTextLine(ctx, property.value, new Point(this.keysWidth + this.colonWidth + this.spaceWidth, yPosition), 'start')
+      }
     })
 
+    ctx.restore()
+  }
+
+  drawSelectionIndicator(ctx) {
+    const indicatorWidth = 10
+    const boundingBox = this.boundingBox()
+    ctx.save()
+    ctx.strokeStyle = green
+    ctx.lineWidth = indicatorWidth
+    ctx.lineJoin = 'round'
+    ctx.rect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height, 0, false, true)
     ctx.restore()
   }
 

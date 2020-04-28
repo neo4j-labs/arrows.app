@@ -36,11 +36,9 @@ export default class VisualNode {
     }
     const obstacles = this.labels ? [...neighbourObstacles, this.labels] : neighbourObstacles
 
-    if (Object.keys(node.properties).length > 0) {
-      this.properties = new NodeProperties(
-        node.properties, this.radius, node.position, obstacles, style, measureTextContext
-      )
-    }
+    this.properties = new NodeProperties(
+      node.properties, this.radius, node.position, obstacles, editing, style, measureTextContext
+    )
   }
 
   get id() {
@@ -82,6 +80,7 @@ export default class VisualNode {
     if (this.selected) {
       this.background.drawSelectionIndicator(ctx)
       this.caption.drawSelectionIndicator(ctx)
+      this.properties.drawSelectionIndicator(ctx)
     }
     this.background.draw(ctx)
     if (!this.editing) {
