@@ -59,4 +59,8 @@ export class NodeProperties {
   boundingBox() {
     return this.propertiesBox.boundingBox().translate(this.boxPosition.vectorFromOrigin())
   }
+
+  distanceFrom(point) {
+    return this.boundingBox().contains(point) ? 0 : Infinity
+  }
 }

@@ -118,6 +118,10 @@ export default class VisualNode {
   }
 
   distanceFrom(point) {
-    return Math.min(this.position.vectorFrom(point).distance(), this.caption.distanceFrom(point))
+    return Math.min(
+      this.position.vectorFrom(point).distance(),
+      this.caption.distanceFrom(point),
+      this.properties.distanceFrom(point)
+    )
   }
 }
