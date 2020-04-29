@@ -20,8 +20,10 @@ export class CaptionEditor extends Component {
 
   componentDidUpdate() {
     const textArea = this.textArea.current
-    textArea.selectionStart = this.state.selectionStart
-    textArea.selectionEnd = this.state.selectionStart
+    if (document.activeElement === textArea) {
+      textArea.selectionStart = this.state.selectionStart
+      textArea.selectionEnd = this.state.selectionStart
+    }
   }
 
   handleChange = (e) => {
