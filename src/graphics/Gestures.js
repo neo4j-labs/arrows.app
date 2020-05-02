@@ -5,6 +5,7 @@ import { blueGreen, purple } from "../model/colors";
 import { Point } from "../model/Point";
 import {StraightArrow} from "./StraightArrow";
 import {getBBoxFromCorners} from "../actions/selectionMarquee";
+import {BalloonArrow} from "./BalloonArrow";
 
 export default class Gestures {
   constructor(visualGraph, gestures) {
@@ -102,8 +103,13 @@ export default class Gestures {
 
           const sourcePoint = transform(sourceNodeIdPosition)
           const targetPoint = transform(newNodePosition)
-          const arrow = new StraightArrow(sourcePoint, targetPoint, radius, newNodeRadius, 4, 16, 24, 2.4, blueGreen)
-          arrow.draw(ctx)
+          if (targetNode && sourceNode === targetNode) {
+            const arrow = new BalloonArrow(sourcePoint, newNodeRadius, 44, 256, 40, 4, 16, 24, 2.4, blueGreen)
+            arrow.draw(ctx)
+          } else {
+            const arrow = new StraightArrow(sourcePoint, targetPoint, radius, newNodeRadius, 4, 16, 24, 2.4, blueGreen)
+            arrow.draw(ctx)
+          }
         } else {
           const drawNodeRing = sourceNode.drawRing || drawRing
           drawNodeRing(ctx, transform(sourceNodeIdPosition), purple, outerRadius)
