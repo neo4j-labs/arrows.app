@@ -3,10 +3,6 @@ import EditConnectionParametersForm from "../components/StorageConfigModal";
 import {initializeConnection} from "../actions/databaseConnection";
 import {initializeGoogleDriveStorage} from "../actions/googleDrive";
 
-const mapStateToProps = () => {
-  return {}
-}
-
 const mapDispatchToProps = dispatch => {
   return {
     useNeo4jDatabaseStorage: () => {
@@ -19,6 +15,6 @@ const mapDispatchToProps = dispatch => {
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(EditConnectionParametersForm)
