@@ -45,13 +45,13 @@ export default class Pill {
   }
 
   contains(point) {
-    const translated = point.translate(this.position.vectorFromOrigin().invert())
+    const localPoint = point.translate(this.position.vectorFromOrigin().invert())
     const rectangle = new BoundingBox(this.radius, this.radius + this.width, 0, this.radius * 2)
     const leftCenter = new Point(this.radius, this.radius)
     const rightCenter = new Point(this.radius + this.width, this.radius)
-    return rectangle.contains(translated) ||
-      leftCenter.vectorFrom(translated).distance() < this.radius ||
-      rightCenter.vectorFrom(translated).distance() < this.radius
+    return rectangle.contains(localPoint) ||
+      leftCenter.vectorFrom(localPoint).distance() < this.radius ||
+      rightCenter.vectorFrom(localPoint).distance() < this.radius
   }
 
   boundingBox() {

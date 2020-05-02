@@ -1,8 +1,6 @@
 import {Point} from "../model/Point";
-import {Vector} from "../model/Vector";
-import {getDistanceToLine} from "./utils/geometryUtils";
-import {green} from "../model/colors";
 import arrowHead from "./arrowHead";
+import BoundingBox from "./utils/BoundingBox";
 
 export class BalloonArrow {
   constructor(nodeCentre, nodeRadius, separation, length, arcRadius, arrowWidth, headWidth, headHeight, chinHeight, arrowColor) {
@@ -27,7 +25,11 @@ export class BalloonArrow {
   }
 
   distanceFrom(point) {
-    return Infinity
+    const localPoint = point.translate(this.nodeCentre.vectorFromOrigin().invert()).rotate(-this.angle)
+    const rectangle = new BoundingBox(this.nodeRadius, this.length - this.displacement,
+      -(this.displacement + this.arrowWidth / 2), this.displacement + this.arrowWidth / 2)
+    const turnCentre = new Point(this.length - this.displacement, 0)
+    return rectangle.contains(localPoint) || turnCentre.vectorFrom(localPoint).distance() < this.displacement + this.arrowWidth / 2 ? 0 : Infinity
   }
 
   draw(ctx) {
