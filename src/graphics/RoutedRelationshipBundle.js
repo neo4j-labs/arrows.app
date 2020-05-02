@@ -5,6 +5,7 @@ import {SlantedArrow} from "./SlantedArrow";
 import {RelationshipCaption} from "./RelationshipCaption";
 import {VisualRelationship} from "./VisualRelationship";
 import {relationshipEditing} from "../model/selection";
+import {BalloonArrow} from "./BalloonArrow";
 
 export class RoutedRelationshipBundle {
   constructor(relationships, graph, selection, measureTextContext) {
@@ -36,7 +37,7 @@ export class RoutedRelationshipBundle {
     const middleRelationshipIndex = (relationships.length - 1) / 2;
 
     const maxDeflection = Math.PI / 2
-    let leftTightening = 0.8
+    let leftTightening = 0.6
     if (relationshipSeparation * (relationships.length - 1) * leftTightening / leftRadius > maxDeflection) {
       leftTightening = maxDeflection * leftRadius / (relationshipSeparation * (relationships.length - 1))
     }
@@ -44,7 +45,7 @@ export class RoutedRelationshipBundle {
       leftTightening = Math.asin(firstDisplacement / (leftRadius + maxLeftHeadHeight)) * leftRadius / firstDisplacement
     }
 
-    let rightTightening = 0.8
+    let rightTightening = 0.6
     if (relationshipSeparation * (relationships.length - 1) * rightTightening / rightRadius > maxDeflection) {
       rightTightening = maxDeflection * rightRadius / (relationshipSeparation * (relationships.length - 1))
     }
@@ -58,7 +59,20 @@ export class RoutedRelationshipBundle {
       const relationship = relationships[i]
       const dimensions = arrowDimensions[i]
 
-      if (i === middleRelationshipIndex) {
+      if (relationship.from === relationship.to) {
+        arrows[i] = new BalloonArrow(
+          relationship.from.position,
+          dimensions.startRadius,
+          relationshipSeparation,
+          dimensions.startRadius * 4,
+          40,
+          dimensions.arrowWidth,
+          dimensions.headWidth,
+          dimensions.headHeight,
+          dimensions.chinHeight,
+          dimensions.arrowColor
+        )
+      } else if (i === middleRelationshipIndex) {
         arrows[i] = new StraightArrow(
           relationship.from.position,
           relationship.to.position,
@@ -80,7 +94,7 @@ export class RoutedRelationshipBundle {
           displacement * (dimensions.leftToRight ? leftTightening / leftRadius : rightTightening / rightRadius),
           displacement * (dimensions.leftToRight ? rightTightening / rightRadius : leftTightening / leftRadius),
           displacement,
-          30,
+          40,
           dimensions.arrowWidth,
           dimensions.headWidth,
           dimensions.headHeight,

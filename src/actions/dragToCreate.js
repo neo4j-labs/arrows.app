@@ -23,7 +23,7 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
     const state = getState()
     const visualGraph = getVisualGraph(state)
     const graph = visualGraph.graph
-    const targetSnaps = snapToTargetNode(visualGraph, sourceNodeId, mousePosition)
+    const targetSnaps = snapToTargetNode(visualGraph, null, mousePosition)
     if (targetSnaps.snapped) {
       dispatch(ringDraggedConnected(
         sourceNodeId,
