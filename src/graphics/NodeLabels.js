@@ -41,6 +41,10 @@ export class NodeLabels {
     })
   }
 
+  get isEmpty() {
+    return this.pills.length === 0
+  }
+
   draw(ctx) {
     ctx.save()
 

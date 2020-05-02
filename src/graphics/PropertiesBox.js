@@ -32,6 +32,10 @@ export class PropertiesBox {
     this.boxHeight = this.lineHeight * this.properties.length
   }
 
+  get isEmpty() {
+    return this.properties.length === 0
+  }
+
   draw(ctx) {
     ctx.save()
 

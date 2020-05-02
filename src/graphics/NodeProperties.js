@@ -20,6 +20,10 @@ export class NodeProperties {
       .translate(new Vector(this.alignment.horizontal === 'right' ? -this.propertiesBox.boxWidth : 0, 0))
   }
 
+  get isEmpty() {
+    return this.propertiesBox.isEmpty
+  }
+
   draw(ctx) {
     if (this.propertiesBox.properties.length > 0) {
       ctx.save()

@@ -31,10 +31,11 @@ export default class VisualNode {
     const neighbourObstacles = neighbourPositions(node, graph).map(position => {
       return { angle: position.vectorFrom(node.position).angle() }
     })
-    if (node.labels && node.labels.length > 0) {
-      this.labels = new NodeLabels(node.labels, this.radius, node.position, neighbourObstacles, style, measureTextContext)
-    }
-    const obstacles = this.labels ? [...neighbourObstacles, this.labels] : neighbourObstacles
+
+    this.labels = new NodeLabels(
+      node.labels, this.radius, node.position, neighbourObstacles, style, measureTextContext
+    )
+    const obstacles = this.labels.isEmpty ? neighbourObstacles : [...neighbourObstacles, this.labels]
 
     this.properties = new NodeProperties(
       node.properties, this.radius, node.position, obstacles, editing, style, measureTextContext
@@ -86,12 +87,8 @@ export default class VisualNode {
     if (!this.editing) {
       this.caption.draw(ctx)
     }
-    if (this.labels) {
-      this.labels.draw(ctx)
-    }
-    if (this.properties) {
-      this.properties.draw(ctx)
-    }
+    this.labels.draw(ctx)
+    this.properties.draw(ctx)
   }
 
   boundingBox() {
@@ -106,11 +103,11 @@ export default class VisualNode {
       box = box.combine(this.caption.boundingBox())
     }
 
-    if (this.labels) {
+    if (!this.labels.isEmpty) {
       box = box.combine(this.labels.boundingBox())
     }
 
-    if (this.properties) {
+    if (!this.properties.isEmpty) {
       box = box.combine(this.properties.boundingBox())
     }
 
