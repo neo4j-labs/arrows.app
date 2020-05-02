@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {CaptionEditor} from "./CaptionEditor";
 import {RelationshipTypeEditor} from "./RelationshipTypeEditor";
 import {PropertiesEditor} from "./PropertiesEditor";
+import {LabelsEditor} from "./LabelsEditor";
 
 export class GraphTextEditors extends Component {
 
@@ -27,6 +28,13 @@ export class GraphTextEditors extends Component {
                 selection={this.props.selection}
                 onSetPropertyKey={this.props.onSetPropertyKey}
                 onSetPropertyValue={this.props.onSetPropertyValue}
+              />,
+              <LabelsEditor
+                key={'labels-' + visualNode.id}
+                visualNode={visualNode}
+                selection={this.props.selection}
+                onAddLabel={this.props.onAddLabel}
+                onRenameLabel={this.props.onRenameLabel}
               />
             ]
           }
