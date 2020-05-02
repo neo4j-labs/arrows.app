@@ -1,5 +1,6 @@
 import BoundingBox from "./utils/BoundingBox";
 import {green} from "../model/colors";
+import {Point} from "../model/Point";
 
 export default class Pill {
   constructor(text, position, width, radius, borderWidth, backgroundColor, strokeColor, fontColor) {
@@ -38,6 +39,16 @@ export default class Pill {
       this.radius + this.borderWidth / 2, false, true
     )
     ctx.restore()
+  }
+
+  contains(point) {
+    const translated = point.translate(this.position.vectorFromOrigin().invert())
+    const rectangle = new BoundingBox(this.radius, this.radius + this.width, 0, this.radius * 2)
+    const leftCenter = new Point(this.radius, this.radius)
+    const rightCenter = new Point(this.radius + this.width, this.radius)
+    return rectangle.contains(translated) ||
+      leftCenter.vectorFrom(translated).distance() < this.radius ||
+      rightCenter.vectorFrom(translated).distance() < this.radius
   }
 
   boundingBox() {

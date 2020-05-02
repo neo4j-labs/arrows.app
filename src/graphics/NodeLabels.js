@@ -68,4 +68,8 @@ export class NodeLabels {
   boundingBox() {
     return combineBoundingBoxes(this.pills.map(pill => pill.boundingBox()))
   }
+
+  distanceFrom(point) {
+    return this.pills.some(pill => pill.contains(point)) ? 0 : Infinity
+  }
 }
