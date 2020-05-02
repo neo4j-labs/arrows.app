@@ -81,6 +81,7 @@ export default class VisualNode {
     if (this.selected) {
       this.background.drawSelectionIndicator(ctx)
       this.caption.drawSelectionIndicator(ctx)
+      this.labels.drawSelectionIndicator(ctx)
       this.properties.drawSelectionIndicator(ctx)
     }
     this.background.draw(ctx)

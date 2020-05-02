@@ -1,4 +1,5 @@
 import BoundingBox from "./utils/BoundingBox";
+import {green} from "../model/colors";
 
 export default class Pill {
   constructor(text, position, width, radius, borderWidth, backgroundColor, strokeColor, fontColor) {
@@ -11,7 +12,7 @@ export default class Pill {
     this.strokeColor = strokeColor
     this.fontColor = fontColor
   }
-  
+
   draw(ctx) {
     ctx.save()
     ctx.translate(...this.position.xy)
@@ -21,6 +22,21 @@ export default class Pill {
     ctx.rect(0, 0, this.width + this.radius * 2, this.radius * 2, this.radius, true, this.borderWidth > 0)
     ctx.fillStyle = this.fontColor
     ctx.fillText(this.text, this.radius, this.radius)
+    ctx.restore()
+  }
+
+  drawSelectionIndicator(ctx) {
+    const indicatorWidth = 10
+    ctx.save()
+    ctx.translate(...this.position.xy)
+    ctx.strokeStyle = green
+    ctx.lineWidth = indicatorWidth
+    ctx.lineJoin = 'round'
+    ctx.rect(
+      -this.borderWidth / 2, -this.borderWidth / 2,
+      this.width + this.radius * 2 + this.borderWidth, this.radius * 2 + this.borderWidth,
+      this.radius + this.borderWidth / 2, false, true
+    )
     ctx.restore()
   }
 

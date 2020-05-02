@@ -43,7 +43,7 @@ export class NodeProperties {
   }
 
   drawSelectionIndicator(ctx) {
-    if (this.propertiesBox.properties.length > 0) {
+    if (!this.isEmpty) {
       const indicatorWidth = 10
       ctx.save()
       ctx.strokeStyle = green

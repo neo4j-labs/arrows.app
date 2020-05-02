@@ -57,6 +57,14 @@ export class NodeLabels {
     ctx.restore()
   }
 
+  drawSelectionIndicator(ctx) {
+    if (!this.isEmpty) {
+      this.pills.forEach((pill) => {
+        pill.drawSelectionIndicator(ctx)
+      })
+    }
+  }
+
   boundingBox() {
     return combineBoundingBoxes(this.pills.map(pill => pill.boundingBox()))
   }
