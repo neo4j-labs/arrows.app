@@ -33,7 +33,7 @@ export default class VisualNode {
     })
 
     this.labels = new NodeLabels(
-      node.labels, this.radius, node.position, neighbourObstacles, style, measureTextContext
+      node.labels, this.radius, node.position, neighbourObstacles, editing, style, measureTextContext
     )
     const obstacles = this.labels.isEmpty ? neighbourObstacles : [...neighbourObstacles, this.labels]
 

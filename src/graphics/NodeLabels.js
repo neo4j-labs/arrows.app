@@ -5,7 +5,7 @@ import Pill from "./Pill";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class NodeLabels {
-  constructor(labels, nodeRadius, nodePosition, obstacles, style, textMeasurement) {
+  constructor(labels, nodeRadius, nodePosition, obstacles, editing, style, textMeasurement) {
     this.angle = distribute([
       {preferredAngles: [Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'labels'}
     ], obstacles)[0].angle
@@ -37,7 +37,7 @@ export class NodeLabels {
         this.alignment.horizontal === 'right' ? -pillRadius - pillWidth : -pillRadius,
         i * lineHeight - pillRadius
       ))
-      return new Pill(label, pillPosition, pillWidth, pillRadius, borderWidth, backgroundColor, strokeColor, fontColor)
+      return new Pill(label, pillPosition, pillWidth, pillRadius, borderWidth, backgroundColor, strokeColor, fontColor, editing)
     })
   }
 

@@ -3,7 +3,7 @@ import {green} from "../model/colors";
 import {Point} from "../model/Point";
 
 export default class Pill {
-  constructor(text, position, width, radius, borderWidth, backgroundColor, strokeColor, fontColor) {
+  constructor(text, position, width, radius, borderWidth, backgroundColor, strokeColor, fontColor, editing) {
     this.text = text
     this.position = position
     this.width = width
@@ -12,6 +12,7 @@ export default class Pill {
     this.backgroundColor = backgroundColor
     this.strokeColor = strokeColor
     this.fontColor = fontColor
+    this.editing = editing
   }
 
   draw(ctx) {
@@ -21,8 +22,10 @@ export default class Pill {
     ctx.strokeStyle = this.strokeColor
     ctx.lineWidth = this.borderWidth
     ctx.rect(0, 0, this.width + this.radius * 2, this.radius * 2, this.radius, true, this.borderWidth > 0)
-    ctx.fillStyle = this.fontColor
-    ctx.fillText(this.text, this.radius, this.radius)
+    if (!this.editing) {
+      ctx.fillStyle = this.fontColor
+      ctx.fillText(this.text, this.radius, this.radius)
+    }
     ctx.restore()
   }
 
