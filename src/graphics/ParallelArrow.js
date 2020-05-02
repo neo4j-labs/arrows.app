@@ -54,10 +54,7 @@ export class ParallelArrow {
     ctx.translate(this.startCentre.x, this.startCentre.y)
     ctx.rotate(this.angle)
     ctx.beginPath()
-    ctx.moveTo(this.startAttach.x, this.startAttach.y)
-    ctx.arcTo(this.startControl, this.displacement, this.midShaft, this.displacement, this.arcRadius)
-    ctx.arcTo(this.endControl, this.displacement, this.endShaft.x, this.endShaft.y, this.arcRadius)
-    ctx.lineTo(this.endShaft.x, this.endShaft.y)
+    this.path(ctx)
     ctx.lineWidth = this.arrowWidth
     ctx.strokeStyle = this.arrowColor
     ctx.stroke()
@@ -76,10 +73,7 @@ export class ParallelArrow {
     ctx.translate(this.startCentre.x, this.startCentre.y)
     ctx.rotate(this.angle)
     ctx.beginPath()
-    ctx.moveTo(this.startAttach.x, this.startAttach.y)
-    ctx.arcTo(this.startControl, this.displacement, this.midShaft, this.displacement, this.arcRadius)
-    ctx.arcTo(this.endControl, this.displacement, this.endShaft.x, this.endShaft.y, this.arcRadius)
-    ctx.lineTo(this.endShaft.x, this.endShaft.y)
+    this.path(ctx)
     ctx.lineWidth = this.arrowWidth + indicatorWidth
     ctx.lineCap = 'round'
     ctx.strokeStyle = green
@@ -92,6 +86,13 @@ export class ParallelArrow {
     arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, false, true)
     ctx.stroke()
     ctx.restore()
+  }
+
+  path(ctx) {
+    ctx.moveTo(this.startAttach.x, this.startAttach.y)
+    ctx.arcTo(this.startControl, this.displacement, this.midShaft, this.displacement, this.arcRadius)
+    ctx.arcTo(this.endControl, this.displacement, this.endShaft.x, this.endShaft.y, this.arcRadius)
+    ctx.lineTo(this.endShaft.x, this.endShaft.y)
   }
 
   midPoint() {

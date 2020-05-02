@@ -1,6 +1,7 @@
 import {Point} from "../model/Point";
 import arrowHead from "./arrowHead";
 import BoundingBox from "./utils/BoundingBox";
+import {green} from "../model/colors";
 
 export class BalloonArrow {
   constructor(nodeCentre, nodeRadius, separation, length, arcRadius, arrowWidth, headWidth, headHeight, chinHeight, arrowColor) {
@@ -37,13 +38,7 @@ export class BalloonArrow {
     ctx.translate(...this.nodeCentre.xy)
     ctx.rotate(this.angle)
     ctx.beginPath()
-    ctx.moveTo(this.startAttach.x, this.startAttach.y)
-    ctx.arcTo(this.control, -this.displacement, this.length / 2, -this.displacement, this.arcRadius)
-    ctx.arcTo(this.length, -this.displacement, this.length, 0, this.displacement)
-    ctx.arcTo(this.length, this.displacement, this.length / 2, this.displacement, this.displacement)
-    // ctx.lineTo(this.length, -this.displacement)
-    ctx.arcTo(this.control, this.displacement, this.endShaft.x, this.endShaft.y, this.arcRadius)
-    ctx.lineTo(this.endShaft.x, this.endShaft.y)
+    this.path(ctx)
     ctx.lineWidth = this.arrowWidth
     ctx.strokeStyle = this.arrowColor
     ctx.stroke()
@@ -56,8 +51,32 @@ export class BalloonArrow {
   }
 
   drawSelectionIndicator(ctx) {
-    ctx.fillStyle = 'red'
-    ctx.circle(...this.midPoint().xy, 10, true, false)
+    const indicatorWidth = 10
+    ctx.save()
+    ctx.translate(...this.nodeCentre.xy)
+    ctx.rotate(this.angle)
+    ctx.beginPath()
+    this.path(ctx)
+    ctx.lineWidth = this.arrowWidth + indicatorWidth
+    ctx.lineCap = 'round'
+    ctx.strokeStyle = green
+    ctx.stroke()
+    ctx.rotate(Math.PI + this.deflection)
+    ctx.translate(-this.nodeRadius, 0)
+    ctx.lineWidth = indicatorWidth
+    ctx.lineJoin = 'round'
+    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, true, false)
+    ctx.stroke()
+    ctx.restore()
+  }
+
+  path(ctx) {
+    ctx.moveTo(this.startAttach.x, this.startAttach.y)
+    ctx.arcTo(this.control, -this.displacement, this.length / 2, -this.displacement, this.arcRadius)
+    ctx.arcTo(this.length, -this.displacement, this.length, 0, this.displacement)
+    ctx.arcTo(this.length, this.displacement, this.length / 2, this.displacement, this.displacement)
+    ctx.arcTo(this.control, this.displacement, this.endShaft.x, this.endShaft.y, this.arcRadius)
+    ctx.lineTo(this.endShaft.x, this.endShaft.y)
   }
 
   midPoint() {
