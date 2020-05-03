@@ -1,7 +1,7 @@
 import {green} from "../model/colors";
 import {Point} from "../model/Point";
 import {getDistanceToLine} from "./utils/geometryUtils";
-import {textAlignmentAtAngle} from "./circumferentialTextAlignment";
+import {oppositeHorizontalAlignment, textAlignmentAtAngle} from "./circumferentialTextAlignment";
 import {Vector} from "../model/Vector";
 
 export class RelationshipCaption {
@@ -29,7 +29,7 @@ export class RelationshipCaption {
     const spaceWidth = textMeasurement.measureText(' ').width
     this.width = textWidth + this.padding * 2 + this.borderWidth
     this.height = this.font.fontSize + this.padding * 2 + this.borderWidth
-    this.offset = computeOffset(this.width, this.height, this.position, this.textAlign, spaceWidth)
+    this.offset = computeOffset(this.width, this.height, this.position, this.textAlign, arrow.shaftAngle(), spaceWidth)
   }
 
   distanceFrom(point) {
@@ -106,7 +106,7 @@ const angleForOrientation = (orientation, shaftAngle) => {
 }
 
 const textAlignForPosition = (position, orientation, shaftAngle) => {
-  if (orientation === 'parallel' || orientation === 'perpendicular') {
+  if (orientation === 'parallel' || orientation === 'perpendicular' || position === 'inline') {
     return 'center'
   }
   const positiveAngle = shaftAngle < 0 ? shaftAngle + Math.PI : shaftAngle
@@ -114,10 +114,16 @@ const textAlignForPosition = (position, orientation, shaftAngle) => {
   if (positiveAngle < tolerance || positiveAngle > Math.PI - tolerance) {
     return 'center'
   }
-  return textAlignmentAtAngle(positiveAngle).horizontal
+  const aboveAlignment = textAlignmentAtAngle(positiveAngle).horizontal
+  switch (position) {
+    case 'below':
+      return oppositeHorizontalAlignment(aboveAlignment)
+    default:
+      return aboveAlignment
+  }
 }
 
-const computeOffset = (width, height, position, textAlign, spaceWidth) => {
+const computeOffset = (width, height, position, textAlign, shaftAngle, spaceWidth) => {
   let dx, dy
 
   switch (textAlign) {
@@ -130,7 +136,12 @@ const computeOffset = (width, height, position, textAlign, spaceWidth) => {
     default:
       dx = -(width / 2)
   }
-  switch (position) {
+
+  const positiveAngle = shaftAngle < 0 ? shaftAngle + Math.PI : shaftAngle
+  const tolerance = Math.PI / 100
+  const isVertical = Math.abs(positiveAngle - Math.PI / 2) < tolerance
+
+  switch (isVertical ? 'inline' : position) {
     case 'above':
       dy = -height
       break

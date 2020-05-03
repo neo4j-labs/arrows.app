@@ -12,6 +12,17 @@ export const textAlignmentAtAngle = (angle) => {
   }
 }
 
+export const oppositeHorizontalAlignment = (horizontal) => {
+  switch (horizontal) {
+    case 'left':
+      return 'right'
+    case 'right':
+      return 'left'
+    default:
+      return horizontal
+  }
+}
+
 const orientations = [
   { name: 'top-left', angle: -3 * Math.PI / 4, vertical: 'top', horizontal: 'end' },
   { name: 'top', angle: -Math.PI / 2, vertical: 'top', horizontal: 'center' },
