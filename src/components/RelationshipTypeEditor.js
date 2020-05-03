@@ -30,17 +30,17 @@ export class RelationshipTypeEditor extends PureComponent {
         onChange={this.handleChange}
         style={{
           position: 'absolute',
-          transform: `rotate(${caption.textAngle}rad) translate(0, ${caption.offset}px)`,
+          transform: `translate(${caption.offset.dx + caption.padding}px, ${caption.offset.dy}px) rotate(${caption.textAngle}rad)`,
           padding: 0,
-          left: midPoint.x - (textWidth / 2 + padding),
-          top: midPoint.y - caption.font.fontSize * 0.6,
-          width: textWidth + padding * 2,
+          left: midPoint.x,
+          top: midPoint.y,
+          width: textWidth + padding,
           height: caption.font.fontSize * 1.2,
           resize: 'none',
           outline: 'none',
           border: 'none',
           background: 'transparent',
-          textAlign: 'center',
+          textAlign: 'left',
           ...caption.font,
           lineHeight: 1.2
         }}

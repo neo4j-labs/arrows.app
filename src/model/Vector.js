@@ -38,4 +38,8 @@ export class Vector {
   angle() {
     return Math.atan2(this.dy, this.dx)
   }
+
+  get dxdy() {
+    return [this.dx, this.dy]
+  }
 }

@@ -44,7 +44,8 @@ export const styleAttributes = {
   'property-font-weight': {appliesTo: 'Property', type: 'font-weight', defaultValue: 'normal'},
   'arrow-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 5},
   'arrow-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
-  'type-orientation': {appliesTo: 'Relationship', type: 'type-orientation', defaultValue: 'inline'},
+  'type-position': {appliesTo: 'Relationship', type: 'type-position', defaultValue: 'inline'},
+  'type-orientation': {appliesTo: 'Relationship', type: 'type-orientation', defaultValue: 'parallel'},
   'type-font-size': {appliesTo: 'Relationship', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
   'type-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
   'type-background-color': {appliesTo: 'Relationship', type: 'color', defaultValue: white},
@@ -72,7 +73,8 @@ export const styleTypes = {
   'color': { editor: 'colorPicker' },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
   'caption-position': { editor: 'dropdown', options: ['inside', 'top-left', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left'] },
-  'type-orientation': { editor: 'dropdown', options: ['inline', 'above', 'horizontal'] }
+  'type-position': { editor: 'dropdown', options: ['inline', 'above', 'below'] },
+  'type-orientation': { editor: 'dropdown', options: ['parallel', 'perpendicular', 'horizontal'] }
 }
 
 export const completeWithDefaults = (style) => {
