@@ -1,5 +1,6 @@
 import {getStyleSelector} from "../selectors/style";
 import {RelationshipCaption} from "./RelationshipCaption";
+import {RelationshipProperties} from "./RelationshipProperties";
 
 export class VisualRelationship {
   constructor(relationship, graph, arrow, editing, measureTextContext) {
@@ -11,6 +12,13 @@ export class VisualRelationship {
 
     this.caption = new RelationshipCaption(
       relationship.type,
+      arrow,
+      editing,
+      style,
+      measureTextContext
+    )
+    this.properties = new RelationshipProperties(
+      relationship.relationship.properties,
       arrow,
       editing,
       style,
@@ -34,5 +42,6 @@ export class VisualRelationship {
     }
     this.arrow.draw(ctx)
     this.caption.draw(ctx)
+    this.properties.draw(ctx)
   }
 }
