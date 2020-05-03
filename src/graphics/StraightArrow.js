@@ -55,9 +55,9 @@ export class StraightArrow {
     ctx.stroke()
     ctx.translate(this.endAttach.x, this.endAttach.y)
     ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle())
-    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
+    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
     ctx.stroke()
     ctx.restore()
   }
