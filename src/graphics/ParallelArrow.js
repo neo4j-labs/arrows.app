@@ -5,7 +5,7 @@ import {green} from "../model/colors";
 import arrowHead from "./arrowHead";
 
 export class ParallelArrow {
-  constructor(startCentre, endCentre, startRadius, endRadius, startDeflection, endDeflection, displacement, arcRadius, arrowWidth, headWidth, headHeight, chinHeight, arrowColor) {
+  constructor(startCentre, endCentre, startRadius, endRadius, startDeflection, endDeflection, displacement, arcRadius, dimensions) {
     const interNodeVector = endCentre.vectorFrom(startCentre);
     this.centreDistance = interNodeVector.distance()
 
@@ -16,13 +16,8 @@ export class ParallelArrow {
     this.endRadius = endRadius
     this.angle = interNodeVector.angle()
     this.midShaft = this.centreDistance / 2
-    this.topOfHead = -endRadius
     this.arcRadius = arcRadius
-    this.arrowWidth = arrowWidth
-    this.headWidth = headWidth
-    this.headHeight = headHeight
-    this.chinHeight = chinHeight
-    this.arrowColor = arrowColor
+    this.dimensions = dimensions
 
     this.startAttach = new Point(startRadius, 0).rotate(startDeflection)
     this.endDeflection = endDeflection
@@ -31,7 +26,7 @@ export class ParallelArrow {
 
     this.startControl = this.startAttach.x * displacement / this.startAttach.y
     this.endControl = this.centreDistance - (this.centreDistance - this.endAttach.x) * displacement / this.endAttach.y
-    this.endShaft = new Point(-(endRadius + headHeight - chinHeight), 0).rotate(-endDeflection)
+    this.endShaft = new Point(-(endRadius + dimensions.headHeight - dimensions.chinHeight), 0).rotate(-endDeflection)
       .translate(new Vector(this.centreDistance, 0))
 
     const endArcHeight = arcRadius - arcRadius * Math.cos(Math.abs(endDeflection))
@@ -55,14 +50,14 @@ export class ParallelArrow {
     ctx.rotate(this.angle)
     ctx.beginPath()
     this.path(ctx)
-    ctx.lineWidth = this.arrowWidth
-    ctx.strokeStyle = this.arrowColor
+    ctx.lineWidth = this.dimensions.arrowWidth
+    ctx.strokeStyle = this.dimensions.arrowColor
     ctx.stroke()
     ctx.translate(this.centreDistance, 0)
     ctx.rotate(-this.endDeflection)
     ctx.translate(-this.endRadius, 0)
-    ctx.fillStyle = this.arrowColor
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, true, false)
+    ctx.fillStyle = this.dimensions.arrowColor
+    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
     ctx.fill()
     ctx.restore()
   }
@@ -74,7 +69,7 @@ export class ParallelArrow {
     ctx.rotate(this.angle)
     ctx.beginPath()
     this.path(ctx)
-    ctx.lineWidth = this.arrowWidth + indicatorWidth
+    ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth
     ctx.lineCap = 'round'
     ctx.strokeStyle = green
     ctx.stroke()
@@ -83,7 +78,7 @@ export class ParallelArrow {
     ctx.translate(-this.endRadius, 0)
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, false, true)
+    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
     ctx.stroke()
     ctx.restore()
   }

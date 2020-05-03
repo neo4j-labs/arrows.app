@@ -1,73 +1,81 @@
 import {getDistanceToLine} from "./utils/geometryUtils";
-import {Point} from "../model/Point";
 import {green} from "../model/colors";
 import arrowHead from "./arrowHead";
+import {Point} from "../model/Point";
 
 export class StraightArrow {
-  constructor(startCentre, endCentre, startRadius, endRadius, arrowWidth, headWidth, headHeight, chinHeight, arrowColor) {
-    const interNodeVector = endCentre.vectorFrom(startCentre);
-    const centreDistance = interNodeVector.distance()
+  constructor(startCentre, endCentre, startAttach, endAttach, dimensions) {
+    const interNodeVector = endCentre.vectorFrom(startCentre)
+    const arrowVector = endAttach.vectorFrom(startAttach);
+    const factor = (arrowVector.distance() - dimensions.headHeight + dimensions.chinHeight) / arrowVector.distance();
+
     this.startCentre = startCentre
-    this.endCentre = endCentre
     this.angle = interNodeVector.angle()
-    this.foot = startRadius
-    this.headHeight = headHeight
-    this.chinHeight = chinHeight
-    this.topOfHead = centreDistance - endRadius
-    this.neck = this.topOfHead - headHeight + chinHeight
-    this.arrowWidth = arrowWidth
-    this.headWidth = headWidth
-    this.arrowColor = arrowColor
+    this.dimensions = dimensions
+    this.startAttach = startAttach
+    this.endAttach = endAttach
+    this.endShaft = startAttach.translate(arrowVector.scale(factor))
   }
 
   distanceFrom(point) {
-    const [startPoint, endPoint] = [new Point(this.foot, 0), new Point(this.topOfHead, 0)]
+    const [startPoint, endPoint] = [this.startAttach, this.endAttach]
       .map(point => point.rotate(this.angle).translate(this.startCentre.vectorFromOrigin()))
     return getDistanceToLine(startPoint.x, startPoint.y, endPoint.x, endPoint.y, point.x, point.y)
   }
 
   draw(ctx) {
-    if (this.topOfHead > this.foot) {
-      ctx.save()
-      ctx.translate(this.startCentre.x, this.startCentre.y)
-      ctx.rotate(this.angle)
-      ctx.lineWidth = this.arrowWidth
-      ctx.strokeStyle = this.arrowColor
-      ctx.polyLine([
-        {x: this.foot, y: 0},
-        {x: this.neck, y: 0}
-      ])
-      ctx.translate(this.topOfHead, 0)
-      ctx.fillStyle = this.arrowColor
-      arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, true, false)
-      ctx.restore()
-    }
+    ctx.save()
+    ctx.translate(this.startCentre.x, this.startCentre.y)
+    ctx.rotate(this.angle)
+    ctx.beginPath()
+    ctx.moveTo(this.startAttach.x, this.startAttach.y)
+    ctx.lineTo(this.endShaft.x, this.endShaft.y)
+    ctx.lineWidth = this.dimensions.arrowWidth
+    ctx.strokeStyle = this.dimensions.arrowColor
+    ctx.stroke()
+    ctx.translate(this.endAttach.x, this.endAttach.y)
+    ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle())
+    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
+    ctx.fillStyle = this.dimensions.arrowColor
+    ctx.fill()
+    ctx.restore()
   }
 
   drawSelectionIndicator(ctx) {
     const indicatorWidth = 10
     ctx.save()
-    ctx.strokeStyle = green
     ctx.translate(this.startCentre.x, this.startCentre.y)
     ctx.rotate(this.angle)
-    ctx.lineWidth = this.arrowWidth + indicatorWidth
-    ctx.lineCap = 'round'
     ctx.beginPath()
-    ctx.moveTo(this.foot, 0)
-    ctx.lineTo(this.neck, 0)
+    ctx.moveTo(this.startAttach.x, this.startAttach.y)
+    ctx.lineTo(this.endShaft.x, this.endShaft.y)
+    ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth
+    ctx.lineCap = 'round'
+    ctx.strokeStyle = green
     ctx.stroke()
-    ctx.translate(this.topOfHead, 0)
+    ctx.translate(this.endAttach.x, this.endAttach.y)
+    ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle())
+    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, false, true)
+    ctx.stroke()
     ctx.restore()
   }
 
   midPoint() {
-    return new Point((this.foot + this.topOfHead) / 2, 0).rotate(this.angle).translate(this.startCentre.vectorFromOrigin())
+    return this.startAttach.translate(this.endAttach.vectorFrom(this.startAttach).scale(0.5))
+      .rotate(this.angle)
+      .translate(this.startCentre.vectorFromOrigin())
   }
 
   shaftAngle() {
-    return this.angle
+    return this.angle + this.endAttach.vectorFrom(this.startAttach).angle()
   }
+}
+
+export const normalStraightArrow = (startCentre, endCentre, startRadius, endRadius, dimensions) => {
+  const interNodeVector = endCentre.vectorFrom(startCentre)
+  const startAttach = new Point(startRadius, 0)
+  const endAttach = new Point(interNodeVector.distance() - endRadius, 0)
+  return new StraightArrow(startCentre, endCentre, startAttach, endAttach, dimensions)
 }

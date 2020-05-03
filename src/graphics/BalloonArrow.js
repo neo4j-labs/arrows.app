@@ -4,23 +4,19 @@ import BoundingBox from "./utils/BoundingBox";
 import {green} from "../model/colors";
 
 export class BalloonArrow {
-  constructor(nodeCentre, nodeRadius, separation, length, arcRadius, arrowWidth, headWidth, headHeight, chinHeight, arrowColor) {
+  constructor(nodeCentre, nodeRadius, separation, length, arcRadius, dimensions) {
     this.nodeCentre = nodeCentre
     this.nodeRadius = nodeRadius
     this.length = length
     this.angle = 0
     this.arcRadius = arcRadius
-    this.arrowWidth = arrowWidth
-    this.headWidth = headWidth
-    this.headHeight = headHeight
-    this.chinHeight = chinHeight
-    this.arrowColor = arrowColor
+    this.dimensions = dimensions
 
     this.displacement = separation / 2
     this.deflection = (this.displacement * 0.6) / nodeRadius
 
     this.startAttach = new Point(nodeRadius, 0).rotate(-this.deflection)
-    this.endShaft = new Point(nodeRadius + headHeight - chinHeight, 0).rotate(this.deflection)
+    this.endShaft = new Point(nodeRadius + dimensions.headHeight - dimensions.chinHeight, 0).rotate(this.deflection)
 
     this.control = this.startAttach.x * this.displacement / -this.startAttach.y
   }
@@ -28,9 +24,9 @@ export class BalloonArrow {
   distanceFrom(point) {
     const localPoint = point.translate(this.nodeCentre.vectorFromOrigin().invert()).rotate(-this.angle)
     const rectangle = new BoundingBox(this.nodeRadius, this.length - this.displacement,
-      -(this.displacement + this.arrowWidth / 2), this.displacement + this.arrowWidth / 2)
+      -(this.displacement + this.dimensions.arrowWidth / 2), this.displacement + this.dimensions.arrowWidth / 2)
     const turnCentre = new Point(this.length - this.displacement, 0)
-    return rectangle.contains(localPoint) || turnCentre.vectorFrom(localPoint).distance() < this.displacement + this.arrowWidth / 2 ? 0 : Infinity
+    return rectangle.contains(localPoint) || turnCentre.vectorFrom(localPoint).distance() < this.displacement + this.dimensions.arrowWidth / 2 ? 0 : Infinity
   }
 
   draw(ctx) {
@@ -39,13 +35,13 @@ export class BalloonArrow {
     ctx.rotate(this.angle)
     ctx.beginPath()
     this.path(ctx)
-    ctx.lineWidth = this.arrowWidth
-    ctx.strokeStyle = this.arrowColor
+    ctx.lineWidth = this.dimensions.arrowWidth
+    ctx.strokeStyle = this.dimensions.arrowColor
     ctx.stroke()
     ctx.rotate(Math.PI + this.deflection)
     ctx.translate(-this.nodeRadius, 0)
-    ctx.fillStyle = this.arrowColor
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, true, false)
+    ctx.fillStyle = this.dimensions.arrowColor
+    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
     ctx.fill()
     ctx.restore()
   }
@@ -57,7 +53,7 @@ export class BalloonArrow {
     ctx.rotate(this.angle)
     ctx.beginPath()
     this.path(ctx)
-    ctx.lineWidth = this.arrowWidth + indicatorWidth
+    ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth
     ctx.lineCap = 'round'
     ctx.strokeStyle = green
     ctx.stroke()
@@ -65,7 +61,7 @@ export class BalloonArrow {
     ctx.translate(-this.nodeRadius, 0)
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
-    arrowHead(ctx, this.headHeight, this.chinHeight, this.headWidth, true, false)
+    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
     ctx.stroke()
     ctx.restore()
   }

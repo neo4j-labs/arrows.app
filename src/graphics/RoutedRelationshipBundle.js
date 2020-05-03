@@ -1,7 +1,6 @@
 import {getStyleSelector} from "../selectors/style";
-import {StraightArrow} from "./StraightArrow";
 import {ParallelArrow} from "./ParallelArrow";
-import {SlantedArrow} from "./SlantedArrow";
+import {normalStraightArrow, StraightArrow} from "./StraightArrow";
 import {RelationshipCaption} from "./RelationshipCaption";
 import {VisualRelationship} from "./VisualRelationship";
 import {relationshipEditing} from "../model/selection";
@@ -66,23 +65,15 @@ export class RoutedRelationshipBundle {
           relationshipSeparation,
           dimensions.startRadius * 4,
           40,
-          dimensions.arrowWidth,
-          dimensions.headWidth,
-          dimensions.headHeight,
-          dimensions.chinHeight,
-          dimensions.arrowColor
+          dimensions
         )
       } else if (i === middleRelationshipIndex) {
-        arrows[i] = new StraightArrow(
+        arrows[i] = new normalStraightArrow(
           relationship.from.position,
           relationship.to.position,
           dimensions.startRadius,
           dimensions.endRadius,
-          dimensions.arrowWidth,
-          dimensions.headWidth,
-          dimensions.headHeight,
-          dimensions.chinHeight,
-          dimensions.arrowColor
+          dimensions
         )
       } else {
         const displacement = (firstDisplacement + i * relationshipSeparation) * (dimensions.leftToRight ? 1 : -1)
@@ -95,11 +86,7 @@ export class RoutedRelationshipBundle {
           displacement * (dimensions.leftToRight ? rightTightening / rightRadius : leftTightening / leftRadius),
           displacement,
           40,
-          dimensions.arrowWidth,
-          dimensions.headWidth,
-          dimensions.headHeight,
-          dimensions.chinHeight,
-          dimensions.arrowColor
+          dimensions
         )
         possibleToDrawParallelArrows &= arrow.drawArcs
         arrows[i] = arrow
@@ -110,16 +97,12 @@ export class RoutedRelationshipBundle {
       for (let i = 0; i < arrows.length; i++) {
         if (i !== middleRelationshipIndex) {
           const parallelArrow = arrows[i]
-          arrows[i] = new SlantedArrow(
+          arrows[i] = new StraightArrow(
             parallelArrow.startCentre,
             parallelArrow.endCentre,
             parallelArrow.startAttach,
             parallelArrow.endAttach,
-            parallelArrow.arrowWidth,
-            parallelArrow.headWidth,
-            parallelArrow.headHeight,
-            parallelArrow.chinHeight,
-            parallelArrow.arrowColor
+            arrowDimensions[i]
           )
         }
       }
