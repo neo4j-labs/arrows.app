@@ -2,6 +2,7 @@ import {Point} from "../model/Point";
 import arrowHead from "./arrowHead";
 import BoundingBox from "./utils/BoundingBox";
 import {green} from "../model/colors";
+import {perpendicular} from "./utils/angles";
 
 export class BalloonArrow {
   constructor(nodeCentre, nodeRadius, angle, separation, length, arcRadius, dimensions) {
@@ -76,10 +77,14 @@ export class BalloonArrow {
   }
 
   midPoint() {
-    return new Point(this.length + this.displacement * 2, 0).rotate(this.angle).translate(this.nodeCentre.vectorFromOrigin())
+    return new Point(this.length - this.displacement, 0).rotate(this.angle).translate(this.nodeCentre.vectorFromOrigin())
   }
 
   shaftAngle() {
-    return this.angle
+    return perpendicular(this.angle)
+  }
+
+  get arrowKind() {
+    return 'loopy'
   }
 }

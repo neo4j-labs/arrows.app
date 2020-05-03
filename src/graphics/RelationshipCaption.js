@@ -3,6 +3,7 @@ import {Point} from "../model/Point";
 import {getDistanceToLine} from "./utils/geometryUtils";
 import {oppositeHorizontalAlignment, textAlignmentAtAngle} from "./circumferentialTextAlignment";
 import {Vector} from "../model/Vector";
+import {perpendicular} from "./utils/angles";
 
 export class RelationshipCaption {
   constructor(text, arrow, editing, style, textMeasurement) {
@@ -18,7 +19,7 @@ export class RelationshipCaption {
     this.midPoint = arrow.midPoint()
     this.textAngle = angleForOrientation(this.orientation, arrow.shaftAngle())
     if (this.textAngle > Math.PI / 2 || this.textAngle < -Math.PI / 2) this.textAngle += Math.PI
-    this.textAlign = textAlignForPosition(this.position, this.orientation, arrow.shaftAngle())
+    this.textAlign = textAlignForPosition(this.position, this.orientation, arrow)
     this.font = {
       fontWeight: 'normal',
       fontSize: style('type-font-size'),
@@ -29,7 +30,7 @@ export class RelationshipCaption {
     const spaceWidth = textMeasurement.measureText(' ').width
     this.width = textWidth + this.padding * 2 + this.borderWidth
     this.height = this.font.fontSize + this.padding * 2 + this.borderWidth
-    this.offset = computeOffset(this.width, this.height, this.position, this.textAlign, arrow.shaftAngle(), spaceWidth)
+    this.offset = computeOffset(this.width, this.height, this.position, this.orientation, this.textAlign, arrow, spaceWidth)
   }
 
   distanceFrom(point) {
@@ -99,31 +100,39 @@ const angleForOrientation = (orientation, shaftAngle) => {
     case 'parallel':
       return shaftAngle
     case 'perpendicular':
-      return shaftAngle + Math.PI / 2
+      return perpendicular(shaftAngle)
     default:
       return 0
   }
 }
 
-const textAlignForPosition = (position, orientation, shaftAngle) => {
-  if (orientation === 'parallel' || orientation === 'perpendicular' || position === 'inline') {
+const textAlignForPosition = (position, orientation, arrow) => {
+  if (orientation === 'parallel' || orientation === 'perpendicular') {
     return 'center'
   }
+  if (position === 'inline' && arrow.arrowKind === 'straight') {
+    return 'center'
+  }
+  const shaftAngle = arrow.shaftAngle()
   const positiveAngle = shaftAngle < 0 ? shaftAngle + Math.PI : shaftAngle
   const tolerance = Math.PI / 100
   if (positiveAngle < tolerance || positiveAngle > Math.PI - tolerance) {
     return 'center'
   }
-  const aboveAlignment = textAlignmentAtAngle(positiveAngle).horizontal
-  switch (position) {
-    case 'below':
-      return oppositeHorizontalAlignment(aboveAlignment)
-    default:
-      return aboveAlignment
+  if (arrow.arrowKind === 'straight') {
+    const aboveAlignment = textAlignmentAtAngle(positiveAngle).horizontal
+    switch (position) {
+      case 'below':
+        return oppositeHorizontalAlignment(aboveAlignment)
+      default:
+        return aboveAlignment
+    }
+  } else {
+    return oppositeHorizontalAlignment(textAlignmentAtAngle(perpendicular(shaftAngle)).horizontal)
   }
 }
 
-const computeOffset = (width, height, position, textAlign, shaftAngle, spaceWidth) => {
+const computeOffset = (width, height, position, orientation, textAlign, arrow, spaceWidth) => {
   let dx, dy
 
   switch (textAlign) {
@@ -137,6 +146,7 @@ const computeOffset = (width, height, position, textAlign, shaftAngle, spaceWidt
       dx = -(width / 2)
   }
 
+  const shaftAngle = arrow.shaftAngle()
   const positiveAngle = shaftAngle < 0 ? shaftAngle + Math.PI : shaftAngle
   const tolerance = Math.PI / 100
   const isVertical = Math.abs(positiveAngle - Math.PI / 2) < tolerance
@@ -151,5 +161,26 @@ const computeOffset = (width, height, position, textAlign, shaftAngle, spaceWidt
     default:
       dy = -height / 2
   }
+
+  if (arrow.arrowKind === 'loopy') {
+    switch (textAlign) {
+      case 'left':
+        dx += arrow.displacement
+        break
+      case 'right':
+        dx -= arrow.displacement
+        break
+      case 'center':
+        if (orientation === 'horizontal') {
+          console.log(arrow.angle)
+          if (arrow.angle < 0) {
+            dy = -(height + arrow.displacement)
+          } else {
+            dy = arrow.displacement
+          }
+        }
+    }
+  }
+
   return new Vector(dx, dy)
 }

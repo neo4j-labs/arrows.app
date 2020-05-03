@@ -97,4 +97,8 @@ export class ParallelArrow {
   shaftAngle() {
     return this.angle
   }
+
+  get arrowKind() {
+    return 'straight'
+  }
 }

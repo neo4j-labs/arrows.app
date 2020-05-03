@@ -7,6 +7,7 @@ import {relationshipEditing} from "../model/selection";
 import {BalloonArrow} from "./BalloonArrow";
 import {neighbourPositions} from "../model/Graph";
 import {clockwiseAngularSpace} from "./utils/clockwiseAngularSpace";
+import {normaliseAngle} from "./utils/angles";
 
 export class RoutedRelationshipBundle {
   constructor(relationships, graph, selection, measureTextContext) {
@@ -47,7 +48,7 @@ export class RoutedRelationshipBundle {
         arrows[i] = new BalloonArrow(
           selfNode.position,
           dimensions.startRadius,
-          biggestAngularSpace.start + (i + 1) * angularSeparation,
+          normaliseAngle(biggestAngularSpace.start + (i + 1) * angularSeparation),
           relationshipSeparation,
           dimensions.startRadius * 4,
           40,

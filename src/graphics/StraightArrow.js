@@ -71,6 +71,10 @@ export class StraightArrow {
   shaftAngle() {
     return this.angle + this.endAttach.vectorFrom(this.startAttach).angle()
   }
+
+  get arrowKind() {
+    return 'straight'
+  }
 }
 
 export const normalStraightArrow = (startCentre, endCentre, startRadius, endRadius, dimensions) => {
