@@ -35,3 +35,25 @@ export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground
     dataUrl: canvas.toDataURL()
   }
 }
+
+export const renderPngForThumbnail = (graph) => {
+  const renderState = {
+    graph,
+    selection: {
+      entities: []
+    }
+  }
+  const visualGraph = getVisualGraph(renderState)
+  const boundingBox = visualGraph.boundingBox() || {
+    left: 0, top: 0, right: 100, bottom: 100
+  }
+
+  // According to https://developers.google.com/drive/api/v3/file
+  // the recommended width is 1600px and the maximum size is 2 MiB.
+  // We assume that a 1600px square will take less than 2 MiB when encoded as PNG.
+  const targetWidth = 1600
+  const maxPixels = targetWidth * targetWidth
+  const naturalPixels = boundingBox.width * boundingBox.height
+  const scaleFactor = Math.sqrt(maxPixels / naturalPixels)
+  return renderPngAtScaleFactor(graph, scaleFactor, false)
+}
