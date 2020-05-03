@@ -1,7 +1,6 @@
 import {getStyleSelector} from "../selectors/style";
 import {ParallelArrow} from "./ParallelArrow";
 import {normalStraightArrow, StraightArrow} from "./StraightArrow";
-import {RelationshipCaption} from "./RelationshipCaption";
 import {VisualRelationship} from "./VisualRelationship";
 import {relationshipEditing} from "../model/selection";
 import {BalloonArrow} from "./BalloonArrow";
@@ -128,16 +127,8 @@ export class RoutedRelationshipBundle {
     for (let i = 0; i < relationships.length; i++) {
       const relationship = relationships[i]
 
-      const caption = new RelationshipCaption(
-        relationship.type,
-        arrows[i],
-        relationshipEditing(selection, relationship.id),
-        styleKey => getStyleSelector(relationship.relationship, styleKey)(graph),
-        measureTextContext
-      )
-
       this.routedRelationships.push(new VisualRelationship(
-        relationship, arrows[i], caption
+        relationship, graph, arrows[i], relationshipEditing(selection, relationship.id), measureTextContext
       ))
     }
   }

@@ -1,8 +1,21 @@
+import {getStyleSelector} from "../selectors/style";
+import {RelationshipCaption} from "./RelationshipCaption";
+
 export class VisualRelationship {
-  constructor(relationship, arrow, caption) {
+  constructor(relationship, graph, arrow, editing, measureTextContext) {
     this.relationship = relationship
     this.arrow = arrow
-    this.caption = caption
+    this.editing = editing
+
+    const style = styleAttribute => getStyleSelector(relationship, styleAttribute)(graph)
+
+    this.caption = new RelationshipCaption(
+      relationship.type,
+      arrow,
+      editing,
+      style,
+      measureTextContext
+    )
   }
 
   distanceFrom(point) {
