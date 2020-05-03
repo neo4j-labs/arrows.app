@@ -34,6 +34,7 @@ export const indexableText = (graph) => {
 export const neighbourPositions = (node, graph) => {
   return graph.relationships
     .filter(relationship => node.id === relationship.fromId || node.id === relationship.toId)
+    .filter(relationship => relationship.fromId !== relationship.toId )
     .map(relationship => {
       const otherId = otherNodeId(relationship, node.id);
       const otherNode = graph.nodes.find(otherNode => otherNode.id === otherId)

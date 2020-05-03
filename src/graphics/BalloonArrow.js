@@ -4,11 +4,11 @@ import BoundingBox from "./utils/BoundingBox";
 import {green} from "../model/colors";
 
 export class BalloonArrow {
-  constructor(nodeCentre, nodeRadius, separation, length, arcRadius, dimensions) {
+  constructor(nodeCentre, nodeRadius, angle, separation, length, arcRadius, dimensions) {
     this.nodeCentre = nodeCentre
     this.nodeRadius = nodeRadius
+    this.angle = angle
     this.length = length
-    this.angle = 0
     this.arcRadius = arcRadius
     this.dimensions = dimensions
 

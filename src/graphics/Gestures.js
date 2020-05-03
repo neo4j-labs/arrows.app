@@ -105,7 +105,7 @@ export default class Gestures {
           const targetPoint = transform(newNodePosition)
           const dimensions = { arrowWidth: 4, headWidth: 16, headHeight: 24, chinHeight:2.4, arrowColor: blueGreen }
           if (targetNode && sourceNode === targetNode) {
-            const arrow = new BalloonArrow(sourcePoint, newNodeRadius, 44, 256, 40, dimensions)
+            const arrow = new BalloonArrow(sourcePoint, newNodeRadius, 0,44, 256, 40, dimensions)
             arrow.draw(ctx)
           } else {
             const arrow = normalStraightArrow(sourcePoint, targetPoint, radius, newNodeRadius, dimensions)
