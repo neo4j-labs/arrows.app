@@ -8,6 +8,7 @@ import {bundle} from "../model/graph/relationshipBundling";
 import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 import CanvasAdaptor from "../graphics/utils/CanvasAdaptor";
 import {nodeEditing, nodeSelected, relationshipSelected, selectedNodeIds} from "../model/selection";
+import {computeRelationshipAttachments} from "../graphics/relationshipAttachment";
 
 const getSelection = (state) => state.selection
 const getViewTransformation = (state) => state.viewTransformation
@@ -56,11 +57,15 @@ export const getVisualGraph = createSelector(
       return nodeMap
     }, {})
 
+    const relationshipAttachments = computeRelationshipAttachments(graph, visualNodes)
+
     const visualRelationships = graph.relationships.map(relationship =>
       new ResolvedRelationship(
         relationship,
         visualNodes[relationship.fromId],
         visualNodes[relationship.toId],
+        relationshipAttachments.start[relationship.id],
+        relationshipAttachments.end[relationship.id],
         relationshipSelected(selection, relationship.id),
         graph),
     )

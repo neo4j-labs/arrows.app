@@ -2,6 +2,7 @@ import {getDistanceToLine} from "./utils/geometryUtils";
 import {green} from "../model/colors";
 import arrowHead from "./arrowHead";
 import {Point} from "../model/Point";
+import {normaliseAngle} from "./utils/angles";
 
 export class StraightArrow {
   constructor(startCentre, endCentre, startAttach, endAttach, dimensions) {
@@ -69,7 +70,7 @@ export class StraightArrow {
   }
 
   shaftAngle() {
-    return this.angle + this.endAttach.vectorFrom(this.startAttach).angle()
+    return normaliseAngle(this.angle + this.endAttach.vectorFrom(this.startAttach).angle())
   }
 
   get arrowKind() {

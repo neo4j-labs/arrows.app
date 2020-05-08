@@ -7,6 +7,7 @@ import {BalloonArrow} from "./BalloonArrow";
 import {neighbourPositions} from "../model/Graph";
 import {clockwiseAngularSpace} from "./utils/clockwiseAngularSpace";
 import {normaliseAngle} from "./utils/angles";
+import {Point} from "../model/Point";
 
 export class RoutedRelationshipBundle {
   constructor(relationships, graph, selection, measureTextContext) {
@@ -35,7 +36,22 @@ export class RoutedRelationshipBundle {
     const maxRightHeadHeight = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.headHeight : 0))
     const relationshipSeparation = Math.max(...arrowDimensions.map(arrow => arrow.separation))
 
-    if (leftNode === rightNode) {
+    if (relationships[0].startAttachment) {
+      for (let i = 0; i < relationships.length; i++) {
+        const dimensions = arrowDimensions[i]
+        const relationship = relationships[i]
+        const startAttachment = relationship.startAttachment
+        const interNodeVector = relationship.to.position.vectorFrom(relationship.from.position)
+
+        arrows[i] = new StraightArrow(
+          relationship.from.position,
+          relationship.to.position,
+          new Point(dimensions.startRadius, startAttachment.ordinal * 20),
+          new Point(interNodeVector.distance() - dimensions.endRadius, 0),
+          dimensions
+        )
+      }
+    } else if (leftNode === rightNode) {
       const selfNode = leftNode
       const neighbourAngles = neighbourPositions(selfNode, graph).map(position => position.vectorFrom(selfNode.position).angle())
       const biggestAngularSpace = clockwiseAngularSpace(neighbourAngles)

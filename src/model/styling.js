@@ -55,6 +55,8 @@ export const styleAttributes = {
   'margin-start': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
   'margin-end': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
   'margin-peer': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 20},
+  'attachment-start': {appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'},
+  'attachment-end': {appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'}
 }
 
 export const nodeStyleAttributes = Object.keys(styleAttributes).filter(key => {
@@ -74,7 +76,8 @@ export const styleTypes = {
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
   'caption-position': { editor: 'dropdown', options: ['inside', 'top-left', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left'] },
   'type-position': { editor: 'dropdown', options: ['inline', 'above', 'below'] },
-  'type-orientation': { editor: 'dropdown', options: ['parallel', 'perpendicular', 'horizontal'] }
+  'type-orientation': { editor: 'dropdown', options: ['parallel', 'perpendicular', 'horizontal'] },
+  'attachment': { editor: 'dropdown', options: ['normal', 'top', 'right', 'bottom', 'left'] }
 }
 
 export const completeWithDefaults = (style) => {
