@@ -32,7 +32,7 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
       neighbours.sort((a, b) => a.neighbourPosition.y - b.neighbourPosition.y)
       neighbours.forEach((neighbour, i) => {
         relationshipAttachments[neighbour.direction][neighbour.relationship.id] = {
-          attachment: option.name,
+          attachment: option,
           ordinal: i,
           total: neighbours.length
         }

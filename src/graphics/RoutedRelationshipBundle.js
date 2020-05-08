@@ -7,7 +7,7 @@ import {BalloonArrow} from "./BalloonArrow";
 import {neighbourPositions} from "../model/Graph";
 import {clockwiseAngularSpace} from "./utils/clockwiseAngularSpace";
 import {normaliseAngle} from "./utils/angles";
-import {Point} from "../model/Point";
+import {ElbowArrow} from "./ElbowArrow";
 
 export class RoutedRelationshipBundle {
   constructor(relationships, graph, selection, measureTextContext) {
@@ -40,14 +40,14 @@ export class RoutedRelationshipBundle {
       for (let i = 0; i < relationships.length; i++) {
         const dimensions = arrowDimensions[i]
         const relationship = relationships[i]
-        const startAttachment = relationship.startAttachment
-        const interNodeVector = relationship.to.position.vectorFrom(relationship.from.position)
 
-        arrows[i] = new StraightArrow(
+        arrows[i] = new ElbowArrow(
           relationship.from.position,
           relationship.to.position,
-          new Point(dimensions.startRadius, startAttachment.ordinal * 20),
-          new Point(interNodeVector.distance() - dimensions.endRadius, 0),
+          dimensions.startRadius,
+          dimensions.endRadius,
+          relationship.startAttachment,
+          relationship.endAttachment,
           dimensions
         )
       }
