@@ -4,17 +4,13 @@ import { Segment, Grid, Divider, Header, Icon } from 'semantic-ui-react'
 import neo4j_logo from './neo4j_icon.svg'
 import FeatureToggle from "./FeatureToggle"
 
-export default ({ useGoogleDriveStorage, useNeo4jDatabaseStorage }) =>
+export default ({ useGoogleDriveStorage, useNeo4jDatabaseStorage, useLocalStorage }) =>
   <Modal
     open={true}>
     <Modal.Header>Where would you like to store your diagram?</Modal.Header>
     <Modal.Content>
       <Segment placeholder>
         <Grid columns={2} stackable textAlign='center'>
-          <FeatureToggle name="storage.DATABASE" renderIf={true}>
-            <Divider vertical>Or</Divider>
-          </FeatureToggle>
-
           <Grid.Row verticalAlign='middle'>
             <FeatureToggle name="storage.GOOGLE_DRIVE" renderIf={true}>
               <Grid.Column>
@@ -28,7 +24,22 @@ export default ({ useGoogleDriveStorage, useNeo4jDatabaseStorage }) =>
               </Grid.Column>
             </FeatureToggle>
 
+            <FeatureToggle name="storage.LOCAL_STORAGE" renderIf={true}>
+              <Divider vertical>Or</Divider>
+              <Grid.Column>
+                <Header icon>
+                  <Icon name='disk'/>
+                  Local Storage
+                </Header>
+                <p style={{ height: '3em' }}>Store the diagram in your web browser's local storage.</p>
+                <Button primary onClick={useLocalStorage}>use Local Storage</Button>
+
+              </Grid.Column>
+            </FeatureToggle>
+
+
             <FeatureToggle name="storage.DATABASE" renderIf={true}>
+              <Divider vertical>Or</Divider>
               <Grid.Column>
                 <Header icon>
                   <i className="icon" style={{ height: '1em' }}>

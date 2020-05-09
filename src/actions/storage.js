@@ -36,6 +36,12 @@ export function useGoogleDriveStorage() {
   }
 }
 
+export function useLocalStorage() {
+  return {
+    type: 'USE_LOCAL_STORAGE'
+  }
+}
+
 export function updateGoogleDriveFileId(fileId) {
   return {
     type: 'UPDATE_GOOGLE_DRIVE_FILE_ID',

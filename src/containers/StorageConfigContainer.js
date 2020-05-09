@@ -2,6 +2,7 @@ import {connect} from "react-redux"
 import EditConnectionParametersForm from "../components/StorageConfigModal";
 import {initializeConnection} from "../actions/databaseConnection";
 import {initializeGoogleDriveStorage} from "../actions/googleDrive";
+import { initFromLocalStorage } from "../actions/localStorage"
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -10,7 +11,8 @@ const mapDispatchToProps = dispatch => {
     },
     useGoogleDriveStorage: () => {
       dispatch(initializeGoogleDriveStorage())
-    }
+    },
+    useLocalStorage: () => dispatch(initFromLocalStorage())
   }
 }
 

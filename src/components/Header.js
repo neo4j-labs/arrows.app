@@ -41,6 +41,10 @@ const storageIcon = (props) => {
       return (
         <Icon name='google drive'/>
       )
+    case 'LOCAL_STORAGE':
+      return (
+        <Icon name='disk'/>
+      )
     default:
       return null
   }

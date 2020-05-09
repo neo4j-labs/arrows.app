@@ -40,8 +40,8 @@ const getFileInfo = (fileId, metaOnly = false) => {
   })
 }
 
-const constructGraphFromFile = graphJson => {
-  const data = JSON.parse(graphJson)
+export const constructGraphFromFile = (graphData, isJson = true) => {
+  const data = isJson ? JSON.parse(graphData) : graphData
   let graph
   let gangs = []
 

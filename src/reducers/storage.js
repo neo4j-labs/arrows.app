@@ -37,6 +37,11 @@ export default function storage(state = {
         ...state,
         mode: 'GOOGLE_DRIVE',
       }
+    case 'USE_LOCAL_STORAGE':
+      return {
+        ...state,
+        mode: 'LOCAL_STORAGE',
+      }
     case 'UPDATE_GOOGLE_DRIVE_FILE_ID':
       return {
         ...state,
