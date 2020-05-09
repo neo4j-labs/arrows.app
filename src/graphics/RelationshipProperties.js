@@ -8,10 +8,7 @@ export class RelationshipProperties {
     this.alignment = textAlignmentAtAngle(this.angle)
     this.propertiesBox = new PropertiesBox(properties, editing, style, textMeasurement)
     this.boxPosition = arrow.midPoint()
-      .translate(new Vector(
-        this.alignment.horizontal === 'right' ? -this.propertiesBox.boxWidth : 0,
-        this.alignment.vertical === 'top' ? -this.propertiesBox.boxHeight : 0)
-      )
+      .translate(computeOffset(this.propertiesBox.boxWidth, this.propertiesBox.boxHeight, this.alignment, arrow))
   }
 
   get isEmpty() {
@@ -45,4 +42,17 @@ export class RelationshipProperties {
   distanceFrom(point) {
     return this.boundingBox().contains(point) ? 0 : Infinity
   }
+}
+
+const computeOffset = (width, height, alignment, arrow) => {
+  let dx, dy
+
+  dx = alignment.horizontal === 'right' ? -width : 0
+  dy = alignment.vertical === 'top' ? -height : 0
+
+  const angle = arrow.shaftAngle()
+
+  const d = ((alignment.horizontal === 'right'? 1 : -1) * (width * Math.cos(angle))
+    + (alignment.vertical === 'top'? 1 : -1) * (height * Math.sin(angle))) / 2
+  return new Vector(dx, dy).plus(new Vector(d, 0).rotate(angle))
 }
