@@ -8,6 +8,7 @@ import {neighbourPositions} from "../model/Graph";
 import {clockwiseAngularSpace} from "./utils/clockwiseAngularSpace";
 import {normaliseAngle} from "./utils/angles";
 import {ElbowArrow} from "./ElbowArrow";
+import {RectilinearArrow} from "./RectilinearArrow";
 
 export class RoutedRelationshipBundle {
   constructor(relationships, graph, selection, measureTextContext) {
@@ -37,19 +38,36 @@ export class RoutedRelationshipBundle {
     const relationshipSeparation = Math.max(...arrowDimensions.map(arrow => arrow.separation))
 
     if (relationships[0].startAttachment) {
-      for (let i = 0; i < relationships.length; i++) {
-        const dimensions = arrowDimensions[i]
-        const relationship = relationships[i]
+      if (relationships[0].endAttachment) {
+        for (let i = 0; i < relationships.length; i++) {
+          const dimensions = arrowDimensions[i]
+          const relationship = relationships[i]
 
-        arrows[i] = new ElbowArrow(
-          relationship.from.position,
-          relationship.to.position,
-          dimensions.startRadius,
-          dimensions.endRadius,
-          relationship.startAttachment,
-          relationship.endAttachment,
-          dimensions
-        )
+          arrows[i] = new RectilinearArrow(
+            relationship.from.position,
+            relationship.to.position,
+            dimensions.startRadius,
+            dimensions.endRadius,
+            relationship.startAttachment,
+            relationship.endAttachment,
+            dimensions
+          )
+        }
+      } else {
+        for (let i = 0; i < relationships.length; i++) {
+          const dimensions = arrowDimensions[i]
+          const relationship = relationships[i]
+
+          arrows[i] = new ElbowArrow(
+            relationship.from.position,
+            relationship.to.position,
+            dimensions.startRadius,
+            dimensions.endRadius,
+            relationship.startAttachment,
+            relationship.endAttachment,
+            dimensions
+          )
+        }
       }
     } else if (leftNode === rightNode) {
       const selfNode = leftNode
