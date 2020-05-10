@@ -8,7 +8,8 @@ export const textAlignmentAtAngle = (angle) => {
   } else if (-Math.PI / 2 <= angle && angle < 0) {
     return {vertical: 'bottom', horizontal: 'left'}
   } else {
-    throw new Error(`Angle ${angle} outside allowed bounds of [-PI, PI]`)
+    console.log(`WARNING: Angle ${angle} outside allowed bounds of [-PI, PI]`)
+    return {vertical: 'top', horizontal: 'left'}
   }
 }
 
