@@ -1,8 +1,8 @@
-import {getDistanceToLine} from "./utils/geometryUtils";
 import {green} from "../model/colors";
 import arrowHead from "./arrowHead";
 import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
+import {Segments} from "./Segments";
 
 export class RectilinearArrow {
   constructor(startCentre, endCentre, startRadius, endRadius, startAttachment, endAttachment, dimensions) {
@@ -11,8 +11,10 @@ export class RectilinearArrow {
     const startAttachAngle = startAttachment.attachment.angle
     const endAttachAngle = endAttachment.attachment.angle
     this.startAttach = startCentre.translate(new Vector(startRadius, (startAttachment.ordinal - (startAttachment.total - 1) / 2) * 10).rotate(startAttachAngle))
-    this.endAttach = endCentre.translate(new Vector(endRadius, (endAttachment.ordinal - (endAttachment.total - 1) / 2) * 10).rotate(endAttachAngle))
-    const endAttachRelative = this.endAttach.translate(this.startAttach.vectorFromOrigin().invert()).rotate(-startAttachAngle)
+    this.endShaft = endCentre.translate(new Vector(endRadius + this.dimensions.headHeight - this.dimensions.chinHeight, (endAttachment.ordinal - (endAttachment.total - 1) / 2) * 10).rotate(endAttachAngle))
+    const endAttachRelative = this.endShaft.translate(this.startAttach.vectorFromOrigin().invert()).rotate(-startAttachAngle)
+
+    const fanOut = startAttachment.total > endAttachment.total
 
     if (Math.abs(endAttachRelative.y) < this.arcRadius * 2) {
       this.startArcCentre = new Point(0, endAttachRelative.y < 0 ? -this.arcRadius : this.arcRadius)
@@ -23,21 +25,26 @@ export class RectilinearArrow {
       const interCentreVector = this.endArcCentre.vectorFrom(this.startArcCentre)
       const theta = (Math.PI / 2) - Math.abs(interCentreVector.angle())
       const d = this.arcRadius * Math.tan(theta / 2)
-      this.startControl = this.startAttach.translate(new Vector(d, 0).rotate(startAttachAngle))
-      this.endControl = this.endAttach.translate(new Vector(endAttachRelative.x - endArcCentreX + d, 0).rotate(endAttachAngle))
+      this.startControl = this.startAttach.translate(new Vector(fanOut ? d : endAttachRelative.x - endArcCentreX + d, 0).rotate(startAttachAngle))
+      this.endControl = this.endShaft.translate(new Vector(fanOut ? endAttachRelative.x - endArcCentreX + d : d, 0).rotate(endAttachAngle))
     } else {
-      this.startControl = this.startAttach.translate(new Vector(this.arcRadius, 0).rotate(startAttachAngle))
-      this.endControl = this.endAttach.translate(new Vector(endAttachRelative.x - this.arcRadius, 0).rotate(endAttachAngle))
+      this.startControl = this.startAttach.translate(new Vector(fanOut ? this.arcRadius : endAttachRelative.x - this.arcRadius, 0).rotate(startAttachAngle))
+      this.endControl = this.endShaft.translate(new Vector(fanOut ? endAttachRelative.x - this.arcRadius : this.arcRadius, 0).rotate(endAttachAngle))
     }
 
-    this.shaftVector = this.endAttach.vectorFrom(this.endControl)
-    const factor = (this.shaftVector.distance() - dimensions.headHeight + dimensions.chinHeight) / this.shaftVector.distance()
-    this.endShaft = this.endControl.translate(this.shaftVector.scale(factor))
-    this.midShaft = this.endControl.translate(this.shaftVector.scale(factor / 2))
+    this.shaftVector = this.endShaft.vectorFrom(this.endControl)
+
+    this.segments = new Segments(this.startAttach)
+    this.segments.addSegment(this.startControl)
+    this.segments.addSegment(this.endControl)
+    this.segments.addSegment(this.endShaft)
+
+    const longestSegment = this.segments.segment(fanOut ? 2 : 0)
+    this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
   }
 
   distanceFrom(point) {
-    return getDistanceToLine(...this.endControl.xy, ...this.endAttach.xy, ...point.xy)
+    return this.segments.distanceFrom(point)
   }
 
   draw(ctx) {
