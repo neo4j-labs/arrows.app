@@ -1,8 +1,8 @@
 import {green} from "../model/colors";
 import arrowHead from "./arrowHead";
-import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
-import {Segments} from "./Segments";
+import {SeekAndDestroy} from "./SeekAndDestroy";
+import {normaliseAngle} from "./utils/angles";
 
 export class RectilinearArrow {
   constructor(startCentre, endCentre, startRadius, endRadius, startAttachment, endAttachment, dimensions) {
@@ -12,50 +12,50 @@ export class RectilinearArrow {
     const endAttachAngle = endAttachment.attachment.angle
     this.startAttach = startCentre.translate(new Vector(startRadius, (startAttachment.ordinal - (startAttachment.total - 1) / 2) * 10).rotate(startAttachAngle))
     this.endShaft = endCentre.translate(new Vector(endRadius + this.dimensions.headHeight - this.dimensions.chinHeight, (endAttachment.ordinal - (endAttachment.total - 1) / 2) * 10).rotate(endAttachAngle))
-    const endAttachRelative = this.endShaft.translate(this.startAttach.vectorFromOrigin().invert()).rotate(-startAttachAngle)
+    // const endAttachRelative = this.endShaft.translate(this.startAttach.vectorFromOrigin().invert()).rotate(-startAttachAngle)
 
     const fanOut = startAttachment.total > endAttachment.total
 
-    if (Math.abs(endAttachRelative.y) < this.arcRadius * 2) {
-      this.startArcCentre = new Point(0, endAttachRelative.y < 0 ? -this.arcRadius : this.arcRadius)
-      const endArcCentreY = endAttachRelative.y + (endAttachRelative.y < 0 ? this.arcRadius : -this.arcRadius)
-      const endArcCentreX =
-        Math.sqrt(Math.pow(2 * this.arcRadius, 2) - Math.pow(this.startArcCentre.y - endArcCentreY, 2))
-      this.endArcCentre = new Point(endArcCentreX, endArcCentreY)
-      const interCentreVector = this.endArcCentre.vectorFrom(this.startArcCentre)
-      const theta = (Math.PI / 2) - Math.abs(interCentreVector.angle())
-      const d = this.arcRadius * Math.tan(theta / 2)
-      this.startControl = this.startAttach.translate(new Vector(fanOut ? d : endAttachRelative.x - endArcCentreX + d, 0).rotate(startAttachAngle))
-      this.endControl = this.endShaft.translate(new Vector(fanOut ? endAttachRelative.x - endArcCentreX + d : d, 0).rotate(endAttachAngle))
-    } else {
-      this.startControl = this.startAttach.translate(new Vector(fanOut ? this.arcRadius : endAttachRelative.x - this.arcRadius, 0).rotate(startAttachAngle))
-      this.endControl = this.endShaft.translate(new Vector(fanOut ? endAttachRelative.x - this.arcRadius : this.arcRadius, 0).rotate(endAttachAngle))
-    }
+    this.path = new SeekAndDestroy(this.startAttach, startAttachAngle, this.endShaft, normaliseAngle(endAttachAngle + Math.PI))
+    this.path.forwardToWaypoint(fanOut ? this.arcRadius : this.path.endRelative.x - this.arcRadius, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
+    this.path.forwardToWaypoint(this.path.endRelative.x, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
 
-    this.shaftVector = this.endShaft.vectorFrom(this.endControl)
+    // if (Math.abs(endAttachRelative.y) < this.arcRadius * 2) {
+    //   this.startArcCentre = new Point(0, endAttachRelative.y < 0 ? -this.arcRadius : this.arcRadius)
+    //   const endArcCentreY = endAttachRelative.y + (endAttachRelative.y < 0 ? this.arcRadius : -this.arcRadius)
+    //   const endArcCentreX =
+    //     Math.sqrt(Math.pow(2 * this.arcRadius, 2) - Math.pow(this.startArcCentre.y - endArcCentreY, 2))
+    //   this.endArcCentre = new Point(endArcCentreX, endArcCentreY)
+    //   const interCentreVector = this.endArcCentre.vectorFrom(this.startArcCentre)
+    //   const theta = (Math.PI / 2) - Math.abs(interCentreVector.angle())
+    //   const d = this.arcRadius * Math.tan(theta / 2)
+    //   this.startControl = this.startAttach.translate(new Vector(fanOut ? d : endAttachRelative.x - endArcCentreX + d, 0).rotate(startAttachAngle))
+    //   this.endControl = this.endShaft.translate(new Vector(fanOut ? endAttachRelative.x - endArcCentreX + d : d, 0).rotate(endAttachAngle))
+    // } else {
+    //   this.startControl = this.startAttach.translate(new Vector(fanOut ? this.arcRadius : endAttachRelative.x - this.arcRadius, 0).rotate(startAttachAngle))
+    //   this.endControl = this.endShaft.translate(new Vector(fanOut ? endAttachRelative.x - this.arcRadius : this.arcRadius, 0).rotate(endAttachAngle))
+    // }
 
-    this.segments = new Segments(this.startAttach)
-    this.segments.addSegment(this.startControl)
-    this.segments.addSegment(this.endControl)
-    this.segments.addSegment(this.endShaft)
+    // this.shaftVector = this.endShaft.vectorFrom(this.endControl)
 
-    const longestSegment = this.segments.segment(fanOut ? 2 : 0)
+    const longestSegment = this.path.segment(fanOut ? 2 : 0)
     this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
+    this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
   }
 
   distanceFrom(point) {
-    return this.segments.distanceFrom(point)
+    return this.path.distanceFrom(point)
   }
 
   draw(ctx) {
     ctx.save()
     ctx.beginPath()
-    this.path(ctx)
+    this.path.draw(ctx)
     ctx.lineWidth = this.dimensions.arrowWidth
     ctx.strokeStyle = this.dimensions.arrowColor
     ctx.stroke()
     ctx.translate(...this.endShaft.xy)
-    ctx.rotate(this.shaftVector.angle())
+    ctx.rotate(this.path.endDirection)
     ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0)
     arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
     ctx.fillStyle = this.dimensions.arrowColor
@@ -68,13 +68,13 @@ export class RectilinearArrow {
     const indicatorWidth = 10
     ctx.save()
     ctx.beginPath()
-    this.path(ctx)
+    this.path.draw(ctx)
     ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth
     ctx.lineCap = 'round'
     ctx.strokeStyle = green
     ctx.stroke()
     ctx.translate(...this.endShaft.xy)
-    ctx.rotate(this.shaftVector.angle())
+    ctx.rotate(this.path.endDirection)
     ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0)
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
@@ -83,19 +83,12 @@ export class RectilinearArrow {
     ctx.restore()
   }
 
-  path(ctx) {
-    ctx.moveTo(...this.startAttach.xy)
-    ctx.arcTo(...this.startControl.xy, ...this.endControl.xy, this.arcRadius)
-    ctx.arcTo(...this.endControl.xy, ...this.endShaft.xy, this.arcRadius)
-    ctx.lineTo(...this.endShaft.xy)
-  }
-
   midPoint() {
     return this.midShaft
   }
 
   shaftAngle() {
-    return this.shaftVector.angle()
+    return this.midShaftAngle
   }
 
   get arrowKind() {
