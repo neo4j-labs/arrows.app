@@ -38,13 +38,18 @@ const load = (key, parse = true) => {
 }
 
 export const initFromLocalStorage = () => {
-  return function (dispatch) {
-    const data = loadAppData()
-    const graphData = constructGraphFromFile(data, false)
-
+  return function (dispatch, getState) {
     dispatch(useLocalStorage())
-    graphData.gangs && dispatch(loadClusters(graphData.gangs))
-    dispatch(fetchingGraphSucceeded(graphData.graph))
+
+
+    if (getState().storage.previousMode !== 'LOCAL_STORAGE') {
+      const data = loadAppData()
+      const graphData = constructGraphFromFile(data, false)
+
+
+      graphData.gangs && dispatch(loadClusters(graphData.gangs))
+      dispatch(fetchingGraphSucceeded(graphData.graph))
+    }
   }
 }
 

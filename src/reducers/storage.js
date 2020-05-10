@@ -24,6 +24,7 @@ export default function storage(state = {
     case 'NEW_DIAGRAM': {
       return {
         ...state,
+        previousMode: state.mode,
         mode: 'NONE'
       }
     }
