@@ -25,6 +25,7 @@ export const styleGroups = {
 export const styleAttributes = {
   'radius': {appliesTo: 'Node', type: 'radius', defaultValue: defaultNodeRadius},
   'node-color': {appliesTo: 'Node', type: 'color', defaultValue: white},
+  'node-padding': {appliesTo: 'Node', type: 'spacing', defaultValue: 5},
   'border-width': {appliesTo: 'Node', type: 'line-width', defaultValue: 4},
   'border-color': {appliesTo: 'Node', type: 'color', defaultValue: black},
   'caption-position': {appliesTo: 'Caption', type: 'caption-position', defaultValue: 'inside'},

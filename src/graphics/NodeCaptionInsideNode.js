@@ -17,8 +17,9 @@ export class NodeCaptionInsideNode {
     this.fontColor = style('caption-color')
     this.orientation = { horizontal: 'center', vertical: 'center' }
     this.lineHeight = this.font.fontSize * 1.2
-    const measureWidth = (string) => textMeasurement.measureText(string).width;
-    this.layout = fitTextToCircle(this.caption, this.radius, measureWidth, this.lineHeight)
+    const measureWidth = (string) => textMeasurement.measureText(string).width
+    const padding = style('node-padding')
+    this.layout = fitTextToCircle(this.caption, this.radius - padding, measureWidth, this.lineHeight)
   }
 
   draw(ctx) {
