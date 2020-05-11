@@ -8,7 +8,3 @@ export const normaliseAngle = (angle) => {
   while (goodAngle > Math.PI) goodAngle -= 2 * Math.PI
   return goodAngle
 }
-
-export const approxEqualsDegrees = (angle, degrees) => {
-  return Math.abs((angle / Math.PI * 180) - degrees) < 1
-}
