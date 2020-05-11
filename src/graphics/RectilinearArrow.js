@@ -16,7 +16,9 @@ export class RectilinearArrow {
     const fanOut = startAttachment.total > endAttachment.total
 
     this.path = new SeekAndDestroy(this.startAttach, startAttachAngle, this.endShaft, normaliseAngle(endAttachAngle + Math.PI))
-    this.path.forwardToWaypoint(fanOut ? this.arcRadius : this.path.endRelative.x - this.arcRadius, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
+    const distance = this.path.endRelative.x < this.arcRadius * 2 ? this.path.endRelative.x / 2 :
+      (fanOut ? this.arcRadius : this.path.endRelative.x - this.arcRadius)
+    this.path.forwardToWaypoint(distance, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
     this.path.forwardToWaypoint(this.path.endRelative.x, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
 
     const longestSegment = this.path.segment(fanOut ? 2 : 0)
