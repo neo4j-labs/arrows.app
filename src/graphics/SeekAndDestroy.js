@@ -32,13 +32,36 @@ export class SeekAndDestroy {
     return { from, to }
   }
 
+  nextPoint(i) {
+    if (i + 1 < this.waypoints.length) {
+      const waypoint = this.waypoints[i]
+      const nextWaypoint = this.waypoints[i + 1].point
+      const nextVector = nextWaypoint.vectorFrom(waypoint.point)
+      return waypoint.point.translate(nextVector.scale(0.5))
+    }
+    return this.end
+  }
+
   draw(ctx) {
     ctx.moveTo(...this.start.xy)
+    let previous = this.start
     for (let i = 0; i < this.waypoints.length; i++) {
       const waypoint = this.waypoints[i]
-      const nextWaypoint = i + 1 < this.waypoints.length ? this.waypoints[i + 1].point : this.end
-      const halfway = waypoint.point.translate(nextWaypoint.vectorFrom(waypoint.point).scale(0.5))
-      ctx.arcTo(...waypoint.point.xy, ...halfway.xy, waypoint.radius)
+      const next = this.nextPoint(i)
+      let control = waypoint.point
+      const vector1 = previous.vectorFrom(control)
+      const vector2 = next.vectorFrom(control)
+      if (vector1.distance() < waypoint.radius) {
+        const overlap = waypoint.radius - vector1.distance()
+        control = control.translate(vector2.scale(overlap / vector2.distance()))
+      }
+      if (vector2.distance() < waypoint.radius) {
+        const overlap = waypoint.radius - vector2.distance()
+        control = control.translate(vector1.scale(overlap / vector1.distance()))
+      }
+
+      ctx.arcTo(...control.xy, ...next.xy, waypoint.radius)
+      previous = next
     }
     ctx.lineTo(...this.end.xy)
   }
