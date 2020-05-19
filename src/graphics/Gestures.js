@@ -1,8 +1,8 @@
-import { drawRing, drawPolygon } from "./canvasRenderer";
-import { ringMargin as defaultRingMargin } from "./constants";
-import { getVoronoi, sortPoints } from "./utils/geometryUtils";
-import { blueGreen, purple } from "../model/colors";
-import { Point } from "../model/Point";
+import {drawPolygon, drawRing} from "./canvasRenderer";
+import {ringMargin} from "./constants";
+import {getVoronoi, sortPoints} from "./utils/geometryUtils";
+import {blueGreen, purple} from "../model/colors";
+import {Point} from "../model/Point";
 import {getBBoxFromCorners} from "../actions/selectionMarquee";
 import {BalloonArrow} from "./BalloonArrow";
 import {normalStraightArrow} from "./StraightArrow";
@@ -29,10 +29,6 @@ export default class Gestures {
       },
       from
     ]
-
-    const ringMargin = defaultRingMargin * viewTransformation.scale
-
-    let newNodeRadius = visualGraph.graph.style.radius * viewTransformation.scale
 
     if (selectionMarquee && visualGraph.graph.nodes.length > 0) {
       const marqueeScreen = {from: transform(selectionMarquee.from), to: transform(selectionMarquee.to)}
@@ -75,47 +71,52 @@ export default class Gestures {
     }
 
     if (dragToCreate.sourceNodeId) {
+      ctx.save()
+      ctx.translate(viewTransformation.offset.dx, viewTransformation.offset.dy)
+      ctx.scale(viewTransformation.scale, viewTransformation.scale)
+
       const sourceNode = visualGraph.nodes[dragToCreate.sourceNodeId]
+      let newNodeRadius = visualGraph.graph.style.radius
       if (sourceNode) {
-        const radius = sourceNode.radius * viewTransformation.scale
+        const radius = sourceNode.radius
         const outerRadius = radius + ringMargin
-        const sourceNodeIdPosition = sourceNode.position
+        const sourceNodePosition = sourceNode.position
 
         const targetNode = visualGraph.nodes[dragToCreate.targetNodeId]
         if (targetNode) {
-          newNodeRadius = targetNode.radius * viewTransformation.scale
+          newNodeRadius = targetNode.radius
         }
 
         if (dragToCreate.newNodePosition) {
-          const delta = dragToCreate.newNodePosition.vectorFrom(sourceNodeIdPosition)
-          let newNodePosition = sourceNodeIdPosition;
+          const delta = dragToCreate.newNodePosition.vectorFrom(sourceNodePosition)
+          let newNodePosition = sourceNodePosition;
           if (delta.distance() > outerRadius) {
             if (delta.distance() < radius + outerRadius) {
               const ratio = (delta.distance() - radius - ringMargin) / radius
-              newNodePosition = sourceNodeIdPosition.translate(delta.scale(ratio))
+              newNodePosition = sourceNodePosition.translate(delta.scale(ratio))
               newNodeRadius *= ratio
             } else {
               newNodePosition = dragToCreate.newNodePosition
             }
           }
 
-          drawRing(ctx, transform(newNodePosition), blueGreen, newNodeRadius)
+          drawRing(ctx, newNodePosition, blueGreen, newNodeRadius)
 
-          const sourcePoint = transform(sourceNodeIdPosition)
-          const targetPoint = transform(newNodePosition)
           const dimensions = { arrowWidth: 4, headWidth: 16, headHeight: 24, chinHeight:2.4, arrowColor: blueGreen }
           if (targetNode && sourceNode === targetNode) {
-            const arrow = new BalloonArrow(sourcePoint, newNodeRadius, 0,44, 256, 40, dimensions)
+            const arrow = new BalloonArrow(sourceNodePosition, newNodeRadius, 0,44, 256, 40, dimensions)
             arrow.draw(ctx)
           } else {
-            const arrow = normalStraightArrow(sourcePoint, targetPoint, radius, newNodeRadius, dimensions)
+            const arrow = normalStraightArrow(sourceNodePosition, newNodePosition, radius, newNodeRadius, dimensions)
             arrow.draw(ctx)
           }
         } else {
           const drawNodeRing = sourceNode.drawRing || drawRing
-          drawNodeRing(ctx, transform(sourceNodeIdPosition), purple, outerRadius)
+          drawNodeRing(ctx, sourceNodePosition, purple, outerRadius)
         }
       }
+
+      ctx.restore()
     }
   }
 }
