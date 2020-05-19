@@ -45,14 +45,27 @@ class GraphDisplay extends Component {
       MOVE_DOWN,
       (extraKeys) => props.jumpToNextNode('DOWN', extraKeys)
     )
+
+    this.registerOptionalActions(props)
+  }
+
+  registerOptionalActions (props) {
+    const supportsUndo = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].includes(props.storage.mode)
+
     props.registerAction(
       UNDO,
-      (() => this.props.storage.mode === 'GOOGLE_DRIVE' && props.undo()).bind(this)
+      (() => supportsUndo && props.undo()).bind(this)
     )
     props.registerAction(
       REDO,
-      (() => this.props.storage.mode === 'GOOGLE_DRIVE' && props.redo()).bind(this)
+      (() => supportsUndo && props.redo()).bind(this)
     )
+  }
+
+  componentWillReceiveProps(nextProps, nextContext) {
+    if(nextProps.storage.mode !== this.props.storage.mode) {
+      this.registerOptionalActions(nextProps)
+    }
   }
 
   componentDidMount() {

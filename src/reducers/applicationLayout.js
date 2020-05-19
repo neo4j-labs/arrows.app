@@ -14,7 +14,8 @@ const gangsLayer = {
   },
   storageActionHandler: {
     neo4j: clusterWriteQueryAction,
-    googleDrive: getGangs
+    googleDrive: getGangs,
+    localStorage: getGangs
   },
 }
 

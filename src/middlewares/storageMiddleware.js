@@ -3,6 +3,7 @@ import {renameGoogleDriveStore, saveFile} from "../actions/googleDrive";
 import {updatingGraph, updatingGraphSucceeded} from "../actions/neo4jStorage";
 import { getPresentGraph } from "../selectors"
 import { ActionCreators as UndoActionCreators } from "redux-undo"
+import { saveAppData } from "../actions/localStorage"
 
 const updateQueue = []
 
@@ -34,6 +35,7 @@ export const storageMiddleware = store => next => action => {
   if (action.category === 'GRAPH' || historyActions.includes(action.type)) {
     switch (storage.mode) {
       case "GOOGLE_DRIVE":
+      case "LOCAL_STORAGE":
         const oldState = hideGraphHistory(store.getState())
         const result = next(action)
         const newState = hideGraphHistory(store.getState())
@@ -52,6 +54,12 @@ export const storageMiddleware = store => next => action => {
           if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
             store.dispatch(updatingGraph())
           }
+
+          if(storage.mode === "LOCAL_STORAGE") {
+            saveAppData(data)
+            store.dispatch(updatingGraphSucceeded())
+          }
+
           deBounce(() => {
             saveFile(
               data,

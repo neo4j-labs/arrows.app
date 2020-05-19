@@ -1,12 +1,22 @@
 import {initializeConnection} from "./databaseConnection";
 import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
+import {loadGraphFromLocalStorage} from "./localStorage";
 
+export const localUrlRegex = /^#\/local/
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 export const neo4jUrlRegex = /^#\/neo4j/
 
 export function initialiseStorageFromWindowLocationHash(store) {
-  const googleDriveMatch = googleDriveUrlRegex.exec(window.location.hash)
+  const hash = window.location.hash
+
+  const localMatch = localUrlRegex.exec(hash)
+  if (localMatch) {
+    store.dispatch(useLocalStorage())
+    store.dispatch(loadGraphFromLocalStorage())
+  }
+
+  const googleDriveMatch = googleDriveUrlRegex.exec(hash)
   if (googleDriveMatch && googleDriveMatch.length > 1) {
     const initialFiles = googleDriveMatch[1].split(',')
     if (initialFiles.length > 0) {
@@ -16,7 +26,7 @@ export function initialiseStorageFromWindowLocationHash(store) {
     }
   }
 
-  const neo4jMatch = neo4jUrlRegex.exec(window.location.hash)
+  const neo4jMatch = neo4jUrlRegex.exec(hash)
   if (neo4jMatch) {
     store.dispatch(useNeo4jStorage())
     store.dispatch(initializeConnection())
@@ -33,6 +43,12 @@ export function useNeo4jStorage() {
 export function useGoogleDriveStorage() {
   return {
     type: 'USE_GOOGLE_DRIVE_STORAGE'
+  }
+}
+
+export function useLocalStorage() {
+  return {
+    type: 'USE_LOCAL_STORAGE'
   }
 }
 

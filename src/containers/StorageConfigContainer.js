@@ -2,10 +2,7 @@ import {connect} from "react-redux"
 import EditConnectionParametersForm from "../components/StorageConfigModal";
 import {initializeConnection} from "../actions/databaseConnection";
 import {initializeGoogleDriveStorage} from "../actions/googleDrive";
-
-const mapStateToProps = () => {
-  return {}
-}
+import {useLocalStorage} from "../actions/storage";
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -14,11 +11,12 @@ const mapDispatchToProps = dispatch => {
     },
     useGoogleDriveStorage: () => {
       dispatch(initializeGoogleDriveStorage())
-    }
+    },
+    useLocalStorage: () => dispatch(useLocalStorage())
   }
 }
 
 export default connect(
-  mapStateToProps,
+  null,
   mapDispatchToProps
 )(EditConnectionParametersForm)
