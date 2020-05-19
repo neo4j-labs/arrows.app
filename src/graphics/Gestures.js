@@ -78,8 +78,8 @@ export default class Gestures {
       const sourceNode = visualGraph.nodes[dragToCreate.sourceNodeId]
       let newNodeRadius = visualGraph.graph.style.radius
       if (sourceNode) {
-        const radius = sourceNode.radius
-        const outerRadius = radius + ringMargin
+        const sourceNodeRadius = sourceNode.radius
+        const outerRadius = sourceNodeRadius + ringMargin
         const sourceNodePosition = sourceNode.position
 
         const targetNode = visualGraph.nodes[dragToCreate.targetNodeId]
@@ -89,12 +89,14 @@ export default class Gestures {
 
         if (dragToCreate.newNodePosition) {
           const delta = dragToCreate.newNodePosition.vectorFrom(sourceNodePosition)
-          let newNodePosition = sourceNodePosition;
-          if (delta.distance() > outerRadius) {
-            if (delta.distance() < radius + outerRadius) {
-              const ratio = (delta.distance() - radius - ringMargin) / radius
+          let newNodePosition = sourceNodePosition
+          if (delta.distance() < outerRadius) {
+            newNodeRadius = outerRadius
+          } else {
+            if (delta.distance() - sourceNodeRadius < newNodeRadius) {
+              const ratio = (delta.distance() - sourceNodeRadius) / newNodeRadius
               newNodePosition = sourceNodePosition.translate(delta.scale(ratio))
-              newNodeRadius *= ratio
+              newNodeRadius = (1 - ratio) * outerRadius + ratio * newNodeRadius
             } else {
               newNodePosition = dragToCreate.newNodePosition
             }
@@ -107,7 +109,7 @@ export default class Gestures {
             const arrow = new BalloonArrow(sourceNodePosition, newNodeRadius, 0,44, 256, 40, dimensions)
             arrow.draw(ctx)
           } else {
-            const arrow = normalStraightArrow(sourceNodePosition, newNodePosition, radius, newNodeRadius, dimensions)
+            const arrow = normalStraightArrow(sourceNodePosition, newNodePosition, sourceNodeRadius, newNodeRadius, dimensions)
             arrow.draw(ctx)
           }
         } else {
