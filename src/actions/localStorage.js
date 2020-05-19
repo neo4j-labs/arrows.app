@@ -25,15 +25,15 @@ export const saveAppData = data => {
 
 export const loadAppData = () => load(key_appData)
 
-const save = (key, value, stringify = true) => {
+const save = (key, value) => {
   localStorage.setItem(
     key,
-    stringify ? JSON.stringify(value) : value)
+    JSON.stringify(value))
 }
 
-const load = (key, parse = true) => {
+const load = key => {
   const serializedVal = localStorage.getItem(key)
-  return parse ? JSON.parse(serializedVal) : serializedVal
+  return JSON.parse(serializedVal)
 }
 
 export const loadGraphFromLocalStorage = () => {
