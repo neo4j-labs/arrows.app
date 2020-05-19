@@ -10,7 +10,7 @@ export function fetchGraphFromDrive(fileId) {
 
     const fetchData = () => getFileInfo(fileId)
       .then(data => {
-        const layers = constructGraphFromFile(data)
+        const layers = constructGraphFromFile(JSON.parse(data))
         layers.gangs && dispatch(loadClusters(layers.gangs))
         dispatch(fetchingGraphSucceeded(layers.graph))
       })
@@ -40,8 +40,7 @@ const getFileInfo = (fileId, metaOnly = false) => {
   })
 }
 
-export const constructGraphFromFile = (graphData, isJson = true) => {
-  const data = isJson ? JSON.parse(graphData) : graphData
+export const constructGraphFromFile = (data) => {
   let graph
   let gangs = []
 

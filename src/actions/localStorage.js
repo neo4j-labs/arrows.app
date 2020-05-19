@@ -1,7 +1,6 @@
 import { constructGraphFromFile } from "../storage/googleDriveStorage"
 import { loadClusters } from "./gang"
 import { fetchingGraphSucceeded } from "./neo4jStorage"
-import { useLocalStorage } from "./storage"
 
 const key_helpDismissed = "neo4j-arrows-app.helpDismissed";
 const key_rememberedConnectionParameters = "neo4j-arrows-app.rememberedConnectionParameters";
@@ -37,19 +36,13 @@ const load = (key, parse = true) => {
   return parse ? JSON.parse(serializedVal) : serializedVal
 }
 
-export const initFromLocalStorage = () => {
-  return function (dispatch, getState) {
-    dispatch(useLocalStorage())
+export const loadGraphFromLocalStorage = () => {
+  return function (dispatch) {
+    const data = loadAppData()
+    const graphData = constructGraphFromFile(data)
 
-
-    if (getState().storage.previousMode !== 'LOCAL_STORAGE') {
-      const data = loadAppData()
-      const graphData = constructGraphFromFile(data, false)
-
-
-      graphData.gangs && dispatch(loadClusters(graphData.gangs))
-      dispatch(fetchingGraphSucceeded(graphData.graph))
-    }
+    graphData.gangs && dispatch(loadClusters(graphData.gangs))
+    dispatch(fetchingGraphSucceeded(graphData.graph))
   }
 }
 
