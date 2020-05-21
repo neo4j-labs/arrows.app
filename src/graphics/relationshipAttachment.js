@@ -64,7 +64,7 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
         }
       })
       neighbours.sort((a, b) => {
-        return (a.arrow.path && b.arrow.path) ? compareWaypoints(a.arrow.path.waypoints, b.arrow.path.waypoints) : 0
+        return (a.arrow.path.waypoints && b.arrow.path.waypoints) ? compareWaypoints(a.arrow.path.waypoints, b.arrow.path.waypoints) : 0
       })
       neighbours.forEach((neighbour, i) => {
         relationshipAttachments[neighbour.direction][neighbour.relationship.id] = {

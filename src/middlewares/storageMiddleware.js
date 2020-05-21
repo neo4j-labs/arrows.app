@@ -33,31 +33,36 @@ export const storageMiddleware = store => next => action => {
   }
 
   if (action.category === 'GRAPH' || historyActions.includes(action.type)) {
-    switch (storage.mode) {
-      case "GOOGLE_DRIVE":
-      case "LOCAL_STORAGE":
-        const oldState = hideGraphHistory(store.getState())
-        const result = next(action)
-        const newState = hideGraphHistory(store.getState())
-        const data = {graph: newState.graph}
-        const layers = newState.applicationLayout.layers
+    const oldState = hideGraphHistory(store.getState())
+    const result = next(action)
+    const newState = hideGraphHistory(store.getState())
+    const data = {graph: newState.graph}
+    const layers = newState.applicationLayout.layers
 
-        if (layers && layers.length > 0) {
-          layers.forEach(layer => {
-            if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['googleDrive']) {
-              data[layer.name] = layer.storageActionHandler['googleDrive'](newState)
-            }
-          })
+    if (layers && layers.length > 0) {
+      layers.forEach(layer => {
+        if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['googleDrive']) {
+          data[layer.name] = layer.storageActionHandler['googleDrive'](newState)
         }
+      })
+    }
 
+    switch (storage.mode) {
+      case "LOCAL_STORAGE":
         if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
           if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
             store.dispatch(updatingGraph())
           }
 
-          if(storage.mode === "LOCAL_STORAGE") {
-            saveAppData(data)
-            store.dispatch(updatingGraphSucceeded())
+          saveAppData(data)
+          store.dispatch(updatingGraphSucceeded())
+        }
+        return result
+
+      case "GOOGLE_DRIVE":
+        if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
+          if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
+            store.dispatch(updatingGraph())
           }
 
           deBounce(() => {
@@ -72,14 +77,15 @@ export const storageMiddleware = store => next => action => {
           }, driveUpdateInterval)
         }
         return result
+
       case "DATABASE":
         if (action.category === 'GRAPH') {
           updateQueue.push(action)
           drainUpdateQueue(state)
         }
-        return next(action)
+        return result
       default:
-        return next(action)
+        return result
     }
   } else {
     return next(action)
