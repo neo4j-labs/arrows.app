@@ -15,7 +15,7 @@ export class SeekAndDestroy {
   forwardToWaypoint(distance, turn, radius) {
     this.position = this.position.translate(new Vector(distance, 0).rotate(this.direction))
     this.direction = normaliseAngle(this.direction + turn)
-    this.waypoints.push({point: this.position, turn, radius })
+    this.waypoints.push({point: this.position, distance, turn, radius })
   }
 
   get endRelative() {
@@ -75,5 +75,25 @@ export class SeekAndDestroy {
     }
     return minDistance
   }
+}
 
+export const compareWaypoints = (a, b) => {
+  if (a.length === 0 && b.length === 0) return 0
+
+  if (a.length === 0) return Math.sign(b[0].angle)
+
+  if (b.length === 0) return -Math.sign(a[0].angle)
+
+  const aFirstWaypoint = a[0]
+  const bFirstWaypoint = b[0]
+
+  if (aFirstWaypoint.turn !== bFirstWaypoint.turn) {
+    return Math.sign(aFirstWaypoint.turn - bFirstWaypoint.turn)
+  }
+
+  if (aFirstWaypoint.distance !== bFirstWaypoint.distance) {
+    return Math.sign(bFirstWaypoint.distance - aFirstWaypoint.distance)
+  }
+
+  return compareWaypoints(a.slice(1), b.slice(1))
 }

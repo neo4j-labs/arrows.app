@@ -1,4 +1,3 @@
-import {getStyleSelector} from "../selectors/style";
 import {ParallelArrow} from "./ParallelArrow";
 import {normalStraightArrow, StraightArrow} from "./StraightArrow";
 import {VisualRelationship} from "./VisualRelationship";
@@ -9,6 +8,7 @@ import {clockwiseAngularSpace} from "./utils/clockwiseAngularSpace";
 import {normaliseAngle} from "./utils/angles";
 import {ElbowArrow} from "./ElbowArrow";
 import {RectilinearArrow} from "./RectilinearArrow";
+import {relationshipArrowDimensions} from "./arrowDimensions";
 
 export class RoutedRelationshipBundle {
   constructor(relationships, graph, selection, measureTextContext) {
@@ -17,19 +17,7 @@ export class RoutedRelationshipBundle {
     const leftNode = relationships[0].from
     const rightNode = relationships[0].to
 
-    const arrowDimensions = relationships.map(relationship => {
-      const style = styleKey => getStyleSelector(relationship.relationship, styleKey)(graph)
-      const startRadius = relationship.from.radius + style('margin-start')
-      const endRadius = relationship.to.radius + style('margin-end')
-      const arrowWidth = style('arrow-width')
-      const arrowColor = style('arrow-color')
-      const headWidth = arrowWidth + 6 * Math.sqrt(arrowWidth)
-      const headHeight = headWidth * 1.5
-      const chinHeight = headHeight / 10
-      const separation = style('margin-peer')
-      const leftToRight = relationship.from === leftNode
-      return { startRadius, endRadius, arrowWidth, arrowColor, headWidth, headHeight, chinHeight, separation, leftToRight }
-    })
+    const arrowDimensions = relationships.map(relationship => relationshipArrowDimensions(relationship, graph, leftNode))
 
     const leftRadius = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.startRadius : arrow.endRadius))
     const rightRadius = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.endRadius : arrow.startRadius))

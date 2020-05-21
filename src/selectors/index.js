@@ -59,7 +59,7 @@ export const getVisualGraph = createSelector(
 
     const relationshipAttachments = computeRelationshipAttachments(graph, visualNodes)
 
-    const visualRelationships = graph.relationships.map(relationship =>
+    const resolvedRelationships = graph.relationships.map(relationship =>
       new ResolvedRelationship(
         relationship,
         visualNodes[relationship.fromId],
@@ -69,7 +69,7 @@ export const getVisualGraph = createSelector(
         relationshipSelected(selection, relationship.id),
         graph),
     )
-    const relationshipBundles = bundle(visualRelationships).map(bundle => {
+    const relationshipBundles = bundle(resolvedRelationships).map(bundle => {
       return new RoutedRelationshipBundle(bundle, graph, selection, measureTextContext);
     })
 
