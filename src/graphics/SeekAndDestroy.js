@@ -78,22 +78,26 @@ export class SeekAndDestroy {
 }
 
 export const compareWaypoints = (a, b) => {
+  console.log(a, b)
   if (a.length === 0 && b.length === 0) return 0
 
-  if (a.length === 0) return Math.sign(b[0].angle)
+  if (a.length === 0) return Math.sign(b[0].turn)
 
-  if (b.length === 0) return -Math.sign(a[0].angle)
+  if (b.length === 0) return -Math.sign(a[0].turn)
 
   const aFirstWaypoint = a[0]
   const bFirstWaypoint = b[0]
 
   if (aFirstWaypoint.turn !== bFirstWaypoint.turn) {
+    console.log('TURN')
     return Math.sign(aFirstWaypoint.turn - bFirstWaypoint.turn)
   }
 
-  if (aFirstWaypoint.distance !== bFirstWaypoint.distance) {
-    return Math.sign(bFirstWaypoint.distance - aFirstWaypoint.distance)
+  if (Math.abs(aFirstWaypoint.distance - bFirstWaypoint.distance) > 0.0001) {
+    console.log('DISTANCE')
+    return Math.sign(aFirstWaypoint.distance - bFirstWaypoint.distance)
   }
 
-  return compareWaypoints(a.slice(1), b.slice(1))
+  console.log('NEXT')
+  return Math.sin(a[0].turn) * compareWaypoints(a.slice(1), b.slice(1))
 }

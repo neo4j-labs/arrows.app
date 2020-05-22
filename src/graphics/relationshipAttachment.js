@@ -63,9 +63,19 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
           arrow
         }
       })
+      if (neighbours.length === 5) {
+        console.log('START SORT')
+      }
       neighbours.sort((a, b) => {
         return (a.arrow.path.waypoints && b.arrow.path.waypoints) ? compareWaypoints(a.arrow.path.waypoints, b.arrow.path.waypoints) : 0
       })
+      if (neighbours.length === 5) {
+        console.log('END SORT')
+      }
+      if (neighbours.length === 5) {
+        console.log(neighbours.map(neighbour => neighbour.arrow.path.waypoints))
+        console.log(neighbours.map(neighbour => neighbour.relationship.type))
+      }
       neighbours.forEach((neighbour, i) => {
         relationshipAttachments[neighbour.direction][neighbour.relationship.id] = {
           attachment: option,
@@ -79,7 +89,7 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
 }
 
 const findOption = (optionName) => {
-  return attachmentOptions.find(option => option.name = optionName)
+  return attachmentOptions.find(option => option.name === optionName)
 }
 
 const dummyAttachment = (option) => {
