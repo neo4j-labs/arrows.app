@@ -1,66 +1,85 @@
 import {attachmentOptions} from "../model/attachments";
 import {getStyleSelector} from "../selectors/style";
-import {otherNodeId} from "../model/Relationship";
 import {relationshipArrowDimensions} from "./arrowDimensions";
 import ResolvedRelationship from "./ResolvedRelationship";
-import {ElbowArrow} from "./ElbowArrow";
 import {RectilinearArrow} from "./RectilinearArrow";
 import {compareWaypoints} from "./SeekAndDestroy";
 
 export const computeRelationshipAttachments = (graph, visualNodes) => {
+  const nodeAttachments = {}
+  const countAttachment = (nodeId, attachmentOptionName) => {
+    const nodeCounters = nodeAttachments[nodeId] || (nodeAttachments[nodeId] = {})
+    nodeCounters[attachmentOptionName] = (nodeCounters[attachmentOptionName] || 0) + 1
+  }
+
+  graph.relationships.forEach(relationship => {
+    const style = styleAttribute => getStyleSelector(relationship, styleAttribute)(graph)
+    countAttachment(relationship.fromId, style('attachment-start'))
+    countAttachment(relationship.toId, style('attachment-end'))
+  })
+
+  const centralAttachment = (nodeId, attachmentOptionName) => {
+    const total = nodeAttachments[nodeId][attachmentOptionName]
+    return {
+      attachment: findOption(attachmentOptionName),
+      ordinal: (total - 1) / 2,
+      total
+    }
+  }
+
+  const routedRelationships = graph.relationships.map(relationship => {
+    const style = styleAttribute => getStyleSelector(relationship, styleAttribute)(graph)
+    const startAttachment = centralAttachment(relationship.fromId, style('attachment-start'))
+    const endAttachment = centralAttachment(relationship.toId, style('attachment-end'))
+    const resolvedRelationship = new ResolvedRelationship(
+      relationship,
+      visualNodes[relationship.fromId],
+      visualNodes[relationship.toId],
+      startAttachment,
+      endAttachment,
+      false,
+      graph)
+    let arrow
+    if (startAttachment.attachment.name !== 'normal' && endAttachment.attachment.name !== 'normal') {
+      const dimensions = relationshipArrowDimensions(resolvedRelationship, graph, resolvedRelationship.from)
+      arrow = new RectilinearArrow(
+        resolvedRelationship.from.position,
+        resolvedRelationship.to.position,
+        dimensions.startRadius,
+        dimensions.endRadius,
+        resolvedRelationship.startAttachment,
+        resolvedRelationship.endAttachment,
+        dimensions
+      )
+    }
+    return {resolvedRelationship, arrow}
+  })
+
+  console.log(routedRelationships)
+
   const relationshipAttachments = {
     start: {},
     end: {}
   }
   graph.nodes.forEach(node => {
-    const visualNode = visualNodes[node.id]
-    const relationships = graph.relationships
-      .filter(relationship => node.id === relationship.fromId || node.id === relationship.toId)
+    const relationships = routedRelationships
+      .filter(routedRelationship =>
+        node.id === routedRelationship.resolvedRelationship.from.id ||
+        node.id === routedRelationship.resolvedRelationship.to.id)
     attachmentOptions.forEach(option => {
-      const relevantRelationships = relationships.filter(relationship => {
-        const style = styleAttribute => getStyleSelector(relationship, styleAttribute)(graph)
-        const startAttachment = style('attachment-start')
-        const endAttachment = style('attachment-end')
-        return (startAttachment === option.name && relationship.fromId === node.id) ||
-          (endAttachment === option.name && relationship.toId === node.id)
+      const relevantRelationships = relationships.filter(routedRelationship => {
+        const startAttachment = routedRelationship.resolvedRelationship.startAttachment
+        const endAttachment = routedRelationship.resolvedRelationship.endAttachment
+        return (startAttachment.attachment === option && node.id === routedRelationship.resolvedRelationship.from.id) ||
+          (endAttachment.attachment === option && node.id === routedRelationship.resolvedRelationship.to.id)
       })
-      const neighbours = relevantRelationships.map(relationship => {
-        const otherVisualNode = visualNodes[otherNodeId(relationship, node.id)]
-        const direction = relationship.fromId === node.id ? 'start' : 'end';
-        const style = styleAttribute => getStyleSelector(relationship, styleAttribute)(graph)
-        const otherAttachmentOption = findOption(direction === 'start' ?
-          style('attachment-end') : style('attachment-start'))
-        const resolvedRelationship = new ResolvedRelationship(
-          relationship,
-          direction === 'start' ? visualNode : otherVisualNode,
-          direction === 'end' ? visualNode : otherVisualNode,
-          direction === 'start' ? dummyAttachment(option) : dummyAttachment(otherAttachmentOption),
-          direction === 'end' ? dummyAttachment(option) : dummyAttachment(otherAttachmentOption),
-          false
-        );
-        const dimensions = relationshipArrowDimensions(resolvedRelationship, graph, node)
-        const arrow = otherAttachmentOption.name === 'normal' ? new ElbowArrow(
-          resolvedRelationship.from.position,
-          resolvedRelationship.to.position,
-          dimensions.startRadius,
-          dimensions.endRadius,
-          resolvedRelationship.startAttachment,
-          resolvedRelationship.endAttachment,
-          dimensions
-        ) : new RectilinearArrow(
-          resolvedRelationship.from.position,
-          resolvedRelationship.to.position,
-          dimensions.startRadius,
-          dimensions.endRadius,
-          resolvedRelationship.startAttachment,
-          resolvedRelationship.endAttachment,
-          dimensions
-        )
+      const neighbours = relevantRelationships.map(routedRelationship => {
+        const direction = node.id === routedRelationship.resolvedRelationship.from.id ? 'start' : 'end';
 
         return {
-          relationship,
+          relationship: routedRelationship.resolvedRelationship.relationship,
           direction,
-          arrow
+          arrow: routedRelationship.arrow
         }
       })
       if (neighbours.length === 5) {
@@ -89,13 +108,5 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
 }
 
 const findOption = (optionName) => {
-  return attachmentOptions.find(option => option.name === optionName)
-}
-
-const dummyAttachment = (option) => {
-  return {
-    attachment: option,
-    ordinal: 0,
-    total: 1
-  }
+  return attachmentOptions.find(option => option.name === optionName) || { name: 'normal' }
 }
