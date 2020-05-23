@@ -7,6 +7,7 @@ export class SeekAndDestroy {
     this.waypoints = []
     this.start = start
     this.position = start
+    this.startDirection = startDirection
     this.direction = startDirection
     this.end = end
     this.endDirection = endDirection
@@ -40,6 +41,19 @@ export class SeekAndDestroy {
       return waypoint.point.translate(nextVector.scale(0.5))
     }
     return this.end
+  }
+
+  inverse() {
+    const path = new SeekAndDestroy(this.end, this.endDirection, this.start, this.startDirection)
+    for (let i = this.waypoints.length - 1; i >= 0; i--) {
+      const waypoint = this.waypoints[i]
+      path.forwardToWaypoint(
+        waypoint.point.vectorFrom(path.position).distance(),
+        -waypoint.turn,
+        waypoint.radius
+      )
+    }
+    return path
   }
 
   draw(ctx) {
@@ -95,9 +109,9 @@ export const compareWaypoints = (a, b) => {
 
   if (Math.abs(aFirstWaypoint.distance - bFirstWaypoint.distance) > 0.0001) {
     console.log('DISTANCE')
-    return Math.sign(aFirstWaypoint.distance - bFirstWaypoint.distance)
+    return Math.sin(a[0].turn) * Math.sign(bFirstWaypoint.distance - aFirstWaypoint.distance)
   }
 
   console.log('NEXT')
-  return Math.sin(a[0].turn) * compareWaypoints(a.slice(1), b.slice(1))
+  return compareWaypoints(a.slice(1), b.slice(1))
 }

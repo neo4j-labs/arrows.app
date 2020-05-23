@@ -7,7 +7,7 @@ import {normaliseAngle} from "./utils/angles";
 export class RectilinearArrow {
   constructor(startCentre, endCentre, startRadius, endRadius, startAttachment, endAttachment, dimensions) {
     this.dimensions = dimensions
-    this.arcRadius = 40 + Math.min(startAttachment.ordinal, startAttachment.total - startAttachment.ordinal - 1) * 10
+    this.arcRadius = startAttachment.total > endAttachment.total ? computeArcRadius(startAttachment) : computeArcRadius(endAttachment)
     const startAttachAngle = startAttachment.attachment.angle
     const endAttachAngle = endAttachment.attachment.angle
     this.startAttach = startCentre.translate(new Vector(startRadius, (startAttachment.ordinal - (startAttachment.total - 1) / 2) * 10).rotate(startAttachAngle))
@@ -129,4 +129,8 @@ export class RectilinearArrow {
   get arrowKind() {
     return 'straight'
   }
+}
+
+const computeArcRadius = (attachment) => {
+  return 40 + Math.min(attachment.ordinal, attachment.total - attachment.ordinal - 1) * 10
 }

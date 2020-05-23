@@ -74,25 +74,31 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
           (endAttachment.attachment === option && node.id === routedRelationship.resolvedRelationship.to.id)
       })
       const neighbours = relevantRelationships.map(routedRelationship => {
-        const direction = node.id === routedRelationship.resolvedRelationship.from.id ? 'start' : 'end';
+        const direction = node.id === routedRelationship.resolvedRelationship.from.id ? 'start' : 'end'
+        let path
+        if (routedRelationship.arrow && routedRelationship.arrow.path && routedRelationship.arrow.path.waypoints) {
+          if (direction === 'start') {
+            path = routedRelationship.arrow.path
+          } else {
+            path = routedRelationship.arrow.path.inverse()
+          }
+        }
 
         return {
           relationship: routedRelationship.resolvedRelationship.relationship,
           direction,
-          arrow: routedRelationship.arrow
+          path
         }
       })
-      if (neighbours.length === 5) {
+      if (neighbours.length === 2) {
         console.log('START SORT')
       }
       neighbours.sort((a, b) => {
-        return (a.arrow.path.waypoints && b.arrow.path.waypoints) ? compareWaypoints(a.arrow.path.waypoints, b.arrow.path.waypoints) : 0
+        return (a.path && b.path) ? compareWaypoints(a.path.waypoints, b.path.waypoints) : 0
       })
-      if (neighbours.length === 5) {
+      if (neighbours.length === 2) {
         console.log('END SORT')
-      }
-      if (neighbours.length === 5) {
-        console.log(neighbours.map(neighbour => neighbour.arrow.path.waypoints))
+        console.log(neighbours.map(neighbour => neighbour.path.waypoints))
         console.log(neighbours.map(neighbour => neighbour.relationship.type))
       }
       neighbours.forEach((neighbour, i) => {
@@ -104,6 +110,9 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
       })
     })
   })
+
+  console.log(relationshipAttachments)
+
   return relationshipAttachments
 }
 
