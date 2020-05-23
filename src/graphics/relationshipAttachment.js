@@ -4,6 +4,7 @@ import {relationshipArrowDimensions} from "./arrowDimensions";
 import ResolvedRelationship from "./ResolvedRelationship";
 import {RectilinearArrow} from "./RectilinearArrow";
 import {compareWaypoints} from "./SeekAndDestroy";
+import {ElbowArrow} from "./ElbowArrow";
 
 export const computeRelationshipAttachments = (graph, visualNodes) => {
   const nodeAttachments = {}
@@ -41,6 +42,18 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
       false,
       graph)
     let arrow
+    if (startAttachment.attachment.name !== 'normal' && endAttachment.attachment.name === 'normal') {
+      const dimensions = relationshipArrowDimensions(resolvedRelationship, graph, resolvedRelationship.from)
+      arrow = new ElbowArrow(
+        resolvedRelationship.from.position,
+        resolvedRelationship.to.position,
+        dimensions.startRadius,
+        dimensions.endRadius,
+        resolvedRelationship.startAttachment,
+        resolvedRelationship.endAttachment,
+        dimensions
+      )
+    }
     if (startAttachment.attachment.name !== 'normal' && endAttachment.attachment.name !== 'normal') {
       const dimensions = relationshipArrowDimensions(resolvedRelationship, graph, resolvedRelationship.from)
       arrow = new RectilinearArrow(

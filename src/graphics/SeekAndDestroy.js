@@ -81,12 +81,13 @@ export class SeekAndDestroy {
       let control = waypoint.point
       const vector1 = previous.vectorFrom(control)
       const vector2 = next.vectorFrom(control)
-      if (vector1.distance() < waypoint.radius) {
-        const overlap = waypoint.radius - vector1.distance()
+      const d = waypoint.radius * Math.tan(Math.abs(waypoint.turn) / 2);
+      if (vector1.distance() < d) {
+        const overlap = d - vector1.distance()
         control = control.translate(vector2.scale(overlap / vector2.distance()))
       }
-      if (vector2.distance() < waypoint.radius) {
-        const overlap = waypoint.radius - vector2.distance()
+      if (vector2.distance() < d) {
+        const overlap = d - vector2.distance()
         control = control.translate(vector1.scale(overlap / vector1.distance()))
       }
 
