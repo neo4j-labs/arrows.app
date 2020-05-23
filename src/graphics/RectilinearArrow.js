@@ -21,14 +21,19 @@ export class RectilinearArrow {
     switch (initialAngle) {
       case 0:
         if (this.path.endRelative.x > 0) {
-          const distance = this.path.endRelative.x < this.arcRadius * 2 ? this.path.endRelative.x / 2 :
-            (fanOut ? this.arcRadius : this.path.endRelative.x - this.arcRadius)
-          this.path.forwardToWaypoint(distance, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
-          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
+          if (this.path.endRelative.y === 0) {
+            this.midShaft = this.startAttach.translate(this.endShaft.vectorFrom(this.startAttach).scale(0.5))
+            this.midShaftAngle = startAttachAngle
+          } else {
+            const distance = this.path.endRelative.x < this.arcRadius * 2 ? this.path.endRelative.x / 2 :
+              (fanOut ? this.arcRadius : this.path.endRelative.x - this.arcRadius)
+            this.path.forwardToWaypoint(distance, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
+            this.path.forwardToWaypoint(this.path.endRelative.x, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
 
-          const longestSegment = this.path.segment(fanOut ? 2 : 0)
-          this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
-          this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
+            const longestSegment = this.path.segment(fanOut ? 2 : 0)
+            this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
+            this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
+          }
         } else {
           this.path.forwardToWaypoint(this.arcRadius, this.path.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2, this.arcRadius)
           const distance = Math.max(this.arcRadius + startRadius, this.path.endRelative.x + endRadius + this.arcRadius)

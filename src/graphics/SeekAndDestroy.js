@@ -44,7 +44,12 @@ export class SeekAndDestroy {
   }
 
   inverse() {
-    const path = new SeekAndDestroy(this.end, this.endDirection, this.start, this.startDirection)
+    const path = new SeekAndDestroy(
+      this.end,
+      normaliseAngle(this.endDirection + Math.PI),
+      this.start,
+      normaliseAngle(this.startDirection + Math.PI)
+    )
     for (let i = this.waypoints.length - 1; i >= 0; i--) {
       const waypoint = this.waypoints[i]
       path.forwardToWaypoint(
@@ -95,20 +100,26 @@ export const compareWaypoints = (a, b) => {
   console.log(a, b)
   if (a.length === 0 && b.length === 0) return 0
 
-  if (a.length === 0) return Math.sign(b[0].turn)
+  if (a.length === 0) {
+    console.log('A EMPTY')
+    return -Math.sign(b[0].turn)
+  }
 
-  if (b.length === 0) return -Math.sign(a[0].turn)
+  if (b.length === 0) {
+    console.log('B EMPTY')
+    return Math.sign(a[0].turn)
+  }
 
   const aFirstWaypoint = a[0]
   const bFirstWaypoint = b[0]
 
   if (aFirstWaypoint.turn !== bFirstWaypoint.turn) {
-    console.log('TURN')
+    // console.log('TURN')
     return Math.sign(aFirstWaypoint.turn - bFirstWaypoint.turn)
   }
 
   if (Math.abs(aFirstWaypoint.distance - bFirstWaypoint.distance) > 0.0001) {
-    console.log('DISTANCE')
+    // console.log('DISTANCE')
     return Math.sin(a[0].turn) * Math.sign(bFirstWaypoint.distance - aFirstWaypoint.distance)
   }
 
