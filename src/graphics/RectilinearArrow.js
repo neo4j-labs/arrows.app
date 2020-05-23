@@ -7,7 +7,7 @@ import {normaliseAngle} from "./utils/angles";
 export class RectilinearArrow {
   constructor(startCentre, endCentre, startRadius, endRadius, startAttachment, endAttachment, dimensions) {
     this.dimensions = dimensions
-    this.arcRadius = startAttachment.total > endAttachment.total ? computeArcRadius(startAttachment) : computeArcRadius(endAttachment)
+    const arcRadius = startAttachment.total > endAttachment.total ? computeArcRadius(startAttachment) : computeArcRadius(endAttachment)
     const startAttachAngle = startAttachment.attachment.angle
     const endAttachAngle = endAttachment.attachment.angle
     this.startAttach = startCentre.translate(new Vector(startRadius, (startAttachment.ordinal - (startAttachment.total - 1) / 2) * 10).rotate(startAttachAngle))
@@ -25,21 +25,21 @@ export class RectilinearArrow {
             this.midShaft = this.startAttach.translate(this.endShaft.vectorFrom(this.startAttach).scale(0.5))
             this.midShaftAngle = startAttachAngle
           } else {
-            const distance = this.path.endRelative.x < this.arcRadius * 2 ? this.path.endRelative.x / 2 :
-              (fanOut ? this.arcRadius : this.path.endRelative.x - this.arcRadius)
-            this.path.forwardToWaypoint(distance, this.path.rightAngleTowardsEnd, this.arcRadius)
-            this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, this.arcRadius)
+            const distance = this.path.endRelative.x < arcRadius * 2 ? this.path.endRelative.x / 2 :
+              (fanOut ? arcRadius : this.path.endRelative.x - arcRadius)
+            this.path.forwardToWaypoint(distance, this.path.rightAngleTowardsEnd, arcRadius)
+            this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, arcRadius)
 
             const longestSegment = this.path.segment(fanOut ? 2 : 0)
             this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
             this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
           }
         } else {
-          this.path.forwardToWaypoint(this.arcRadius, this.path.rightAngleTowardsEnd, this.arcRadius)
-          const distance = Math.max(this.arcRadius + startRadius, this.path.endRelative.x + endRadius + this.arcRadius)
-          this.path.forwardToWaypoint(distance, this.path.rightAngleTowardsEnd, this.arcRadius)
-          this.path.forwardToWaypoint(this.path.endRelative.x + this.arcRadius, this.path.rightAngleTowardsEnd, this.arcRadius)
-          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, this.arcRadius)
+          this.path.forwardToWaypoint(arcRadius, this.path.rightAngleTowardsEnd, arcRadius)
+          const distance = Math.max(arcRadius + startRadius, this.path.endRelative.x + endRadius + arcRadius)
+          this.path.forwardToWaypoint(distance, this.path.rightAngleTowardsEnd, arcRadius)
+          this.path.forwardToWaypoint(this.path.endRelative.x + arcRadius, this.path.rightAngleTowardsEnd, arcRadius)
+          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, arcRadius)
 
           const longestSegment = this.path.segment(2)
           this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
@@ -48,33 +48,33 @@ export class RectilinearArrow {
         break
       case 90:
         if (this.path.endDirectionRelative * this.path.endRelative.y > 0) {
-          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, this.arcRadius)
+          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, arcRadius)
           const longestSegment = this.path.segment(0)
           this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
           this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
         } else {
-          this.path.forwardToWaypoint(this.path.endRelative.x - endRadius - this.arcRadius, this.path.rightAngleTowardsEnd, this.arcRadius)
-          this.path.forwardToWaypoint(this.path.endRelative.x + this.arcRadius, this.path.rightAngleTowardsEnd, this.arcRadius)
-          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, this.arcRadius)
+          this.path.forwardToWaypoint(this.path.endRelative.x - endRadius - arcRadius, this.path.rightAngleTowardsEnd, arcRadius)
+          this.path.forwardToWaypoint(this.path.endRelative.x + arcRadius, this.path.rightAngleTowardsEnd, arcRadius)
+          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, arcRadius)
           const longestSegment = this.path.segment(0)
           this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
           this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
         }
         break
       default:
-        if (Math.abs(this.path.endRelative.y) > this.arcRadius * 2) {
-          const distance = Math.max(this.arcRadius, this.path.endRelative.x + this.arcRadius)
-          this.path.forwardToWaypoint(distance, this.path.rightAngleTowardsEnd, this.arcRadius)
-          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, this.arcRadius)
+        if (Math.abs(this.path.endRelative.y) > arcRadius * 2) {
+          const distance = Math.max(arcRadius, this.path.endRelative.x + arcRadius)
+          this.path.forwardToWaypoint(distance, this.path.rightAngleTowardsEnd, arcRadius)
+          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, arcRadius)
 
           const longestSegment = this.path.segment(1)
           this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
           this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
         } else {
-          this.path.forwardToWaypoint(this.arcRadius, this.path.rightAngleTowardsEnd, this.arcRadius)
-          this.path.forwardToWaypoint(this.arcRadius + startRadius, this.path.rightAngleTowardsEnd, this.arcRadius)
-          this.path.forwardToWaypoint(this.path.endRelative.x - this.arcRadius, this.path.rightAngleTowardsEnd, this.arcRadius)
-          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, this.arcRadius)
+          this.path.forwardToWaypoint(arcRadius, this.path.rightAngleTowardsEnd, arcRadius)
+          this.path.forwardToWaypoint(arcRadius + startRadius, this.path.rightAngleTowardsEnd, arcRadius)
+          this.path.forwardToWaypoint(this.path.endRelative.x - arcRadius, this.path.rightAngleTowardsEnd, arcRadius)
+          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, arcRadius)
 
           const longestSegment = this.path.segment(3)
           this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
