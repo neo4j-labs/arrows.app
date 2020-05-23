@@ -47,19 +47,14 @@ export class RectilinearArrow {
         }
         break
       case 90:
-        if (this.path.endDirectionRelative * this.path.endRelative.y > 0) {
-          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, arcRadius)
-          const longestSegment = this.path.segment(0)
-          this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
-          this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
-        } else {
+        if (this.path.endDirectionRelative * this.path.endRelative.y < 0) {
           this.path.forwardToWaypoint(this.path.endRelative.x - endRadius - arcRadius, this.path.rightAngleTowardsEnd, arcRadius)
           this.path.forwardToWaypoint(this.path.endRelative.x + arcRadius, this.path.rightAngleTowardsEnd, arcRadius)
-          this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, arcRadius)
-          const longestSegment = this.path.segment(0)
-          this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
-          this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
         }
+        this.path.forwardToWaypoint(this.path.endRelative.x, this.path.rightAngleTowardsEnd, arcRadius)
+        const longestSegment = this.path.segment(0)
+        this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
+        this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
         break
       default:
         if (Math.abs(this.path.endRelative.y) > arcRadius * 2) {

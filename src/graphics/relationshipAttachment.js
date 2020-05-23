@@ -111,16 +111,19 @@ const findOption = (optionName) => {
 }
 
 const computeRadiusOrdinal = (path, ordinal, total) => {
-  const polarity = path.polarity
+  if (path) {
+    const polarity = path.polarity
 
-  switch (polarity) {
-    case -1:
-      return ordinal
+    switch (polarity) {
+      case -1:
+        return ordinal
 
-    case 1:
-      return total - ordinal - 1
+      case 1:
+        return total - ordinal - 1
 
-    default:
-      return Math.max(ordinal, total - ordinal - 1)
+      default:
+        return Math.max(ordinal, total - ordinal - 1)
+    }
   }
+  return 0
 }
