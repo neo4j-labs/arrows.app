@@ -27,11 +27,8 @@ export class SeekAndDestroy {
     return normaliseAngle(this.endDirection - this.direction)
   }
 
-  get polarity() {
-    if (this.waypoints.length === 0) {
-      return 0
-    }
-    return Math.sign(this.waypoints[0].turn)
+  get rightAngleTowardsEnd() {
+    return this.endRelative.y < 0 ? -Math.PI / 2 : Math.PI / 2
   }
 
   segment(i) {
@@ -48,6 +45,13 @@ export class SeekAndDestroy {
       return waypoint.point.translate(nextVector.scale(0.5))
     }
     return this.end
+  }
+
+  get polarity() {
+    if (this.waypoints.length === 0) {
+      return 0
+    }
+    return Math.sign(this.waypoints[0].turn)
   }
 
   inverse() {
