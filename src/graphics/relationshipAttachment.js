@@ -23,6 +23,7 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
     return {
       attachment: findOption(attachmentOptionName),
       ordinal: (total - 1) / 2,
+      radiusOrdinal: 0,
       total
     }
   }
@@ -95,6 +96,7 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
         relationshipAttachments[neighbour.direction][neighbour.relationship.id] = {
           attachment: option,
           ordinal: i,
+          radiusOrdinal: computeRadiusOrdinal(neighbour.path, i, neighbours.length),
           total: neighbours.length
         }
       })
@@ -106,4 +108,19 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
 
 const findOption = (optionName) => {
   return attachmentOptions.find(option => option.name === optionName) || { name: 'normal' }
+}
+
+const computeRadiusOrdinal = (path, ordinal, total) => {
+  const polarity = path.polarity
+
+  switch (polarity) {
+    case -1:
+      return ordinal
+
+    case 1:
+      return total - ordinal - 1
+
+    default:
+      return Math.max(ordinal, total - ordinal - 1)
+  }
 }

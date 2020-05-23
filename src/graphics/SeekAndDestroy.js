@@ -27,6 +27,13 @@ export class SeekAndDestroy {
     return normaliseAngle(this.endDirection - this.direction)
   }
 
+  get polarity() {
+    if (this.waypoints.length === 0) {
+      return 0
+    }
+    return Math.sign(this.waypoints[0].turn)
+  }
+
   segment(i) {
     const from = i === 0 ? this.start : this.waypoints[i - 1].point
     const to = i < this.waypoints.length ? this.waypoints[i].point : this.end

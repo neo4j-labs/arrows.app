@@ -137,5 +137,5 @@ export class RectilinearArrow {
 }
 
 const computeArcRadius = (attachment) => {
-  return 40 + Math.min(attachment.ordinal, attachment.total - attachment.ordinal - 1) * 10
+  return 40 + attachment.radiusOrdinal * 10
 }
