@@ -25,8 +25,8 @@ export class RoutedRelationshipBundle {
     const maxRightHeadHeight = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.headHeight : 0))
     const relationshipSeparation = Math.max(...arrowDimensions.map(arrow => arrow.separation))
 
-    if (relationships[0].startAttachment) {
-      if (relationships[0].endAttachment) {
+    if (relationships[0].startAttachment || relationships[0].endAttachment) {
+      if (relationships[0].startAttachment && relationships[0].endAttachment) {
         for (let i = 0; i < relationships.length; i++) {
           const dimensions = arrowDimensions[i]
           const relationship = relationships[i]

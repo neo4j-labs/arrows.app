@@ -8,25 +8,37 @@ import {normaliseAngle} from "./utils/angles";
 export class ElbowArrow {
   constructor(startCentre, endCentre, startRadius, endRadius, startAttachment, endAttachment, dimensions) {
     this.dimensions = dimensions
-    const arcRadius = 40
-    const startAttachAngle = startAttachment.attachment.angle
-    this.startAttach = startCentre.translate(new Vector(startRadius, (startAttachment.ordinal - (startAttachment.total - 1) / 2) * 10).rotate(startAttachAngle))
-    const endCentreRelative = endCentre.translate(this.startAttach.vectorFromOrigin().invert()).rotate(-startAttachAngle)
-    const startArcCentre = new Point(0, endCentreRelative.y < 0 ? -arcRadius : arcRadius)
-    const arcCentreVector = endCentreRelative.vectorFrom(startArcCentre)
+    const fixedEnd = (startAttachment && startAttachment.attachment.name !== 'normal') ? 'start' : 'end'
+    const fixedAttachment = fixedEnd === 'start' ? startAttachment : endAttachment
+    const arcRadius = 40 + fixedAttachment.radiusOrdinal * 10
+    const fixedCentre = fixedEnd === 'start' ? startCentre : endCentre
+    const normalCentre = fixedEnd === 'end' ? startCentre : endCentre
+    const fixedRadius = fixedEnd === 'start' ? startRadius : endRadius + dimensions.headHeight - dimensions.chinHeight
+    const normalRadius = fixedEnd === 'end' ? startRadius : endRadius + dimensions.headHeight - dimensions.chinHeight
+    const fixedAttachAngle = fixedAttachment.attachment.angle
+    const offset = (fixedAttachment.ordinal - (fixedAttachment.total - 1) / 2) * 10// * (fixedEnd === 'start' ? 1 : -1)
+    const fixedAttach = fixedCentre.translate(new Vector(fixedRadius, offset).rotate(fixedAttachAngle))
+    const normalCentreRelative = normalCentre.translate(fixedAttach.vectorFromOrigin().invert()).rotate(-fixedAttachAngle)
+    const arcCentre = new Point(0, normalCentreRelative.y < 0 ? -arcRadius : arcRadius)
+    const arcCentreVector = normalCentreRelative.vectorFrom(arcCentre)
     const gamma = Math.asin(arcRadius / arcCentreVector.distance())
     const theta = gamma + Math.abs(arcCentreVector.angle())
     const d = arcRadius * Math.tan(theta / 2)
-    const startControl = this.startAttach.translate(new Vector(d, 0).rotate(startAttachAngle))
-    const endAttachAngle = startControl.vectorFrom(endCentre).angle()
-    this.endShaft = endCentre.translate(new Vector(endRadius + this.dimensions.headHeight - this.dimensions.chinHeight, 0).rotate(endAttachAngle))
+    const control = fixedAttach.translate(new Vector(d, 0).rotate(fixedAttachAngle))
+    const normalAttachAngle = control.vectorFrom(normalCentre).angle()
+    const normalAttach = normalCentre.translate(new Vector(normalRadius, 0).rotate(normalAttachAngle))
 
-    this.path = new SeekAndDestroy(this.startAttach, startAttachAngle, this.endShaft, normaliseAngle(endAttachAngle + Math.PI))
-    this.path.forwardToWaypoint(d, Math.sign(this.path.endDirectionRelative) * theta, arcRadius)
-    
-    const longestSegment = this.path.segment(1)
+    const path = new SeekAndDestroy(fixedAttach, fixedAttachAngle, normalAttach, normaliseAngle(normalAttachAngle + Math.PI))
+    path.forwardToWaypoint(d, Math.sign(path.endDirectionRelative) * theta, arcRadius)
+
+    const longestSegment = path.segment(1)
     this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))
     this.midShaftAngle = longestSegment.from.vectorFrom(longestSegment.to).angle()
+    if (fixedEnd === 'start') {
+      this.midShaftAngle = normaliseAngle(this.midShaftAngle + Math.PI)
+    }
+
+    this.path = fixedEnd === 'start' ? path : path.inverse()
   }
 
   distanceFrom(point) {
@@ -40,7 +52,7 @@ export class ElbowArrow {
     ctx.lineWidth = this.dimensions.arrowWidth
     ctx.strokeStyle = this.dimensions.arrowColor
     ctx.stroke()
-    ctx.translate(...this.endShaft.xy)
+    ctx.translate(...this.path.end.xy)
     ctx.rotate(this.path.endDirection)
     ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0)
     arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
@@ -59,7 +71,7 @@ export class ElbowArrow {
     ctx.lineCap = 'round'
     ctx.strokeStyle = green
     ctx.stroke()
-    ctx.translate(...this.endShaft.xy)
+    ctx.translate(...this.path.end.xy)
     ctx.rotate(this.path.endDirection)
     ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0)
     ctx.lineWidth = indicatorWidth
