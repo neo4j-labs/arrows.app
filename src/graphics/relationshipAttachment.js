@@ -88,7 +88,7 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
           (endAttachment.attachment === option && node.id === routedRelationship.resolvedRelationship.to.id)
       })
       const neighbours = relevantRelationships.map(routedRelationship => {
-        const direction = node.id === routedRelationship.resolvedRelationship.from.id ? 'start' : 'end'
+        const direction = routedRelationship.resolvedRelationship.startAttachment.attachment === option ? 'start' : 'end'
         let path, headSpace = 0
         if (routedRelationship.arrow) {
           if (direction === 'end') {

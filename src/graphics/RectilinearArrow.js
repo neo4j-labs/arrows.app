@@ -50,12 +50,20 @@ export class RectilinearArrow {
         break
 
       case 90:
-        if (this.shaft.endDirectionRelative * this.shaft.endRelative.y < 0) {
-          this.shaft.forwardToWaypoint(this.shaft.endRelative.x - endRadius - arcRadius, this.shaft.rightAngleTowardsEnd, arcRadius)
+        if (this.shaft.endRelative.x > 0) {
+          if (this.shaft.endDirectionRelative * this.shaft.endRelative.y < 0) {
+            this.shaft.forwardToWaypoint(this.shaft.endRelative.x - endRadius - arcRadius, this.shaft.rightAngleTowardsEnd, arcRadius)
+            this.shaft.forwardToWaypoint(this.shaft.endRelative.x + arcRadius, this.shaft.rightAngleTowardsEnd, arcRadius)
+          }
+          this.shaft.forwardToWaypoint(this.shaft.endRelative.x, this.shaft.rightAngleTowardsEnd, arcRadius)
+          longestSegmentIndex = 0
+        } else {
+          longestSegmentIndex = Math.abs(this.shaft.endRelative.x) > Math.abs(this.shaft.endRelative.y) ? 1 : 2
+
+          this.shaft.forwardToWaypoint(startNormalDistance, this.shaft.rightAngleTowardsEnd, arcRadius)
           this.shaft.forwardToWaypoint(this.shaft.endRelative.x + arcRadius, this.shaft.rightAngleTowardsEnd, arcRadius)
+          this.shaft.forwardToWaypoint(this.shaft.endRelative.x, this.shaft.rightAngleTowardsEnd, arcRadius)
         }
-        this.shaft.forwardToWaypoint(this.shaft.endRelative.x, this.shaft.rightAngleTowardsEnd, arcRadius)
-        longestSegmentIndex = 0
         break
 
       default:
