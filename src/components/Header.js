@@ -2,6 +2,7 @@ import React from 'react';
 import {connect} from 'react-redux'
 import { Icon, Menu, Popup, Dropdown } from 'semantic-ui-react'
 import {DiagramNameEditor} from "./DiagramNameEditor";
+import arrows_logo from "../images/arrows_logo.svg"
 
 const storageStatusMessage = (props) => {
   const storageNames = {
@@ -52,20 +53,11 @@ const storageIcon = (props) => {
 
 const Header = (props) => (
   <Menu attached='top' style={{borderRadius: 0}} borderless>
-    <Dropdown item icon='bars'>
-      <Dropdown.Menu>
-        <Dropdown.Item
-          icon='square outline'
-          text='New Diagram'
-          onClick={props.onNewDiagramClick}
-        />
-        <Dropdown.Item
-          icon='help'
-          text='Help'
-          onClick={props.onHelpClick}
-        />
-      </Dropdown.Menu>
-    </Dropdown>
+    <Menu.Item onClick={props.onArrowsClick} style={{ padding: '0 0 0 1em', cursor: 'pointer' }}>
+      <i className="icon" style={{ height: '1.5em' }}>
+        <img src={arrows_logo} style={{ height: '1.5em' }}/>
+      </i>
+    </Menu.Item>
     <DiagramNameEditor
       diagramName={props.diagramName}
       setDiagramName={props.setDiagramName}
@@ -85,6 +77,9 @@ const Header = (props) => (
         <Icon name='circle' />
         <Icon corner name='add' />
       </Icon.Group>
+    </Menu.Item>
+    <Menu.Item onClick={props.onHelpClick}>
+      <Icon name='help'/>
     </Menu.Item>
     <Menu.Item
       position='right'
