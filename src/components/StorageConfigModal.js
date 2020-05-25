@@ -4,7 +4,7 @@ import { Segment, Grid, Divider, Header, Icon } from 'semantic-ui-react'
 import neo4j_logo from './neo4j_icon.svg'
 import FeatureToggle from "./FeatureToggle"
 
-export default ({ useGoogleDriveStorage, useNeo4jDatabaseStorage, useLocalStorage }) =>
+export default ({ useGoogleDriveStorage, pickFromGoogleDrive, useNeo4jDatabaseStorage, useLocalStorage }) =>
   <Modal
     open={true}>
     <Modal.Header>Where would you like to store your diagram?</Modal.Header>
@@ -19,7 +19,10 @@ export default ({ useGoogleDriveStorage, useNeo4jDatabaseStorage, useLocalStorag
                   Google Drive
                 </Header>
                 <p style={{ height: '3em' }}>Store the diagram as a JSON file in your Google Drive.</p>
-                <Button primary onClick={useGoogleDriveStorage}>use Google Drive</Button>
+                <div style={{display: 'flex'}}>
+                  <Button primary onClick={useGoogleDriveStorage}>New diagram</Button>
+                  <Button color='green'  onClick={pickFromGoogleDrive}>Open a diagram</Button>
+                </div>
 
               </Grid.Column>
             </FeatureToggle>
@@ -32,8 +35,7 @@ export default ({ useGoogleDriveStorage, useNeo4jDatabaseStorage, useLocalStorag
                   Local Storage
                 </Header>
                 <p style={{ height: '3em' }}>Store the diagram in your web browser's local storage.</p>
-                <Button primary onClick={useLocalStorage}>use Local Storage</Button>
-
+                <Button primary onClick={useLocalStorage}>Use Local Storage</Button>
               </Grid.Column>
             </FeatureToggle>
 
