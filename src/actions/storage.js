@@ -7,6 +7,12 @@ export const localUrlRegex = /^#\/local/
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 export const neo4jUrlRegex = /^#\/neo4j/
 
+export function loadFromGoogleDriveFile(dispatch, fileId) {
+  dispatch(useGoogleDriveStorage())
+  dispatch(updateGoogleDriveFileId(fileId))
+  dispatch(fetchGraphFromDrive(fileId))
+}
+
 export function initialiseStorageFromWindowLocationHash(store) {
   const hash = window.location.hash
 

@@ -15,24 +15,41 @@ import ExportContainer from "./containers/ExportContainer";
 import GoogleSignInModal from "./components/editors/GoogleSignInModal";
 import DatabaseConnectionContainer from "./containers/DatabaseConnectionContainer";
 import HelpModal from "./components/HelpModal";
+import GoogleDrivePicker from './components/GoogleDrivePickerWrapper'
+import { newDiagram } from "./actions/diagram"
+import { loadFromGoogleDriveFile } from "./actions/storage"
 
 class App extends Component {
   constructor (props) {
     super(props)
     window.onkeydown = this.fireKeyboardShortcutAction.bind(this)
   }
+
   render() {
-    const storageConfigModal = this.props.viewingConfig ? (<StorageConfigContainer/>) : null
-    const databaseConnectionModal = this.props.editingConnectionParameters ? (<DatabaseConnectionContainer/>) : null
-    const databaseConnectionMessageModal = this.props.showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
-    const exportModal = this.props.showExportDialog ? (<ExportContainer/>) : null
+    const {
+      viewingConfig,
+      inspectorVisible,
+      editingConnectionParameters,
+      showDisconnectedDialog,
+      showExportDialog,
+      viewingOpenDiagram,
+      onCancelPicker,
+      loadFromGoogleDrive
+    } = this.props
+
+    const storageConfigModal = viewingConfig ? (<StorageConfigContainer/>) : null
+    const databaseConnectionModal = editingConnectionParameters ? (<DatabaseConnectionContainer/>) : null
+    const databaseConnectionMessageModal = showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
+    const exportModal = showExportDialog ? (<ExportContainer/>) : null
+    const googleDriveModal = viewingOpenDiagram ? <GoogleDrivePicker onCancelPicker={onCancelPicker } onFilePicked={loadFromGoogleDrive} /> : null
+
     return (
       <Sidebar.Pushable>
 
         <Sidebar
           animation='overlay'
           direction='right'
-          visible={this.props.inspectorVisible}
+          visible={inspectorVisible}
           style={{'backgroundColor': 'white', width: inspectorWidth + 'px'}}
         >
           <InspectorChooser/>
@@ -45,6 +62,7 @@ class App extends Component {
           {databaseConnectionModal}
           {databaseConnectionMessageModal}
           {exportModal}
+          {googleDriveModal}
           <GoogleSignInModal/>
           <HelpModal/>
           <HeaderContainer/>
@@ -72,6 +90,7 @@ class App extends Component {
 const mapStateToProps = (state) => ({
   inspectorVisible: state.applicationLayout.inspectorVisible,
   viewingConfig: state.storage.mode === 'NONE',
+  viewingOpenDiagram: state.storage.mode === 'OPEN_DIAGRAM',
   editingConnectionParameters: state.storage.database.editingConnectionParameters,
   showDisconnectedDialog: state.storage.database.showDisconnectedDialog,
   showExportDialog: state.applicationDialogs.showExportDialog
@@ -81,6 +100,8 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = dispatch => {
   return {
     onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight)),
+    onCancelPicker: () => dispatch(newDiagram()),
+    loadFromGoogleDrive: fileId => loadFromGoogleDriveFile(dispatch, fileId)
   }
 }
 
