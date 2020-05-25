@@ -14,11 +14,13 @@ export class ElbowArrow {
     const fixedCentre = fixedEnd === 'start' ? startCentre : endCentre
     const normalCentre = fixedEnd === 'end' ? startCentre : endCentre
     const fixedRadius = fixedEnd === 'start' ? startRadius : endRadius + dimensions.headHeight - dimensions.chinHeight
+    const fixedDivergeRadius = fixedEnd === 'start' ? startRadius + startAttachment.minNormalDistance : endRadius + Math.max(endAttachment.minNormalDistance, dimensions.headHeight - dimensions.chinHeight)
     const normalRadius = fixedEnd === 'end' ? startRadius : endRadius + dimensions.headHeight - dimensions.chinHeight
     const fixedAttachAngle = fixedAttachment.attachment.angle
-    const offset = (fixedAttachment.ordinal - (fixedAttachment.total - 1) / 2) * 10// * (fixedEnd === 'start' ? 1 : -1)
+    const offset = (fixedAttachment.ordinal - (fixedAttachment.total - 1) / 2) * 10
     const fixedAttach = fixedCentre.translate(new Vector(fixedRadius, offset).rotate(fixedAttachAngle))
-    const normalCentreRelative = normalCentre.translate(fixedAttach.vectorFromOrigin().invert()).rotate(-fixedAttachAngle)
+    const fixedDiverge = fixedCentre.translate(new Vector(fixedDivergeRadius, offset).rotate(fixedAttachAngle))
+    const normalCentreRelative = normalCentre.translate(fixedDiverge.vectorFromOrigin().invert()).rotate(-fixedAttachAngle)
     const arcCentre = new Point(0, normalCentreRelative.y < 0 ? -arcRadius : arcRadius)
     const arcCentreVector = normalCentreRelative.vectorFrom(arcCentre)
     const gamma = Math.asin(arcRadius / arcCentreVector.distance())
@@ -29,7 +31,7 @@ export class ElbowArrow {
     const normalAttach = normalCentre.translate(new Vector(normalRadius, 0).rotate(normalAttachAngle))
 
     const path = new SeekAndDestroy(fixedAttach, fixedAttachAngle, normalAttach, normaliseAngle(normalAttachAngle + Math.PI))
-    path.forwardToWaypoint(d, Math.sign(path.endDirectionRelative) * theta, arcRadius)
+    path.forwardToWaypoint(d + fixedDivergeRadius - fixedRadius, Math.sign(path.endDirectionRelative) * theta, arcRadius)
 
     const longestSegment = path.segment(1)
     this.midShaft = longestSegment.from.translate(longestSegment.to.vectorFrom(longestSegment.from).scale(0.5))

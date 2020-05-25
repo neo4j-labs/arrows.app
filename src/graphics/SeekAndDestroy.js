@@ -54,6 +54,12 @@ export class SeekAndDestroy {
     return Math.sign(this.waypoints[0].turn)
   }
 
+  changeEnd(newEnd) {
+    const path = new SeekAndDestroy(this.start, this.startDirection, newEnd, this.endDirection)
+    path.waypoints = this.waypoints
+    return path
+  }
+
   inverse() {
     const path = new SeekAndDestroy(
       this.end,

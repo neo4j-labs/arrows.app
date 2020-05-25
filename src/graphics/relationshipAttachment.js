@@ -25,6 +25,7 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
       attachment: findOption(attachmentOptionName),
       ordinal: (total - 1) / 2,
       radiusOrdinal: 0,
+      minNormalDistance: 0,
       total
     }
   }
@@ -88,21 +89,29 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
       })
       const neighbours = relevantRelationships.map(routedRelationship => {
         const direction = node.id === routedRelationship.resolvedRelationship.from.id ? 'start' : 'end'
-        let path
-        if (routedRelationship.arrow && routedRelationship.arrow.path && routedRelationship.arrow.path.waypoints) {
-          if (direction === 'start') {
-            path = routedRelationship.arrow.path
-          } else {
-            path = routedRelationship.arrow.path.inverse()
+        let path, headSpace = 0
+        if (routedRelationship.arrow) {
+          if (direction === 'end') {
+            const dimensions = routedRelationship.arrow.dimensions
+            headSpace = dimensions.headHeight - dimensions.chinHeight
+          }
+          if (routedRelationship.arrow.path && routedRelationship.arrow.path.waypoints) {
+            if (direction === 'start') {
+              path = routedRelationship.arrow.path
+            } else {
+              path = routedRelationship.arrow.path.inverse()
+            }
           }
         }
 
         return {
           relationship: routedRelationship.resolvedRelationship.relationship,
           direction,
-          path
+          path,
+          headSpace
         }
       })
+      const maxHeadSpace = Math.max(...neighbours.map(neighbour => neighbour.headSpace))
       neighbours.sort((a, b) => {
         return (a.path && b.path) ? compareWaypoints(a.path.waypoints, b.path.waypoints) : 0
       })
@@ -111,6 +120,7 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
           attachment: option,
           ordinal: i,
           radiusOrdinal: computeRadiusOrdinal(neighbour.path, i, neighbours.length),
+          minNormalDistance: maxHeadSpace,
           total: neighbours.length
         }
       })
