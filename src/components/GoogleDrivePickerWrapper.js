@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import config from "../config";
-import { Form, Button, Icon } from 'semantic-ui-react'
 import { DISCOVERY_DOCS, SCOPES } from '../actions/googleDrive'
 
-export class GoogleDriveConnection extends Component {
+export default class extends Component {
 
   componentDidMount () {
     this.createPicker()
+    this.picker.setVisible(true)
   }
 
   createPicker() {
@@ -15,6 +15,7 @@ export class GoogleDriveConnection extends Component {
       view.setMimeTypes("application/vnd.neo4j.arrows+json")
       this.picker = new window.google.picker.PickerBuilder()
         .addView(view)
+        .hideTitleBar(true)
         .setOAuthToken(accessToken)
         .setDeveloperKey(config.apiKey)
         .setCallback(this.pickerCallback.bind(this))
@@ -45,26 +46,13 @@ export class GoogleDriveConnection extends Component {
     if (action === 'picked' && docs.length > 0) {
       const fileId = docs[0].id
       this.props.onFilePicked(fileId)
+    } else {
+      console.log("ACTION", action)
+      this.props.onCancelPicker()
     }
   }
 
   render () {
-    return (
-      <Form>
-        <Form.Field>
-          <label>Load from Google Drive</label>
-          <Button color='google plus' onClick={() => this.picker.setVisible(true)}>
-            <Icon name='google drive' />
-            Load from Google Drive
-          </Button>
-        </Form.Field>
-        <Form.Field>
-          <Button positive onClick={() => this.props.saveToDrive()}>
-            <Icon name='google drive' />
-            Save to Google Drive
-          </Button>
-        </Form.Field>
-      </Form>
-    )
+    return null
   }
 }

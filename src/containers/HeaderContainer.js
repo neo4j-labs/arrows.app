@@ -5,7 +5,7 @@ import {editConnectionParameters} from "../actions/databaseConnection";
 import {showInspector} from "../actions/applicationLayout";
 import {setDiagramName} from "../actions/diagramName";
 import {showExportDialog, showHelpDialog} from "../actions/applicationDialogs";
-import {newDiagram} from "../actions/diagram";
+import { newDiagram, openDiagram } from "../actions/diagram";
 import {reloadGraph} from "../actions/storage";
 
 const mapStateToProps = state => {
@@ -18,7 +18,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onNewDiagramClick: () => {
+    onArrowsClick: () => {
       dispatch(newDiagram())
     },
     setDiagramName: (diagramName) => {

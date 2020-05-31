@@ -27,6 +27,13 @@ export default function storage(state = {
         mode: 'NONE'
       }
     }
+    case 'OPEN_DIAGRAM': {
+      return {
+        ...state,
+        previousMode: state.mode,
+        mode: 'OPEN_DIAGRAM'
+      }
+    }
     case 'USE_NEO4J_STORAGE':
       return {
         ...state,
