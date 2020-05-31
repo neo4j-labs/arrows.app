@@ -4,7 +4,6 @@ import {initializeConnection} from "../actions/databaseConnection";
 import {initializeGoogleDriveStorage} from "../actions/googleDrive";
 import {useLocalStorage} from "../actions/storage";
 import { openDiagram } from "../actions/diagram"
-import { loadGraphFromLocalStorage } from "../actions/localStorage"
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -19,7 +18,6 @@ const mapDispatchToProps = dispatch => {
     },
     useLocalStorage: () => {
       dispatch(useLocalStorage())
-      dispatch(loadGraphFromLocalStorage())
     }
   }
 }
