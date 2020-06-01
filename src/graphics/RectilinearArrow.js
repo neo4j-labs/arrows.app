@@ -60,8 +60,8 @@ export class RectilinearArrow {
         } else {
           longestSegmentIndex = Math.abs(this.shaft.endRelative.x) > Math.abs(this.shaft.endRelative.y) ? 1 : 2
 
-          this.shaft.forwardToWaypoint(startNormalDistance, this.shaft.rightAngleTowardsEnd, arcRadius)
-          this.shaft.forwardToWaypoint(this.shaft.endRelative.x + arcRadius, this.shaft.rightAngleTowardsEnd, arcRadius)
+          this.shaft.forwardToWaypoint(Math.max(startNormalDistance, arcRadius * 2 + this.shaft.endRelative.x), this.shaft.rightAngleTowardsEnd, arcRadius)
+          this.shaft.forwardToWaypoint(Math.max(this.shaft.endRelative.x + arcRadius, arcRadius * 2), this.shaft.rightAngleTowardsEnd, arcRadius)
           this.shaft.forwardToWaypoint(this.shaft.endRelative.x, this.shaft.rightAngleTowardsEnd, arcRadius)
         }
         break
