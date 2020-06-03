@@ -63,7 +63,7 @@ export class RoutedRelationshipBundle {
       const selfNode = leftNode
       const neighbourAngles = neighbourPositions(selfNode, graph).map(position => position.vectorFrom(selfNode.position).angle())
       const biggestAngularSpace = clockwiseAngularSpace(neighbourAngles)
-      const angularSeparation = biggestAngularSpace.gap / (relationships.length + 1)
+      const angularSeparation = biggestAngularSpace.gap / (relationships.length + Math.sign(neighbourAngles.length))
 
       for (let i = 0; i < relationships.length; i++) {
         const dimensions = arrowDimensions[i]
