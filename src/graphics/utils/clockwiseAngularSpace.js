@@ -1,4 +1,9 @@
 export const clockwiseAngularSpace = (angles) => {
+  if (angles.length === 0) return {
+    gap: 2 * Math.PI,
+    start: Math.PI
+  }
+
   const sorted = angles.slice(0).sort((a, b) => a - b)
   let gap = 0
   let start = undefined
