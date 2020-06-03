@@ -130,7 +130,6 @@ export const computeRelationshipAttachments = (graph, visualNodes) => {
     })
   })
 
-  console.log(relationshipAttachments)
   return relationshipAttachments
 }
 
