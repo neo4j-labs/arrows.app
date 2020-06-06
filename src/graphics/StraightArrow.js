@@ -64,7 +64,7 @@ export class StraightArrow {
   }
 
   midPoint() {
-    return this.startAttach.translate(this.endAttach.vectorFrom(this.startAttach).scale(0.5))
+    return this.startAttach.translate(this.endShaft.vectorFrom(this.startAttach).scale(0.5))
       .rotate(this.angle)
       .translate(this.startCentre.vectorFromOrigin())
   }
