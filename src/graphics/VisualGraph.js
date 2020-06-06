@@ -43,7 +43,7 @@ export default class VisualGraph {
       .map(node => ({ ...node, entityType: 'node' }))
     const relationships = this.relationshipBundles.flatMap(bundle => bundle.routedRelationships)
       .filter(routedRelationship => boundingBox.contains(routedRelationship.arrow.midPoint()))
-      .map(routedRelationship => routedRelationship.relationship)
+      .map(routedRelationship => routedRelationship.resolvedRelationship)
       .map(relationship => ({ ...relationship, entityType: 'relationship' }))
 
     return [...nodes, ...relationships]
@@ -73,9 +73,9 @@ export default class VisualGraph {
     this.relationshipBundles.forEach(bundle => {
       bundle.routedRelationships.forEach(routedRelationship => {
         const distance = routedRelationship.distanceFrom(point)
-        if (distance < minDistance && hitTest(routedRelationship.relationship, distance)) {
+        if (distance < minDistance && hitTest(routedRelationship.resolvedRelationship, distance)) {
           minDistance = distance
-          closestRelationship = routedRelationship.relationship
+          closestRelationship = routedRelationship.resolvedRelationship
         }
       })
     })

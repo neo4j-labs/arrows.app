@@ -44,7 +44,7 @@ export class GraphTextEditors extends Component {
           let visualRelationship = null
           this.props.visualGraph.relationshipBundles.forEach(relationshipBundle => {
             relationshipBundle.routedRelationships.forEach(candidateRelationship => {
-              if (candidateRelationship.relationship.id === entity.id) {
+              if (candidateRelationship.id === entity.id) {
                 visualRelationship = candidateRelationship
               }
             })

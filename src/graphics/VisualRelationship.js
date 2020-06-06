@@ -26,6 +26,10 @@ export class VisualRelationship {
     )
   }
 
+  get id() {
+    return this.resolvedRelationship.id
+  }
+
   distanceFrom(point) {
     return Math.min(this.arrow.distanceFrom(point), this.caption.distanceFrom(point))
   }
