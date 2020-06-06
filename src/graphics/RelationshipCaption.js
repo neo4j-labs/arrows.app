@@ -172,7 +172,6 @@ const computeOffset = (width, height, position, orientation, textAlign, arrow, s
         break
       case 'center':
         if (orientation === 'horizontal') {
-          console.log(arrow.angle)
           if (arrow.angle < 0) {
             dy = -(height + arrow.displacement)
           } else {
