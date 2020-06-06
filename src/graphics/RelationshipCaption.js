@@ -150,13 +150,14 @@ const computeOffset = (width, height, position, orientation, textAlign, arrow, s
   const positiveAngle = shaftAngle < 0 ? shaftAngle + Math.PI : shaftAngle
   const tolerance = Math.PI / 100
   const isVertical = Math.abs(positiveAngle - Math.PI / 2) < tolerance
+  const halfArrowWidth = arrow.dimensions.arrowWidth / 2
 
   switch (isVertical ? 'inline' : position) {
     case 'above':
-      dy = -height
+      dy = -(height + halfArrowWidth)
       break
     case 'below':
-      dy = 0
+      dy = halfArrowWidth
       break
     default:
       dy = -height / 2

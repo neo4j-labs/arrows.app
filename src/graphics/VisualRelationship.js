@@ -31,7 +31,7 @@ export class VisualRelationship {
   }
 
   distanceFrom(point) {
-    return Math.min(this.arrow.distanceFrom(point), this.caption.distanceFrom(point))
+    return Math.min(this.arrow.distanceFrom(point), this.caption.distanceFrom(point), this.properties.distanceFrom(point))
   }
 
   draw(ctx) {
@@ -43,6 +43,7 @@ export class VisualRelationship {
     if (this.resolvedRelationship.selected) {
       this.arrow.drawSelectionIndicator(ctx)
       this.caption.drawSelectionIndicator(ctx)
+      this.properties.drawSelectionIndicator(ctx)
     }
     this.arrow.draw(ctx)
     this.caption.draw(ctx)

@@ -59,11 +59,14 @@ export class PropertiesBox {
   drawSelectionIndicator(ctx) {
     const indicatorWidth = 10
     const boundingBox = this.boundingBox()
+
     ctx.save()
+
     ctx.strokeStyle = green
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
     ctx.rect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height, 0, false, true)
+
     ctx.restore()
   }
 
