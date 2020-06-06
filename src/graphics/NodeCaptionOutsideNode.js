@@ -63,7 +63,7 @@ export class NodeCaptionOutsideNode {
     ctx.restore()
   }
 
-  captionFits() {
+  get contentsFit() {
     return true
   }
 

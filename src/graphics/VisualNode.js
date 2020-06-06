@@ -1,11 +1,12 @@
-import { getStyleSelector } from "../selectors/style";
+import {getStyleSelector} from "../selectors/style";
 import {NodeLabels} from "./NodeLabels";
 import {NodeCaptionInsideNode} from "./NodeCaptionInsideNode";
 import {NodeBackground} from "./NodeBackground";
-import {NodeProperties} from "./NodeProperties";
+import {NodePropertiesStalk} from "./NodePropertiesStalk";
 import {neighbourPositions} from "../model/Graph";
 import BoundingBox from "./utils/BoundingBox";
 import {NodeCaptionOutsideNode} from "./NodeCaptionOutsideNode";
+import {NodePropertiesInside} from "./NodePropertiesInside";
 
 export default class VisualNode {
   constructor(node, graph, selected, editing, measureTextContext) {
@@ -18,16 +19,6 @@ export default class VisualNode {
     this.internalRadius = style('radius')
     this.radius = this.internalRadius + style('border-width')
     this.background = new NodeBackground(node.position, this.internalRadius, style)
-    const caption = node.caption || ''
-    const captionPosition = style('caption-position')
-    switch (captionPosition) {
-      case 'inside':
-        this.caption = new NodeCaptionInsideNode(caption, node.position, this.radius, style, measureTextContext)
-        break
-      default:
-        this.caption = new NodeCaptionOutsideNode(caption, node.position, this.radius, captionPosition, style, measureTextContext)
-        break
-    }
     const neighbourObstacles = neighbourPositions(node, graph).map(position => {
       return { angle: position.vectorFrom(node.position).angle() }
     })
@@ -37,9 +28,43 @@ export default class VisualNode {
     )
     const obstacles = this.labels.isEmpty ? neighbourObstacles : [...neighbourObstacles, this.labels]
 
-    this.properties = new NodeProperties(
-      node.properties, this.radius, node.position, obstacles, editing, style, measureTextContext
-    )
+    const insideComponents = []
+    let scaleFactor = 1
+
+    const propertyPosition = style('property-position')
+    switch (propertyPosition) {
+      case 'inside':
+        insideComponents.push(() => {
+          return this.properties = new NodePropertiesInside(
+            node.properties, this.radius, scaleFactor, node.position, 'bottom', editing, style, measureTextContext
+          )
+        })
+        break
+
+      default:
+        this.properties = new NodePropertiesStalk(
+          node.properties, this.radius, node.position, obstacles, editing, style, measureTextContext
+        )
+    }
+
+    const caption = node.caption || ''
+    const captionPosition = style('caption-position')
+    switch (captionPosition) {
+      case 'inside':
+        insideComponents.push(() => {
+          return this.caption = new NodeCaptionInsideNode(caption, node.position, this.radius, scaleFactor, style, measureTextContext)
+        })
+        break
+      default:
+        this.caption = new NodeCaptionOutsideNode(caption, node.position, this.radius, captionPosition, style, measureTextContext)
+        break
+    }
+
+    let counter = 0
+    while (counter++ < 10 && insideComponents.map(factory => factory()).some(component => !component.contentsFit)) {
+      scaleFactor *= 0.5
+    }
+    this.scaleFactor = scaleFactor
   }
 
   get id() {
@@ -66,11 +91,8 @@ export default class VisualNode {
     return this.node.initialPositions
   }
 
-  get captionFits() {
-    if (this.caption) {
-      return this.caption.captionFits()
-    }
-    return true
+  get contentsFit() {
+    return this.scaleFactor === 1
   }
 
   draw(ctx) {

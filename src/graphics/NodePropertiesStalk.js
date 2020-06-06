@@ -4,7 +4,7 @@ import {textAlignmentAtAngle} from "./circumferentialTextAlignment";
 import {PropertiesBox} from "./PropertiesBox";
 import {green} from "../model/colors";
 
-export class NodeProperties {
+export class NodePropertiesStalk {
   constructor(properties, radius, nodePosition, obstacles, editing, style, textMeasurement) {
     this.angle = distribute([
       {preferredAngles: [Math.PI / 2, -Math.PI / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'properties'}

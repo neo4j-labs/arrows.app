@@ -225,7 +225,7 @@ export const trySetNodeCaption = (selection, caption) => {
     let biggerRadius = undefined
     while (
     (biggerRadius === undefined || biggerRadius < styleTypes.radius.max) &&
-    visualNodes.some(visualNode => !visualNode.captionFits)
+    visualNodes.some(visualNode => !visualNode.contentsFit)
       ) {
       const maxRadius = Math.max(...visualNodes.map(visualNode => visualNode.radius))
       const step = 10

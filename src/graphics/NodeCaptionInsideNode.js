@@ -4,13 +4,13 @@ import { Vector } from "../model/Vector";
 import BoundingBox from "./utils/BoundingBox";
 
 export class NodeCaptionInsideNode {
-  constructor(caption, nodePosition, radius, style, textMeasurement) {
+  constructor(caption, nodePosition, radius, scaleFactor, style, textMeasurement) {
     this.caption = caption
     this.nodePosition = nodePosition
     this.radius = radius
     this.font = {
       fontWeight: style('caption-font-weight'),
-      fontSize: style('caption-font-size'),
+      fontSize: style('caption-font-size') * scaleFactor,
       fontFace: 'sans-serif'
     }
     textMeasurement.font = this.font
@@ -41,7 +41,7 @@ export class NodeCaptionInsideNode {
     // Nothing to do here; we're inside a node.
   }
 
-  captionFits() {
+  get contentsFit() {
     return this.layout.allTextFits
   }
 
