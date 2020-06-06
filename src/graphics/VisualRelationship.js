@@ -3,22 +3,22 @@ import {RelationshipCaption} from "./RelationshipCaption";
 import {RelationshipProperties} from "./RelationshipProperties";
 
 export class VisualRelationship {
-  constructor(relationship, graph, arrow, editing, measureTextContext) {
-    this.relationship = relationship
+  constructor(resolvedRelationship, graph, arrow, editing, measureTextContext) {
+    this.resolvedRelationship = resolvedRelationship
     this.arrow = arrow
     this.editing = editing
 
-    const style = styleAttribute => getStyleSelector(relationship, styleAttribute)(graph)
+    const style = styleAttribute => getStyleSelector(resolvedRelationship.relationship, styleAttribute)(graph)
 
     this.caption = new RelationshipCaption(
-      relationship.type,
+      resolvedRelationship.type,
       arrow,
       editing,
       style,
       measureTextContext
     )
     this.properties = new RelationshipProperties(
-      relationship.relationship.properties,
+      resolvedRelationship.relationship.properties,
       arrow,
       editing,
       style,
@@ -31,12 +31,12 @@ export class VisualRelationship {
   }
 
   draw(ctx) {
-    if (this.relationship.from.status === 'combined' && this.relationship.to.status === 'combined'
-      && this.relationship.from.superNodeId === this.relationship.to.superNodeId) {
+    if (this.resolvedRelationship.from.status === 'combined' && this.resolvedRelationship.to.status === 'combined'
+      && this.resolvedRelationship.from.superNodeId === this.resolvedRelationship.to.superNodeId) {
       return
     }
 
-    if (this.relationship.selected) {
+    if (this.resolvedRelationship.selected) {
       this.arrow.drawSelectionIndicator(ctx)
       this.caption.drawSelectionIndicator(ctx)
     }
