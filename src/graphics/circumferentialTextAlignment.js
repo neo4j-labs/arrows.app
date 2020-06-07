@@ -36,7 +36,7 @@ const orientations = [
 ]
 
 export const orientationFromName = (name) => {
-  return orientations.find(orientation => orientation.name === name)
+  return orientations.find(orientation => orientation.name === name) || orientations[0]
 }
 
 export const cssAlignFromSvgAlign = (svgAlign) => {
