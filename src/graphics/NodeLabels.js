@@ -10,35 +10,28 @@ export class NodeLabels {
       {preferredAngles: [Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'labels'}
     ], obstacles)[0].angle
     this.alignment = textAlignmentAtAngle(this.angle)
-    this.font = {
-      fontWeight: 'normal',
-      fontSize: style('label-font-size'),
-      fontFace: 'sans-serif'
-    }
-    textMeasurement.font = this.font
 
-    const backgroundColor = style('label-background-color')
-    const strokeColor = style('label-border-color')
-    const fontColor = style('label-color')
-    const borderWidth = style('label-border-width')
-    const padding = style('label-padding')
-    const margin = style('label-margin')
-    const pillHeight = this.font.fontSize + padding * 2 + borderWidth
-    const pillRadius = pillHeight / 2
-    const lineHeight = pillHeight + margin + borderWidth
-
-    this.pills = labels.map((label, i) => {
-      const pillWidth = textMeasurement.measureText(label).width
-      let pillPosition = nodePosition.translate(new Vector(nodeRadius, 0).rotate(this.angle))
-      if (this.alignment.vertical === 'bottom') {
-        pillPosition = pillPosition.translate(new Vector(0, -lineHeight * (labels.length - 1)))
-      }
-      pillPosition = pillPosition.translate(new Vector(
-        this.alignment.horizontal === 'right' ? -pillRadius - pillWidth : -pillRadius,
-        i * lineHeight - pillRadius
-      ))
-      return new Pill(label, pillPosition, pillWidth, pillRadius, borderWidth, backgroundColor, strokeColor, fontColor, editing)
+    this.pills = labels.map((label) => {
+      return new Pill(label, editing, style, textMeasurement)
     })
+
+    if (labels.length > 0) {
+      const margin = style('label-margin')
+      const lineHeight = this.pills[0].height + margin + this.pills[0].borderWidth
+
+      this.pillPositions = this.pills.map((pill, i) => {
+        const pillWidth = pill.width + pill.borderWidth
+        const pillRadius = pill.radius
+        let pillPosition = nodePosition.translate(new Vector(nodeRadius, 0).rotate(this.angle))
+        if (this.alignment.vertical === 'bottom') {
+          pillPosition = pillPosition.translate(new Vector(0, -lineHeight * (labels.length - 1)))
+        }
+        return pillPosition.translate(new Vector(
+          this.alignment.horizontal === 'right' ? pillRadius - pillWidth : -pillRadius,
+          i * lineHeight - pillRadius
+        ))
+      })
+    }
   }
 
   get isEmpty() {
@@ -46,30 +39,36 @@ export class NodeLabels {
   }
 
   draw(ctx) {
-    ctx.save()
 
-    ctx.font = this.font
-    ctx.textBaseline = 'middle'
+    for (let i = 0; i < this.pills.length; i++) {
+      ctx.save()
 
-    this.pills.forEach((pill) => {
-      pill.draw(ctx)
-    })
-    ctx.restore()
+      ctx.translate(...this.pillPositions[i].xy)
+      this.pills[i].draw(ctx)
+
+      ctx.restore()
+    }
   }
 
   drawSelectionIndicator(ctx) {
-    if (!this.isEmpty) {
-      this.pills.forEach((pill) => {
-        pill.drawSelectionIndicator(ctx)
-      })
+    for (let i = 0; i < this.pills.length; i++) {
+      ctx.save()
+
+      ctx.translate(...this.pillPositions[i].xy)
+      this.pills[i].drawSelectionIndicator(ctx)
+
+      ctx.restore()
     }
   }
 
   boundingBox() {
-    return combineBoundingBoxes(this.pills.map(pill => pill.boundingBox()))
+    return combineBoundingBoxes(this.pills.map((pill, i) => pill.boundingBox().translate(this.pillPositions[i].vectorFromOrigin())))
   }
 
   distanceFrom(point) {
-    return this.pills.some(pill => pill.contains(point)) ? 0 : Infinity
+    return this.pills.some((pill, i) => {
+      const localPoint = point.translate(this.pillPositions[i].vectorFromOrigin().invert())
+      return pill.contains(localPoint);
+    }) ? 0 : Infinity
   }
 }

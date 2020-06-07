@@ -23,11 +23,7 @@ export default class VisualNode {
     const neighbourObstacles = neighbourPositions(node, graph).map(position => {
       return { angle: position.vectorFrom(node.position).angle() }
     })
-
-    this.labels = new NodeLabels(
-      node.labels, this.radius, node.position, neighbourObstacles, editing, style, measureTextContext
-    )
-    const obstacles = this.labels.isEmpty ? neighbourObstacles : [...neighbourObstacles, this.labels]
+    let obstacles = neighbourObstacles
 
     const insideComponents = []
     let scaleFactor = 1
@@ -46,7 +42,18 @@ export default class VisualNode {
         this.properties = new NodePropertiesStalk(
           node.properties, this.radius, node.position, obstacles, editing, style, measureTextContext
         )
+        if (!this.properties.isEmpty) {
+          obstacles = [...neighbourObstacles, this.properties]
+        }
     }
+    // const labelPosition = style('label-position')
+    // switch (labelPosition) {
+    //   case 'inside':
+    //
+    // }
+    this.labels = new NodeLabels(
+      node.labels, this.radius, node.position, neighbourObstacles, editing, style, measureTextContext
+    )
 
     const caption = node.caption || ''
     const captionPosition = style('caption-position')

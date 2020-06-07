@@ -3,26 +3,39 @@ import {green} from "../model/colors";
 import {Point} from "../model/Point";
 
 export default class Pill {
-  constructor(text, position, width, radius, borderWidth, backgroundColor, strokeColor, fontColor, editing) {
+  constructor(text, editing, style, textMeasurement) {
     this.text = text
-    this.position = position
-    this.width = width
-    this.radius = radius
-    this.borderWidth = borderWidth
-    this.backgroundColor = backgroundColor
-    this.strokeColor = strokeColor
-    this.fontColor = fontColor
+
+    this.backgroundColor = style('label-background-color')
+    this.strokeColor = style('label-border-color')
+    this.fontColor = style('label-color')
+    this.borderWidth = style('label-border-width')
+    const padding = style('label-padding')
+
+    this.font = {
+      fontWeight: 'normal',
+      fontSize: style('label-font-size'),
+      fontFace: 'sans-serif'
+    }
+    textMeasurement.font = this.font
+    this.textWidth = textMeasurement.measureText(text).width
+
+    this.height = this.font.fontSize + padding * 2 + this.borderWidth
+    this.radius = this.height / 2
+    this.width = this.textWidth + this.radius * 2 + this.borderWidth
+
     this.editing = editing
   }
 
   draw(ctx) {
     ctx.save()
-    ctx.translate(...this.position.xy)
     ctx.fillStyle = this.backgroundColor
     ctx.strokeStyle = this.strokeColor
     ctx.lineWidth = this.borderWidth
-    ctx.rect(0, 0, this.width + this.radius * 2, this.radius * 2, this.radius, true, this.borderWidth > 0)
+    ctx.rect(0, 0, this.width, this.height, this.radius, true, this.borderWidth > 0)
     if (!this.editing) {
+      ctx.font = this.font
+      ctx.textBaseline = 'middle'
       ctx.fillStyle = this.fontColor
       ctx.fillText(this.text, this.radius, this.radius)
     }
@@ -32,21 +45,19 @@ export default class Pill {
   drawSelectionIndicator(ctx) {
     const indicatorWidth = 10
     ctx.save()
-    ctx.translate(...this.position.xy)
     ctx.strokeStyle = green
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
     ctx.rect(
       -this.borderWidth / 2, -this.borderWidth / 2,
-      this.width + this.radius * 2 + this.borderWidth, this.radius * 2 + this.borderWidth,
+      this.width + this.borderWidth, this.height + this.borderWidth,
       this.radius + this.borderWidth / 2, false, true
     )
     ctx.restore()
   }
 
-  contains(point) {
-    const localPoint = point.translate(this.position.vectorFromOrigin().invert())
-    const rectangle = new BoundingBox(this.radius, this.radius + this.width, 0, this.radius * 2)
+  contains(localPoint) {
+    const rectangle = new BoundingBox(this.radius, this.width, 0, this.height)
     const leftCenter = new Point(this.radius, this.radius)
     const rightCenter = new Point(this.radius + this.width, this.radius)
     return rectangle.contains(localPoint) ||
@@ -56,10 +67,10 @@ export default class Pill {
 
   boundingBox() {
     return new BoundingBox(
-      this.position.x - this.borderWidth / 2,
-      this.position.x + this.width + this.radius * 2 + this.borderWidth / 2,
-      this.position.y - this.borderWidth / 2,
-      this.position.y + this.radius * 2 + this.borderWidth / 2
+      -this.borderWidth / 2,
+      this.width + this.borderWidth / 2,
+      -this.borderWidth / 2,
+      this.height + this.borderWidth / 2
     )
   }
 }
