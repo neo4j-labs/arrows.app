@@ -51,8 +51,9 @@ export default class VisualNode {
     switch (labelPosition) {
       case 'inside':
         insideComponents.push(() => {
+          const otherComponents = propertyPosition === 'inside' && !this.properties.isEmpty ? [this.properties] : 0
           return this.labels = new NodeLabelsInsideNode(
-            node.labels, node.position, this.radius, scaleFactor, 'bottom', [], editing, style, measureTextContext
+            node.labels, node.position, this.radius, scaleFactor, 'middle', otherComponents, editing, style, measureTextContext
           )
         })
         break

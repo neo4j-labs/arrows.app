@@ -15,7 +15,6 @@ export class NodePropertiesInside {
       const d = Math.sqrt(sq(radius) - sq(width / 2))
       this.boxPosition = new Vector(-width / 2, d - height)
     } else {
-
       this.boxPosition = new Vector(-width / 2, -height / 2)
     }
   }
@@ -41,7 +40,8 @@ export class NodePropertiesInside {
   }
 
   boundingBox() {
-    return this.propertiesBox.boundingBox().translate(this.nodePosition.vectorFromOrigin()).translate(this.boxPosition)
+    return this.propertiesBox.boundingBox().scale(this.scaleFactor)
+      .translate(this.nodePosition.vectorFromOrigin()).translate(this.boxPosition)
   }
 
   distanceFrom(point) {

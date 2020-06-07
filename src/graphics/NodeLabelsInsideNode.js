@@ -31,6 +31,12 @@ export class NodeLabelsInsideNode {
 
         default:
           firstLabelTop = (firstPill.borderWidth - totalHeight) / 2
+          if (otherComponents.length > 0) {
+            const otherComponent = otherComponents[0] // assume there is only one for now
+            const lowerBound = otherComponent.boundingBox().top
+            const nodeCentreOffset = lowerBound - nodePosition.y
+            firstLabelTop -= nodeCentreOffset / 4
+          }
       }
 
       this.pillPositions = this.pills.map((pill, i) => {
