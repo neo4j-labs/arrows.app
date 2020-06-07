@@ -11,23 +11,27 @@ export class NodeLabelsInsideNode {
 
     if (labels.length > 0) {
       const margin = style('label-margin')
-      const lineHeight = this.pills[0].height + margin + this.pills[0].borderWidth
-      const totalHeight = (this.pills[0].height + this.pills[0].borderWidth) * this.pills.length +
+      const firstPill = this.pills[0]
+      const lastPill = this.pills[this.pills.length - 1]
+      const lineHeight = firstPill.height + margin + firstPill.borderWidth
+      const totalHeight = (firstPill.height + firstPill.borderWidth) * this.pills.length +
         margin * (this.pills.length - 1)
 
-        this.pillPositions = this.pills.map((pill, i) => {
-        let pillPosition = nodePosition
-        switch (verticalAlignment) {
-          case 'bottom':
-            pillPosition = pillPosition.translate(new Vector(0, nodeRadius - lineHeight * labels.length))
-            break
+      let firstLabelTop = 0
+      switch (verticalAlignment) {
+        case 'bottom':
+          const d = Math.sqrt((nodeRadius - (lastPill.radius + lastPill.borderWidth + margin)) ** 2 - (lastPill.textWidth / 2) ** 2)
+          firstLabelTop = d - totalHeight + lastPill.radius
+          break
 
-          default:
-            pillPosition = pillPosition.translate(new Vector(0, (pill.borderWidth - totalHeight) / 2))
-        }
-        return pillPosition.translate(new Vector(
+        default:
+          firstLabelTop = (firstPill.borderWidth - totalHeight) / 2
+      }
+
+      this.pillPositions = this.pills.map((pill, i) => {
+        return nodePosition.translate(new Vector(
           -pill.width / 2,
-          i * lineHeight
+          firstLabelTop + i * lineHeight
         ))
       })
     }
