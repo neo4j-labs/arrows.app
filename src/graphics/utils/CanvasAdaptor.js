@@ -15,8 +15,8 @@ export default class CanvasAdaptor {
     this.ctx.translate(dx, dy)
   }
 
-  scale(x, y) {
-    this.ctx.scale(x, y)
+  scale(x) {
+    this.ctx.scale(x, x)
   }
 
   rotate(angle) {

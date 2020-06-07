@@ -30,7 +30,7 @@ export class NodePropertiesInside {
 
       ctx.translate(...this.nodePosition.xy)
       ctx.translate(...this.boxPosition.dxdy)
-      ctx.scale(this.scaleFactor, this.scaleFactor)
+      ctx.scale(this.scaleFactor)
       this.propertiesBox.draw(ctx)
 
       ctx.restore()

@@ -52,7 +52,7 @@ export default class VisualNode {
       case 'inside':
         insideComponents.push(() => {
           return this.labels = new NodeLabelsInsideNode(
-            node.labels, this.radius, node.position, 'bottom', [], editing, style, measureTextContext
+            node.labels, node.position, this.radius, scaleFactor, 'bottom', [], editing, style, measureTextContext
           )
         })
         break

@@ -3,7 +3,10 @@ import Pill from "./Pill";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class NodeLabelsInsideNode {
-  constructor(labels, nodeRadius, nodePosition, verticalAlignment, otherComponents, editing, style, textMeasurement) {
+  constructor(labels, nodePosition, nodeRadius, scaleFactor, verticalAlignment, otherComponents, editing, style, textMeasurement) {
+
+    this.nodePosition = nodePosition
+    this.scaleFactor = scaleFactor
 
     this.pills = labels.map((label) => {
       return new Pill(label, editing, style, textMeasurement)
@@ -11,19 +14,19 @@ export class NodeLabelsInsideNode {
 
     if (labels.length > 0) {
       const nodePadding = style('node-padding')
-      const margin = style('label-margin')
+      const margin = scaleFactor * style('label-margin')
       const firstPill = this.pills[0]
       const lastPill = this.pills[this.pills.length - 1]
-      const lineHeight = firstPill.height + margin + firstPill.borderWidth
-      const totalHeight = (firstPill.height + firstPill.borderWidth) * this.pills.length +
+      const lineHeight = scaleFactor * (firstPill.height + firstPill.borderWidth) + margin
+      const totalHeight = scaleFactor * (firstPill.height + firstPill.borderWidth) * this.pills.length +
         margin * (this.pills.length - 1)
 
       let firstLabelTop = 0
       switch (verticalAlignment) {
         case 'bottom':
-          const effectiveRadius = nodeRadius - (lastPill.radius - lastPill.borderWidth / 2 + Math.max(nodePadding, margin))
-          const d = Math.sqrt(effectiveRadius ** 2 - (lastPill.textWidth / 2) ** 2)
-          firstLabelTop = d - totalHeight + lastPill.radius - lastPill.borderWidth
+          const effectiveRadius = nodeRadius - scaleFactor * (lastPill.radius - lastPill.borderWidth / 2) - Math.max(nodePadding, margin)
+          const d = Math.sqrt(Math.max(0, effectiveRadius ** 2 - (scaleFactor * lastPill.textWidth / 2) ** 2))
+          firstLabelTop = d - totalHeight + scaleFactor * (lastPill.radius - lastPill.borderWidth)
           break
 
         default:
@@ -31,14 +34,20 @@ export class NodeLabelsInsideNode {
       }
 
       this.pillPositions = this.pills.map((pill, i) => {
-        return nodePosition.translate(new Vector(
-          -pill.width / 2,
+        return new Vector(
+          -scaleFactor * pill.width / 2,
           firstLabelTop + i * lineHeight
-        ))
+        )
       })
-    }
 
-    this.contentsFit = true
+      this.contentsFit = this.pills.every((pill, i) => {
+        const y = this.pillPositions[i].dy + scaleFactor * pill.height / 2
+        const r = nodeRadius - Math.max(nodePadding, margin)
+        return scaleFactor * pill.radius < nodeRadius && scaleFactor * pill.width / 2 < Math.sqrt(r ** 2 - y ** 2)
+      })
+    } else {
+      this.contentsFit = true
+    }
   }
 
   get isEmpty() {
@@ -46,11 +55,11 @@ export class NodeLabelsInsideNode {
   }
 
   draw(ctx) {
-
     for (let i = 0; i < this.pills.length; i++) {
       ctx.save()
 
-      ctx.translate(...this.pillPositions[i].xy)
+      ctx.translate(...this.nodePosition.translate(this.pillPositions[i]).xy)
+      ctx.scale(this.scaleFactor)
       this.pills[i].draw(ctx)
 
       ctx.restore()
@@ -61,7 +70,8 @@ export class NodeLabelsInsideNode {
     for (let i = 0; i < this.pills.length; i++) {
       ctx.save()
 
-      ctx.translate(...this.pillPositions[i].xy)
+      ctx.translate(...this.nodePosition.translate(this.pillPositions[i]).xy)
+      ctx.scale(this.scaleFactor)
       this.pills[i].drawSelectionIndicator(ctx)
 
       ctx.restore()
@@ -69,12 +79,15 @@ export class NodeLabelsInsideNode {
   }
 
   boundingBox() {
-    return combineBoundingBoxes(this.pills.map((pill, i) => pill.boundingBox().translate(this.pillPositions[i].vectorFromOrigin())))
+    return combineBoundingBoxes(this.pills.map((pill, i) => pill.boundingBox()
+      .translate(this.nodePosition.vectorFromOrigin())
+      .translate(this.pillPositions[i])))
   }
 
   distanceFrom(point) {
     return this.pills.some((pill, i) => {
-      const localPoint = point.translate(this.pillPositions[i].vectorFromOrigin().invert())
+      const localPoint = point.translate(this.nodePosition.vectorFromOrigin().invert())
+        .translate(this.pillPositions[i].invert())
       return pill.contains(localPoint);
     }) ? 0 : Infinity
   }
