@@ -10,6 +10,7 @@ export class NodeLabelsInsideNode {
     })
 
     if (labels.length > 0) {
+      const nodePadding = style('node-padding')
       const margin = style('label-margin')
       const firstPill = this.pills[0]
       const lastPill = this.pills[this.pills.length - 1]
@@ -20,8 +21,9 @@ export class NodeLabelsInsideNode {
       let firstLabelTop = 0
       switch (verticalAlignment) {
         case 'bottom':
-          const d = Math.sqrt((nodeRadius - (lastPill.radius + lastPill.borderWidth + margin)) ** 2 - (lastPill.textWidth / 2) ** 2)
-          firstLabelTop = d - totalHeight + lastPill.radius
+          const effectiveRadius = nodeRadius - (lastPill.radius - lastPill.borderWidth / 2 + Math.max(nodePadding, margin))
+          const d = Math.sqrt(effectiveRadius ** 2 - (lastPill.textWidth / 2) ** 2)
+          firstLabelTop = d - totalHeight + lastPill.radius - lastPill.borderWidth
           break
 
         default:

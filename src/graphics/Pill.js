@@ -22,7 +22,7 @@ export default class Pill {
 
     this.height = this.font.fontSize + padding * 2 + this.borderWidth
     this.radius = this.height / 2
-    this.width = this.textWidth + this.radius * 2 + this.borderWidth
+    this.width = this.textWidth + this.radius * 2
 
     this.editing = editing
   }
