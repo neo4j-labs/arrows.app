@@ -20,13 +20,18 @@ export class NodeLabelsInsideNode {
       const lineHeight = scaleFactor * (firstPill.height + firstPill.borderWidth) + margin
       const totalHeight = scaleFactor * (firstPill.height + firstPill.borderWidth) * this.pills.length +
         margin * (this.pills.length - 1)
+      const effectiveRadius = nodeRadius - scaleFactor * (lastPill.radius - lastPill.borderWidth / 2) - Math.max(nodePadding, margin)
 
       let firstLabelTop = 0
       switch (verticalAlignment) {
+        case 'top':
+          const dTop = Math.sqrt(Math.max(0, effectiveRadius ** 2 - (scaleFactor * firstPill.textWidth / 2) ** 2))
+          firstLabelTop = -dTop - scaleFactor * (firstPill.radius - firstPill.borderWidth)
+          break
+
         case 'bottom':
-          const effectiveRadius = nodeRadius - scaleFactor * (lastPill.radius - lastPill.borderWidth / 2) - Math.max(nodePadding, margin)
-          const d = Math.sqrt(Math.max(0, effectiveRadius ** 2 - (scaleFactor * lastPill.textWidth / 2) ** 2))
-          firstLabelTop = d - totalHeight + scaleFactor * (lastPill.radius - lastPill.borderWidth)
+          const dBottom = Math.sqrt(Math.max(0, effectiveRadius ** 2 - (scaleFactor * lastPill.textWidth / 2) ** 2))
+          firstLabelTop = dBottom - totalHeight + scaleFactor * (lastPill.radius - lastPill.borderWidth)
           break
 
         default:

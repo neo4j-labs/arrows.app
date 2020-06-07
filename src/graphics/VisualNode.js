@@ -29,12 +29,32 @@ export default class VisualNode {
     const insideComponents = []
     let scaleFactor = 1
 
+    const labelPosition = style('label-position')
     const propertyPosition = style('property-position')
+    const captionPosition = style('caption-position')
+
+    switch (labelPosition) {
+      case 'inside':
+        insideComponents.push(() => {
+          const verticalAlignment = propertyPosition === 'inside' && Object.keys(node.properties).length > 0 ? 'top' : 'middle'
+          return this.labels = new NodeLabelsInsideNode(
+            node.labels, node.position, this.radius, scaleFactor, verticalAlignment, [], editing, style, measureTextContext
+          )
+        })
+        break
+
+      default:
+        this.labels = new NodeLabelsOutsideNode(
+          node.labels, this.radius, node.position, neighbourObstacles, editing, style, measureTextContext
+        )
+    }
+
     switch (propertyPosition) {
       case 'inside':
         insideComponents.push(() => {
+          // const otherComponents = labelPosition === 'inside' && this.labels.isEmpty ? [] : [this.labels]
           return this.properties = new NodePropertiesInside(
-            node.properties, this.radius, scaleFactor, node.position, 'bottom', editing, style, measureTextContext
+            node.properties, this.radius, scaleFactor, node.position, 'middle', editing, style, measureTextContext
           )
         })
         break
@@ -47,25 +67,8 @@ export default class VisualNode {
           obstacles = [...neighbourObstacles, this.properties]
         }
     }
-    const labelPosition = style('label-position')
-    switch (labelPosition) {
-      case 'inside':
-        insideComponents.push(() => {
-          const otherComponents = propertyPosition === 'inside' && !this.properties.isEmpty ? [this.properties] : 0
-          return this.labels = new NodeLabelsInsideNode(
-            node.labels, node.position, this.radius, scaleFactor, 'middle', otherComponents, editing, style, measureTextContext
-          )
-        })
-        break
-
-      default:
-        this.labels = new NodeLabelsOutsideNode(
-          node.labels, this.radius, node.position, neighbourObstacles, editing, style, measureTextContext
-        )
-    }
 
     const caption = node.caption || ''
-    const captionPosition = style('caption-position')
     switch (captionPosition) {
       case 'inside':
         insideComponents.push(() => {
