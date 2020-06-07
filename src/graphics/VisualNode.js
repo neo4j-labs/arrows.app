@@ -1,5 +1,5 @@
 import {getStyleSelector} from "../selectors/style";
-import {NodeLabels} from "./NodeLabels";
+import {NodeLabelsOutsideNode} from "./NodeLabelsOutsideNode";
 import {NodeCaptionInsideNode} from "./NodeCaptionInsideNode";
 import {NodeBackground} from "./NodeBackground";
 import {NodePropertiesStalk} from "./NodePropertiesStalk";
@@ -8,6 +8,7 @@ import BoundingBox from "./utils/BoundingBox";
 import {NodeCaptionOutsideNode} from "./NodeCaptionOutsideNode";
 import {NodePropertiesInside} from "./NodePropertiesInside";
 import {bisect} from "./bisect";
+import {NodeLabelsInsideNode} from "./NodeLabelsInsideNode";
 
 export default class VisualNode {
   constructor(node, graph, selected, editing, measureTextContext) {
@@ -46,14 +47,21 @@ export default class VisualNode {
           obstacles = [...neighbourObstacles, this.properties]
         }
     }
-    // const labelPosition = style('label-position')
-    // switch (labelPosition) {
-    //   case 'inside':
-    //
-    // }
-    this.labels = new NodeLabels(
-      node.labels, this.radius, node.position, neighbourObstacles, editing, style, measureTextContext
-    )
+    const labelPosition = style('label-position')
+    switch (labelPosition) {
+      case 'inside':
+        insideComponents.push(() => {
+          return this.labels = new NodeLabelsInsideNode(
+            node.labels, this.radius, node.position, 'bottom', [], editing, style, measureTextContext
+          )
+        })
+        break
+
+      default:
+        this.labels = new NodeLabelsOutsideNode(
+          node.labels, this.radius, node.position, neighbourObstacles, editing, style, measureTextContext
+        )
+    }
 
     const caption = node.caption || ''
     const captionPosition = style('caption-position')

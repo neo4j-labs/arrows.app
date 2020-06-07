@@ -1,15 +1,9 @@
 import { Vector } from "../model/Vector";
-import {distribute} from "./circumferentialDistribution";
-import {textAlignmentAtAngle} from "./circumferentialTextAlignment";
 import Pill from "./Pill";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
-export class NodeLabels {
-  constructor(labels, nodeRadius, nodePosition, obstacles, editing, style, textMeasurement) {
-    this.angle = distribute([
-      {preferredAngles: [Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'labels'}
-    ], obstacles)[0].angle
-    this.alignment = textAlignmentAtAngle(this.angle)
+export class NodeLabelsInsideNode {
+  constructor(labels, nodeRadius, nodePosition, verticalAlignment, otherComponents, editing, style, textMeasurement) {
 
     this.pills = labels.map((label) => {
       return new Pill(label, editing, style, textMeasurement)
@@ -18,20 +12,27 @@ export class NodeLabels {
     if (labels.length > 0) {
       const margin = style('label-margin')
       const lineHeight = this.pills[0].height + margin + this.pills[0].borderWidth
+      const totalHeight = (this.pills[0].height + this.pills[0].borderWidth) * this.pills.length +
+        margin * (this.pills.length - 1)
 
-      this.pillPositions = this.pills.map((pill, i) => {
-        const pillWidth = pill.width + pill.borderWidth
-        const pillRadius = pill.radius
-        let pillPosition = nodePosition.translate(new Vector(nodeRadius, 0).rotate(this.angle))
-        if (this.alignment.vertical === 'bottom') {
-          pillPosition = pillPosition.translate(new Vector(0, -lineHeight * (labels.length - 1)))
+        this.pillPositions = this.pills.map((pill, i) => {
+        let pillPosition = nodePosition
+        switch (verticalAlignment) {
+          case 'bottom':
+            pillPosition = pillPosition.translate(new Vector(0, nodeRadius - lineHeight * labels.length))
+            break
+
+          default:
+            pillPosition = pillPosition.translate(new Vector(0, (pill.borderWidth - totalHeight) / 2))
         }
         return pillPosition.translate(new Vector(
-          this.alignment.horizontal === 'right' ? pillRadius - pillWidth : -pillRadius,
-          i * lineHeight - pillRadius
+          -pill.width / 2,
+          i * lineHeight
         ))
       })
     }
+
+    this.contentsFit = true
   }
 
   get isEmpty() {
