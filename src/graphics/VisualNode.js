@@ -7,6 +7,7 @@ import {neighbourPositions} from "../model/Graph";
 import BoundingBox from "./utils/BoundingBox";
 import {NodeCaptionOutsideNode} from "./NodeCaptionOutsideNode";
 import {NodePropertiesInside} from "./NodePropertiesInside";
+import {bisect} from "./bisect";
 
 export default class VisualNode {
   constructor(node, graph, selected, editing, measureTextContext) {
@@ -60,11 +61,10 @@ export default class VisualNode {
         break
     }
 
-    let counter = 0
-    while (counter++ < 10 && insideComponents.map(factory => factory()).some(component => !component.contentsFit)) {
-      scaleFactor *= 0.5
-    }
-    this.scaleFactor = scaleFactor
+    this.scaleFactor = bisect((factor) => {
+      scaleFactor = factor
+      return insideComponents.map(factory => factory()).every(component => component.contentsFit)
+    }, 1, 1e-6)
   }
 
   get id() {
