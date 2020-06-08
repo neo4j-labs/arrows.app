@@ -6,6 +6,7 @@ import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class NodeLabelsOutsideNode {
   constructor(labels, nodeRadius, nodePosition, obstacles, editing, style, textMeasurement) {
+    this.nodePosition = nodePosition
     this.angle = distribute([
       {preferredAngles: [Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'labels'}
     ], obstacles)[0].angle
@@ -22,11 +23,11 @@ export class NodeLabelsOutsideNode {
       this.pillPositions = this.pills.map((pill, i) => {
         const pillWidth = pill.width + pill.borderWidth
         const pillRadius = pill.radius
-        let pillPosition = nodePosition.translate(new Vector(nodeRadius, 0).rotate(this.angle))
+        let pillPosition = new Vector(nodeRadius, 0).rotate(this.angle)
         if (this.alignment.vertical === 'bottom') {
-          pillPosition = pillPosition.translate(new Vector(0, -lineHeight * (labels.length - 1)))
+          pillPosition = pillPosition.plus(new Vector(0, -lineHeight * (labels.length - 1)))
         }
-        return pillPosition.translate(new Vector(
+        return pillPosition.plus(new Vector(
           this.alignment.horizontal === 'right' ? pillRadius - pillWidth : -pillRadius,
           i * lineHeight - pillRadius
         ))
@@ -43,7 +44,7 @@ export class NodeLabelsOutsideNode {
     for (let i = 0; i < this.pills.length; i++) {
       ctx.save()
 
-      ctx.translate(...this.pillPositions[i].xy)
+      ctx.translate(...this.nodePosition.translate(this.pillPositions[i]).xy)
       this.pills[i].draw(ctx)
 
       ctx.restore()
@@ -54,7 +55,7 @@ export class NodeLabelsOutsideNode {
     for (let i = 0; i < this.pills.length; i++) {
       ctx.save()
 
-      ctx.translate(...this.pillPositions[i].xy)
+      ctx.translate(...this.nodePosition.translate(this.pillPositions[i]).xy)
       this.pills[i].drawSelectionIndicator(ctx)
 
       ctx.restore()
@@ -62,12 +63,15 @@ export class NodeLabelsOutsideNode {
   }
 
   boundingBox() {
-    return combineBoundingBoxes(this.pills.map((pill, i) => pill.boundingBox().translate(this.pillPositions[i].vectorFromOrigin())))
+    return combineBoundingBoxes(this.pills.map((pill, i) => pill.boundingBox()
+      .translate(this.nodePosition.vectorFromOrigin())
+      .translate(this.pillPositions[i])))
   }
 
   distanceFrom(point) {
     return this.pills.some((pill, i) => {
-      const localPoint = point.translate(this.pillPositions[i].vectorFromOrigin().invert())
+      const localPoint = point.translate(this.nodePosition.vectorFromOrigin().invert())
+        .translate(this.pillPositions[i].invert())
       return pill.contains(localPoint);
     }) ? 0 : Infinity
   }

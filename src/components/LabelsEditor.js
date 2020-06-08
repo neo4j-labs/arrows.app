@@ -14,12 +14,12 @@ export class LabelsEditor extends Component {
   render() {
     const nodeLabels = this.props.visualNode.labels
     const { visualNode, selection, onAddLabel, onRenameLabel } = this.props
-    const lineHeight = nodeLabels.font.fontSize * 1.2
     const padding = 10
     return (
       <div>
         {nodeLabels.pills.map((pill, index) => {
-          const position = pill.position
+          const position = nodeLabels.pillPositions[index]
+          const lineHeight = pill.font.fontSize * 1.2
           return (
             <input
               key={'pill-' + index}
@@ -37,7 +37,7 @@ export class LabelsEditor extends Component {
                 border: 'none',
                 background: 'transparent',
                 textAlign: 'left',
-                ...nodeLabels.font,
+                ...pill.font,
                 lineHeight: 1.2
               }}
             />
