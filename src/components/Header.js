@@ -59,7 +59,10 @@ const Header = (props) => {
 
   return (
     <Menu attached='top' style={{ borderRadius: 0 }} borderless>
-      <Menu.Item onClick={props.onArrowsClick} style={{ padding: '0 0 0 1em', cursor: 'pointer' }}>
+      <Menu.Item
+        title="Open"
+        onClick={props.onArrowsClick}
+        style={{ padding: '0 0 0 1em', cursor: 'pointer' }}>
         <i className="icon" style={{ height: '1.5em' }}>
           <img src={arrows_logo} style={{ height: '1.5em' }}/>
         </i>
@@ -72,29 +75,29 @@ const Header = (props) => {
         {storageIcon(props)}
         {storageStatusMessage(props)}
       </Menu.Item>
-      <Menu.Item onClick={props.onReloadGraphClick}>
+      <Menu.Item title="Reload" onClick={props.onReloadGraphClick}>
         <Icon name='refresh'/>
       </Menu.Item>
       {props.storage.mode === 'GOOGLE_DRIVE' ?
-        <Menu.Item onClick={() => openShareDialog(props.storage)}>
+        <Menu.Item title="Share" onClick={() => openShareDialog(props.storage)}>
           <Icon name='share square' link/>
         </Menu.Item> : null}
-      <Menu.Item onClick={props.onExportClick}>
+      <Menu.Item title="Download" onClick={props.onExportClick}>
         <Icon name='download'/>
       </Menu.Item>
-      <Menu.Item onClick={props.onPlusNodeClick}>
+      <Menu.Item title="Add Node" onClick={props.onPlusNodeClick}>
         <Icon.Group>
           <Icon name='circle'/>
           <Icon corner name='add'/>
         </Icon.Group>
       </Menu.Item>
-      <Menu.Item onClick={props.onHelpClick}>
+      <Menu.Item title="Help" onClick={props.onHelpClick}>
         <Icon name='help'/>
       </Menu.Item>
       <Menu.Item
+        title="Open Inspector"
         position='right'
-        onClick={props.showInspector}
-      >
+        onClick={props.showInspector}>
         <Icon name='angle double left'/>
       </Menu.Item>
     </Menu>
