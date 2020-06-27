@@ -1,24 +1,21 @@
-import React, { Component } from 'react'
 import config from "../config";
 import { DISCOVERY_DOCS, SCOPES } from '../actions/googleDrive'
 
-export default class extends Component {
-  componentDidMount() {
-    this.createShareClient()
+export default class {
+  constructor(storage) {
+    this.createShareClient(storage)
+  }
+
+  openDialog() {
     this.shareClient.showSettingsDialog()
   }
 
-  createShareClient() {
-    const { storage } = this.props
-
+  createShareClient(storage) {
     const setupShareClient = (accessToken) => {
       const shareClient = new window.gapi.drive.share.ShareClient()
       shareClient.setOAuthToken(accessToken)
       shareClient.setItemIds([storage.googleDrive.fileId])
       this.shareClient = shareClient
-      console.log("SHARE CLIENT", shareClient)
-      //this.props.close();
-      //.setCallback(this.shareCallback.bind(this))
     }
 
     if (window.gapi.auth2.getAuthInstance() && window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
@@ -36,20 +33,5 @@ export default class extends Component {
         setupShareClient(window.gapi.auth.getToken().access_token)
       })
     }
-  }
-
-  shareCallback(res) {
-    console.log("ON SHARE", res)
-    // if (action === 'picked' && docs.length > 0) {
-    //   const fileId = docs[0].id
-    //   this.props.onFilePicked(fileId)
-    // } else {
-    //   console.log("ACTION", action)
-    //   this.props.onCancelPicker()
-    // }
-  }
-
-  render() {
-    return null
   }
 }

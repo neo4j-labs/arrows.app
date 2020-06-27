@@ -53,7 +53,9 @@ const storageIcon = (props) => {
 }
 
 const Header = (props) => {
-  const [showShare, setShowShare] = useState(false);
+  const openShareDialog = storage => {
+    new GoogleDriveShare(storage).openDialog()
+  }
 
   return (
     <Menu attached='top' style={{ borderRadius: 0 }} borderless>
@@ -74,7 +76,7 @@ const Header = (props) => {
         <Icon name='refresh'/>
       </Menu.Item>
       {props.storage.mode === 'GOOGLE_DRIVE' ?
-        <Menu.Item onClick={() => setShowShare(!showShare)}>
+        <Menu.Item onClick={() => openShareDialog(props.storage)}>
           <Icon name='share square' link/>
         </Menu.Item> : null}
       <Menu.Item onClick={props.onExportClick}>
@@ -95,7 +97,6 @@ const Header = (props) => {
       >
         <Icon name='angle double left'/>
       </Menu.Item>
-      {showShare ? <GoogleDriveShare storage={props.storage} open={showShare}/> : null}
     </Menu>
   )
 }
