@@ -13,6 +13,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
     case 'slider':
       return (
         <Slider
+          styleKey={styleKey}
           value={value}
           min={styleType.min}
           max={styleType.max}

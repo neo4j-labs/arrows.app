@@ -1,12 +1,47 @@
 import React, {Component} from 'react'
 import {Form, Input, Popup} from 'semantic-ui-react'
+import {validate} from "../../model/styling";
 
 export default class extends Component {
-  componentDidMount () {
+
+  constructor(props) {
+    super(props)
+    this.state = {
+      numericValue: props.value,
+      stringValue: props.value + ''
+    }
+  }
+
+  componentDidMount() {
     this.props.setFocusHandler(() => this.inputElement && this.inputElement.focus())
   }
+
+  static getDerivedStateFromProps(props, state) {
+    if (state.numericValue !== props.value) {
+      return {
+        numericValue: props.value,
+        stringValue: props.value + ''
+      }
+    }
+  }
+
+  onChange(stringValue) {
+    const numericValue = Number(stringValue)
+    if (validate(this.props.styleKey, numericValue) === numericValue) {
+      this.setState({
+        numericValue,
+        stringValue
+      })
+      this.props.onChange(numericValue)
+    } else {
+      this.setState({
+        stringValue
+      })
+    }
+  }
+
   render() {
-    const {value, placeholder, onChange, min, max, step, onKeyPress} = this.props
+    const {placeholder, min, max, step, onKeyPress} = this.props
 
     const handleKeyDown = (evt) => {
       if (evt.key === 'Enter' && evt.metaKey) {
@@ -26,14 +61,14 @@ export default class extends Component {
     const textBox = (
       <Input
         size='small'
-        value={value}
+        value={this.state.stringValue}
         placeholder={placeholder}
         transparent
         style={{ 'width': '8em' }}
         onKeyPress={onKeyPress}
         onKeyDown={handleKeyDown}
         ref={elm => this.inputElement = elm}
-        onChange={evt => onChange(Number(evt.target.value))}
+        onChange={evt => this.onChange(evt.target.value)}
       />
     )
     const slider = (
@@ -42,9 +77,9 @@ export default class extends Component {
         min={0}
         max={100}
         step={1}
-        value={sizeToSlide(value)}
+        value={sizeToSlide(this.state.numericValue)}
         style={{ 'width': '10em' }}
-        onChange={evt => onChange(slideToSize(Number(evt.target.value)))}
+        onChange={evt => this.onChange(slideToSize(Number(evt.target.value)))}
       />
     )
     return (
