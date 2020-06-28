@@ -3,11 +3,16 @@ import {Input} from 'semantic-ui-react'
 import ColorPicker from './ColorPicker'
 import Slider from './Slider'
 import Dropdown from "./Dropdown";
-import {styleAttributes, styleTypes} from "../../model/styling";
+import {styleAttributes, styleTypes, validate} from "../../model/styling";
 
 export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, onKeyPress, setFocusHandler) => {
   const attribute = styleAttributes[styleKey]
   const styleType = styleTypes[attribute.type]
+  const onChangeWithValidation = (value) => {
+    if (validate(styleKey, value) === value) {
+      onChange(value)
+    }
+  }
 
   switch (styleType.editor) {
     case 'slider':
@@ -18,7 +23,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
           max={styleType.max}
           step={styleType.step}
           placeholder={placeholder}
-          onChange={onChange}
+          onChange={onChangeWithValidation}
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}
         />
@@ -28,7 +33,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
         <ColorPicker
           value={value}
           placeholder={placeholder}
-          onChange={onChange}
+          onChange={onChangeWithValidation}
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}
         />
@@ -39,7 +44,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
           value={value}
           placeholder={placeholder}
           options={styleType.options}
-          onChange={onChange}
+          onChange={onChangeWithValidation}
         />
       )
     default:
@@ -48,7 +53,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
           fluid
           value={value}
           placeholder={placeholder}
-          onChange={onChange}
+          onChange={onChangeWithValidation}
           onKeyPress={onKeyPress}
         />
       )

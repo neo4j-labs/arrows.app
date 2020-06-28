@@ -97,3 +97,34 @@ export const completeWithDefaults = (style) => {
   })
   return completeStyle
 }
+
+export const validate = (styleKey, value) => {
+  const styleAttribute = styleAttributes[styleKey]
+  const styleType = styleTypes[styleAttribute.type]
+  switch (styleType.editor) {
+    case 'slider':
+      if (!isNaN(value)) {
+        if (value < styleType.min) {
+          return styleType.min
+        }
+        if (value > styleType.max) {
+          return styleType.max
+        }
+        return value
+      }
+      break
+
+    case "colorPicker":
+      if (/^#[0-9A-F]{6}$/i.test(value)) {
+        return value
+      }
+      break
+
+    case "dropdown":
+      if (styleType.options.includes(value)) {
+        return value
+      }
+      break
+  }
+  return styleAttribute.defaultValue
+}
