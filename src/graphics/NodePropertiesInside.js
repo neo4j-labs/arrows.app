@@ -2,21 +2,11 @@ import {Vector} from "../model/Vector";
 import {PropertiesBox} from "./PropertiesBox";
 
 export class NodePropertiesInside {
-  constructor(properties, radius, scaleFactor, nodePosition, verticalAlignment, editing, style, textMeasurement) {
-    this.nodePosition = nodePosition
-    this.scaleFactor = scaleFactor
+  constructor(properties, verticalPosition, editing, style, textMeasurement) {
     this.propertiesBox = new PropertiesBox(properties, editing, style, textMeasurement)
-    const width = this.propertiesBox.boxWidth * scaleFactor
-    const height = this.propertiesBox.boxHeight * scaleFactor
-    const sq = n => n * n
-
-    this.contentsFit = Math.sqrt(sq(width / 2) + sq(height / 2)) < radius
-    if (this.contentsFit && verticalAlignment === 'bottom') {
-      const d = Math.sqrt(sq(radius) - sq(width / 2))
-      this.boxPosition = new Vector(-width / 2, d - height)
-    } else {
-      this.boxPosition = new Vector(-width / 2, -height / 2)
-    }
+    this.width = this.propertiesBox.boxWidth
+    this.height = this.propertiesBox.boxHeight
+    this.boxPosition = new Vector(-this.width / 2, verticalPosition)
   }
 
   get isEmpty() {
@@ -27,9 +17,7 @@ export class NodePropertiesInside {
     if (!this.isEmpty) {
       ctx.save()
 
-      ctx.translate(...this.nodePosition.xy)
       ctx.translate(...this.boxPosition.dxdy)
-      ctx.scale(this.scaleFactor)
       this.propertiesBox.draw(ctx)
 
       ctx.restore()
@@ -40,8 +28,7 @@ export class NodePropertiesInside {
   }
 
   boundingBox() {
-    return this.propertiesBox.boundingBox().scale(this.scaleFactor)
-      .translate(this.nodePosition.vectorFromOrigin()).translate(this.boxPosition)
+    return this.propertiesBox.boundingBox().translate(this.boxPosition)
   }
 
   distanceFrom(point) {

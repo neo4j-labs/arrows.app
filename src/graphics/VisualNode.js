@@ -27,20 +27,20 @@ export default class VisualNode {
     let obstacles = neighbourObstacles
 
     const insideComponents = []
-    let scaleFactor = 1
+    const insideComponentsTotalHeight = () => insideComponents.reduce((sum, component) => sum + component.height, 0)
 
     const labelPosition = style('label-position')
     const propertyPosition = style('property-position')
     const captionPosition = style('caption-position')
 
+
     switch (labelPosition) {
       case 'inside':
-        insideComponents.push(() => {
-          const verticalAlignment = propertyPosition === 'inside' && Object.keys(node.properties).length > 0 ? 'top' : 'middle'
-          return this.labels = new NodeLabelsInsideNode(
-            node.labels, node.position, this.radius, scaleFactor, verticalAlignment, [], editing, style, measureTextContext
-          )
-        })
+        const verticalAlignment = propertyPosition === 'inside' && Object.keys(node.properties).length > 0 ? 'top' : 'middle'
+        this.labels = new NodeLabelsInsideNode(
+          node.labels, node.position, this.radius, scaleFactor, verticalAlignment, [], editing, style, measureTextContext
+        )
+        insideComponents.push(this.labels)
         break
 
       default:
@@ -51,12 +51,10 @@ export default class VisualNode {
 
     switch (propertyPosition) {
       case 'inside':
-        insideComponents.push(() => {
-          // const otherComponents = labelPosition === 'inside' && this.labels.isEmpty ? [] : [this.labels]
-          return this.properties = new NodePropertiesInside(
-            node.properties, this.radius, scaleFactor, node.position, 'middle', editing, style, measureTextContext
-          )
-        })
+        this.properties = new NodePropertiesInside(
+          node.properties, insideComponentsTotalHeight(), editing, style, measureTextContext
+        )
+        insideComponents.push(this.properties)
         break
 
       default:
@@ -71,9 +69,7 @@ export default class VisualNode {
     const caption = node.caption || ''
     switch (captionPosition) {
       case 'inside':
-        insideComponents.push(() => {
-          return this.caption = new NodeCaptionInsideNode(caption, node.position, this.radius, scaleFactor, style, measureTextContext)
-        })
+        insideComponents.push(this.caption = new NodeCaptionInsideNode(caption, node.position, this.radius, style, measureTextContext))
         break
       default:
         this.caption = new NodeCaptionOutsideNode(caption, node.position, this.radius, captionPosition, style, measureTextContext)
