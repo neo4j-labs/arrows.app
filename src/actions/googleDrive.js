@@ -45,7 +45,7 @@ export const initGoogleDriveApi = (store) => {
   }
 
   if (window.gapi) {
-    window.gapi.load("client:auth2:picker", initClient)
+    window.gapi.load("client:auth2:picker:drive-share", initClient)
   }
 }
 

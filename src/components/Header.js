@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react'
 import {connect} from 'react-redux'
 import { Icon, Menu, Popup, Dropdown } from 'semantic-ui-react'
-import {DiagramNameEditor} from "./DiagramNameEditor";
+import { DiagramNameEditor } from "./DiagramNameEditor"
 import arrows_logo from "../images/arrows_logo.svg"
+import GoogleDriveShare from "./GoogleDriveShareWrapper"
 
 const storageStatusMessage = (props) => {
   const storageNames = {
@@ -51,43 +52,56 @@ const storageIcon = (props) => {
   }
 }
 
-const Header = (props) => (
-  <Menu attached='top' style={{borderRadius: 0}} borderless>
-    <Menu.Item onClick={props.onArrowsClick} style={{ padding: '0 0 0 1em', cursor: 'pointer' }}>
-      <i className="icon" style={{ height: '1.5em' }}>
-        <img src={arrows_logo} style={{ height: '1.5em' }}/>
-      </i>
-    </Menu.Item>
-    <DiagramNameEditor
-      diagramName={props.diagramName}
-      setDiagramName={props.setDiagramName}
-    />
-    <Menu.Item onClick={props.storage.mode === 'DATABASE' ? props.onEditConnectionParameters : null}>
-      {storageIcon(props)}
-      {storageStatusMessage(props)}
-    </Menu.Item>
-    <Menu.Item onClick={props.onReloadGraphClick}>
-      <Icon name='refresh'/>
-    </Menu.Item>
-    <Menu.Item onClick={props.onExportClick}>
-      <Icon name='download'/>
-    </Menu.Item>
-    <Menu.Item onClick={props.onPlusNodeClick}>
-      <Icon.Group>
-        <Icon name='circle' />
-        <Icon corner name='add' />
-      </Icon.Group>
-    </Menu.Item>
-    <Menu.Item onClick={props.onHelpClick}>
-      <Icon name='help'/>
-    </Menu.Item>
-    <Menu.Item
-      position='right'
-      onClick={props.showInspector}
-    >
-      <Icon name='angle double left'/>
-    </Menu.Item>
-  </Menu>
-)
+const Header = (props) => {
+  const openShareDialog = storage => {
+    new GoogleDriveShare(storage).openDialog()
+  }
 
-export default connect(null, null)(Header)
+  return (
+    <Menu attached='top' style={{ borderRadius: 0 }} borderless>
+      <Menu.Item
+        title="Open"
+        onClick={props.onArrowsClick}
+        style={{ padding: '0 0 0 1em', cursor: 'pointer' }}>
+        <i className="icon" style={{ height: '1.5em' }}>
+          <img src={arrows_logo} style={{ height: '1.5em' }}/>
+        </i>
+      </Menu.Item>
+      <DiagramNameEditor
+        diagramName={props.diagramName}
+        setDiagramName={props.setDiagramName}
+      />
+      <Menu.Item onClick={props.storage.mode === 'DATABASE' ? props.onEditConnectionParameters : null}>
+        {storageIcon(props)}
+        {storageStatusMessage(props)}
+      </Menu.Item>
+      <Menu.Item title="Reload" onClick={props.onReloadGraphClick}>
+        <Icon name='refresh'/>
+      </Menu.Item>
+      {props.storage.mode === 'GOOGLE_DRIVE' ?
+        <Menu.Item title="Share" onClick={() => openShareDialog(props.storage)}>
+          <Icon name='share square' link/>
+        </Menu.Item> : null}
+      <Menu.Item title="Download" onClick={props.onExportClick}>
+        <Icon name='download'/>
+      </Menu.Item>
+      <Menu.Item title="Add Node" onClick={props.onPlusNodeClick}>
+        <Icon.Group>
+          <Icon name='circle'/>
+          <Icon corner name='add'/>
+        </Icon.Group>
+      </Menu.Item>
+      <Menu.Item title="Help" onClick={props.onHelpClick}>
+        <Icon name='help'/>
+      </Menu.Item>
+      <Menu.Item
+        title="Open Inspector"
+        position='right'
+        onClick={props.showInspector}>
+        <Icon name='angle double left'/>
+      </Menu.Item>
+    </Menu>
+  )
+}
+
+export default Header
