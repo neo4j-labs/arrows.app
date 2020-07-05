@@ -24,9 +24,6 @@ export class NodePropertiesInside {
     }
   }
 
-  drawSelectionIndicator(ctx) {
-  }
-
   boundingBox() {
     return this.propertiesBox.boundingBox().translate(this.boxPosition)
   }

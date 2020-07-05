@@ -42,17 +42,6 @@ export class NodeLabelsInsideNode {
     }
   }
 
-  drawSelectionIndicator(ctx) {
-    for (let i = 0; i < this.pills.length; i++) {
-      ctx.save()
-
-      ctx.translate(...this.pillPositions[i].dxdy)
-      this.pills[i].drawSelectionIndicator(ctx)
-
-      ctx.restore()
-    }
-  }
-
   boundingBox() {
     return combineBoundingBoxes(this.pills.map((pill, i) => pill.boundingBox()
       .translate(this.pillPositions[i])))

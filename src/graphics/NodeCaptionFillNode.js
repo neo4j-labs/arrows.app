@@ -36,10 +36,6 @@ export class NodeCaptionFillNode {
     ctx.restore()
   }
 
-  drawSelectionIndicator() {
-    // Nothing to do here; we're inside a node.
-  }
-
   get contentsFit() {
     return this.layout.allTextFits
   }
