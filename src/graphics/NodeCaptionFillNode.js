@@ -4,9 +4,10 @@ import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
 
 export class NodeCaptionFillNode {
-  constructor(caption, radius, style, textMeasurement) {
+  constructor(caption, radius, editing, style, textMeasurement) {
     this.caption = caption
     this.radius = radius
+    this.editing = editing
     this.font = {
       fontWeight: style('caption-font-weight'),
       fontSize: style('caption-font-size'),
@@ -22,6 +23,8 @@ export class NodeCaptionFillNode {
   }
 
   draw(ctx) {
+    if (this.editing) return
+
     ctx.save()
 
     ctx.font = this.font

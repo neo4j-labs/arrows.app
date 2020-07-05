@@ -37,3 +37,5 @@ export class Point {
     return [this.x, this.y]
   }
 }
+
+export const originPoint = new Point(0, 0)

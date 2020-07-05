@@ -4,11 +4,11 @@ import { Vector } from "../model/Vector";
 import {orientationFromName} from "./circumferentialTextAlignment";
 import BoundingBox from "./utils/BoundingBox";
 import {green} from "../model/colors";
+import {originPoint} from "../model/Point";
 
 export class NodeCaptionOutsideNode {
-  constructor(caption, nodePosition, radius, captionPosition, style, textMeasurement) {
+  constructor(caption, radius, captionPosition, style, textMeasurement) {
     this.caption = caption
-    this.nodePosition = nodePosition
     this.font = {
       fontWeight: style('caption-font-weight'),
       fontSize: style('caption-font-size'),
@@ -20,7 +20,7 @@ export class NodeCaptionOutsideNode {
     this.lineHeight = this.font.fontSize * 1.2
     const measureWidth = (string) => textMeasurement.measureText(string).width;
     this.layout = fitTextToRectangle(caption, style('caption-max-width'), measureWidth)
-    this.attachedAt = this.nodePosition.translate(
+    this.attachedAt = originPoint.translate(
       new Vector(1, 0).rotate(this.orientation.angle).scale(radius + this.layout.margin))
   }
 

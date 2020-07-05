@@ -1,4 +1,4 @@
-import {Vector} from "../model/Vector";
+import {Point} from "../model/Point";
 import {PropertiesBox} from "./PropertiesBox";
 
 export class NodePropertiesInside {
@@ -6,7 +6,7 @@ export class NodePropertiesInside {
     this.propertiesBox = new PropertiesBox(properties, editing, style, textMeasurement)
     this.width = this.propertiesBox.boxWidth
     this.height = this.propertiesBox.boxHeight
-    this.boxPosition = new Vector(-this.width / 2, verticalPosition)
+    this.boxPosition = new Point(-this.width / 2, verticalPosition)
   }
 
   get isEmpty() {
@@ -17,7 +17,7 @@ export class NodePropertiesInside {
     if (!this.isEmpty) {
       ctx.save()
 
-      ctx.translate(...this.boxPosition.dxdy)
+      ctx.translate(...this.boxPosition.xy)
       this.propertiesBox.draw(ctx)
 
       ctx.restore()
@@ -25,7 +25,7 @@ export class NodePropertiesInside {
   }
 
   boundingBox() {
-    return this.propertiesBox.boundingBox().translate(this.boxPosition)
+    return this.propertiesBox.boundingBox().translate(this.boxPosition.vectorFromOrigin())
   }
 
   distanceFrom(point) {

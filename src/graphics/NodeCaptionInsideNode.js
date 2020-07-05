@@ -4,7 +4,8 @@ import BoundingBox from "./utils/BoundingBox";
 import {fitTextToRectangle} from "./utils/rectangleWordWrap";
 
 export class NodeCaptionInsideNode {
-  constructor(caption, style, textMeasurement) {
+  constructor(caption, editing, style, textMeasurement) {
+    this.editing = editing
     this.font = {
       fontWeight: style('caption-font-weight'),
       fontSize: style('caption-font-size'),
@@ -21,6 +22,8 @@ export class NodeCaptionInsideNode {
   }
 
   draw(ctx) {
+    if (this.editing) return
+
     ctx.save()
 
     ctx.fillStyle = this.fontColor

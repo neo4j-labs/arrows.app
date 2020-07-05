@@ -3,17 +3,17 @@ import {distribute} from "./circumferentialDistribution";
 import {textAlignmentAtAngle} from "./circumferentialTextAlignment";
 import {PropertiesBox} from "./PropertiesBox";
 import {green} from "../model/colors";
+import {originPoint} from "../model/Point";
 
 export class NodePropertiesStalk {
-  constructor(properties, radius, nodePosition, obstacles, editing, style, textMeasurement) {
+  constructor(properties, radius, obstacles, editing, style, textMeasurement) {
     this.angle = distribute([
       {preferredAngles: [Math.PI / 2, -Math.PI / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'properties'}
     ], obstacles)[0].angle
     this.alignment = textAlignmentAtAngle(this.angle)
     this.radius = radius
-    this.nodePosition = nodePosition
     this.propertiesBox = new PropertiesBox(properties, editing, style, textMeasurement)
-    this.attachedAt = this.nodePosition.translate(new Vector(1, 0).rotate(this.angle).scale(this.radius))
+    this.attachedAt = originPoint.translate(new Vector(1, 0).rotate(this.angle).scale(this.radius))
     this.start = this.attachedAt.translate(new Vector(20, 0).rotate(this.angle))
     this.end = this.start.translate(new Vector(0, this.alignment.vertical === 'top' ? this.propertiesBox.boxHeight : -this.propertiesBox.boxHeight))
     this.boxPosition = (this.alignment.vertical === 'top' ? this.start : this.end)

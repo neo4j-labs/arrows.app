@@ -18,7 +18,7 @@ export class LabelsEditor extends Component {
     return (
       <div>
         {nodeLabels.pills.map((pill, index) => {
-          const position = nodeLabels.pillPositions[index]
+          const position = this.props.visualNode.position.translate(nodeLabels.pillPositions[index])
           const lineHeight = pill.font.fontSize * 1.2
           return (
             <input
