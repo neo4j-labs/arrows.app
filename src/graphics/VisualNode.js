@@ -9,6 +9,8 @@ import {NodeCaptionOutsideNode} from "./NodeCaptionOutsideNode";
 import {NodePropertiesInside} from "./NodePropertiesInside";
 import {bisect} from "./bisect";
 import {NodeLabelsInsideNode} from "./NodeLabelsInsideNode";
+import {NodeCaptionFillNode} from "./NodeCaptionFillNode";
+import {everythingFits, scaleToFit, totalHeight} from "./fitComponentsInsideNode";
 
 export default class VisualNode {
   constructor(node, graph, selected, editing, measureTextContext) {
@@ -27,20 +29,36 @@ export default class VisualNode {
     let obstacles = neighbourObstacles
 
     const insideComponents = []
-    const insideComponentsTotalHeight = () => insideComponents.reduce((sum, component) => sum + component.height, 0)
 
+    const captionPosition = style('caption-position')
     const labelPosition = style('label-position')
     const propertyPosition = style('property-position')
-    const captionPosition = style('caption-position')
 
+    const caption = node.caption || ''
+    switch (captionPosition) {
+      case 'inside':
+        if (labelPosition === 'inside' || propertyPosition === 'inside') {
+          insideComponents.push(this.caption =
+            new NodeCaptionInsideNode(caption, style, measureTextContext))
+        } else {
+          // use bisect here to determine scale factor
+          // this.scaleFactor = bisect((factor) => {
+          //   scaleFactor = factor
+          //   return insideComponents.map(factory => factory()).every(component => component.contentsFit)
+          // }, 1, 1e-6)
+          insideComponents.push(this.caption =
+            new NodeCaptionFillNode(caption, this.radius, style, measureTextContext))
+        }
+        break
+      default:
+        this.caption = new NodeCaptionOutsideNode(caption, node.position, this.radius, captionPosition, style, measureTextContext)
+        break
+    }
 
     switch (labelPosition) {
       case 'inside':
-        const verticalAlignment = propertyPosition === 'inside' && Object.keys(node.properties).length > 0 ? 'top' : 'middle'
-        this.labels = new NodeLabelsInsideNode(
-          node.labels, node.position, this.radius, scaleFactor, verticalAlignment, [], editing, style, measureTextContext
-        )
-        insideComponents.push(this.labels)
+        insideComponents.push(this.labels =
+          new NodeLabelsInsideNode(node.labels, totalHeight(insideComponents), editing, style, measureTextContext))
         break
 
       default:
@@ -51,10 +69,8 @@ export default class VisualNode {
 
     switch (propertyPosition) {
       case 'inside':
-        this.properties = new NodePropertiesInside(
-          node.properties, insideComponentsTotalHeight(), editing, style, measureTextContext
-        )
-        insideComponents.push(this.properties)
+        insideComponents.push(this.properties =
+          new NodePropertiesInside(node.properties, totalHeight(insideComponents), editing, style, measureTextContext))
         break
 
       default:
@@ -66,20 +82,9 @@ export default class VisualNode {
         }
     }
 
-    const caption = node.caption || ''
-    switch (captionPosition) {
-      case 'inside':
-        insideComponents.push(this.caption = new NodeCaptionInsideNode(caption, node.position, this.radius, style, measureTextContext))
-        break
-      default:
-        this.caption = new NodeCaptionOutsideNode(caption, node.position, this.radius, captionPosition, style, measureTextContext)
-        break
-    }
-
-    this.scaleFactor = bisect((factor) => {
-      scaleFactor = factor
-      return insideComponents.map(factory => factory()).every(component => component.contentsFit)
-    }, 1, 1e-6)
+    this.internalVerticalOffset = -totalHeight(insideComponents) / 2
+    this.internalScaleFactor = everythingFits(insideComponents, this.internalVerticalOffset, this.internalRadius) ?
+      1 : scaleToFit(insideComponents, this.internalVerticalOffset, this.internalRadius)
   }
 
   get id() {
@@ -106,14 +111,24 @@ export default class VisualNode {
     return this.node.initialPositions
   }
 
-  get contentsFit() {
-    return this.scaleFactor === 1
-  }
-
   draw(ctx) {
     if (this.status === 'combined') {
       return
     }
+
+    this.background.draw(ctx)
+
+    ctx.save();
+    ctx.translate(...this.position.xy);
+    ctx.scale(this.internalScaleFactor);
+    ctx.translate(0, this.internalVerticalOffset);
+
+    ([this.caption, this.labels, this.properties]).forEach(component => {
+      if (component.isInside) {
+        component.draw(ctx)
+      }
+    })
+    ctx.restore()
 
     if (this.selected) {
       this.background.drawSelectionIndicator(ctx)
@@ -121,12 +136,11 @@ export default class VisualNode {
       this.labels.drawSelectionIndicator(ctx)
       this.properties.drawSelectionIndicator(ctx)
     }
-    this.background.draw(ctx)
-    if (!this.editing) {
-      this.caption.draw(ctx)
-    }
-    this.labels.draw(ctx)
-    this.properties.draw(ctx)
+    // if (!this.editing) {
+    //   this.caption.draw(ctx)
+    // }
+    // this.labels.draw(ctx)
+    // this.properties.draw(ctx)
   }
 
   boundingBox() {
@@ -137,17 +151,17 @@ export default class VisualNode {
       this.position.y + this.radius
     )
 
-    if (this.caption) {
-      box = box.combine(this.caption.boundingBox())
-    }
-
-    if (!this.labels.isEmpty) {
-      box = box.combine(this.labels.boundingBox())
-    }
-
-    if (!this.properties.isEmpty) {
-      box = box.combine(this.properties.boundingBox())
-    }
+    // if (this.caption) {
+    //   box = box.combine(this.caption.boundingBox())
+    // }
+    //
+    // if (!this.labels.isEmpty) {
+    //   box = box.combine(this.labels.boundingBox())
+    // }
+    //
+    // if (!this.properties.isEmpty) {
+    //   box = box.combine(this.properties.boundingBox())
+    // }
 
     return box
   }

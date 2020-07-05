@@ -10,9 +10,6 @@ import {
   selectedNodeIdMap, selectedNodeIds, selectedNodes,
   selectedRelationshipIdMap, selectedRelationshipIds
 } from "../model/selection";
-import VisualNode from "../graphics/VisualNode";
-import {measureTextContext} from "../selectors/index";
-import {styleTypes} from "../model/styling";
 
 export const createNode = () => (dispatch, getState) => {
   const { viewTransformation, applicationLayout } = getState()
@@ -212,31 +209,6 @@ export const moveNodesEndDrag = (nodePositions) => {
     category: 'GRAPH',
     type: 'MOVE_NODES_END_DRAG',
     nodePositions
-  }
-}
-
-export const trySetNodeCaption = (selection, caption) => {
-  return function (dispatch, getState) {
-    const state = getState()
-    const graph = getGraph(state)
-    const nodes = selectedNodes(graph, selection)
-    let visualNodes = nodes.map(node =>
-      new VisualNode({...node, caption}, graph,false,false, measureTextContext))
-    let biggerRadius = undefined
-    while (
-    (biggerRadius === undefined || biggerRadius < styleTypes.radius.max) &&
-    visualNodes.some(visualNode => !visualNode.contentsFit)
-      ) {
-      const maxRadius = Math.max(...visualNodes.map(visualNode => visualNode.radius))
-      const step = 10
-      biggerRadius = step * (Math.floor(maxRadius / step) + 1)
-      visualNodes = nodes.map(node =>
-        new VisualNode({...node, caption, style: {...node.style, radius: biggerRadius}}, graph, false, false, measureTextContext))
-    }
-    if (biggerRadius) {
-      dispatch(setArrowsProperty(selection, 'radius', biggerRadius))
-    }
-    dispatch(setNodeCaption(selection, caption))
   }
 }
 

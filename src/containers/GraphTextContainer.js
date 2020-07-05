@@ -1,12 +1,8 @@
 import {connect} from "react-redux";
 import {
-  setProperty, trySetNodeCaption, setRelationshipType, renameProperty, removeProperty,
-  setArrowsProperty, removeArrowsProperty, reverseRelationships, addLabel, renameLabel, removeLabel
+  setProperty, setNodeCaption, setRelationshipType, renameProperty, addLabel, renameLabel, removeLabel
 } from "../actions/graph";
-import DetailInspector from "../components/DetailInspector"
-import {showInspector, hideInspector} from "../actions/applicationLayout";
-import { getSelectedNodes } from "../selectors/inspection";
-import {getPresentGraph, getVisualGraph} from "../selectors"
+import {getVisualGraph} from "../selectors"
 import {GraphTextEditors} from "../components/GraphTextEditors";
 import React from "react";
 
@@ -30,7 +26,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(removeLabel(selection, label))
     },
     onSetNodeCaption: (selection, caption) => {
-      dispatch(trySetNodeCaption(selection, caption))
+      dispatch(setNodeCaption(selection, caption))
     },
     onSetRelationshipType: (selection, type) => {
       dispatch(setRelationshipType(selection, type))

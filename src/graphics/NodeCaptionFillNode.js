@@ -1,10 +1,12 @@
 import {drawTextLine} from "./canvasRenderer";
+import {fitTextToCircle} from "./utils/circleWordWrap";
 import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
-import {fitTextToRectangle} from "./utils/rectangleWordWrap";
 
-export class NodeCaptionInsideNode {
-  constructor(caption, style, textMeasurement) {
+export class NodeCaptionFillNode {
+  constructor(caption, radius, style, textMeasurement) {
+    this.caption = caption
+    this.radius = radius
     this.font = {
       fontWeight: style('caption-font-weight'),
       fontSize: style('caption-font-size'),
@@ -15,9 +17,8 @@ export class NodeCaptionInsideNode {
     this.orientation = { horizontal: 'center', vertical: 'center' }
     this.lineHeight = this.font.fontSize * 1.2
     const measureWidth = (string) => textMeasurement.measureText(string).width
-    this.layout = fitTextToRectangle(caption, style('caption-max-width'), measureWidth)
-    this.width = this.layout.actualWidth
-    this.height = this.layout.lines.length * this.lineHeight
+    const padding = style('node-padding')
+    this.layout = fitTextToCircle(this.caption, Math.max(1, this.radius - padding), measureWidth, this.lineHeight)
   }
 
   get isInside() {
@@ -27,16 +28,13 @@ export class NodeCaptionInsideNode {
   draw(ctx) {
     ctx.save()
 
-    ctx.fillStyle = this.fontColor
     ctx.font = this.font
+    ctx.fillStyle = this.fontColor
     ctx.textBaseline = 'middle'
 
-    const lines = this.layout.lines
-
-    for (let i = 0; i< lines.length; i++) {
-      const yPos = (i + 0.5) * this.lineHeight
-      const position = new Point(0, yPos)
-      drawTextLine(ctx, lines[i], position, 'center')
+    for (let i = 0; i< this.layout.lines.length; i++) {
+      const yPos = this.layout.top + (i + 0.5) * this.lineHeight
+      drawTextLine(ctx, this.layout.lines[i], new Point(0, yPos), 'center')
     }
 
     ctx.restore()
@@ -47,15 +45,16 @@ export class NodeCaptionInsideNode {
   }
 
   get contentsFit() {
-    return true
+    return this.layout.allTextFits
   }
 
   boundingBox() {
+    const height = this.layout.lines.length * this.lineHeight
     return new BoundingBox(
-      -this.width / 2,
-      this.width / 2,
-      -this.height / 2,
-      this.height / 2
+      -this.radius,
+      this.radius,
+      this.layout.top,
+      this.layout.top + height
     )
   }
 
