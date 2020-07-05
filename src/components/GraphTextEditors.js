@@ -14,21 +14,18 @@ export class GraphTextEditors extends Component {
     switch (entity.entityType) {
       case 'node':
         const visualNode = this.props.visualGraph.nodes[entity.id]
-        if (visualNode.caption) {
-          return (
+        return (
+          <div style={{
+            transform: visualNode.position.vectorFromOrigin().asCSSTransform()
+          }}>
             <div style={{
-              transform: visualNode.position.vectorFromOrigin().asCSSTransform()
+              transform: `scale(${visualNode.internalScaleFactor}) translate(0, ${visualNode.internalVerticalOffset}px)`
             }}>
-              <div style={{
-                transform: `scale(${visualNode.internalScaleFactor}) translate(0, ${visualNode.internalVerticalOffset}px)`
-              }}>
-                {visualNode.insideComponents.map(component => this.componentEditor(visualNode, component))}
-              </div>
-              {visualNode.outsideComponents.map(component => this.componentEditor(visualNode, component))}
+              {visualNode.insideComponents.map(component => this.componentEditor(visualNode, component))}
             </div>
-          )
-        }
-        break
+            {visualNode.outsideComponents.map(component => this.componentEditor(visualNode, component))}
+          </div>
+        )
 
       case 'relationship':
         let visualRelationship = null
