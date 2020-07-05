@@ -136,11 +136,15 @@ export default class VisualNode {
       this.labels.drawSelectionIndicator(ctx)
       this.properties.drawSelectionIndicator(ctx)
     }
-    // if (!this.editing) {
-    //   this.caption.draw(ctx)
-    // }
-    // this.labels.draw(ctx)
-    // this.properties.draw(ctx)
+    ([this.caption, this.labels, this.properties]).forEach(component => {
+      if (!component.isInside) {
+        if (!this.editing) {
+          this.caption.draw(ctx)
+        }
+        this.labels.draw(ctx)
+        this.properties.draw(ctx)
+      }
+    })
   }
 
   boundingBox() {
