@@ -27,10 +27,6 @@ export class NodeLabelsInsideNode {
       margin * (this.pills.length - 1)
   }
 
-  get isInside() {
-    return true
-  }
-
   get isEmpty() {
     return this.pills.length === 0
   }

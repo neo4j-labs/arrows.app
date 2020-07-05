@@ -9,10 +9,6 @@ export class NodePropertiesInside {
     this.boxPosition = new Vector(-this.width / 2, verticalPosition)
   }
 
-  get isInside() {
-    return true
-  }
-
   get isEmpty() {
     return this.propertiesBox.isEmpty
   }

@@ -21,10 +21,6 @@ export class NodeCaptionFillNode {
     this.layout = fitTextToCircle(this.caption, Math.max(1, this.radius - padding), measureWidth, this.lineHeight)
   }
 
-  get isInside() {
-    return true
-  }
-
   draw(ctx) {
     ctx.save()
 

@@ -20,10 +20,6 @@ export class NodeCaptionInsideNode {
     this.height = this.layout.lines.length * this.lineHeight
   }
 
-  get isInside() {
-    return true
-  }
-
   draw(ctx) {
     ctx.save()
 
