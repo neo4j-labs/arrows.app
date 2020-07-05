@@ -11,45 +11,43 @@ export class GraphTextEditors extends Component {
   }
 
   entityEditor(entity) {
-    if (entity) {
-      switch (entity.entityType) {
-        case 'node':
-          const visualNode = this.props.visualGraph.nodes[entity.id]
-          if (visualNode.caption) {
-            return (
+    switch (entity.entityType) {
+      case 'node':
+        const visualNode = this.props.visualGraph.nodes[entity.id]
+        if (visualNode.caption) {
+          return (
+            <div style={{
+              transform: visualNode.position.vectorFromOrigin().asCSSTransform()
+            }}>
               <div style={{
-                transform: visualNode.position.vectorFromOrigin().asCSSTransform()
+                transform: `scale(${visualNode.internalScaleFactor}) translate(0, ${visualNode.internalVerticalOffset}px)`
               }}>
-                <div style={{
-                  transform: `scale(${visualNode.internalScaleFactor}) translate(0, ${visualNode.internalVerticalOffset}px)`
-                }}>
-                  {visualNode.insideComponents.map(component => this.componentEditor(visualNode, component))}
-                </div>
-                {visualNode.outsideComponents.map(component => this.componentEditor(visualNode, component))}
+                {visualNode.insideComponents.map(component => this.componentEditor(visualNode, component))}
               </div>
-            )
-          }
-          break
+              {visualNode.outsideComponents.map(component => this.componentEditor(visualNode, component))}
+            </div>
+          )
+        }
+        break
 
-        case 'relationship':
-          let visualRelationship = null
-          this.props.visualGraph.relationshipBundles.forEach(relationshipBundle => {
-            relationshipBundle.routedRelationships.forEach(candidateRelationship => {
-              if (candidateRelationship.id === entity.id) {
-                visualRelationship = candidateRelationship
-              }
-            })
+      case 'relationship':
+        let visualRelationship = null
+        this.props.visualGraph.relationshipBundles.forEach(relationshipBundle => {
+          relationshipBundle.routedRelationships.forEach(candidateRelationship => {
+            if (candidateRelationship.id === entity.id) {
+              visualRelationship = candidateRelationship
+            }
           })
-          if (visualRelationship) {
-            return (
-              <RelationshipTypeEditor
-                visualRelationship={visualRelationship}
-                onSetRelationshipType={(type) => this.props.onSetRelationshipType(this.props.selection, type)}
-              />
-            )
-          }
-          break
-      }
+        })
+        if (visualRelationship) {
+          return (
+            <RelationshipTypeEditor
+              visualRelationship={visualRelationship}
+              onSetRelationshipType={(type) => this.props.onSetRelationshipType(this.props.selection, type)}
+            />
+          )
+        }
+        break
     }
     return null
   }
@@ -88,15 +86,20 @@ export class GraphTextEditors extends Component {
   }
 
   render() {
-    return (
-      <div style={{
-        transform: this.props.viewTransformation.asCSSTransform(),
-        position: 'absolute',
-        left: 0,
-        top: 0
-      }}>
-        {this.entityEditor(this.props.selection.editing)}
-      </div>
-    )
+    const entity = this.props.selection.editing
+    if (entity) {
+      return (
+        <div style={{
+          transform: this.props.viewTransformation.asCSSTransform(),
+          position: 'absolute',
+          left: 0,
+          top: 0
+        }}>
+          {this.entityEditor(entity)}
+        </div>
+      )
+    } else {
+      return null
+    }
   }
 }

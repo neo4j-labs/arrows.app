@@ -63,29 +63,33 @@ export default class VisualNode {
       }
     }
 
-    switch (labelPosition) {
-      case 'inside':
-        this.insideComponents.push(this.labels =
-          new NodeLabelsInsideNode(node.labels, totalHeight(this.insideComponents), editing, style, measureTextContext))
-        break
+    if (hasLabels) {
+      switch (labelPosition) {
+        case 'inside':
+          this.insideComponents.push(this.labels =
+            new NodeLabelsInsideNode(node.labels, totalHeight(this.insideComponents), editing, style, measureTextContext))
+          break
 
-      default:
-        this.outsideComponents.push(this.labels = new NodeLabelsOutsideNode(
-          node.labels, this.radius, neighbourObstacles, editing, style, measureTextContext))
+        default:
+          this.outsideComponents.push(this.labels = new NodeLabelsOutsideNode(
+            node.labels, this.radius, neighbourObstacles, editing, style, measureTextContext))
+      }
     }
 
-    switch (propertyPosition) {
-      case 'inside':
-        this.insideComponents.push(this.properties = new NodePropertiesInside(
-          node.properties, totalHeight(this.insideComponents), editing, style, measureTextContext))
-        break
+    if (hasProperties) {
+      switch (propertyPosition) {
+        case 'inside':
+          this.insideComponents.push(this.properties = new NodePropertiesInside(
+            node.properties, totalHeight(this.insideComponents), editing, style, measureTextContext))
+          break
 
-      default:
-        this.outsideComponents.push(this.properties = new NodePropertiesStalk(node.properties, this.radius, obstacles, editing, style, measureTextContext))
+        default:
+          this.outsideComponents.push(this.properties = new NodePropertiesStalk(node.properties, this.radius, obstacles, editing, style, measureTextContext))
 
-        if (!this.properties.isEmpty) {
-          obstacles = [...neighbourObstacles, this.properties]
-        }
+          if (!this.properties.isEmpty) {
+            obstacles = [...neighbourObstacles, this.properties]
+          }
+      }
     }
 
     if (this.internalScaleFactor === undefined) {
