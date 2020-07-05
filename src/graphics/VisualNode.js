@@ -28,6 +28,8 @@ export default class VisualNode {
     })
     let obstacles = neighbourObstacles
 
+    this.internalVerticalOffset = 0
+    this.internalScaleFactor = undefined
     this.insideComponents = []
     this.outsideComponents = []
 
@@ -47,13 +49,11 @@ export default class VisualNode {
             this.insideComponents.push(this.caption =
               new NodeCaptionInsideNode(caption, style, measureTextContext))
           } else {
-            // use bisect here to determine scale factor
-            // this.scaleFactor = bisect((factor) => {
-            //   scaleFactor = factor
-            //   return insideComponents.map(factory => factory()).every(component => component.contentsFit)
-            // }, 1, 1e-6)
-            this.insideComponents.push(this.caption =
-              new NodeCaptionFillNode(caption, this.radius, style, measureTextContext))
+            this.internalScaleFactor = bisect((factor) => {
+              this.caption = new NodeCaptionFillNode(caption, this.radius / factor, style, measureTextContext)
+              return this.caption.contentsFit
+            }, 1, 1e-6)
+            this.insideComponents.push(this.caption)
           }
           break
         default:
@@ -89,9 +89,11 @@ export default class VisualNode {
         }
     }
 
-    this.internalVerticalOffset = -totalHeight(this.insideComponents) / 2
-    this.internalScaleFactor = everythingFits(this.insideComponents, this.internalVerticalOffset, this.internalRadius) ?
-      1 : scaleToFit(this.insideComponents, this.internalVerticalOffset, this.internalRadius)
+    if (this.internalScaleFactor === undefined) {
+      this.internalVerticalOffset = -totalHeight(this.insideComponents) / 2
+      this.internalScaleFactor = everythingFits(this.insideComponents, this.internalVerticalOffset, this.internalRadius) ?
+        1 : scaleToFit(this.insideComponents, this.internalVerticalOffset, this.internalRadius)
+    }
   }
 
   get id() {
