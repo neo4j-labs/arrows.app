@@ -53,8 +53,8 @@ export class NodeCaptionInsideNode {
     return new BoundingBox(
       -this.width / 2,
       this.width / 2,
-      -this.height / 2,
-      this.height / 2
+      0,
+      this.height
     )
   }
 
