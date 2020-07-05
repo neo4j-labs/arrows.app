@@ -21,6 +21,10 @@ export class NodeCaptionInsideNode {
     this.height = this.layout.lines.length * this.lineHeight
   }
 
+  get type() {
+    return 'CAPTION'
+  }
+
   draw(ctx) {
     if (this.editing) return
 

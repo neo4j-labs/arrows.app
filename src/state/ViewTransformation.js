@@ -27,6 +27,6 @@ export class ViewTransformation {
   }
 
   asCSSTransform() {
-    return `translate(${this.offset.dx}px,${this.offset.dy}px) scale(${this.scale})`
+    return `${this.offset.asCSSTransform()} scale(${this.scale})`
   }
 }

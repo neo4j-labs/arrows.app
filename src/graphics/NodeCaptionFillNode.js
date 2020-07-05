@@ -22,6 +22,10 @@ export class NodeCaptionFillNode {
     this.layout = fitTextToCircle(this.caption, Math.max(1, this.radius - padding), measureWidth, this.lineHeight)
   }
 
+  get type() {
+    return 'CAPTION'
+  }
+
   draw(ctx) {
     if (this.editing) return
 

@@ -9,6 +9,10 @@ export class NodePropertiesInside {
     this.boxPosition = new Point(-this.width / 2, verticalPosition)
   }
 
+  get type() {
+    return 'PROPERTIES'
+  }
+
   get isEmpty() {
     return this.propertiesBox.isEmpty
   }

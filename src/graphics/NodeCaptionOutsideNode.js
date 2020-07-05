@@ -24,6 +24,10 @@ export class NodeCaptionOutsideNode {
       new Vector(1, 0).rotate(this.orientation.angle).scale(radius + this.layout.margin))
   }
 
+  get type() {
+    return 'CAPTION'
+  }
+
   draw(ctx) {
     ctx.save()
 

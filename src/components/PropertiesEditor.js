@@ -15,7 +15,7 @@ export class PropertiesEditor extends Component {
 
   render() {
     const nodeProperties = this.props.visualNode.properties
-    const boxPosition = nodeProperties.boxPosition.translate(this.props.visualNode.position.vectorFromOrigin())
+    const boxPosition = nodeProperties.boxPosition
     const propertiesBox = nodeProperties.propertiesBox
     const { selection, onSetPropertyKey, onSetPropertyValue } = this.props
     return (

@@ -34,6 +34,10 @@ export class NodeLabelsOutsideNode {
     }
   }
 
+  get type() {
+    return 'LABELS'
+  }
+
   get isEmpty() {
     return this.pills.length === 0
   }

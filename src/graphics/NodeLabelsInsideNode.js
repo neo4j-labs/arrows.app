@@ -27,6 +27,10 @@ export class NodeLabelsInsideNode {
       margin * (this.pills.length - 1)
   }
 
+  get type() {
+    return 'LABELS'
+  }
+
   get isEmpty() {
     return this.pills.length === 0
   }

@@ -18,7 +18,7 @@ export class LabelsEditor extends Component {
     return (
       <div>
         {nodeLabels.pills.map((pill, index) => {
-          const position = this.props.visualNode.position.translate(nodeLabels.pillPositions[index])
+          const position = nodeLabels.pillPositions[index]
           const lineHeight = pill.font.fontSize * 1.2
           return (
             <input
@@ -28,8 +28,8 @@ export class LabelsEditor extends Component {
               style={{
                 position: 'absolute',
                 padding: 0,
-                left: position.x + pill.radius,
-                top: position.y + pill.radius - lineHeight / 2,
+                left: position.dx + pill.radius,
+                top: position.dy + pill.radius - lineHeight / 2,
                 width: pill.width + padding,
                 height: lineHeight,
                 resize: 'none',

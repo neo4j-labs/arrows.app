@@ -20,6 +20,10 @@ export class NodePropertiesStalk {
       .translate(new Vector(this.alignment.horizontal === 'right' ? -this.propertiesBox.boxWidth : 0, 0))
   }
 
+  get type() {
+    return 'PROPERTIES'
+  }
+
   get isEmpty() {
     return this.propertiesBox.isEmpty
   }
