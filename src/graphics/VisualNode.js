@@ -58,7 +58,7 @@ export default class VisualNode {
           break
         default:
           this.outsideComponents.push(this.caption = new NodeCaptionOutsideNode(
-            caption, this.radius, captionPosition, style, measureTextContext))
+            caption, this.radius, captionPosition, editing, style, measureTextContext))
           break
       }
     }

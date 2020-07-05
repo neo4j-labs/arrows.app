@@ -7,8 +7,9 @@ import {green} from "../model/colors";
 import {originPoint} from "../model/Point";
 
 export class NodeCaptionOutsideNode {
-  constructor(caption, radius, captionPosition, style, textMeasurement) {
+  constructor(caption, radius, captionPosition, editing, style, textMeasurement) {
     this.caption = caption
+    this.editing = editing
     this.font = {
       fontWeight: style('caption-font-weight'),
       fontSize: style('caption-font-size'),
@@ -29,6 +30,8 @@ export class NodeCaptionOutsideNode {
   }
 
   draw(ctx) {
+    if (this.editing) return
+
     ctx.save()
 
     ctx.fillStyle = this.fontColor
