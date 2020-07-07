@@ -3,7 +3,6 @@ import {setGraphStyle} from "../actions/graph";
 import GeneralInspector from "../components/GeneralInspector";
 import {
   hideInspector,
-  showInspector,
   setBetaFeaturesEnabled,
   setPersistClusters
 } from "../actions/applicationLayout";
@@ -21,7 +20,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
   return {
     hideInspector: () => dispatch(hideInspector()),
-    showInspector: () => dispatch(showInspector()),
     onSaveGraphStyle: (key, value) => dispatch(setGraphStyle(key, value)),
     onSetBetaFeaturesEnabled: enabled => dispatch(setBetaFeaturesEnabled(enabled)),
     onSetPersistClusters: enabled => dispatch(setPersistClusters(enabled))
