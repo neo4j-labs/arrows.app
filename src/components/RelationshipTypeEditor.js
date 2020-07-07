@@ -27,6 +27,7 @@ export class RelationshipTypeEditor extends PureComponent {
       <input
         ref={this.input}
         value={text}
+        onKeyDown={this.props.onKeyDown}
         onChange={this.handleChange}
         style={{
           position: 'absolute',

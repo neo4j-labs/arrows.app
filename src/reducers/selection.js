@@ -47,10 +47,16 @@ export default function selection(state = {
   entities: []
 }, action) {
   switch (action.type) {
-    case 'EDIT':
+    case 'ACTIVATE_EDITING':
       return {
         editing: action.editing,
         entities: toggleEntities(state.entities, [action.editing], 'at-least')
+      }
+
+    case 'DEACTIVATE_EDITING':
+      return {
+        editing: undefined,
+        entities: state.entities
       }
 
     case 'TOGGLE_SELECTION':

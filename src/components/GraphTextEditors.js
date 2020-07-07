@@ -41,6 +41,7 @@ export class GraphTextEditors extends Component {
             <RelationshipTypeEditor
               visualRelationship={visualRelationship}
               onSetRelationshipType={(type) => this.props.onSetRelationshipType(this.props.selection, type)}
+              onKeyDown={this.handleKeyDown}
             />
           )
         }
@@ -57,6 +58,7 @@ export class GraphTextEditors extends Component {
             key={'caption-' + visualNode.id}
             visualNode={visualNode}
             onSetNodeCaption={(caption) => this.props.onSetNodeCaption(this.props.selection, caption)}
+            onKeyDown={this.handleKeyDown}
           />
         )
       case 'LABELS':
@@ -67,6 +69,7 @@ export class GraphTextEditors extends Component {
             selection={this.props.selection}
             onAddLabel={this.props.onAddLabel}
             onRenameLabel={this.props.onRenameLabel}
+            onKeyDown={this.handleKeyDown}
           />
         )
       case 'PROPERTIES':
@@ -77,6 +80,7 @@ export class GraphTextEditors extends Component {
             selection={this.props.selection}
             onSetPropertyKey={this.props.onSetPropertyKey}
             onSetPropertyValue={this.props.onSetPropertyValue}
+            onKeyDown={this.handleKeyDown}
           />
         )
     }
@@ -97,6 +101,12 @@ export class GraphTextEditors extends Component {
       )
     } else {
       return null
+    }
+  }
+
+  handleKeyDown = (e) => {
+    if (e.key === 'Escape' || (e.key === 'Enter' && e.metaKey)) {
+      this.props.onExit()
     }
   }
 }

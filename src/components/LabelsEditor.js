@@ -21,6 +21,7 @@ export class LabelsEditor extends Component {
         <input
           key={'pill-' + index}
           value={pill.text}
+          onKeyDown={this.props.onKeyDown}
           onChange={(e) => onRenameLabel(selection, pill.text, e.target.value)}
           style={{
             position: 'absolute',

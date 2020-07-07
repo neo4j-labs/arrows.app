@@ -44,6 +44,7 @@ export class CaptionEditor extends Component {
       <textarea
         ref={this.textArea}
         value={textLines.join('\n')}
+        onKeyDown={this.props.onKeyDown}
         onChange={this.handleChange}
         style={{
           position: 'absolute',

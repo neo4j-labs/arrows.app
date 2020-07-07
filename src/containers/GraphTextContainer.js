@@ -5,6 +5,7 @@ import {
 import {getVisualGraph} from "../selectors"
 import {GraphTextEditors} from "../components/GraphTextEditors";
 import React from "react";
+import {deactivateEditing} from "../actions/selection";
 
 const mapStateToProps = state => {
   return {
@@ -16,6 +17,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onExit: () => {
+      dispatch(deactivateEditing())
+    },
     onAddLabel: (selection, label) => {
       dispatch(addLabel(selection, label))
     },

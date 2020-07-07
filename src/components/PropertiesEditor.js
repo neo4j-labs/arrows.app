@@ -27,6 +27,7 @@ export class PropertiesEditor extends Component {
           width={propertiesBox.keysWidth}
           font={propertiesBox.font}
           onSetPropertyKey={key => onSetPropertyKey(selection, property.key, key)}
+          onKeyDown={this.props.onKeyDown}
         />,
         <PropertyValueEditor
           key={'value-' + index}
@@ -36,6 +37,7 @@ export class PropertiesEditor extends Component {
           width={propertiesBox.valuesWidth}
           font={propertiesBox.font}
           onSetPropertyValue={value => onSetPropertyValue(selection, property.key, value)}
+          onKeyDown={this.props.onKeyDown}
         />
       ]
     })

@@ -1,6 +1,5 @@
 import { getVisualGraph, getTransformationHandles, getPositionsOfSelectedNodes } from "../selectors/"
-import {clearSelection, edit, toggleSelection} from "./selection"
-import { showInspector } from "./applicationLayout";
+import {clearSelection, activateEditing, toggleSelection} from "./selection"
 import {
   connectNodes,
   createNodeAndRelationship,
@@ -8,7 +7,7 @@ import {
   tryMoveNode,
   tryMoveHandle
 } from "./graph"
-import {adjustViewport, pan, scroll} from "./viewTransformation"
+import {adjustViewport, scroll} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {selectItemsInMarquee, setMarquee} from "./selectionMarquee"
 import { getEventHandlers } from "../selectors/layers";
@@ -36,7 +35,7 @@ export const doubleClick = (canvasPosition) => {
     const graphPosition = toGraphPosition(state, canvasPosition)
     const item = visualGraph.entityAtPoint(graphPosition)
     if (item) {
-      dispatch(edit(item))
+      dispatch(activateEditing(item))
     }
   }
 }
