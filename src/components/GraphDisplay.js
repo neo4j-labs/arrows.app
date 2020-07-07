@@ -9,7 +9,7 @@ import {
   MOVE_DOWN,
   SELECT_ALL,
   UNDO,
-  REDO
+  REDO, TOGGLE_FOCUS
 } from "../interactions/Keybindings";
 import MouseHandler from "../interactions/MouseHandler";
 import GraphTextContainer from "../containers/GraphTextContainer";
@@ -44,6 +44,10 @@ class GraphDisplay extends Component {
     props.registerAction(
       MOVE_DOWN,
       (extraKeys) => props.jumpToNextNode('DOWN', extraKeys)
+    )
+    props.registerAction(
+      TOGGLE_FOCUS,
+      () => props.tryActivateEditing()
     )
 
     this.registerOptionalActions(props)

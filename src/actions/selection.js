@@ -6,6 +6,15 @@ export const activateEditing = (entity) => ({
   editing: entity
 })
 
+export const tryActivateEditing = () => {
+  return function (dispatch, getState) {
+    const selection = getState().selection
+    if (selection.editing === undefined && selection.entities.length > 0) {
+      dispatch(activateEditing(selection.entities[selection.entities.length - 1]))
+    }
+  }
+}
+
 export const deactivateEditing = () => ({
   type: 'DEACTIVATE_EDITING'
 })
