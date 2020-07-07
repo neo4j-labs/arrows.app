@@ -223,6 +223,20 @@ const graph = (state = emptyGraph(), action) => {
     case 'FETCHING_GRAPH_SUCCEEDED':
       return action.storedGraph
 
+    case 'ACTIVATE_EDITING':
+      if (action.editing.entityType === 'node') {
+        const nodeId = action.editing.id
+        const node = state.nodes.find(node => node.id === nodeId)
+        if (!node.caption && node.labels.length === 0 && Object.keys(node.properties).length === 0) {
+          return {
+            style: state.style,
+            nodes: state.nodes.map((node) => node.id === nodeId ? setCaption(node, ' ') : node),
+            relationships: state.relationships
+          }
+        }
+      }
+      return state
+
     default:
       return state
   }
