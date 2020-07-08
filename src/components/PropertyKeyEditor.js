@@ -11,6 +11,7 @@ export class PropertyKeyEditor extends Component {
     return (
       <input
         value={this.props.text}
+        onKeyDown={this.props.onKeyDown}
         onChange={this.handleChange}
         style={{
           position: 'absolute',

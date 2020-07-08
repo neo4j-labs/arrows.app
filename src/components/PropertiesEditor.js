@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import { Button } from 'semantic-ui-react'
 import {PropertyKeyEditor} from "./PropertyKeyEditor";
 import {PropertyValueEditor} from "./PropertyValueEditor";
 
@@ -17,46 +16,30 @@ export class PropertiesEditor extends Component {
     const nodeProperties = this.props.visualNode.properties
     const boxPosition = nodeProperties.boxPosition
     const propertiesBox = nodeProperties.propertiesBox
-    const { selection, onSetPropertyKey, onSetPropertyValue } = this.props
-    return (
-      <div>
-        {nodeProperties.propertiesBox.properties.map((property, index) => {
-          return [
-            <PropertyKeyEditor
-              key={'key-' + index}
-              text={property.key}
-              left={boxPosition.x}
-              top={boxPosition.y + index * propertiesBox.lineHeight}
-              width={propertiesBox.keysWidth}
-              font={propertiesBox.font}
-              onSetPropertyKey={key => onSetPropertyKey(selection, property.key, key)}
-            />,
-            <PropertyValueEditor
-              key={'value-' + index}
-              text={property.value}
-              left={boxPosition.x + propertiesBox.keysWidth + propertiesBox.colonWidth + propertiesBox.spaceWidth}
-              top={boxPosition.y + index * propertiesBox.lineHeight}
-              width={propertiesBox.valuesWidth}
-              font={propertiesBox.font}
-              onSetPropertyValue={value => onSetPropertyValue(selection, property.key, value)}
-            />
-          ]
-        })}
-        <Button
-          basic
-          key='addProperty'
-          onClick={() => onSetPropertyValue(selection, '', '')}
-          size="tiny"
-          icon="plus"
-          content='Property'
-          type='button'
-          style={{
-            position: 'absolute',
-            left: boxPosition.x,
-            top: boxPosition.y + propertiesBox.boxHeight
-          }}
+    const {selection, onSetPropertyKey, onSetPropertyValue} = this.props
+    return nodeProperties.propertiesBox.properties.map((property, index) => {
+      return [
+        <PropertyKeyEditor
+          key={'key-' + index}
+          text={property.key}
+          left={boxPosition.x}
+          top={boxPosition.y + index * propertiesBox.lineHeight}
+          width={propertiesBox.keysWidth}
+          font={propertiesBox.font}
+          onSetPropertyKey={key => onSetPropertyKey(selection, property.key, key)}
+          onKeyDown={this.props.onKeyDown}
+        />,
+        <PropertyValueEditor
+          key={'value-' + index}
+          text={property.value}
+          left={boxPosition.x + propertiesBox.keysWidth + propertiesBox.colonWidth + propertiesBox.spaceWidth}
+          top={boxPosition.y + index * propertiesBox.lineHeight}
+          width={propertiesBox.valuesWidth}
+          font={propertiesBox.font}
+          onSetPropertyValue={value => onSetPropertyValue(selection, property.key, value)}
+          onKeyDown={this.props.onKeyDown}
         />
-      </div>
-    )
+      ]
+    })
   }
 }

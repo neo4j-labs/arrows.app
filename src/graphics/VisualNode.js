@@ -9,6 +9,8 @@ import {NodeCaptionOutsideNode} from "./NodeCaptionOutsideNode";
 import {NodePropertiesInside} from "./NodePropertiesInside";
 import {bisect} from "./bisect";
 import {NodeLabelsInsideNode} from "./NodeLabelsInsideNode";
+import {NodeCaptionFillNode} from "./NodeCaptionFillNode";
+import {everythingFits, scaleToFit, totalHeight} from "./fitComponentsInsideNode";
 
 export default class VisualNode {
   constructor(node, graph, selected, editing, measureTextContext) {
@@ -26,64 +28,75 @@ export default class VisualNode {
     })
     let obstacles = neighbourObstacles
 
-    const insideComponents = []
-    let scaleFactor = 1
+    this.internalVerticalOffset = 0
+    this.internalScaleFactor = undefined
+    this.insideComponents = []
+    this.outsideComponents = []
 
+    const captionPosition = style('caption-position')
     const labelPosition = style('label-position')
     const propertyPosition = style('property-position')
-    const captionPosition = style('caption-position')
-
-    switch (labelPosition) {
-      case 'inside':
-        insideComponents.push(() => {
-          const verticalAlignment = propertyPosition === 'inside' && Object.keys(node.properties).length > 0 ? 'top' : 'middle'
-          return this.labels = new NodeLabelsInsideNode(
-            node.labels, node.position, this.radius, scaleFactor, verticalAlignment, [], editing, style, measureTextContext
-          )
-        })
-        break
-
-      default:
-        this.labels = new NodeLabelsOutsideNode(
-          node.labels, this.radius, node.position, neighbourObstacles, editing, style, measureTextContext
-        )
-    }
-
-    switch (propertyPosition) {
-      case 'inside':
-        insideComponents.push(() => {
-          // const otherComponents = labelPosition === 'inside' && this.labels.isEmpty ? [] : [this.labels]
-          return this.properties = new NodePropertiesInside(
-            node.properties, this.radius, scaleFactor, node.position, 'middle', editing, style, measureTextContext
-          )
-        })
-        break
-
-      default:
-        this.properties = new NodePropertiesStalk(
-          node.properties, this.radius, node.position, obstacles, editing, style, measureTextContext
-        )
-        if (!this.properties.isEmpty) {
-          obstacles = [...neighbourObstacles, this.properties]
-        }
-    }
+    const hasCaption = !!node.caption
+    const hasLabels = node.labels.length > 0
+    const hasProperties = Object.keys(node.properties).length > 0
 
     const caption = node.caption || ''
-    switch (captionPosition) {
-      case 'inside':
-        insideComponents.push(() => {
-          return this.caption = new NodeCaptionInsideNode(caption, node.position, this.radius, scaleFactor, style, measureTextContext)
-        })
-        break
-      default:
-        this.caption = new NodeCaptionOutsideNode(caption, node.position, this.radius, captionPosition, style, measureTextContext)
-        break
+    if (hasCaption) {
+      switch (captionPosition) {
+        case 'inside':
+          if ((hasLabels && labelPosition === 'inside') ||
+            (hasProperties && propertyPosition === 'inside')) {
+            this.insideComponents.push(this.caption =
+              new NodeCaptionInsideNode(caption, editing, style, measureTextContext))
+          } else {
+            this.internalScaleFactor = bisect((factor) => {
+              this.caption = new NodeCaptionFillNode(caption, this.radius / factor, editing, style, measureTextContext)
+              return this.caption.contentsFit
+            }, 1, 1e-6)
+            this.insideComponents.push(this.caption)
+          }
+          break
+        default:
+          this.outsideComponents.push(this.caption = new NodeCaptionOutsideNode(
+            caption, this.radius, captionPosition, editing, style, measureTextContext))
+          break
+      }
     }
 
-    this.scaleFactor = bisect((factor) => {
-      scaleFactor = factor
-      return insideComponents.map(factory => factory()).every(component => component.contentsFit)
-    }, 1, 1e-6)
+    if (hasLabels) {
+      switch (labelPosition) {
+        case 'inside':
+          this.insideComponents.push(this.labels =
+            new NodeLabelsInsideNode(node.labels, totalHeight(this.insideComponents), editing, style, measureTextContext))
+          break
+
+        default:
+          this.outsideComponents.push(this.labels = new NodeLabelsOutsideNode(
+            node.labels, this.radius, neighbourObstacles, editing, style, measureTextContext))
+      }
+    }
+
+    if (hasProperties) {
+      switch (propertyPosition) {
+        case 'inside':
+          this.insideComponents.push(this.properties = new NodePropertiesInside(
+            node.properties, totalHeight(this.insideComponents), editing, style, measureTextContext))
+          break
+
+        default:
+          this.outsideComponents.push(this.properties = new NodePropertiesStalk(node.properties, this.radius, obstacles, editing, style, measureTextContext))
+
+          if (!this.properties.isEmpty) {
+            obstacles = [...neighbourObstacles, this.properties]
+          }
+      }
+    }
+
+    if (this.internalScaleFactor === undefined) {
+      this.internalVerticalOffset = -totalHeight(this.insideComponents) / 2
+      this.internalScaleFactor = everythingFits(this.insideComponents, this.internalVerticalOffset, this.internalRadius) ?
+        1 : scaleToFit(this.insideComponents, this.internalVerticalOffset, this.internalRadius)
+    }
   }
 
   get id() {
@@ -110,10 +123,6 @@ export default class VisualNode {
     return this.node.initialPositions
   }
 
-  get contentsFit() {
-    return this.scaleFactor === 1
-  }
-
   draw(ctx) {
     if (this.status === 'combined') {
       return
@@ -121,16 +130,35 @@ export default class VisualNode {
 
     if (this.selected) {
       this.background.drawSelectionIndicator(ctx)
-      this.caption.drawSelectionIndicator(ctx)
-      this.labels.drawSelectionIndicator(ctx)
-      this.properties.drawSelectionIndicator(ctx)
+
+      ctx.save()
+      ctx.translate(...this.position.xy)
+
+      this.outsideComponents.forEach(component => {
+        component.drawSelectionIndicator(ctx)
+      })
+
+      ctx.restore()
     }
+
     this.background.draw(ctx)
-    if (!this.editing) {
-      this.caption.draw(ctx)
-    }
-    this.labels.draw(ctx)
-    this.properties.draw(ctx)
+
+    ctx.save()
+    ctx.translate(...this.position.xy)
+
+    ctx.save()
+    ctx.scale(this.internalScaleFactor);
+    ctx.translate(0, this.internalVerticalOffset);
+
+    this.insideComponents.forEach(component => {
+      component.draw(ctx)
+    })
+    ctx.restore()
+
+    this.outsideComponents.forEach(component => {
+      component.draw(ctx)
+    })
+    ctx.restore()
   }
 
   boundingBox() {
@@ -141,27 +169,18 @@ export default class VisualNode {
       this.position.y + this.radius
     )
 
-    if (this.caption) {
-      box = box.combine(this.caption.boundingBox())
-    }
-
-    if (!this.labels.isEmpty) {
-      box = box.combine(this.labels.boundingBox())
-    }
-
-    if (!this.properties.isEmpty) {
-      box = box.combine(this.properties.boundingBox())
-    }
+    this.outsideComponents.forEach(component => {
+      box = box.combine(component.boundingBox().translate(this.position.vectorFromOrigin()))
+    })
 
     return box
   }
 
   distanceFrom(point) {
+    const localPoint = point.translate(this.position.vectorFromOrigin().invert())
     return Math.min(
       this.position.vectorFrom(point).distance(),
-      this.caption.distanceFrom(point),
-      this.labels.distanceFrom(point),
-      this.properties.distanceFrom(point)
+      ...this.outsideComponents.map(component => component.distanceFrom(localPoint))
     )
   }
 }

@@ -7,28 +7,14 @@ import {describeSelection} from "./SelectionCounters"
 import PropertyTable from "./PropertyTable"
 import StyleTable from "./StyleTable"
 import {headerHeight} from "../model/applicationLayout"
-import { compose } from "recompose"
-import withKeybindings, { TOGGLE_FOCUS } from "../interactions/Keybindings"
 import { DetailToolbox } from "./DetailToolbox"
 import {styleGroups, styleAttributes} from "../model/styling";
 import {combineLabels} from "../model/labels";
 import LabelTable from "./LabelTable";
 
-class DetailInspector extends Component {
+export default class DetailInspector extends Component {
   constructor(props) {
     super(props)
-
-    props.registerAction(
-      TOGGLE_FOCUS,
-      () => {
-        if (!this.props.inspectorVisible) {
-          this.props.showInspector()
-        } else {
-          if (document.activeElement.tagName === 'BODY') {
-            this.captionInput && this.captionInput.focus()
-          }
-        }
-      })
   }
 
   moveCursorToEnd(e) {
@@ -158,8 +144,4 @@ class DetailInspector extends Component {
     )
   }
 }
-
-export default compose(
-  withKeybindings
-)(DetailInspector)
 

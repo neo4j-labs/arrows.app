@@ -42,4 +42,8 @@ export class Vector {
   get dxdy() {
     return [this.dx, this.dy]
   }
+
+  asCSSTransform() {
+    return `translate(${this.dx}px,${this.dy}px)`
+  }
 }

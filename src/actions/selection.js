@@ -1,9 +1,22 @@
 import { getPresentGraph } from "../selectors"
 import {nodeSelected, selectedNodeIds} from "../model/selection";
 
-export const edit = (entity) => ({
-  type: 'EDIT',
+export const activateEditing = (entity) => ({
+  type: 'ACTIVATE_EDITING',
   editing: entity
+})
+
+export const tryActivateEditing = () => {
+  return function (dispatch, getState) {
+    const selection = getState().selection
+    if (selection.editing === undefined && selection.entities.length > 0) {
+      dispatch(activateEditing(selection.entities[selection.entities.length - 1]))
+    }
+  }
+}
+
+export const deactivateEditing = () => ({
+  type: 'DEACTIVATE_EDITING'
 })
 
 export const toggleSelection = (entities, mode) => ({

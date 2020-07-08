@@ -5,8 +5,7 @@ import Pill from "./Pill";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class NodeLabelsOutsideNode {
-  constructor(labels, nodeRadius, nodePosition, obstacles, editing, style, textMeasurement) {
-    this.nodePosition = nodePosition
+  constructor(labels, nodeRadius, obstacles, editing, style, textMeasurement) {
     this.angle = distribute([
       {preferredAngles: [Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'labels'}
     ], obstacles)[0].angle
@@ -35,6 +34,10 @@ export class NodeLabelsOutsideNode {
     }
   }
 
+  get type() {
+    return 'LABELS'
+  }
+
   get isEmpty() {
     return this.pills.length === 0
   }
@@ -44,7 +47,7 @@ export class NodeLabelsOutsideNode {
     for (let i = 0; i < this.pills.length; i++) {
       ctx.save()
 
-      ctx.translate(...this.nodePosition.translate(this.pillPositions[i]).xy)
+      ctx.translate(...this.pillPositions[i].dxdy)
       this.pills[i].draw(ctx)
 
       ctx.restore()
@@ -55,7 +58,7 @@ export class NodeLabelsOutsideNode {
     for (let i = 0; i < this.pills.length; i++) {
       ctx.save()
 
-      ctx.translate(...this.nodePosition.translate(this.pillPositions[i]).xy)
+      ctx.translate(...this.pillPositions[i].dxdy)
       this.pills[i].drawSelectionIndicator(ctx)
 
       ctx.restore()
@@ -64,14 +67,12 @@ export class NodeLabelsOutsideNode {
 
   boundingBox() {
     return combineBoundingBoxes(this.pills.map((pill, i) => pill.boundingBox()
-      .translate(this.nodePosition.vectorFromOrigin())
       .translate(this.pillPositions[i])))
   }
 
   distanceFrom(point) {
     return this.pills.some((pill, i) => {
-      const localPoint = point.translate(this.nodePosition.vectorFromOrigin().invert())
-        .translate(this.pillPositions[i].invert())
+      const localPoint = point.translate(this.pillPositions[i].invert())
       return pill.contains(localPoint);
     }) ? 0 : Infinity
   }
