@@ -1,4 +1,4 @@
-import {green} from "../model/colors";
+import {selectionBorder} from "../model/colors";
 import arrowHead from "./arrowHead";
 import {Vector} from "../model/Vector";
 import {SeekAndDestroy} from "./SeekAndDestroy";
@@ -118,7 +118,7 @@ export class RectilinearArrow {
     this.shaft.draw(ctx)
     ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth
     ctx.lineCap = 'round'
-    ctx.strokeStyle = green
+    ctx.strokeStyle = selectionBorder
     ctx.stroke()
     ctx.translate(...this.endShaft.xy)
     ctx.rotate(this.shaft.endDirection)

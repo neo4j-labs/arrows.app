@@ -1,5 +1,5 @@
 import {getDistanceToLine} from "./utils/geometryUtils";
-import {green} from "../model/colors";
+import {selectionBorder} from "../model/colors";
 import arrowHead from "./arrowHead";
 import {Point} from "../model/Point";
 import {normaliseAngle} from "./utils/angles";
@@ -52,7 +52,7 @@ export class StraightArrow {
     ctx.lineTo(this.endShaft.x, this.endShaft.y)
     ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth
     ctx.lineCap = 'round'
-    ctx.strokeStyle = green
+    ctx.strokeStyle = selectionBorder
     ctx.stroke()
     ctx.translate(this.endAttach.x, this.endAttach.y)
     ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle())

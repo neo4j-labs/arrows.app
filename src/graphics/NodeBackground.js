@@ -1,4 +1,4 @@
-import {green} from "../model/colors";
+import {selectionBorder} from "../model/colors";
 
 export class NodeBackground {
   constructor(position, internalRadius, style) {
@@ -21,7 +21,7 @@ export class NodeBackground {
   drawSelectionIndicator(ctx) {
     ctx.save()
     const indicatorWidth = 10
-    ctx.strokeStyle = green
+    ctx.strokeStyle = selectionBorder
     ctx.lineWidth = indicatorWidth
     ctx.circle(this.position.x, this.position.y, this.internalRadius + this.borderWidth, false, true)
     ctx.restore()

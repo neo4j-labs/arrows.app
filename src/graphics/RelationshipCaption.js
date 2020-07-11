@@ -1,4 +1,4 @@
-import {green} from "../model/colors";
+import {selectionBorder} from "../model/colors";
 import {Point} from "../model/Point";
 import {getDistanceToLine} from "./utils/geometryUtils";
 import {oppositeHorizontalAlignment, textAlignmentAtAngle} from "./circumferentialTextAlignment";
@@ -79,7 +79,7 @@ export class RelationshipCaption {
       ctx.translate(...this.midPoint.xy)
       ctx.rotate(this.textAngle)
       ctx.translate(...this.offset.dxdy)
-      ctx.strokeStyle = green
+      ctx.strokeStyle = selectionBorder
       ctx.lineWidth = indicatorWidth
       ctx.rect(
         -this.borderWidth / 2,

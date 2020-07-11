@@ -1,7 +1,7 @@
 import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
 import {drawTextLine} from "./canvasRenderer";
-import {green} from "../model/colors";
+import {selectionBorder} from "../model/colors";
 
 export class PropertiesBox {
   constructor(properties, editing, style, textMeasurement) {
@@ -62,7 +62,7 @@ export class PropertiesBox {
 
     ctx.save()
 
-    ctx.strokeStyle = green
+    ctx.strokeStyle = selectionBorder
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
     ctx.rect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height, 0, false, true)

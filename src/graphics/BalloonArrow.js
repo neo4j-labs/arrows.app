@@ -1,7 +1,7 @@
 import {Point} from "../model/Point";
 import arrowHead from "./arrowHead";
 import BoundingBox from "./utils/BoundingBox";
-import {green} from "../model/colors";
+import {selectionBorder} from "../model/colors";
 import {perpendicular} from "./utils/angles";
 
 export class BalloonArrow {
@@ -56,7 +56,7 @@ export class BalloonArrow {
     this.path(ctx)
     ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth
     ctx.lineCap = 'round'
-    ctx.strokeStyle = green
+    ctx.strokeStyle = selectionBorder
     ctx.stroke()
     ctx.rotate(Math.PI + this.deflection)
     ctx.translate(-this.nodeRadius, 0)

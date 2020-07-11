@@ -2,7 +2,7 @@ import {Vector} from "../model/Vector";
 import {distribute} from "./circumferentialDistribution";
 import {textAlignmentAtAngle} from "./circumferentialTextAlignment";
 import {PropertiesBox} from "./PropertiesBox";
-import {green} from "../model/colors";
+import {selectionBorder} from "../model/colors";
 import {originPoint} from "../model/Point";
 
 export class NodePropertiesStalk {
@@ -50,7 +50,7 @@ export class NodePropertiesStalk {
     if (!this.isEmpty) {
       const indicatorWidth = 10
       ctx.save()
-      ctx.strokeStyle = green
+      ctx.strokeStyle = selectionBorder
       ctx.lineWidth = indicatorWidth
       ctx.lineJoin = 'round'
       ctx.polyLine([

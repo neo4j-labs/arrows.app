@@ -1,7 +1,7 @@
 import {Point} from "../model/Point";
 import {drawSolidRectangle} from "./canvasRenderer";
 import {Vector} from "../model/Vector";
-import {green} from "../model/colors";
+import {selectionHandle} from "../model/colors";
 import {selectedNodeIds} from "../model/selection";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
@@ -73,7 +73,7 @@ export default class TransformationHandles {
 
   draw(ctx) {
     this.handles.forEach(handle => {
-      drawSolidRectangle(ctx, handle.topLeft, handleSize, handleSize, 3, green)
+      drawSolidRectangle(ctx, handle.topLeft, handleSize, handleSize, 3, selectionHandle)
       drawSolidRectangle(
         ctx, handle.topLeft.translate(new Vector(
           (handle.corner.x === 'min' ? (handleSize) / 2 : handlePadding),

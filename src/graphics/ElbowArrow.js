@@ -1,4 +1,4 @@
-import {green} from "../model/colors";
+import {selectionBorder} from "../model/colors";
 import arrowHead from "./arrowHead";
 import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
@@ -71,7 +71,7 @@ export class ElbowArrow {
     this.path.draw(ctx)
     ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth
     ctx.lineCap = 'round'
-    ctx.strokeStyle = green
+    ctx.strokeStyle = selectionBorder
     ctx.stroke()
     ctx.translate(...this.path.end.xy)
     ctx.rotate(this.path.endDirection)
