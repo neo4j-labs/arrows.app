@@ -13,8 +13,7 @@ const observedActionTypes = [
   'DUPLICATE_NODES_AND_RELATIONSHIPS',
   'DELETE_NODES_AND_RELATIONSHIPS',
   'WINDOW_RESIZED',
-  'SHOW_INSPECTOR',
-  'HIDE_INSPECTOR'
+  'TOGGLE_INSPECTOR'
 ]
 
 export const calculateScaling = (visualGraph, canvasSize, viewTransformation, action) => {

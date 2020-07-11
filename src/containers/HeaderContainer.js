@@ -2,10 +2,10 @@ import {connect} from 'react-redux'
 import {createNode} from '../actions/graph'
 import Header from '../components/Header'
 import {editConnectionParameters} from "../actions/databaseConnection";
-import {showInspector} from "../actions/applicationLayout";
+import {toggleInspector} from "../actions/applicationLayout";
 import {setDiagramName} from "../actions/diagramName";
 import {showExportDialog, showHelpDialog} from "../actions/applicationDialogs";
-import { newDiagram, openDiagram } from "../actions/diagram";
+import { newDiagram } from "../actions/diagram";
 import {reloadGraph} from "../actions/storage";
 
 const mapStateToProps = state => {
@@ -25,7 +25,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(setDiagramName(diagramName))
     },
     showInspector: () => {
-      dispatch(showInspector())
+      dispatch(toggleInspector())
     },
     onPlusNodeClick: () => {
       dispatch(createNode())

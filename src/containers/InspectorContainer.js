@@ -4,7 +4,6 @@ import {
   setArrowsProperty, removeArrowsProperty, reverseRelationships, addLabel, renameLabel, removeLabel
 } from "../actions/graph";
 import DetailInspector from "../components/DetailInspector"
-import {hideInspector} from "../actions/applicationLayout";
 import { getSelectedNodes } from "../selectors/inspection";
 import { getPresentGraph } from "../selectors"
 
@@ -20,9 +19,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    hideInspector: () => {
-      dispatch(hideInspector())
-    },
     onAddLabel: (selection, label) => {
       dispatch(addLabel(selection, label))
     },

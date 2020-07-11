@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Form, Input, Menu, Icon} from 'semantic-ui-react'
+import {Segment, Form, Input, Menu} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
 import {selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle} from "../model/properties"
@@ -127,12 +127,6 @@ export default class DetailInspector extends Component {
           attached='top'
           style={{borderRadius: 0, width: '100%'}}>
           {describeSelection(selection, headerHeight)}
-          <Menu.Item
-            position='right'
-            onClick={this.props.hideInspector}
-          >
-            <Icon name='angle double right'/>
-          </Menu.Item>
         </Menu>
         <DetailToolbox selection={selection} onReverseRelationships={reverseRelationships} />
         <Segment basic style={{margin: 0}}>

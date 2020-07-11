@@ -32,12 +32,6 @@ export default class GeneralInspector extends Component {
             <Icon name='square outline'/>
             Graph
           </Menu.Item>
-          <Menu.Item
-            position='right'
-            onClick={this.props.hideInspector}
-          >
-            <Icon name='angle double right'/>
-          </Menu.Item>
         </Menu>
         <Segment basic style={{margin: 0}}>
           <Form style={{textAlign: 'left'}}>

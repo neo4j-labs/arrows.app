@@ -44,31 +44,33 @@ class App extends Component {
     const googleDriveModal = viewingOpenDiagram ? <GoogleDrivePicker onCancelPicker={onCancelPicker } onFilePicked={loadFromGoogleDrive} /> : null
 
     return (
-      <Sidebar.Pushable>
+      <div>
+        {storageConfigModal}
+        {databaseConnectionModal}
+        {databaseConnectionMessageModal}
+        {exportModal}
+        {googleDriveModal}
+        <GoogleSignInModal/>
+        <HelpModal/>
+        <HeaderContainer/>
+        <Sidebar.Pushable>
 
-        <Sidebar
-          animation='overlay'
-          direction='right'
-          visible={inspectorVisible}
-          style={{'backgroundColor': 'white', width: inspectorWidth + 'px'}}
-        >
-          <InspectorChooser/>
-        </Sidebar>
+          <Sidebar
+            animation='overlay'
+            direction='right'
+            visible={inspectorVisible}
+            style={{'backgroundColor': 'white', width: inspectorWidth + 'px'}}
+          >
+            <InspectorChooser/>
+          </Sidebar>
 
-        <Sidebar.Pusher
-          style={{height: '100%'}}
-        >
-          {storageConfigModal}
-          {databaseConnectionModal}
-          {databaseConnectionMessageModal}
-          {exportModal}
-          {googleDriveModal}
-          <GoogleSignInModal/>
-          <HelpModal/>
-          <HeaderContainer/>
-          <GraphContainer/>
-        </Sidebar.Pusher>
-      </Sidebar.Pushable>
+          <Sidebar.Pusher
+            style={{height: '100%'}}
+          >
+            <GraphContainer/>
+          </Sidebar.Pusher>
+        </Sidebar.Pushable>
+      </div>
     );
   }
 

@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import {connect} from 'react-redux'
-import { Icon, Menu, Popup, Dropdown } from 'semantic-ui-react'
+import React from 'react'
+import { Icon, Menu, Popup } from 'semantic-ui-react'
 import { DiagramNameEditor } from "./DiagramNameEditor"
 import arrows_logo from "../images/arrows_logo.svg"
 import GoogleDriveShare from "./GoogleDriveShareWrapper"
@@ -98,7 +97,7 @@ const Header = (props) => {
         title="Open Inspector"
         position='right'
         onClick={props.showInspector}>
-        <Icon name='angle double left'/>
+        <Icon name='sidebar'/>
       </Menu.Item>
     </Menu>
   )
