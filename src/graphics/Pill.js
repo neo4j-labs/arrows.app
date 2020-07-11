@@ -1,5 +1,5 @@
 import BoundingBox from "./utils/BoundingBox";
-import {selectionBorder} from "../model/colors";
+import {selectionBorder, selectionHandle} from "../model/colors";
 import {Point} from "../model/Point";
 
 export default class Pill {
@@ -45,7 +45,7 @@ export default class Pill {
   drawSelectionIndicator(ctx) {
     const indicatorWidth = 10
     ctx.save()
-    ctx.strokeStyle = selectionBorder
+    ctx.strokeStyle = this.editing ? selectionHandle : selectionBorder
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
     ctx.rect(
