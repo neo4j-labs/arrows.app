@@ -1,40 +1,14 @@
 import {fetchGraphFromDatabase, updateDriver} from "../storage/neo4jStorage";
-import { subscribeToDatabaseCredentialsForActiveGraph } from 'graph-app-kit/components/GraphAppBase'
-import { useNeo4jStorage } from "./storage";
+import { usingNeo4jStorage } from "./storage";
 import {rememberConnectionParameters, retrieveConnectionParameters} from "./localStorage";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
-const integrationPoint = window.neo4jDesktopApi
 
 export const initializeConnection = () => {
-  if (integrationPoint) {
-    return useConnectionParametersFromDesktopContext()
-  } else {
-    return useRememberedConnectionParameters()
-  }
+  return usingRememberedConnectionParameters()
 }
 
-const useConnectionParametersFromDesktopContext = () => {
-  return function (dispatch) {
-    dispatch(disableEditingConnectionParameters())
-    subscribeToDatabaseCredentialsForActiveGraph(
-      integrationPoint,
-      (credentials) => {
-        dispatch(updateConnectionParameters({
-          connectionUri: credentials.host,
-          username: credentials.username,
-          password: credentials.password,
-          rememberCredentials: false
-        }))
-      },
-      () => {
-        dispatch(desktopDisconnected())
-      }
-    )
-  }
-}
-
-const useRememberedConnectionParameters = () => {
+const usingRememberedConnectionParameters = () => {
   const parsedVal = retrieveConnectionParameters()
   if (parsedVal && parsedVal.connectionUri) {
     return updateConnectionParameters(parsedVal)
@@ -60,7 +34,7 @@ export const updateConnectionParameters = (connectionParameters) => {
         }
         updateDriver(driver)
         dispatch(successfulUpdate(connectionParameters))
-        dispatch(useNeo4jStorage())
+        dispatch(usingNeo4jStorage())
         dispatch(fetchGraphFromDatabase())
       }).catch(function (error) {
         dispatch(unsuccessfulUpdate(connectionParameters, error.message))
@@ -69,12 +43,6 @@ export const updateConnectionParameters = (connectionParameters) => {
     catch (error) {
       dispatch(unsuccessfulUpdate(connectionParameters, error.message))
     }
-  }
-}
-
-const disableEditingConnectionParameters = () => {
-  return {
-    type: 'DISABLE_EDITING_CONNECTION_PARAMETERS'
   }
 }
 
@@ -102,11 +70,5 @@ export const editConnectionParameters = () => {
 export const cancelEditing = () => {
   return {
     type: 'CANCEL_EDIT_CONNECTION_PARAMETERS'
-  }
-}
-
-export const desktopDisconnected = () => {
-  return {
-    type: 'DESKTOP_DISCONNECTED'
   }
 }

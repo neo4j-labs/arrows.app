@@ -1,5 +1,5 @@
 import config from "../config";
-import {googleDriveSignInStatusChanged, updateGoogleDriveFileId, useGoogleDriveStorage} from "./storage";
+import {googleDriveSignInStatusChanged, updateGoogleDriveFileId, usingGoogleDriveStorage} from "./storage";
 import {renderPngForThumbnail} from "../graphics/utils/offScreenCanvasRenderer";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 import {indexableText} from "../model/Graph";
@@ -51,7 +51,7 @@ export const initGoogleDriveApi = (store) => {
 
 export const initializeGoogleDriveStorage = () => {
   return function (dispatch, getState) {
-    dispatch(useGoogleDriveStorage())
+    dispatch(usingGoogleDriveStorage())
     const state = getState()
     const graph = getPresentGraph(state)
     if (state.storage.googleDrive.signedIn) {

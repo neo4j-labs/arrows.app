@@ -46,8 +46,7 @@ export const getDistanceToLine = (x1, y1, x2, y2, x3, y3) => {
 export const getVoronoi = (nodes, bbox = {xl: 0, xr: 1000, yt: 0, yb: 800}) => {
   const voronoi = new Voronoi();
   if (nodes.length > 0) {
-    this.voronoi = voronoi.compute(nodes, bbox);
-    return this.voronoi
+    return voronoi.compute(nodes, bbox);
   } else {
     return null
   }

@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "graph-app-kit": "^1.0.4",
     "lodash.find": "^4.6.0",
     "lodash.get": "^4.4.2",
     "memoizee": "^0.4.14",
@@ -13,7 +12,7 @@
     "react-document-title": "^2.0.3",
     "react-dom": "^16.8.0",
     "react-redux": "^5.0.6",
-    "react-scripts": "1.0.17",
+    "react-scripts": "^3.4.1",
     "recompose": "^0.26.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
@@ -27,5 +26,17 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
