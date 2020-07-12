@@ -63,7 +63,7 @@ const Header = (props) => {
         onClick={props.onArrowsClick}
         style={{ padding: '0 0 0 1em', cursor: 'pointer' }}>
         <i className="icon" style={{ height: '1.5em' }}>
-          <img src={arrows_logo} style={{ height: '1.5em' }}/>
+          <img src={arrows_logo} style={{ height: '1.5em' }} alt='Arrows.app logo'/>
         </i>
       </Menu.Item>
       <DiagramNameEditor
