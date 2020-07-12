@@ -87,7 +87,9 @@ class GraphDisplay extends Component {
       <div style={{
         transform: 'translate(0, 0)'
       }}>
-        <canvas ref={(elm) => this.canvas = elm}/>
+        <canvas style={{
+          display: 'block'
+        }} ref={(elm) => this.canvas = elm}/>
         <GraphTextContainer/>
       </div>
     )

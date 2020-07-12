@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {Menu, Icon, Button } from 'semantic-ui-react'
+import {Button, Form} from 'semantic-ui-react'
 import {selectedNodeIds, selectedRelationshipIds} from "../model/selection";
 
 const visibleMode = selection => {
@@ -16,15 +16,14 @@ const visibleMode = selection => {
 
 const NodeToolboxItems = (props) => null
 
-const RelationshipToolboxItems = (props) =>(
-  <Menu.Item style={{fontSize: '.857rem'}}>
-    <Button
-      basic
-      size='tiny'
-      icon="exchange"
-      content='Reverse'
-      onClick={props.onReverseRelationships} />
-  </Menu.Item>
+const RelationshipToolboxItems = (props) => (
+  <Button
+    basic
+    floated='right'
+    size='tiny'
+    icon="exchange"
+    content='Reverse'
+    onClick={props.onReverseRelationships}/>
 )
 
 export const DetailToolbox = (props) => (
@@ -45,13 +44,10 @@ class ToolboxItems extends Component {
     // currently only show for relationships
     if ((visibility & 3) === 2) {
       return (
-        <Menu
-          borderless
-          attached='top'
-          style={{ borderRadius: 0, borderTop: 0, marginTop: 0, width: '100%' }}>
+        <Form.Field>
           <div>{/*common toolbox items will be here*/}</div>
           {children}
-        </Menu>
+        </Form.Field>
       )
     } else {
       return null

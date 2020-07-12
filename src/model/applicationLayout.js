@@ -1,4 +1,4 @@
-export const headerHeight = 40
+export const headerHeight = 60
 export const inspectorWidth = 425
 
 export const computeCanvasSize = (applicationLayout) => {

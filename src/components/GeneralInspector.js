@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
-import {Segment, Form, Menu, Icon, Input, Label, Table} from 'semantic-ui-react'
+import {Segment, Form, Icon, Input, Label, Table} from 'semantic-ui-react'
 import StyleTable from "./StyleTable"
 import {styleAttributes, styleGroups} from "../model/styling";
-import {headerHeight} from "../model/applicationLayout"
 
 export default class GeneralInspector extends Component {
   render() {
@@ -24,17 +23,14 @@ export default class GeneralInspector extends Component {
 
     return (
       <React.Fragment>
-        <Menu
-          borderless
-          attached='top'
-          style={{borderRadius: 0, width: '100%'}}>
-          <Menu.Item style={{height: headerHeight + 'px'}}>
-            <Icon name='square outline'/>
-            Graph
-          </Menu.Item>
-        </Menu>
         <Segment basic style={{margin: 0}}>
           <Form style={{textAlign: 'left'}}>
+            <Form.Field>
+              <Label as='a'>
+                <Icon name='square outline'/>
+                Graph
+              </Label>
+            </Form.Field>
             {fields}
           </Form>
         </Segment>

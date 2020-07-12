@@ -1,8 +1,8 @@
 import React from 'react'
-import {Menu, Icon} from 'semantic-ui-react'
+import {Label, Icon, Form} from 'semantic-ui-react'
 import {selectedNodeIds, selectedRelationshipIds} from "../model/selection";
 
-export const describeSelection = (selection, headerHeight) => {
+export const describeSelection = (selection) => {
   const parts = []
 
   const pushSelectionPart = (ids, entityType, iconName) => {
@@ -13,14 +13,11 @@ export const describeSelection = (selection, headerHeight) => {
 
       default:
         parts.push(
-          <Menu.Item
-            style={{height: headerHeight + 'px'}}
-            key={entityType}
-          >
+          <Label as='a' key={entityType}>
             <Icon name={iconName}/>
             {length}&nbsp;
             {entityType + (length > 1 ? 's' : '')}
-          </Menu.Item>
+          </Label>
         )
         break
     }
@@ -29,5 +26,9 @@ export const describeSelection = (selection, headerHeight) => {
   pushSelectionPart(selectedNodeIds(selection), "node", 'circle')
   pushSelectionPart(selectedRelationshipIds(selection), "relationship", 'long arrow alternate right')
 
-  return parts
+  return (
+    <Form.Field>
+      {parts}
+    </Form.Field>
+  )
 }
