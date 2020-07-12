@@ -7,6 +7,7 @@ import {computeCanvasSize} from "../model/applicationLayout";
 import {getVisualGraph} from "../selectors/index";
 
 const observedActionTypes = [
+  'CREATE_NODE',
   'MOVE_NODES',
   'MOVE_NODES_END_DRAG',
   'FETCHING_GRAPH_SUCCEEDED',
