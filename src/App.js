@@ -17,7 +17,7 @@ import HelpModal from "./components/HelpModal";
 import GoogleDrivePicker from './components/GoogleDrivePickerWrapper'
 import { newDiagram } from "./actions/diagram"
 import { loadFromGoogleDriveFile } from "./actions/storage"
-import Footer from "./components/Footer";
+import FooterContainer from "./containers/FooterContainer";
 
 class App extends Component {
   constructor (props) {
@@ -81,7 +81,7 @@ class App extends Component {
           <GraphContainer/>
           {inspector}
         </section>
-        <Footer/>
+        <FooterContainer/>
       </div>
     );
   }

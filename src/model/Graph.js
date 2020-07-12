@@ -1,10 +1,19 @@
 import {indexablePropertyText} from "./properties";
 import {completeWithDefaults} from "./styling";
 import {otherNodeId} from "./Relationship";
+import {nextAvailableId} from "./Id";
+import {Point} from "./Point";
 
 export const emptyGraph = () => {
   return {
-    nodes: [],
+    nodes: [{
+      id: nextAvailableId([]),
+      position: new Point(0, 0),
+      caption: '',
+      style: {},
+      labels: [],
+      properties: {}
+    }],
     relationships: [],
     style: completeWithDefaults({})
   }

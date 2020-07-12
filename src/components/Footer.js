@@ -27,7 +27,9 @@ const Footer = (props) => {
         lineHeight: '26px',
         marginLeft: '20px',
       }}>
-        Help
+        <a onClick={props.onHelpClick}>
+          Help
+        </a>
       </p>
       <p style={{
         color: '#BCC0C9',
@@ -43,7 +45,7 @@ const Footer = (props) => {
       <p style={{
         lineHeight: '26px'
       }}>
-        <a href='https://neo4j.com?ref=arrows.app'>
+        <a href='https://neo4j.com?ref=arrows.app' target='_blank'>
           <img src={neo4j_logo_white} style={{ height: '24px' }} alt='Neo4j logo'/>
         </a>
       </p>

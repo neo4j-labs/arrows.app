@@ -3,6 +3,7 @@ import { Point } from "../model/Point";
 import { setDiagramName } from "../actions/diagramName";
 import { loadClusters } from "../actions/gang"
 import {completeWithDefaults} from "../model/styling";
+import {emptyGraph} from "../model/Graph";
 
 export function fetchGraphFromDrive(fileId) {
   return function (dispatch) {
@@ -44,11 +45,15 @@ export const constructGraphFromFile = (data) => {
   let graph
   let gangs = []
 
-  if (data.graph) {
-    graph = data.graph
-    gangs = data.gangs || []
+  if (data) {
+    if (data.graph) {
+      graph = data.graph
+      gangs = data.gangs || []
+    } else {
+      graph = data
+    }
   } else {
-    graph = data
+    graph = emptyGraph()
   }
 
   const nodes = graph.nodes.map(node => ({
