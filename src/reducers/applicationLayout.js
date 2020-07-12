@@ -22,8 +22,8 @@ const gangsLayer = {
 const applicationLayout = (state = {
   windowSize: new Size(window.innerWidth, window.innerHeight),
   inspectorVisible: true,
-  betaFeaturesEnabled: true,
-  layers: [gangsLayer]
+  betaFeaturesEnabled: false,
+  layers: []
 }, action) => {
   switch (action.type) {
     case 'WINDOW_RESIZED':
