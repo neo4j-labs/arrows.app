@@ -1,5 +1,5 @@
 import {connect} from "react-redux";
-import {setGraphStyle} from "../actions/graph";
+import {createNode, setGraphStyle} from "../actions/graph";
 import GeneralInspector from "../components/GeneralInspector";
 import { getPresentGraph } from "../selectors"
 
@@ -12,7 +12,12 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onSaveGraphStyle: (key, value) => dispatch(setGraphStyle(key, value)),
+    onSaveGraphStyle: (key, value) => {
+      dispatch(setGraphStyle(key, value))
+    },
+    onPlusNodeClick: () => {
+      dispatch(createNode())
+    },
   }
 }
 

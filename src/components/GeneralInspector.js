@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import {Segment, Form, Icon, Label} from 'semantic-ui-react'
 import StyleTable from "./StyleTable"
 import {styleAttributes, styleGroups} from "../model/styling";
+import {GeneralToolbox} from "./GeneralToolbox";
 
 export default class GeneralInspector extends Component {
   render() {
@@ -30,6 +31,7 @@ export default class GeneralInspector extends Component {
                 Graph
               </Label>
             </Form.Field>
+            <GeneralToolbox onPlusNodeClick={this.props.onPlusNodeClick}/>
             {fields}
           </Form>
         </Segment>
