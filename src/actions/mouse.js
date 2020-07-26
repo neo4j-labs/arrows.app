@@ -1,16 +1,10 @@
-import { getVisualGraph, getTransformationHandles, getPositionsOfSelectedNodes } from "../selectors/"
-import {clearSelection, activateEditing, toggleSelection} from "./selection"
-import {
-  connectNodes,
-  createNodeAndRelationship,
-  moveNodesEndDrag,
-  tryMoveNode,
-  tryMoveHandle
-} from "./graph"
+import {getPositionsOfSelectedNodes, getTransformationHandles, getVisualGraph} from "../selectors/"
+import {activateEditing, clearSelection, toggleSelection} from "./selection"
+import {connectNodes, createNodeAndRelationship, moveNodesEndDrag, tryMoveHandle, tryMoveNode} from "./graph"
 import {adjustViewport} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {selectItemsInMarquee, setMarquee} from "./selectionMarquee"
-import { getEventHandlers } from "../selectors/layers";
+import {getEventHandlers} from "../selectors/layers";
 import {computeCanvasSize} from "../model/applicationLayout";
 import {Vector} from "../model/Vector";
 
@@ -19,27 +13,29 @@ const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inve
 export const wheel = (canvasPosition, vector, ctrlKey) => {
   return function (dispatch, getState) {
     const state = getState()
-    const visualGraph = getVisualGraph(state)
+    const boundingBox = getVisualGraph(state).boundingBox()
     const currentScale = state.viewTransformation.scale
     const canvasSize = computeCanvasSize(state.applicationLayout)
 
     if (ctrlKey) {
       const graphPosition = toGraphPosition(state, canvasPosition)
-      const scale = Math.max(currentScale * (100 - vector.dy) / 100, 0.01)
+      const fitWidth = canvasSize.width / boundingBox.width
+      const fitHeight = canvasSize.height / boundingBox.height
+      const minScale = Math.min(1, fitWidth, fitHeight)
+      const scale = Math.max(currentScale * (100 - vector.dy) / 100, minScale)
       const rawOffset = canvasPosition.vectorFrom(graphPosition.scale(scale))
-      const offset = constrainScroll(visualGraph, scale, rawOffset, canvasSize)
+      const offset = constrainScroll(boundingBox, scale, rawOffset, canvasSize)
       dispatch(adjustViewport(scale, offset.dx, offset.dy))
     } else {
       const rawOffset = state.viewTransformation.offset.plus(vector.scale(currentScale).invert())
-      const offset = constrainScroll(visualGraph, currentScale, rawOffset, canvasSize)
+      const offset = constrainScroll(boundingBox, currentScale, rawOffset, canvasSize)
       dispatch(adjustViewport(currentScale, offset.dx, offset.dy))
     }
   }
 }
 
-const constrainScroll = (visualGraph, scale, effectiveOffset, canvasSize) => {
+const constrainScroll = (boundingBox, scale, effectiveOffset, canvasSize) => {
   const constrainedOffset = new Vector(effectiveOffset.dx, effectiveOffset.dy)
-  const boundingBox = visualGraph.boundingBox()
 
   const dimensions = [
     {component: 'dx', min: 'left', max: 'right', extent: 'width'},
