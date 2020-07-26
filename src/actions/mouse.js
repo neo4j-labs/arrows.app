@@ -7,25 +7,59 @@ import {
   tryMoveNode,
   tryMoveHandle
 } from "./graph"
-import {adjustViewport, scroll} from "./viewTransformation"
+import {adjustViewport} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {selectItemsInMarquee, setMarquee} from "./selectionMarquee"
 import { getEventHandlers } from "../selectors/layers";
+import {computeCanvasSize} from "../model/applicationLayout";
+import {Vector} from "../model/Vector";
 
 const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inverse(canvasPosition)
 
 export const wheel = (canvasPosition, vector, ctrlKey) => {
   return function (dispatch, getState) {
     const state = getState()
+    const visualGraph = getVisualGraph(state)
+    const currentScale = state.viewTransformation.scale
+    const canvasSize = computeCanvasSize(state.applicationLayout)
+
     if (ctrlKey) {
       const graphPosition = toGraphPosition(state, canvasPosition)
-      const scale = Math.max(state.viewTransformation.scale * (100 - vector.dy) / 100, 0.01)
+      const scale = Math.max(currentScale * (100 - vector.dy) / 100, 0.01)
       const offset = canvasPosition.vectorFrom(graphPosition.scale(scale))
       dispatch(adjustViewport(scale, offset.dx, offset.dy))
     } else {
-      dispatch(scroll(vector.scale(state.viewTransformation.scale).invert()))
+      const offset = constrainScroll(visualGraph, state.viewTransformation, vector.scale(currentScale).invert(), canvasSize)
+      dispatch(adjustViewport(currentScale, offset.dx, offset.dy))
     }
   }
+}
+
+const flip = (tooLarge, boundary) => {
+  return tooLarge ? !boundary : boundary
+}
+
+const constrainScroll = (visualGraph, viewTransformation, vector, canvasSize) => {
+  const effectiveOffset = viewTransformation.offset.plus(vector)
+  const constrainedOffset = new Vector(effectiveOffset.dx, effectiveOffset.dy)
+  const boundingBox = visualGraph.boundingBox()
+  const scale = viewTransformation.scale;
+
+  [
+    {component: 'dx', min: 'left', max: 'right', extent: 'width'},
+    {component: 'dy', min: 'top', max: 'bottom', extent: 'height'}
+  ].forEach(d => {
+    const tooLarge = boundingBox[d.extent] * scale > canvasSize[d.extent]
+    const min = boundingBox[d.min] * scale + effectiveOffset[d.component]
+    if (flip(tooLarge, min < 0)) {
+      constrainedOffset[d.component] = -boundingBox[d.min] * scale
+    }
+    const max = boundingBox[d.max] * scale + effectiveOffset[d.component]
+    if (flip(tooLarge, max > canvasSize[d.extent])) {
+      constrainedOffset[d.component] = canvasSize[d.extent] - boundingBox[d.max] * scale
+    }
+  })
+  return constrainedOffset
 }
 
 export const doubleClick = (canvasPosition) => {
