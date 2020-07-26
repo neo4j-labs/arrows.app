@@ -24,7 +24,9 @@ export const wheel = (canvasPosition, vector, ctrlKey) => {
       const minScale = Math.min(1, fitWidth, fitHeight)
       const scale = Math.max(currentScale * (100 - vector.dy) / 100, minScale)
       const rawOffset = canvasPosition.vectorFrom(graphPosition.scale(scale))
-      const offset = constrainScroll(boundingBox, scale, rawOffset, canvasSize)
+      const constrainedOffset = constrainScroll(boundingBox, scale, rawOffset, canvasSize)
+      const shouldCenter = scale <= fitHeight && scale <= fitWidth && vector.dy > 0
+      const offset = shouldCenter ? moveTowardCenter(minScale, constrainedOffset, boundingBox, canvasSize) : constrainedOffset
       dispatch(adjustViewport(scale, offset.dx, offset.dy))
     } else {
       const rawOffset = state.viewTransformation.offset.plus(vector.scale(currentScale).invert())
@@ -32,6 +34,24 @@ export const wheel = (canvasPosition, vector, ctrlKey) => {
       dispatch(adjustViewport(currentScale, offset.dx, offset.dy))
     }
   }
+}
+
+const moveTowardCenter = (minScale, offset, boundingBox, canvasSize) => {
+  const dimensions = [
+    {component: 'dx', min: 'left', max: 'right', extent: 'width'},
+    {component: 'dy', min: 'top', max: 'bottom', extent: 'height'}
+  ]
+
+  const [dx, dy] = dimensions.map(d => {
+    const currentDisplacement = offset[d.component]
+    const centreDisplacement = canvasSize[d.extent] / 2 - (boundingBox[d.max] + boundingBox[d.min]) * minScale / 2
+    const difference = centreDisplacement - currentDisplacement
+    if (Math.abs(difference) > 1) {
+      return currentDisplacement + difference * 0.1
+    }
+    return currentDisplacement
+  })
+  return new Vector(dx, dy)
 }
 
 const constrainScroll = (boundingBox, scale, effectiveOffset, canvasSize) => {
