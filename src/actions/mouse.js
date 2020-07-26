@@ -26,29 +26,31 @@ export const wheel = (canvasPosition, vector, ctrlKey) => {
     if (ctrlKey) {
       const graphPosition = toGraphPosition(state, canvasPosition)
       const scale = Math.max(currentScale * (100 - vector.dy) / 100, 0.01)
-      const offset = canvasPosition.vectorFrom(graphPosition.scale(scale))
+      const rawOffset = canvasPosition.vectorFrom(graphPosition.scale(scale))
+      const offset = constrainScroll(visualGraph, scale, rawOffset, canvasSize)
       dispatch(adjustViewport(scale, offset.dx, offset.dy))
     } else {
-      const offset = constrainScroll(visualGraph, state.viewTransformation, vector.scale(currentScale).invert(), canvasSize)
+      const rawOffset = state.viewTransformation.offset.plus(vector.scale(currentScale).invert())
+      const offset = constrainScroll(visualGraph, currentScale, rawOffset, canvasSize)
       dispatch(adjustViewport(currentScale, offset.dx, offset.dy))
     }
   }
 }
 
-const flip = (tooLarge, boundary) => {
-  return tooLarge ? !boundary : boundary
-}
-
-const constrainScroll = (visualGraph, viewTransformation, vector, canvasSize) => {
-  const effectiveOffset = viewTransformation.offset.plus(vector)
+const constrainScroll = (visualGraph, scale, effectiveOffset, canvasSize) => {
   const constrainedOffset = new Vector(effectiveOffset.dx, effectiveOffset.dy)
   const boundingBox = visualGraph.boundingBox()
-  const scale = viewTransformation.scale;
 
-  [
+  const dimensions = [
     {component: 'dx', min: 'left', max: 'right', extent: 'width'},
     {component: 'dy', min: 'top', max: 'bottom', extent: 'height'}
-  ].forEach(d => {
+  ]
+
+  const flip = (tooLarge, boundary) => {
+    return tooLarge ? !boundary : boundary
+  }
+
+  dimensions.forEach(d => {
     const tooLarge = boundingBox[d.extent] * scale > canvasSize[d.extent]
     const min = boundingBox[d.min] * scale + effectiveOffset[d.component]
     if (flip(tooLarge, min < 0)) {
@@ -59,6 +61,7 @@ const constrainScroll = (visualGraph, viewTransformation, vector, canvasSize) =>
       constrainedOffset[d.component] = canvasSize[d.extent] - boundingBox[d.max] * scale
     }
   })
+
   return constrainedOffset
 }
 
