@@ -19,7 +19,7 @@ const Footer = (props) => {
         fontSize: '11px',
         lineHeight: '26px',
       }}>
-        Arrows.app powered by Neo4j Labs
+        Arrows.app powered by <a href="https://neo4j.com/labs/">Neo4j Labs</a>
       </p>
       <p style={{
         color: '#BCC0C9',
@@ -37,7 +37,9 @@ const Footer = (props) => {
         lineHeight: '26px',
         marginLeft: '20px',
       }}>
-        About
+        <a href='/about/' target='_blank'>
+          About
+        </a>
       </p>
       <p style={{
         flex: 2,
