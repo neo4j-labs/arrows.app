@@ -5,6 +5,7 @@ import { Vector } from "../model/Vector";
 import { tryMoveNode } from "../actions/graph";
 import {computeCanvasSize} from "../model/applicationLayout";
 import {getVisualGraph} from "../selectors/index";
+import BoundingBox from "../graphics/utils/BoundingBox";
 
 const observedActionTypes = [
   'CREATE_NODE',
@@ -17,23 +18,15 @@ const observedActionTypes = [
   'TOGGLE_INSPECTOR'
 ]
 
-export const calculateScaling = (visualGraph, canvasSize, viewTransformation, action) => {
+export const nodeMovedOutsideCanvas = (visualGraph, canvasSize, viewTransformation, action) => {
   const node = visualGraph.nodes[action.nodePositions[0].nodeId]
-  const boundingBox = node.boundingBox()
+  const nodeBoundingBox = node.boundingBox()
     .scale(viewTransformation.scale)
     .translate(viewTransformation.offset)
 
-  const leftOverflow = 0 - boundingBox.left
-  const rightOverflow = boundingBox.right - canvasSize.width
-  const topOverflow = 0 - boundingBox.top
-  const bottomOverflow = boundingBox.bottom - canvasSize.height
+  const canvasBoundingBox = new BoundingBox(0, canvasSize.width, 0, canvasSize.height)
 
-  const horizontalExp = leftOverflow > 0 ? -1 * leftOverflow : (rightOverflow > 0 ? rightOverflow : 0)
-  const verticalExp = topOverflow > 0 ? -1 * topOverflow : (bottomOverflow > 0 ? bottomOverflow : 0)
-
-  const expansionRatio = Math.max((canvasSize.width + Math.abs(horizontalExp)) / canvasSize.width, (canvasSize.height + Math.abs(verticalExp)) / canvasSize.height)
-
-  return expansionRatio > 1
+  return !canvasBoundingBox.containsBoundingBox(nodeBoundingBox)
 }
 
 export const calculateViewportTranslation = (visualGraph, canvasSize) => {
@@ -73,7 +66,7 @@ export const viewportMiddleware = store => next => action => {
     const visualGraph = getVisualGraph(state)
 
     if (action.type === 'MOVE_NODES') {
-      const shouldScaleUp = calculateScaling(visualGraph, canvasSize, viewTransformation, action)
+      const shouldScaleUp = nodeMovedOutsideCanvas(visualGraph, canvasSize, viewTransformation, action)
       if (shouldScaleUp) {
         let { scale, translateVector } = calculateViewportTranslation(visualGraph, canvasSize)
 
@@ -124,8 +117,6 @@ export const viewportMiddleware = store => next => action => {
             }
 
             window.requestAnimationFrame(animateScale)
-          } else if (scale !== viewTransformation.scale) {
-            store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
           }
         } else {
           store.dispatch(adjustViewport(scale, translateVector.dx, translateVector.dy))
