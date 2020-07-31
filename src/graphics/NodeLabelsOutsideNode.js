@@ -6,9 +6,7 @@ import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class NodeLabelsOutsideNode {
   constructor(labels, nodeRadius, obstacles, editing, style, textMeasurement) {
-    this.angle = distribute([
-      {preferredAngles: [Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'labels'}
-    ], obstacles)[0].angle
+    this.angle = distribute([Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], obstacles)
     this.alignment = textAlignmentAtAngle(this.angle)
 
     this.pills = labels.map((label) => {
