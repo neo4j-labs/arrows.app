@@ -1,14 +1,9 @@
 import { Vector } from "../model/Vector";
-import {distribute} from "./circumferentialDistribution";
-import {textAlignmentAtAngle} from "./circumferentialTextAlignment";
 import Pill from "./Pill";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class NodeLabelsOutsideNode {
-  constructor(labels, nodeRadius, obstacles, editing, style, textMeasurement) {
-    this.angle = distribute([Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], obstacles)
-    this.alignment = textAlignmentAtAngle(this.angle)
-
+  constructor(labels, orientation, verticalPosition, editing, style, textMeasurement) {
     this.pills = labels.map((label) => {
       return new Pill(label, editing, style, textMeasurement)
     })
@@ -19,17 +14,28 @@ export class NodeLabelsOutsideNode {
 
       this.pillPositions = this.pills.map((pill, i) => {
         const pillWidth = pill.width + pill.borderWidth
-        const pillRadius = pill.radius
-        let pillPosition = new Vector(nodeRadius, 0).rotate(this.angle)
-        if (this.alignment.vertical === 'bottom') {
-          pillPosition = pillPosition.plus(new Vector(0, -lineHeight * (labels.length - 1)))
-        }
-        return pillPosition.plus(new Vector(
-          this.alignment.horizontal === 'right' ? pillRadius - pillWidth : -pillRadius,
-          i * lineHeight - pillRadius
-        ))
+        const horizontalPosition = (() => {
+          switch (orientation.horizontal) {
+            case 'start':
+              return 0
+            case 'center':
+              return -pillWidth / 2
+            case 'end':
+              return -pillWidth
+          }
+        })()
+        return new Vector(
+          horizontalPosition,
+          verticalPosition + i * lineHeight
+        )
       })
     }
+
+    this.width = Math.max(...this.pills.map(pill => pill.width + pill.borderWidth))
+    const lastPillIndex = this.pills.length - 1
+    this.height = this.pillPositions[lastPillIndex].dy +
+      this.pills[lastPillIndex].height + this.pills[lastPillIndex].borderWidth -
+      verticalPosition
   }
 
   get type() {

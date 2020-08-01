@@ -35,8 +35,14 @@ const orientations = [
   { name: 'left', angle: Math.PI, vertical: 'center', horizontal: 'end' },
 ]
 
+export const orientationAngles = orientations.map(orientation => orientation.angle)
+
 export const orientationFromName = (name) => {
   return orientations.find(orientation => orientation.name === name) || orientations[0]
+}
+
+export const orientationFromAngle = (angle) => {
+  return orientations.find(orientation => orientation.angle === angle) || orientations[0]
 }
 
 export const cssAlignFromSvgAlign = (svgAlign) => {

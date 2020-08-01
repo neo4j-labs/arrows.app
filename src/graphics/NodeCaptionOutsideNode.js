@@ -1,14 +1,13 @@
 import {drawTextLine} from "./canvasRenderer";
 import {fitTextToRectangle} from "./utils/rectangleWordWrap";
-import { Vector } from "../model/Vector";
-import {orientationFromName} from "./circumferentialTextAlignment";
+import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
 import {selectionBorder, selectionHandle} from "../model/colors";
-import {originPoint} from "../model/Point";
 
 export class NodeCaptionOutsideNode {
-  constructor(caption, radius, captionPosition, editing, style, textMeasurement) {
+  constructor(caption, orientation, editing, style, textMeasurement) {
     this.caption = caption
+    this.orientation = orientation
     this.editing = editing
     this.font = {
       fontWeight: style('caption-font-weight'),
@@ -17,12 +16,22 @@ export class NodeCaptionOutsideNode {
     }
     textMeasurement.font = this.font
     this.fontColor = style('caption-color')
-    this.orientation = orientationFromName(captionPosition)
     this.lineHeight = this.font.fontSize * 1.2
     const measureWidth = (string) => textMeasurement.measureText(string).width;
     this.layout = fitTextToRectangle(caption, style('caption-max-width'), measureWidth)
-    this.attachedAt = originPoint.translate(
-      new Vector(1, 0).rotate(this.orientation.angle).scale(radius + this.layout.margin))
+    this.width = this.layout.actualWidth
+    this.height = this.layout.lines.length * this.lineHeight
+    const horizontalPosition = (() => {
+      switch (orientation.horizontal) {
+        case 'start':
+          return 0
+        case 'center':
+          return -this.width / 2
+        case 'end':
+          return -this.width
+      }
+    })()
+    this.boxPosition = new Point(horizontalPosition, 0)
   }
 
   get type() {
@@ -40,19 +49,9 @@ export class NodeCaptionOutsideNode {
 
     const lines = this.layout.lines
 
-    const verticalLineNumberOffset = (() => {
-      switch (this.orientation.vertical) {
-        case 'top':
-          return -lines.length
-        case 'center':
-          return -lines.length / 2
-        case 'bottom':
-          return 0
-      }
-    })()
     for (let i = 0; i< lines.length; i++) {
-      const yPos = (i + 0.5 + verticalLineNumberOffset) * this.lineHeight
-      const position = this.attachedAt.translate(new Vector(0, yPos))
+      const yPos = (i + 0.5) * this.lineHeight
+      const position = new Point(0, yPos)
       drawTextLine(ctx, lines[i], position, this.orientation.horizontal)
     }
 
@@ -75,31 +74,10 @@ export class NodeCaptionOutsideNode {
   }
 
   boundingBox() {
-    const width = this.layout.actualWidth
-    const height = this.layout.lines.length * this.lineHeight
+    const left = this.boxPosition.x
+    const top = this.boxPosition.y
 
-    const left = (() => {
-      switch (this.orientation.horizontal) {
-        case 'end':
-          return -width
-        case 'center':
-          return -width / 2
-        case 'start':
-          return 0
-      }
-    })() + this.attachedAt.x
-    const top = (() => {
-      switch (this.orientation.vertical) {
-        case 'top':
-          return -height
-        case 'center':
-          return -height / 2
-        case 'bottom':
-          return 0
-      }
-    })() + this.attachedAt.y
-
-    return new BoundingBox(left, left + width, top, top + height)
+    return new BoundingBox(left, left + this.width, top, top + this.height)
   }
 
   distanceFrom(point) {

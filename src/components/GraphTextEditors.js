@@ -46,7 +46,11 @@ export class GraphTextEditors extends Component {
             }}>
               {insideComponents.map(component => this.componentEditor(visualNode, component))}
             </div>
-            {outsideComponents.map(component => this.componentEditor(visualNode, component))}
+            <div style={{
+              transform: visualNode.outsideOffset.asCSSTransform()
+            }}>
+              {visualNode.outsideComponents.map(component => this.componentEditor(visualNode, component))}
+            </div>
           </div>
         )
 
