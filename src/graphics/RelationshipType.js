@@ -5,7 +5,7 @@ import {oppositeHorizontalAlignment, textAlignmentAtAngle} from "./circumferenti
 import {Vector} from "../model/Vector";
 import {perpendicular} from "./utils/angles";
 
-export class RelationshipCaption {
+export class RelationshipType {
   constructor(text, arrow, editing, style, textMeasurement) {
     this.text = text
     this.editing = editing

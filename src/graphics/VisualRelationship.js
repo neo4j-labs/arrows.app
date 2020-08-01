@@ -1,5 +1,5 @@
 import {getStyleSelector} from "../selectors/style";
-import {RelationshipCaption} from "./RelationshipCaption";
+import {RelationshipType} from "./RelationshipType";
 import {RelationshipProperties} from "./RelationshipProperties";
 
 export class VisualRelationship {
@@ -10,7 +10,7 @@ export class VisualRelationship {
 
     const style = styleAttribute => getStyleSelector(resolvedRelationship.relationship, styleAttribute)(graph)
 
-    this.caption = new RelationshipCaption(
+    this.type = new RelationshipType(
       resolvedRelationship.type,
       arrow,
       editing,
@@ -31,7 +31,7 @@ export class VisualRelationship {
   }
 
   distanceFrom(point) {
-    return Math.min(this.arrow.distanceFrom(point), this.caption.distanceFrom(point), this.properties.distanceFrom(point))
+    return Math.min(this.arrow.distanceFrom(point), this.type.distanceFrom(point), this.properties.distanceFrom(point))
   }
 
   draw(ctx) {
@@ -42,11 +42,11 @@ export class VisualRelationship {
 
     if (this.resolvedRelationship.selected) {
       this.arrow.drawSelectionIndicator(ctx)
-      this.caption.drawSelectionIndicator(ctx)
+      this.type.drawSelectionIndicator(ctx)
       this.properties.drawSelectionIndicator(ctx)
     }
     this.arrow.draw(ctx)
-    this.caption.draw(ctx)
+    this.type.draw(ctx)
     this.properties.draw(ctx)
   }
 }
