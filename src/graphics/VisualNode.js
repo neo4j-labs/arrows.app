@@ -12,7 +12,7 @@ import {NodeLabelsInsideNode} from "./NodeLabelsInsideNode";
 import {NodeCaptionFillNode} from "./NodeCaptionFillNode";
 import {everythingFits, scaleToFit, totalHeight} from "./fitComponentsInsideNode";
 import {distribute} from "./circumferentialDistribution";
-import {orientationAngles, orientationFromAngle} from "./circumferentialTextAlignment";
+import {orientationAngles, orientationFromAngle, orientationFromName} from "./circumferentialTextAlignment";
 import {Vector} from "../model/Vector";
 
 export default class VisualNode {
@@ -42,7 +42,15 @@ export default class VisualNode {
     const hasLabels = node.labels.length > 0
     const hasProperties = Object.keys(node.properties).length > 0
 
-    this.outsideOrientation = orientationFromAngle(distribute(orientationAngles, neighbourObstacles))
+    const outsidePosition = style('outside-position')
+    switch (outsidePosition) {
+      case 'auto':
+        this.outsideOrientation = orientationFromAngle(distribute(orientationAngles, neighbourObstacles))
+        break
+
+      default:
+        this.outsideOrientation = orientationFromName(outsidePosition)
+    }
 
     const caption = node.caption || ''
     if (hasCaption) {
