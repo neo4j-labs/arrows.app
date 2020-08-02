@@ -56,6 +56,12 @@ export class PropertiesBox {
     ctx.restore()
   }
 
+  drawBackground(ctx) {
+    const boundingBox = this.boundingBox()
+    ctx.fillStyle = 'white'
+    ctx.rect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height, 0, true, false)
+  }
+
   drawSelectionIndicator(ctx) {
     const indicatorWidth = 10
     const boundingBox = this.boundingBox()

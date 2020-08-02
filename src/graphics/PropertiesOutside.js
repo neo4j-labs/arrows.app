@@ -1,7 +1,7 @@
 import {Point} from "../model/Point";
 import {PropertiesBox} from "./PropertiesBox";
 
-export class NodePropertiesOutside {
+export class PropertiesOutside {
   constructor(properties, orientation, verticalPosition, editing, style, textMeasurement) {
     this.propertiesBox = new PropertiesBox(properties, editing, style, textMeasurement)
     this.width = this.propertiesBox.boxWidth
@@ -32,6 +32,7 @@ export class NodePropertiesOutside {
       ctx.save()
 
       ctx.translate(...this.boxPosition.xy)
+      this.propertiesBox.drawBackground(ctx)
       this.propertiesBox.draw(ctx)
 
       ctx.restore()

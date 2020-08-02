@@ -1,6 +1,6 @@
 import {Vector} from "../model/Vector";
 
-export const totalHeight = (insideComponents) => insideComponents.reduce((sum, component) => sum + component.height, 0)
+export const totalHeight = (components) => components.reduce((sum, component) => sum + component.height, 0)
 
 const maxRadius = (insideComponents, verticalOffset) => {
   return insideComponents.reduce((largest, component) => {

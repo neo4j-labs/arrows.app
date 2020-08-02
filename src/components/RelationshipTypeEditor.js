@@ -21,7 +21,6 @@ export class RelationshipTypeEditor extends PureComponent {
     const type = this.props.visualRelationship.type
     const text = type.text
     const padding = 10
-    const midPoint = type.midPoint
     const textWidth = type.width
     return (
       <input
@@ -31,10 +30,9 @@ export class RelationshipTypeEditor extends PureComponent {
         onChange={this.handleChange}
         style={{
           position: 'absolute',
-          transform: `translate(${type.offset.dx + type.padding}px, ${type.offset.dy}px) rotate(${type.textAngle}rad)`,
           padding: 0,
-          left: midPoint.x,
-          top: midPoint.y,
+          left: type.boxPosition.x + type.borderWidth + type.padding,
+          top: type.boxPosition.y,
           width: textWidth + padding,
           height: type.font.fontSize * 1.2,
           resize: 'none',

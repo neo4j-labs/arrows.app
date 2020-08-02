@@ -33,6 +33,7 @@ const orientations = [
   { name: 'bottom', angle: Math.PI / 2, vertical: 'bottom', horizontal: 'center' },
   { name: 'bottom-left', angle: 3 * Math.PI / 4, vertical: 'bottom', horizontal: 'end' },
   { name: 'left', angle: Math.PI, vertical: 'center', horizontal: 'end' },
+  { name: 'dead-center', angle: NaN, vertical: 'center', horizontal: 'center' },
 ]
 
 export const orientationAngles = orientations.map(orientation => orientation.angle)

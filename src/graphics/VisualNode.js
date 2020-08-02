@@ -2,7 +2,7 @@ import {getStyleSelector} from "../selectors/style";
 import {NodeLabelsOutsideNode} from "./NodeLabelsOutsideNode";
 import {NodeCaptionInsideNode} from "./NodeCaptionInsideNode";
 import {NodeBackground} from "./NodeBackground";
-import {NodePropertiesOutside} from "./NodePropertiesOutside";
+import {PropertiesOutside} from "./PropertiesOutside";
 import {neighbourPositions} from "../model/Graph";
 import BoundingBox from "./utils/BoundingBox";
 import {NodeCaptionOutsideNode} from "./NodeCaptionOutsideNode";
@@ -10,7 +10,7 @@ import {NodePropertiesInside} from "./NodePropertiesInside";
 import {bisect} from "./bisect";
 import {NodeLabelsInsideNode} from "./NodeLabelsInsideNode";
 import {NodeCaptionFillNode} from "./NodeCaptionFillNode";
-import {everythingFits, scaleToFit, totalHeight} from "./fitComponentsInsideNode";
+import {everythingFits, scaleToFit, totalHeight} from "./componentStackGeometry";
 import {distribute} from "./circumferentialDistribution";
 import {orientationAngles, orientationFromAngle, orientationFromName} from "./circumferentialTextAlignment";
 import {Vector} from "../model/Vector";
@@ -96,7 +96,7 @@ export default class VisualNode {
           break
 
         default:
-          this.outsideComponents.push(this.properties = new NodePropertiesOutside(
+          this.outsideComponents.push(this.properties = new PropertiesOutside(
             node.properties, this.outsideOrientation, totalHeight(this.outsideComponents), editing, style, measureTextContext))
       }
     }
