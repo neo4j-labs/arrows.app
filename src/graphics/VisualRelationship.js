@@ -2,8 +2,9 @@ import {getStyleSelector} from "../selectors/style";
 import {RelationshipType} from "./RelationshipType";
 import {PropertiesOutside} from "./PropertiesOutside";
 import {orientationFromName} from "./circumferentialTextAlignment";
-import {totalHeight} from "./componentStackGeometry";
+import {maxWidth, totalHeight} from "./componentStackGeometry";
 import {Vector} from "../model/Vector";
+import {alignmentForShaftAngle, readableAngle} from "./relationshipTextAlignment";
 
 export class VisualRelationship {
   constructor(resolvedRelationship, graph, arrow, editing, measureTextContext) {
@@ -13,21 +14,38 @@ export class VisualRelationship {
 
     const style = styleAttribute => getStyleSelector(resolvedRelationship.relationship, styleAttribute)(graph)
 
-    const orientation = orientationFromName('dead-center')
+    const orientationName = style('detail-orientation');
+    const positionName = style('detail-position')
+    this.componentRotation = readableAngle(orientationName, arrow.shaftAngle())
+    const alignment = alignmentForShaftAngle(orientationName, positionName, arrow.shaftAngle())
+
     this.components = []
     const hasType = !!resolvedRelationship.type
     const hasProperties = Object.keys(resolvedRelationship.relationship.properties).length > 0
 
     if (hasType) {
       this.components.push(this.type = new RelationshipType(
-        resolvedRelationship.type, orientation, editing, style, measureTextContext))
+        resolvedRelationship.type, alignment, editing, style, measureTextContext))
     }
     if (hasProperties) {
       this.components.push(this.properties = new PropertiesOutside(
-        resolvedRelationship.relationship.properties, orientation, totalHeight(this.components), editing, style, measureTextContext))
+        resolvedRelationship.relationship.properties, alignment, totalHeight(this.components), editing, style, measureTextContext))
     }
 
-    this.componentOffset = new Vector(0, -totalHeight(this.components) / 2)
+    const width = maxWidth(this.components)
+    const height = totalHeight(this.components)
+    const verticalPosition = (() => {
+      switch (positionName) {
+        case 'above':
+          return -height
+        case 'inline':
+          return -height / 2
+        case 'below':
+          return 0
+      }
+    })()
+    // this.componentOffset = new Vector(0, -height).plus(computeOffset(width, height, alignment, arrow.shaftAngle()))
+    this.componentOffset = new Vector(0, verticalPosition)
   }
 
   get id() {
@@ -53,6 +71,7 @@ export class VisualRelationship {
 
       ctx.save()
       ctx.translate(...this.arrow.midPoint().xy)
+      ctx.rotate(this.componentRotation)
       ctx.translate(...this.componentOffset.dxdy)
 
       this.components.forEach(component => {
@@ -65,6 +84,7 @@ export class VisualRelationship {
 
     ctx.save()
     ctx.translate(...this.arrow.midPoint().xy)
+    ctx.rotate(this.componentRotation)
     ctx.translate(...this.componentOffset.dxdy)
 
     this.components.forEach(component => {
@@ -76,12 +96,21 @@ export class VisualRelationship {
 }
 
 const computeOffset = (width, height, alignment, angle) => {
-  let dx, dy
+  // if (alignment.horizontal === 'center' || alignment.vertical === 'center') {
+  //   return new Vector(0,0)
+  // }
 
-  dx = alignment.horizontal === 'right' ? -width : 0
-  dy = alignment.vertical === 'top' ? -height : 0
+  // let dx, dy
+  //
+  // dx = alignment.horizontal === 'end' ? -width : 0
+  // dx = 0
+  // dy = alignment.vertical === 'top' ? -height : 0
 
-  const d = ((alignment.horizontal === 'right'? 1 : -1) * (width * Math.cos(angle))
-    + (alignment.vertical === 'top'? 1 : -1) * (height * Math.sin(angle))) / 2
-  return new Vector(dx, dy).plus(new Vector(d, 0).rotate(angle))
+  const choose = (key, a, b, c) => {
+
+  }
+  const d = ((alignment.horizontal === 'end'? 1 : -1) * (width * Math.cos(angle))
+    + (alignment.vertical === 'top'? -1 : 1) * (height * Math.sin(angle))) / 2
+  return new Vector(d, 0).rotate(angle)
+  // return new Vector(dx, dy).plus(new Vector(d, 0).rotate(angle))
 }
