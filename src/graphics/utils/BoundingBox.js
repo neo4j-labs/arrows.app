@@ -47,6 +47,13 @@ export default class BoundingBox {
       point.y >= this.top && point.y <= this.bottom
     )
   }
+
+  containsBoundingBox(other) {
+    return (
+      this.left <= other.left && this.right >= other.right &&
+      this.top <= other.top && this.bottom >= other.bottom
+    )
+  }
 }
 
 export const combineBoundingBoxes = (boundingBoxes) => {
