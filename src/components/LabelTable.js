@@ -33,6 +33,7 @@ export default class LabelTable extends Component {
           key='addLabel'
           onClick={addEmptyLabel}
           basic
+          color='black'
           floated='right'
           size="tiny"
           icon="plus"

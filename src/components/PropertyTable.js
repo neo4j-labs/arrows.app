@@ -64,6 +64,7 @@ export default class PropertyTable extends Component {
           key='addProperty'
           onClick={addEmptyProperty}
           basic
+          color='black'
           floated='right'
           size="tiny"
           icon="plus"
