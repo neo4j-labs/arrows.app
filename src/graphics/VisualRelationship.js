@@ -33,22 +33,23 @@ export class VisualRelationship {
 
     const width = maxWidth(this.components)
     const height = totalHeight(this.components)
+    const margin = arrow.dimensions.arrowWidth
 
     switch (orientationName) {
       case 'horizontal':
         const shaftAngle = arrow.shaftAngle()
-        this.componentOffset = computeOffset(width, height, alignment, shaftAngle)
+        this.componentOffset = computeOffset(width, height, margin, alignment, shaftAngle)
         break
 
       default:
         const verticalPosition = (() => {
           switch (positionName) {
             case 'above':
-              return -height
+              return -(height + margin)
             case 'inline':
               return -height / 2
             case 'below':
-              return 0
+              return margin
           }
         })()
         this.componentOffset = new Vector(0, verticalPosition)
@@ -102,37 +103,44 @@ export class VisualRelationship {
   }
 }
 
-const computeOffset = (width, height, alignment, angle) => {
+const computeOffset = (width, height, margin, alignment, shaftAngle) => {
   if (alignment.horizontal === 'center' && alignment.vertical === 'center') {
-    return new Vector(0,-height / 2)
+    return new Vector(0, -height / 2)
   }
+
+  const positiveAngle = shaftAngle < 0 ? shaftAngle + Math.PI : shaftAngle
+  const mx = margin * Math.sin(positiveAngle)
+  const my = margin * Math.abs(Math.cos(positiveAngle))
 
   let dx, dy
 
   dx = (() => {
     switch (alignment.horizontal) {
+      case 'start':
+        return mx
+
       case 'center':
         return width / 2
 
       default:
-        return 0
+        return -mx
     }
   })()
   dy = (() => {
     switch (alignment.vertical) {
       case 'top':
-        return 0
+        return my
 
       case 'center':
-        return -height
+        return -(height + my)
 
       default:
-        return -height
+        return -(height + my)
     }
   })()
 
-  const d = ((alignment.horizontal === 'end'? 1 : -1) * (width * Math.cos(angle))
-    + (alignment.vertical === 'top'? -1 : 1) * (height * Math.sin(angle))) / 2
+  const d = ((alignment.horizontal === 'end' ? 1 : -1) * width * Math.cos(shaftAngle)
+    + (alignment.vertical === 'top' ? -1 : 1) * height * Math.sin(shaftAngle)) / 2
 
-  return new Vector(dx, dy).plus(new Vector(d, 0).rotate(angle))
+  return new Vector(dx, dy).plus(new Vector(d, 0).rotate(shaftAngle))
 }
