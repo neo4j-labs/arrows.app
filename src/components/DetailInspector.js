@@ -123,7 +123,10 @@ export default class DetailInspector extends Component {
       <React.Fragment>
         <Segment basic style={{margin: 0}}>
           <Form style={{textAlign: 'left'}}>
-            {describeSelection(selection)}
+            <Form.Field key='_selected'>
+              <label>Selected</label>
+              {describeSelection(selection)}
+            </Form.Field>
             <DetailToolbox selection={selection} onReverseRelationships={reverseRelationships}/>
             {fields}
           </Form>

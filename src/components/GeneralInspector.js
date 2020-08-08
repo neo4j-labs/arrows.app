@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Form, Icon, Label} from 'semantic-ui-react'
+import {Segment, Form} from 'semantic-ui-react'
 import StyleTable from "./StyleTable"
 import {styleAttributes, styleGroups} from "../model/styling";
 import {GeneralToolbox} from "./GeneralToolbox";
@@ -25,11 +25,8 @@ export default class GeneralInspector extends Component {
       <React.Fragment>
         <Segment basic style={{margin: 0}}>
           <Form style={{textAlign: 'left'}}>
-            <Form.Field>
-              <Label as='a'>
-                <Icon name='square outline'/>
-                Graph
-              </Label>
+            <Form.Field key='_selected'>
+              <label>No selection</label>
             </Form.Field>
             <GeneralToolbox onPlusNodeClick={this.props.onPlusNodeClick}/>
             {fields}

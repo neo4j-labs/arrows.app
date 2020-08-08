@@ -13,10 +13,10 @@ export const describeSelection = (selection) => {
 
       default:
         parts.push(
-          <Label as='a' key={entityType}>
+          <Label as='a' key={entityType} size='large' color='blue'>
             <Icon name={iconName}/>
-            {length}&nbsp;
-            {entityType + (length > 1 ? 's' : '')}
+            {entityType + 's:'}
+            <Label.Detail>{length}</Label.Detail>
           </Label>
         )
         break
