@@ -38,21 +38,16 @@ export class VisualRelationship {
     switch (orientationName) {
       case 'horizontal':
         const shaftAngle = arrow.shaftAngle()
-        this.componentOffset = computeOffset(width, height, margin, alignment, shaftAngle)
+        this.componentOffset = horizontalOffset(width, height, margin, alignment, shaftAngle)
         break
 
-      default:
-        const verticalPosition = (() => {
-          switch (positionName) {
-            case 'above':
-              return -(height + margin)
-            case 'inline':
-              return -height / 2
-            case 'below':
-              return margin
-          }
-        })()
-        this.componentOffset = new Vector(0, verticalPosition)
+      case 'parallel':
+        this.componentOffset = parallelOffset(height, margin, positionName)
+        break
+
+      case 'perpendicular':
+        this.componentOffset = perpendicularOffset(height, margin, alignment)
+        break
     }
   }
 
@@ -103,7 +98,7 @@ export class VisualRelationship {
   }
 }
 
-const computeOffset = (width, height, margin, alignment, shaftAngle) => {
+const horizontalOffset = (width, height, margin, alignment, shaftAngle) => {
   if (alignment.horizontal === 'center' && alignment.vertical === 'center') {
     return new Vector(0, -height / 2)
   }
@@ -143,4 +138,34 @@ const computeOffset = (width, height, margin, alignment, shaftAngle) => {
     + (alignment.vertical === 'top' ? -1 : 1) * height * Math.sin(shaftAngle)) / 2
 
   return new Vector(dx, dy).plus(new Vector(d, 0).rotate(shaftAngle))
+}
+
+const parallelOffset = (height, margin, positionName) => {
+  const verticalPosition = (() => {
+    switch (positionName) {
+      case 'above':
+        return -(height + margin)
+      case 'inline':
+        return -height / 2
+      case 'below':
+        return margin
+    }
+  })()
+  return new Vector(0, verticalPosition)
+}
+
+const perpendicularOffset = (height, margin, alignment) => {
+  const horizontalPosition = (() => {
+    switch (alignment.horizontal) {
+      case 'start':
+        return margin
+
+      case 'end':
+        return -margin
+
+      default:
+        return 0
+    }
+  })()
+  return new Vector(horizontalPosition, -height / 2)
 }
