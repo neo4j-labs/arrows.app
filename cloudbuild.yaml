@@ -1,8 +1,8 @@
 steps:
-- name: 'gcr.io/cloud-builders/yarn:node-10.10.0
+- name: 'gcr.io/cloud-builders/yarn:node-10.10.0'
   args: ['install']
 
-- name: 'gcr.io/cloud-builders/yarn:node-10.10.0
+- name: 'gcr.io/cloud-builders/yarn:node-10.10.0'
   args: ['build']
 
 - name: 'gcr.io/cloud-builders/gcloud'
