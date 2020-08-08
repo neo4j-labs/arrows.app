@@ -3,7 +3,7 @@ import {oppositeHorizontalAlignment, textAlignmentAtAngle} from "./circumferenti
 
 export const readableAngle = (orientation, shaftAngle) => {
   const rawAngle = angleForOrientation(orientation, shaftAngle)
-  return (rawAngle > Math.PI / 2 || rawAngle < -Math.PI / 2) ? rawAngle + Math.PI : rawAngle
+  return (rawAngle >= Math.PI / 2 || rawAngle <= -Math.PI / 2) ? rawAngle + Math.PI : rawAngle
 }
 
 const angleForOrientation = (orientation, shaftAngle) => {
@@ -35,7 +35,7 @@ export const alignmentForShaftAngle = (orientation, position, shaftAngle) => {
     Math.abs(Math.PI / 2 - positiveAngle) < tolerance
 
   return {
-    horizontal: isHorizontal ? 'center' : (isUpward === isAbove) ? 'start' : 'end',
+    horizontal: (isHorizontal && orientation !== 'perpendicular') ? 'center' : (isUpward === isAbove) ? 'start' : 'end',
     vertical: isVertical ? 'center' : isAbove ? 'bottom' : 'top'
   }
 }
