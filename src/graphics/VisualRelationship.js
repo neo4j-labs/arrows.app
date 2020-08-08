@@ -1,7 +1,6 @@
 import {getStyleSelector} from "../selectors/style";
 import {RelationshipType} from "./RelationshipType";
 import {PropertiesOutside} from "./PropertiesOutside";
-import {orientationFromName} from "./circumferentialTextAlignment";
 import {maxWidth, totalHeight} from "./componentStackGeometry";
 import {Vector} from "../model/Vector";
 import {alignmentForShaftAngle, readableAngle} from "./relationshipTextAlignment";
@@ -34,18 +33,26 @@ export class VisualRelationship {
 
     const width = maxWidth(this.components)
     const height = totalHeight(this.components)
-    const verticalPosition = (() => {
-      switch (positionName) {
-        case 'above':
-          return -height
-        case 'inline':
-          return -height / 2
-        case 'below':
-          return 0
-      }
-    })()
-    // this.componentOffset = new Vector(0, -height).plus(computeOffset(width, height, alignment, arrow.shaftAngle()))
-    this.componentOffset = new Vector(0, verticalPosition)
+
+    switch (orientationName) {
+      case 'horizontal':
+        const shaftAngle = arrow.shaftAngle()
+        this.componentOffset = computeOffset(width, height, alignment, shaftAngle)
+        break
+
+      default:
+        const verticalPosition = (() => {
+          switch (positionName) {
+            case 'above':
+              return -height
+            case 'inline':
+              return -height / 2
+            case 'below':
+              return 0
+          }
+        })()
+        this.componentOffset = new Vector(0, verticalPosition)
+    }
   }
 
   get id() {
@@ -96,21 +103,36 @@ export class VisualRelationship {
 }
 
 const computeOffset = (width, height, alignment, angle) => {
-  // if (alignment.horizontal === 'center' || alignment.vertical === 'center') {
-  //   return new Vector(0,0)
-  // }
-
-  // let dx, dy
-  //
-  // dx = alignment.horizontal === 'end' ? -width : 0
-  // dx = 0
-  // dy = alignment.vertical === 'top' ? -height : 0
-
-  const choose = (key, a, b, c) => {
-
+  if (alignment.horizontal === 'center' && alignment.vertical === 'center') {
+    return new Vector(0,-height / 2)
   }
+
+  let dx, dy
+
+  dx = (() => {
+    switch (alignment.horizontal) {
+      case 'center':
+        return width / 2
+
+      default:
+        return 0
+    }
+  })()
+  dy = (() => {
+    switch (alignment.vertical) {
+      case 'top':
+        return 0
+
+      case 'center':
+        return -height
+
+      default:
+        return -height
+    }
+  })()
+
   const d = ((alignment.horizontal === 'end'? 1 : -1) * (width * Math.cos(angle))
     + (alignment.vertical === 'top'? -1 : 1) * (height * Math.sin(angle))) / 2
-  return new Vector(d, 0).rotate(angle)
-  // return new Vector(dx, dy).plus(new Vector(d, 0).rotate(angle))
+
+  return new Vector(dx, dy).plus(new Vector(d, 0).rotate(angle))
 }

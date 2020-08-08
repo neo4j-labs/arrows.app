@@ -122,8 +122,6 @@ export default class VisualNode {
       .rotate(this.outsideOrientation.angle)
       .scale(this.radius)
       .plus(new Vector(0, outsideVerticalOffset))
-
-    console.log(this.outsideComponents, this.outsideOffset)
   }
 
   get id() {
