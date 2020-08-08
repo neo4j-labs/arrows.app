@@ -2,7 +2,7 @@ import {Vector} from "../model/Vector";
 import {distribute} from "./circumferentialDistribution";
 import {textAlignmentAtAngle} from "./circumferentialTextAlignment";
 import {PropertiesBox} from "./PropertiesBox";
-import {selectionBorder} from "../model/colors";
+import {selectionBorder, selectionHandle} from "../model/colors";
 import {originPoint} from "../model/Point";
 
 export class NodePropertiesStalk {
@@ -12,6 +12,7 @@ export class NodePropertiesStalk {
     ], obstacles)[0].angle
     this.alignment = textAlignmentAtAngle(this.angle)
     this.radius = radius
+    this.editing = editing
     this.propertiesBox = new PropertiesBox(properties, editing, style, textMeasurement)
     this.attachedAt = originPoint.translate(new Vector(1, 0).rotate(this.angle).scale(this.radius))
     this.start = this.attachedAt.translate(new Vector(20, 0).rotate(this.angle))
@@ -50,7 +51,7 @@ export class NodePropertiesStalk {
     if (!this.isEmpty) {
       const indicatorWidth = 10
       ctx.save()
-      ctx.strokeStyle = selectionBorder
+      ctx.strokeStyle = this.editing ? selectionHandle : selectionBorder
       ctx.lineWidth = indicatorWidth
       ctx.lineJoin = 'round'
       ctx.polyLine([

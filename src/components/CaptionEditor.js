@@ -35,7 +35,7 @@ export class CaptionEditor extends Component {
   }
 
   render() {
-    const caption = this.props.visualNode.caption
+    const caption = this.props.component
     const boundingBox = caption.boundingBox()
     const textLines = caption.layout.lines
     const padding = 10

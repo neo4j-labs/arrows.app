@@ -6,15 +6,9 @@ export const windowResized = (width, height) => {
   }
 }
 
-export const showInspector = () => {
+export const toggleInspector = () => {
   return {
-    type: 'SHOW_INSPECTOR'
-  }
-}
-
-export const hideInspector = () => {
-  return {
-    type: 'HIDE_INSPECTOR'
+    type: 'TOGGLE_INSPECTOR'
   }
 }
 

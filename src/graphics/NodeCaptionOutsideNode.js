@@ -3,7 +3,7 @@ import {fitTextToRectangle} from "./utils/rectangleWordWrap";
 import { Vector } from "../model/Vector";
 import {orientationFromName} from "./circumferentialTextAlignment";
 import BoundingBox from "./utils/BoundingBox";
-import {selectionBorder} from "../model/colors";
+import {selectionBorder, selectionHandle} from "../model/colors";
 import {originPoint} from "../model/Point";
 
 export class NodeCaptionOutsideNode {
@@ -63,7 +63,7 @@ export class NodeCaptionOutsideNode {
     const indicatorWidth = 10
     const boundingBox = this.boundingBox()
     ctx.save()
-    ctx.strokeStyle = selectionBorder
+    ctx.strokeStyle = this.editing ? selectionHandle : selectionBorder
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
     ctx.rect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height, 0, false, true)

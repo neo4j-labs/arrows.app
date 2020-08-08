@@ -2,7 +2,7 @@ import {connect} from "react-redux"
 import EditConnectionParametersForm from "../components/StorageConfigModal";
 import {initializeConnection} from "../actions/databaseConnection";
 import {initializeGoogleDriveStorage} from "../actions/googleDrive";
-import {useLocalStorage} from "../actions/storage";
+import {usingLocalStorage} from "../actions/storage";
 import { openDiagram } from "../actions/diagram"
 
 const mapDispatchToProps = dispatch => {
@@ -17,7 +17,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(openDiagram())
     },
     useLocalStorage: () => {
-      dispatch(useLocalStorage())
+      dispatch(usingLocalStorage())
     }
   }
 }

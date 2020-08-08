@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
-import {connect} from 'react-redux'
-import { Icon, Menu, Popup, Dropdown } from 'semantic-ui-react'
+import React from 'react'
+import { Icon, Menu, Popup, Button } from 'semantic-ui-react'
 import { DiagramNameEditor } from "./DiagramNameEditor"
 import arrows_logo from "../images/arrows_logo.svg"
 import GoogleDriveShare from "./GoogleDriveShareWrapper"
@@ -64,7 +63,7 @@ const Header = (props) => {
         onClick={props.onArrowsClick}
         style={{ padding: '0 0 0 1em', cursor: 'pointer' }}>
         <i className="icon" style={{ height: '1.5em' }}>
-          <img src={arrows_logo} style={{ height: '1.5em' }}/>
+          <img src={arrows_logo} style={{ height: '1.5em' }} alt='Arrows.app logo'/>
         </i>
       </Menu.Item>
       <DiagramNameEditor
@@ -75,31 +74,31 @@ const Header = (props) => {
         {storageIcon(props)}
         {storageStatusMessage(props)}
       </Menu.Item>
-      <Menu.Item title="Reload" onClick={props.onReloadGraphClick}>
-        <Icon name='refresh'/>
-      </Menu.Item>
-      {props.storage.mode === 'GOOGLE_DRIVE' ?
-        <Menu.Item title="Share" onClick={() => openShareDialog(props.storage)}>
-          <Icon name='share square' link/>
-        </Menu.Item> : null}
-      <Menu.Item title="Download" onClick={props.onExportClick}>
-        <Icon name='download'/>
-      </Menu.Item>
-      <Menu.Item title="Add Node" onClick={props.onPlusNodeClick}>
-        <Icon.Group>
-          <Icon name='circle'/>
-          <Icon corner name='add'/>
-        </Icon.Group>
-      </Menu.Item>
-      <Menu.Item title="Help" onClick={props.onHelpClick}>
-        <Icon name='help'/>
-      </Menu.Item>
-      <Menu.Item
-        title="Open Inspector"
-        position='right'
-        onClick={props.showInspector}>
-        <Icon name='angle double left'/>
-      </Menu.Item>
+      <Menu.Menu position={'right'}>
+        <Menu.Item>
+          <Button
+            onClick={props.onExportClick}
+            icon='download'
+            basic
+            color='black'
+            content='Download / Export'
+          />
+        </Menu.Item>
+        {props.storage.mode === 'GOOGLE_DRIVE' ?
+          <Menu.Item>
+            <Button
+              onClick={() => openShareDialog(props.storage)}
+              icon='users'
+              color='orange'
+              content='Share'
+            />
+          </Menu.Item> : null}
+        <Menu.Item
+          title="Open/Close Inspector"
+          onClick={props.showInspector}>
+          <Icon name='sidebar'/>
+        </Menu.Item>
+      </Menu.Menu>
     </Menu>
   )
 }

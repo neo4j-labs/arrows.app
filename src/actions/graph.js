@@ -10,17 +10,33 @@ import {
   selectedNodeIdMap, selectedNodeIds, selectedNodes,
   selectedRelationshipIdMap, selectedRelationshipIds
 } from "../model/selection";
+import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constants";
 
 export const createNode = () => (dispatch, getState) => {
-  const { viewTransformation, applicationLayout } = getState()
-  const windowSize = applicationLayout.windowSize
-  const randomPosition = new Point(Math.random() * windowSize.width, Math.random() * windowSize.height)
+  let newNodePosition = new Point(0, 0)
+  const graph = getPresentGraph(getState())
+  if (graph.nodes.length > 0) {
+    const ranges = ['x', 'y'].map(dimension => {
+      const coordinates = graph.nodes.map(node => node.position[dimension])
+      const min = Math.min(...coordinates)
+      const max = Math.max(...coordinates)
+      const spread = max - min
+      return {
+        dimension,
+        min,
+        max,
+        spread
+      }
+    }).sort((a, b) => b.spread - a.spread)
+    newNodePosition[ranges[0].dimension] = ranges[0].min
+    newNodePosition[ranges[1].dimension] = ranges[1].max + defaultRelationshipLength + defaultNodeRadius * 2
+  }
 
   dispatch({
     category: 'GRAPH',
     type: 'CREATE_NODE',
     newNodeId: nextAvailableId(getPresentGraph(getState()).nodes),
-    newNodePosition: viewTransformation.inverse(randomPosition),
+    newNodePosition,
     caption: '',
     style: {}
   })

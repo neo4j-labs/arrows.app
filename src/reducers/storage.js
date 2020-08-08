@@ -83,15 +83,6 @@ export default function storage(state = {
         }
       }
 
-    case 'DISABLE_EDITING_CONNECTION_PARAMETERS':
-      return {
-        ...state,
-        database: {
-          ...state.database,
-          connectionParametersEditable: false
-        }
-      }
-
     case 'UPDATE_CONNECTION_PARAMETERS':
       return {
         ...state,
@@ -113,16 +104,6 @@ export default function storage(state = {
           showDisconnectedDialog: !state.database.connectionParametersEditable,
           connectionParameters: action.connectionParameters,
           errorMsg: action.errorMsg
-        }
-      }
-
-    case 'DESKTOP_DISCONNECTED':
-      return {
-        ...state,
-        database: {
-          ...state.database,
-          showDisconnectedDialog: true,
-          connectionParameters: null
         }
       }
 

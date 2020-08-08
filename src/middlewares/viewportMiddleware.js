@@ -7,14 +7,14 @@ import {computeCanvasSize} from "../model/applicationLayout";
 import {getVisualGraph} from "../selectors/index";
 
 const observedActionTypes = [
+  'CREATE_NODE',
   'MOVE_NODES',
   'MOVE_NODES_END_DRAG',
   'FETCHING_GRAPH_SUCCEEDED',
   'DUPLICATE_NODES_AND_RELATIONSHIPS',
   'DELETE_NODES_AND_RELATIONSHIPS',
   'WINDOW_RESIZED',
-  'SHOW_INSPECTOR',
-  'HIDE_INSPECTOR'
+  'TOGGLE_INSPECTOR'
 ]
 
 export const calculateScaling = (visualGraph, canvasSize, viewTransformation, action) => {

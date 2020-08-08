@@ -3,6 +3,10 @@ import {CaptionEditor} from "./CaptionEditor";
 import {RelationshipTypeEditor} from "./RelationshipTypeEditor";
 import {PropertiesEditor} from "./PropertiesEditor";
 import {LabelsEditor} from "./LabelsEditor";
+import {getStyleSelector} from "../selectors/style";
+import {NodeCaptionFillNode} from "../graphics/NodeCaptionFillNode";
+import {NodeCaptionOutsideNode} from "../graphics/NodeCaptionOutsideNode";
+import {measureTextContext} from "../selectors";
 
 export class GraphTextEditors extends Component {
 
@@ -14,6 +18,25 @@ export class GraphTextEditors extends Component {
     switch (entity.entityType) {
       case 'node':
         const visualNode = this.props.visualGraph.nodes[entity.id]
+        let insideComponents = visualNode.insideComponents
+        let outsideComponents = visualNode.outsideComponents
+        if (insideComponents.length === 0 && outsideComponents.length === 0) {
+          const style = styleAttribute => getStyleSelector(visualNode.node, styleAttribute)(this.props.visualGraph.graph)
+          const captionPosition = style( 'caption-position')
+          switch (captionPosition) {
+            case 'inside':
+              const insideCaption = new NodeCaptionFillNode(
+                '', visualNode.radius, 'true', style, measureTextContext)
+              insideComponents = [insideCaption]
+              break
+            default:
+              const outsideCaption = new NodeCaptionOutsideNode(
+                '', visualNode.radius, captionPosition, true, style, measureTextContext)
+              outsideComponents = [outsideCaption]
+              break
+          }
+
+        }
         return (
           <div style={{
             transform: visualNode.position.vectorFromOrigin().asCSSTransform()
@@ -21,9 +44,9 @@ export class GraphTextEditors extends Component {
             <div style={{
               transform: `scale(${visualNode.internalScaleFactor}) translate(0, ${visualNode.internalVerticalOffset}px)`
             }}>
-              {visualNode.insideComponents.map(component => this.componentEditor(visualNode, component))}
+              {insideComponents.map(component => this.componentEditor(visualNode, component))}
             </div>
-            {visualNode.outsideComponents.map(component => this.componentEditor(visualNode, component))}
+            {outsideComponents.map(component => this.componentEditor(visualNode, component))}
           </div>
         )
 
@@ -57,6 +80,7 @@ export class GraphTextEditors extends Component {
           <CaptionEditor
             key={'caption-' + visualNode.id}
             visualNode={visualNode}
+            component={component}
             onSetNodeCaption={(caption) => this.props.onSetNodeCaption(this.props.selection, caption)}
             onKeyDown={this.handleKeyDown}
           />

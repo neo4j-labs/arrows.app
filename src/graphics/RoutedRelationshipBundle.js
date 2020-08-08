@@ -106,7 +106,7 @@ export class RoutedRelationshipBundle {
         const dimensions = arrowDimensions[i]
 
         if (i === middleRelationshipIndex) {
-          arrows[i] = new normalStraightArrow(
+          arrows[i] = normalStraightArrow(
             relationship.from.position,
             relationship.to.position,
             dimensions.startRadius,
