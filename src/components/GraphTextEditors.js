@@ -46,7 +46,11 @@ export class GraphTextEditors extends Component {
             }}>
               {insideComponents.map(component => this.componentEditor(visualNode, component))}
             </div>
-            {outsideComponents.map(component => this.componentEditor(visualNode, component))}
+            <div style={{
+              transform: visualNode.outsideOffset.asCSSTransform()
+            }}>
+              {visualNode.outsideComponents.map(component => this.componentEditor(visualNode, component))}
+            </div>
           </div>
         )
 
@@ -61,11 +65,15 @@ export class GraphTextEditors extends Component {
         })
         if (visualRelationship) {
           return (
-            <RelationshipTypeEditor
-              visualRelationship={visualRelationship}
-              onSetRelationshipType={(type) => this.props.onSetRelationshipType(this.props.selection, type)}
-              onKeyDown={this.handleKeyDown}
-            />
+            <div style={{
+              transform: visualRelationship.arrow.midPoint().vectorFromOrigin().asCSSTransform()
+            }}>
+              <div style={{
+                transform: visualRelationship.componentOffset.asCSSTransform()
+              }}>
+                {visualRelationship.components.map(component => this.componentEditor(visualRelationship, component))}
+              </div>
+            </div>
           )
         }
         break
@@ -73,14 +81,13 @@ export class GraphTextEditors extends Component {
     return null
   }
 
-  componentEditor(visualNode, component) {
+  componentEditor(visualEntity, component) {
     switch (component.type) {
       case 'CAPTION':
         return (
           <CaptionEditor
-            key={'caption-' + visualNode.id}
-            visualNode={visualNode}
-            component={component}
+            key={'caption-' + visualEntity.id}
+            visualNode={visualEntity}
             onSetNodeCaption={(caption) => this.props.onSetNodeCaption(this.props.selection, caption)}
             onKeyDown={this.handleKeyDown}
           />
@@ -88,19 +95,27 @@ export class GraphTextEditors extends Component {
       case 'LABELS':
         return (
           <LabelsEditor
-            key={'labels-' + visualNode.id}
-            visualNode={visualNode}
+            key={'labels-' + visualEntity.id}
+            visualNode={visualEntity}
             selection={this.props.selection}
             onAddLabel={this.props.onAddLabel}
             onRenameLabel={this.props.onRenameLabel}
             onKeyDown={this.handleKeyDown}
           />
         )
+      case 'TYPE':
+        return (
+          <RelationshipTypeEditor
+            visualRelationship={visualEntity}
+            onSetRelationshipType={(type) => this.props.onSetRelationshipType(this.props.selection, type)}
+            onKeyDown={this.handleKeyDown}
+          />
+        )
       case 'PROPERTIES':
         return (
           <PropertiesEditor
-            key={'properties-' + visualNode.id}
-            visualNode={visualNode}
+            key={'properties-' + visualEntity.id}
+            visualNode={visualEntity}
             selection={this.props.selection}
             onSetPropertyKey={this.props.onSetPropertyKey}
             onSetPropertyValue={this.props.onSetPropertyValue}

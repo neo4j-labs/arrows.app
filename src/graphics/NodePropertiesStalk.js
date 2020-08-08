@@ -7,9 +7,7 @@ import {originPoint} from "../model/Point";
 
 export class NodePropertiesStalk {
   constructor(properties, radius, obstacles, editing, style, textMeasurement) {
-    this.angle = distribute([
-      {preferredAngles: [Math.PI / 2, -Math.PI / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], payload: 'properties'}
-    ], obstacles)[0].angle
+    this.angle = distribute([Math.PI / 2, -Math.PI / 2, 0, Math.PI, Math.PI / 4, 3 * Math.PI / 4, -Math.PI * 3 / 4, -Math.PI / 4], obstacles)
     this.alignment = textAlignmentAtAngle(this.angle)
     this.radius = radius
     this.editing = editing

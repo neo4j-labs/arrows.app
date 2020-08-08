@@ -13,17 +13,6 @@ export const textAlignmentAtAngle = (angle) => {
   }
 }
 
-export const oppositeHorizontalAlignment = (horizontal) => {
-  switch (horizontal) {
-    case 'left':
-      return 'right'
-    case 'right':
-      return 'left'
-    default:
-      return horizontal
-  }
-}
-
 const orientations = [
   { name: 'top-left', angle: -3 * Math.PI / 4, vertical: 'top', horizontal: 'end' },
   { name: 'top', angle: -Math.PI / 2, vertical: 'top', horizontal: 'center' },
@@ -35,8 +24,14 @@ const orientations = [
   { name: 'left', angle: Math.PI, vertical: 'center', horizontal: 'end' },
 ]
 
+export const orientationAngles = orientations.map(orientation => orientation.angle)
+
 export const orientationFromName = (name) => {
   return orientations.find(orientation => orientation.name === name) || orientations[0]
+}
+
+export const orientationFromAngle = (angle) => {
+  return orientations.find(orientation => orientation.angle === angle) || orientations[0]
 }
 
 export const cssAlignFromSvgAlign = (svgAlign) => {

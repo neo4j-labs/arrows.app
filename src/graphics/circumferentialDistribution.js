@@ -1,17 +1,7 @@
-export const distribute = (items, obstacles) => {
-  const result = []
-  const currentObstacles = [...obstacles]
-  items.forEach(item => {
-    const itemAngle = item.preferredAngles.map(angle => {
-      return {angle, separation: obstacleSeparation(angle, currentObstacles)}
-    }).sort((a, b) => b.separation - a.separation)[0].angle;
-    result.push({
-      angle: itemAngle,
-      payload: item.payload
-    })
-    currentObstacles.push({angle: itemAngle})
-  })
-  return result
+export const distribute = (preferredAngles, obstacles) => {
+  return preferredAngles.map(angle => {
+    return {angle, separation: obstacleSeparation(angle, obstacles)}
+  }).sort((a, b) => b.separation - a.separation)[0].angle;
 }
 
 export const obstacleSeparation = (angle, obstacles) => {
