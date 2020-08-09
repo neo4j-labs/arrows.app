@@ -56,7 +56,8 @@ export class VisualRelationship {
   }
 
   distanceFrom(point) {
-    const componentPoint = point.translate(this.componentOffset.invert())
+    const localPoint = point.translate(this.arrow.midPoint().vectorFromOrigin().invert())
+    const componentPoint = localPoint.rotate(-this.componentRotation).translate(this.componentOffset.invert())
     return Math.min(
       this.arrow.distanceFrom(point),
       ...this.components.map(component => component.distanceFrom(componentPoint))
