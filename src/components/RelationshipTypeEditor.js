@@ -18,7 +18,7 @@ export class RelationshipTypeEditor extends PureComponent {
   }
 
   render() {
-    const type = this.props.visualRelationship.type
+    const type = this.props.component
     const text = type.text
     const padding = 10
     const textWidth = type.width

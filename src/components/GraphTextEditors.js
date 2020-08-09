@@ -7,6 +7,7 @@ import {getStyleSelector} from "../selectors/style";
 import {NodeCaptionFillNode} from "../graphics/NodeCaptionFillNode";
 import {NodeCaptionOutsideNode} from "../graphics/NodeCaptionOutsideNode";
 import {measureTextContext} from "../selectors";
+import {RelationshipType} from "../graphics/RelationshipType";
 
 export class GraphTextEditors extends Component {
 
@@ -31,7 +32,7 @@ export class GraphTextEditors extends Component {
               break
             default:
               const outsideCaption = new NodeCaptionOutsideNode(
-                '', visualNode.radius, captionPosition, true, style, measureTextContext)
+                '', visualNode.outsideOrientation, true, style, measureTextContext)
               outsideComponents = [outsideCaption]
               break
           }
@@ -49,7 +50,7 @@ export class GraphTextEditors extends Component {
             <div style={{
               transform: visualNode.outsideOffset.asCSSTransform()
             }}>
-              {visualNode.outsideComponents.map(component => this.componentEditor(visualNode, component))}
+              {outsideComponents.map(component => this.componentEditor(visualNode, component))}
             </div>
           </div>
         )
@@ -64,6 +65,13 @@ export class GraphTextEditors extends Component {
           })
         })
         if (visualRelationship) {
+          let components = visualRelationship.components
+          if (components.length === 0) {
+            const style = styleAttribute => getStyleSelector(visualRelationship.resolvedRelationship.relationship, styleAttribute)(this.props.visualGraph.graph)
+            const type = new RelationshipType(
+              '', {horizontal: 'center', vertical: 'center'}, true, style, measureTextContext)
+            components = [type]
+          }
           return (
             <div style={{
               transform: [
@@ -72,7 +80,7 @@ export class GraphTextEditors extends Component {
                 visualRelationship.componentOffset.asCSSTransform()
               ].join(' ')
             }}>
-              {visualRelationship.components.map(component => this.componentEditor(visualRelationship, component))}
+              {components.map(component => this.componentEditor(visualRelationship, component))}
             </div>
           )
         }
@@ -88,6 +96,7 @@ export class GraphTextEditors extends Component {
           <CaptionEditor
             key={'caption-' + visualEntity.id}
             visualNode={visualEntity}
+            component={component}
             onSetNodeCaption={(caption) => this.props.onSetNodeCaption(this.props.selection, caption)}
             onKeyDown={this.handleKeyDown}
           />
@@ -107,6 +116,7 @@ export class GraphTextEditors extends Component {
         return (
           <RelationshipTypeEditor
             visualRelationship={visualEntity}
+            component={component}
             onSetRelationshipType={(type) => this.props.onSetRelationshipType(this.props.selection, type)}
             onKeyDown={this.handleKeyDown}
           />
