@@ -30,7 +30,7 @@ export default class DetailInspector extends Component {
   }
 
   render() {
-    const {selection, graph, onSaveCaption, onSaveType, reverseRelationships, selectedNodes} = this.props
+    const {selection, graph, onSaveCaption, onSaveType, reverseRelationships, selectedNodes, onSelect} = this.props
     const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
@@ -125,7 +125,7 @@ export default class DetailInspector extends Component {
           <Form style={{textAlign: 'left'}}>
             <Form.Field key='_selected'>
               <label>Selected</label>
-              {describeSelection(selection)}
+              {describeSelection(selection, onSelect)}
             </Form.Field>
             <DetailToolbox selection={selection} onReverseRelationships={reverseRelationships}/>
             {fields}

@@ -6,6 +6,7 @@ import {
 import DetailInspector from "../components/DetailInspector"
 import { getSelectedNodes } from "../selectors/inspection";
 import { getPresentGraph } from "../selectors"
+import {toggleSelection} from "../actions/selection";
 
 const mapStateToProps = state => {
   const graph = getPresentGraph(state)
@@ -51,6 +52,9 @@ const mapDispatchToProps = dispatch => {
     },
     reverseRelationships: selection => {
       dispatch(reverseRelationships(selection))
+    },
+    onSelect: (entities) => {
+      dispatch(toggleSelection(entities, 'replace'))
     }
   }
 }
