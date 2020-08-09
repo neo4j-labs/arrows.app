@@ -69,9 +69,13 @@ export class GraphTextEditors extends Component {
               transform: visualRelationship.arrow.midPoint().vectorFromOrigin().asCSSTransform()
             }}>
               <div style={{
-                transform: visualRelationship.componentOffset.asCSSTransform()
+                transform: `rotate(${visualRelationship.componentRotation}rad)`
               }}>
-                {visualRelationship.components.map(component => this.componentEditor(visualRelationship, component))}
+                <div style={{
+                  transform: visualRelationship.componentOffset.asCSSTransform()
+                }}>
+                  {visualRelationship.components.map(component => this.componentEditor(visualRelationship, component))}
+                </div>
               </div>
             </div>
           )
