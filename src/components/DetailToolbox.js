@@ -19,6 +19,7 @@ const NodeToolboxItems = (props) => null
 const RelationshipToolboxItems = (props) => (
   <Button
     basic
+    color='black'
     floated='right'
     size='tiny'
     icon="exchange"

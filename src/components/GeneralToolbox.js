@@ -11,6 +11,7 @@ export class GeneralToolbox extends Component {
     const toolboxItems = (
       <Button
         basic
+        color='black'
         floated='right'
         size='tiny'
         icon="circle"

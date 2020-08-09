@@ -42,6 +42,7 @@ export class LabelRow extends Component {
           key='addLabel'
           onClick={onAddLabel}
           basic
+          color='black'
           floated='right'
           size="tiny"
           content='Add to all nodes'
