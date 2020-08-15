@@ -186,6 +186,20 @@ export const writeQueriesForAction = (action, graph) => {
       }
     }
 
+    case 'SET_GRAPH_STYLES': {
+      const styleProperties = {}
+      for (const [key, value] of Object.entries(action.style)) {
+        const databaseKey = styleKeyToDatabaseKey(key)
+        styleProperties[databaseKey] = value
+      }
+
+      return (session) => {
+        return session.run('MERGE (n:Diagram) WITH n SET n += $properties', {
+          properties: styleProperties
+        });
+      }
+    }
+
     case 'MOVE_NODES_END_DRAG': {
       if (action.nodePositions.length !== 0) {
         return (session) => {

@@ -1,6 +1,7 @@
 export const themes = [
   {
     name: 'Chunky',
+    description: 'For simple, bold diagrams.',
     graph: {
       "nodes": [
         {
@@ -80,6 +81,7 @@ export const themes = [
   },
   {
     name: 'Bloom',
+    description: 'Theme based on Neo4j Bloom.',
     graph: {
       "style": {
         "node-color": "#4C8EDA",

@@ -302,6 +302,12 @@ export const setGraphStyle = (key, value) => ({
   value
 })
 
+export const setGraphStyles = (style) => ({
+  category: 'GRAPH',
+  type: 'SET_GRAPH_STYLES',
+  style
+})
+
 export const setRelationshipType = (selection, relationshipType) => ({
   category: 'GRAPH',
   type: 'SET_RELATIONSHIP_TYPE',

@@ -149,6 +149,18 @@ const graph = (state = emptyGraph(), action) => {
       }
     }
 
+    case 'SET_GRAPH_STYLES': {
+      const graphStyle = { ...state.style }
+      for (const [key, value] of Object.entries(action.style)) {
+        graphStyle[key] = value
+      }
+      return {
+        style: graphStyle,
+        nodes: state.nodes,
+        relationships: state.relationships
+      }
+    }
+
     case 'MOVE_NODES':
     case 'MOVE_NODES_END_DRAG':
       const nodeIdToNode = {}

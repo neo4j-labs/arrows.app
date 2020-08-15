@@ -30,8 +30,9 @@ class StyleModal extends Component {
             <Button
               primary
               size='tiny'
+              floated='right'
               content='Apply Theme'
-              onClick={this.props.onShowStyleDialog}/>
+              onClick={() => this.props.onApplyTheme(theme.graph.style)}/>
           </Card.Content>
         </Card>
       );
