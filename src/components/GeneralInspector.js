@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
-import {Segment, Form} from 'semantic-ui-react'
+import {Segment, Form, Divider} from 'semantic-ui-react'
 import StyleTable from "./StyleTable"
-import {styleAttributes, styleGroups} from "../model/styling";
+import {styleAttributeGroups} from "../model/styling";
 import {GeneralToolbox} from "./GeneralToolbox";
 
 export default class GeneralInspector extends Component {
@@ -9,17 +9,17 @@ export default class GeneralInspector extends Component {
     const {graph, onSaveGraphStyle} = this.props
     const fields = []
 
-    Object.entries(styleGroups).forEach(([groupKey, styleGroup]) => {
+    for (const group of styleAttributeGroups) {
       fields.push(
-        <StyleTable key={groupKey + 'Style'}
-                    title={groupKey + ' Style'}
+        <StyleTable key={group.name + 'Style'}
+                    title={group.name}
                     style={{}}
                     graphStyle={graph.style}
-                    possibleStyleAttributes={Object.keys(styleAttributes).filter(key => styleAttributes[key].appliesTo === groupKey)}
+                    possibleStyleAttributes={group.attributes.map(attribute => attribute.key)}
                     onSaveStyle={(styleKey, styleValue) => onSaveGraphStyle(styleKey, styleValue)}
         />
       )
-    })
+    }
 
     return (
       <React.Fragment>
@@ -29,6 +29,7 @@ export default class GeneralInspector extends Component {
               <label>No selection</label>
             </Form.Field>
             <GeneralToolbox onPlusNodeClick={this.props.onPlusNodeClick}/>
+            <Divider horizontal clearing style={{paddingTop: 50}}>Style</Divider>
             {fields}
           </Form>
         </Segment>

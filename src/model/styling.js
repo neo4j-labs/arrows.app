@@ -1,75 +1,160 @@
 import {defaultFontSize, defaultNodeRadius} from "../graphics/constants";
 import {black, white} from "./colors";
+import {getStyleSelector} from "../selectors/style";
 
-export const styleGroups = {
+const hasCaption = (node) => node.caption && node.caption.length > 0
+const hasLabels = (node) => node.labels && node.labels.length > 0
+const hasType = (relationship) => relationship.type && relationship.type.length > 0
+const hasProperty = (entity) => entity.properties && Object.keys(entity.properties).length > 0;
+
+const styleFilters = {
   'Node': {
-    relevantTo: (nodes, relationships) => nodes.length > 0
+    relevantToNode: () => true
   },
-  'Caption': {
-    relevantTo: (nodes, relationships) =>
-      nodes.some(node => node.caption && node.caption.length > 0)
+  'NodeWithBorder': {
+    relevantToNode: (node, style) => style('border-width') > 0
   },
-  'Label': {
-    relevantTo: (nodes, relationships) =>
-      nodes.some(node => node.labels && node.labels.length > 0)
+  'NodeWithInsideDetail': {
+    relevantToNode: (node, style) => (
+      hasCaption(node) && style('caption-position') === 'inside' ||
+      hasLabels(node) && style('label-position') === 'inside' ||
+      hasProperty(node) && style('property-position') === 'inside'
+    )
+  },
+  'NodeWithOutsideDetail': {
+    relevantToNode: (node, style) => (
+      hasCaption(node) && style('caption-position') === 'outside' ||
+      hasLabels(node) && style('label-position') === 'outside' ||
+      hasProperty(node) && style('property-position') === 'outside'
+    )
+  },
+  'NodeWithCaption': {
+    relevantToNode: hasCaption
+  },
+  'NodeWithCaptionOutside': {
+    relevantToNode: (node, style) => (
+      hasCaption(node) && style('caption-position') === 'outside'
+    )
+  },
+  'NodeWithLabel': {
+    relevantToNode: hasLabels
   },
   'Relationship': {
-    relevantTo: (nodes, relationships) => relationships.length > 0
+    relevantToRelationship: () => true
   },
-  'Property': {
-    relevantTo: (nodes, relationships) =>
-      [...nodes, ...relationships].some(entity => entity.properties && Object.keys(entity.properties).length > 0)
+  'RelationshipWithDetail': {
+    relevantToRelationship: (relationship) => (
+      hasType(relationship) || hasProperty(relationship)
+    )
   },
+  'RelationshipWithType': {
+    relevantToRelationship: hasType
+  },
+  'NodeOrRelationshipWithProperty': {
+    relevantToNode: hasProperty,
+    relevantToRelationship: hasProperty
+  }
 }
 
-export const styleAttributes = {
-  'radius': {appliesTo: 'Node', type: 'radius', defaultValue: defaultNodeRadius},
-  'node-color': {appliesTo: 'Node', type: 'color', defaultValue: white},
-  'node-padding': {appliesTo: 'Node', type: 'spacing', defaultValue: 5},
-  'border-width': {appliesTo: 'Node', type: 'line-width', defaultValue: 4},
-  'border-color': {appliesTo: 'Node', type: 'color', defaultValue: black},
-  'outside-position': {appliesTo: 'Node', type: 'outside-position', defaultValue: 'auto'},
-  'caption-position': {appliesTo: 'Caption', type: 'inside-outside', defaultValue: 'inside'},
-  'caption-color': {appliesTo: 'Caption', type: 'color', defaultValue: black},
-  'caption-font-size': {appliesTo: 'Caption', type: 'font-size', defaultValue: defaultFontSize},
-  'caption-font-weight': {appliesTo: 'Caption', type: 'font-weight', defaultValue: 'normal'},
-  'caption-max-width': {appliesTo: 'Caption', type: 'radius', defaultValue: 200},
-  'label-position': {appliesTo: 'Label', type: 'inside-outside', defaultValue: 'inside'},
-  'label-color': {appliesTo: 'Label', type: 'color', defaultValue: black},
-  'label-background-color': {appliesTo: 'Label', type: 'color', defaultValue: white},
-  'label-border-color': {appliesTo: 'Label', type: 'color', defaultValue: black},
-  'label-border-width': {appliesTo: 'Label', type: 'line-width', defaultValue: 4},
-  'label-font-size': {appliesTo: 'Label', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
-  'label-padding': {appliesTo: 'Label', type: 'spacing', defaultValue: 5},
-  'label-margin': {appliesTo: 'Label', type: 'spacing', defaultValue: 4},
-  'property-color': {appliesTo: 'Property', type: 'color', defaultValue: black},
-  'property-font-size': {appliesTo: 'Property', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
-  'property-font-weight': {appliesTo: 'Property', type: 'font-weight', defaultValue: 'normal'},
-  'property-position': {appliesTo: 'Property', type: 'inside-outside', defaultValue: 'outside'},
-  'arrow-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 5},
-  'arrow-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
-  'detail-position': {appliesTo: 'Relationship', type: 'detail-position', defaultValue: 'inline'},
-  'detail-orientation': {appliesTo: 'Relationship', type: 'orientation', defaultValue: 'parallel'},
-  'type-font-size': {appliesTo: 'Relationship', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
-  'type-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
-  'type-background-color': {appliesTo: 'Relationship', type: 'color', defaultValue: white},
-  'type-border-width': {appliesTo: 'Relationship', type: 'line-width', defaultValue: 0},
-  'type-border-color': {appliesTo: 'Relationship', type: 'color', defaultValue: black},
-  'type-padding': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
-  'margin-start': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
-  'margin-end': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
-  'margin-peer': {appliesTo: 'Relationship', type: 'spacing', defaultValue: 20},
-  'attachment-start': {appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'},
-  'attachment-end': {appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'}
+export const categoriesPresent = (nodes, relationships, graph) => {
+  const categories = []
+  nodes.forEach(node => {
+    const style = styleAttribute => getStyleSelector(node, styleAttribute)(graph)
+    for (const [category, filter] of Object.entries(styleFilters)) {
+      if (filter.relevantToNode && filter.relevantToNode(node, style)) {
+        categories.push(category)
+      }
+    }
+  })
+  relationships.forEach(relationship => {
+    const style = styleAttribute => getStyleSelector(relationship, styleAttribute)(graph)
+    for (const [category, filter] of Object.entries(styleFilters)) {
+      if (filter.relevantToRelationship && filter.relevantToRelationship(relationship, style)) {
+        categories.push(category)
+      }
+    }
+  })
+  return categories
 }
 
-export const nodeStyleAttributes = Object.keys(styleAttributes).filter(key => {
-  return ['Node', 'Caption', 'Label', 'Property'].includes(styleAttributes[key].appliesTo)
-})
+export const styleAttributeGroups = [
+  {
+    name: 'Nodes', entityTypes: ['node'], attributes: [
+      {key: 'node-color', appliesTo: 'Node', type: 'color', defaultValue: white},
+      {key: 'border-width', appliesTo: 'Node', type: 'line-width', defaultValue: 4},
+      {key: 'border-color', appliesTo: 'NodeWithBorder', type: 'color', defaultValue: black},
+      {key: 'radius', appliesTo: 'Node', type: 'radius', defaultValue: defaultNodeRadius},
+      {key: 'node-padding', appliesTo: 'NodeWithInsideDetail', type: 'spacing', defaultValue: 5},
+      {key: 'outside-position', appliesTo: 'NodeWithOutsideDetail', type: 'outside-position', defaultValue: 'auto'},
+    ]
+  },
+  {
+    name: 'Node Captions', entityTypes: ['node'], attributes: [
+      {key: 'caption-position', appliesTo: 'NodeWithCaption', type: 'inside-outside', defaultValue: 'inside'},
+      {key: 'caption-max-width', appliesTo: 'NodeWithCaptionOutside', type: 'radius', defaultValue: 200},
+      {key: 'caption-color', appliesTo: 'NodeWithCaption', type: 'color', defaultValue: black},
+      {key: 'caption-font-size', appliesTo: 'NodeWithCaption', type: 'font-size', defaultValue: defaultFontSize},
+      {key: 'caption-font-weight', appliesTo: 'NodeWithCaption', type: 'font-weight', defaultValue: 'normal'},
+    ]
+  },
+  {
+    name: 'Node Labels', entityTypes: ['node'], attributes: [
+      {key: 'label-position', appliesTo: 'NodeWithLabel', type: 'inside-outside', defaultValue: 'inside'},
+      {key: 'label-color', appliesTo: 'NodeWithLabel', type: 'color', defaultValue: black},
+      {key: 'label-background-color', appliesTo: 'NodeWithLabel', type: 'color', defaultValue: white},
+      {key: 'label-border-color', appliesTo: 'NodeWithLabel', type: 'color', defaultValue: black},
+      {key: 'label-border-width', appliesTo: 'NodeWithLabel', type: 'line-width', defaultValue: 4},
+      {key: 'label-font-size', appliesTo: 'NodeWithLabel', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
+      {key: 'label-padding', appliesTo: 'NodeWithLabel', type: 'spacing', defaultValue: 5},
+      {key: 'label-margin', appliesTo: 'NodeWithLabel', type: 'spacing', defaultValue: 4},
+    ]
+  },
+  {
+    name: 'Arrows', entityTypes: ['relationship'], attributes: [
+      {key: 'detail-position', appliesTo: 'RelationshipWithDetail', type: 'detail-position', defaultValue: 'inline'},
+      {key: 'detail-orientation', appliesTo: 'RelationshipWithDetail', type: 'orientation', defaultValue: 'parallel'},
+      {key: 'arrow-width', appliesTo: 'Relationship', type: 'line-width', defaultValue: 5},
+      {key: 'arrow-color', appliesTo: 'Relationship', type: 'color', defaultValue: black},
+      {key: 'margin-start', appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
+      {key: 'margin-end', appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
+      {key: 'margin-peer', appliesTo: 'Relationship', type: 'spacing', defaultValue: 20},
+      {key: 'attachment-start', appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'},
+      {key: 'attachment-end', appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'}
+    ]
+  },
+  {
+    name: 'Relationship Types', entityTypes: ['relationship'], attributes: [
+      {key: 'type-color', appliesTo: 'RelationshipWithType', type: 'color', defaultValue: black},
+      {key: 'type-background-color', appliesTo: 'RelationshipWithType', type: 'color', defaultValue: white},
+      {key: 'type-border-color', appliesTo: 'RelationshipWithType', type: 'color', defaultValue: black},
+      {key: 'type-border-width', appliesTo: 'RelationshipWithType', type: 'line-width', defaultValue: 0},
+      {key: 'type-font-size', appliesTo: 'RelationshipWithType', type: 'font-size', defaultValue: defaultFontSize * (4 / 5)},
+      {key: 'type-padding', appliesTo: 'RelationshipWithType', type: 'spacing', defaultValue: 5},
+    ]
+  },
+  {
+    name: 'Properties', entityTypes: ['node', 'relationship'], attributes: [
+      {key: 'property-position', appliesTo: 'NodeOrRelationshipWithProperty', type: 'inside-outside', defaultValue: 'outside'},
+      {key: 'property-color', appliesTo: 'NodeOrRelationshipWithProperty', type: 'color', defaultValue: black},
+      {key: 'property-font-size', appliesTo: 'NodeOrRelationshipWithProperty', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
+      {key: 'property-font-weight', appliesTo: 'NodeOrRelationshipWithProperty', type: 'font-weight', defaultValue: 'normal'},
+    ]
+  }
+]
 
-export const relationshipStyleAttributes = Object.keys(styleAttributes).filter(key => {
-  return ['Relationship', 'Property'].includes(styleAttributes[key].appliesTo)
-})
+export const styleAttributes = Object.fromEntries(
+  styleAttributeGroups.flatMap(group => group.attributes)
+    .map(attribute => [attribute.key, attribute]))
+
+export const nodeStyleAttributes = styleAttributeGroups
+  .filter(group => group.entityTypes.includes('node'))
+  .flatMap(group => group.attributes)
+  .map(attribute => attribute.key)
+
+export const relationshipStyleAttributes = styleAttributeGroups
+  .filter(group => group.entityTypes.includes('relationship'))
+  .flatMap(group => group.attributes)
+  .map(attribute => attribute.key)
 
 export const styleTypes = {
   'radius': { editor: 'slider', min: 1, max: 1000, step: 5 },
