@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Modal, Button, Card, Image} from 'semantic-ui-react'
+import {Modal, Button, Card} from 'semantic-ui-react'
 import {themes} from "../model/themes";
 import {renderSvg} from "../graphics/utils/offScreenSvgRenderer";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
@@ -14,12 +14,21 @@ class StyleModal extends Component {
 
     const cards = themes.map(theme => {
       const graph = constructGraphFromFile(theme.graph).graph
-      console.log(graph)
       const {dataUrl} = renderSvg(graph)
 
       return (
         <Card>
-          <Image src={dataUrl} wrapped ui={false}/>
+          <div style={{
+            height: 200,
+            padding: 10
+          }}>
+            <img src={dataUrl} alt={theme.description} style={{
+              width: '100%',
+              position: 'relative',
+              top: '50%',
+              transform: 'translateY(-50%)'
+            }}/>
+          </div>
           <Card.Content>
             <Card.Header>{theme.name}</Card.Header>
             <Card.Description>
