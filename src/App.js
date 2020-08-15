@@ -18,6 +18,7 @@ import GoogleDrivePicker from './components/GoogleDrivePickerWrapper'
 import { newDiagram } from "./actions/diagram"
 import { loadFromGoogleDriveFile } from "./actions/storage"
 import FooterContainer from "./containers/FooterContainer";
+import StyleContainer from "./containers/StyleContainer";
 
 class App extends Component {
   constructor (props) {
@@ -31,6 +32,7 @@ class App extends Component {
       inspectorVisible,
       editingConnectionParameters,
       showDisconnectedDialog,
+      showStyleDialog,
       showExportDialog,
       viewingOpenDiagram,
       onCancelPicker,
@@ -40,6 +42,7 @@ class App extends Component {
     const storageConfigModal = viewingConfig ? (<StorageConfigContainer/>) : null
     const databaseConnectionModal = editingConnectionParameters ? (<DatabaseConnectionContainer/>) : null
     const databaseConnectionMessageModal = showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
+    const styleModal = showStyleDialog ? (<StyleContainer/>) : null
     const exportModal = showExportDialog ? (<ExportContainer/>) : null
     const googleDriveModal = viewingOpenDiagram ? <GoogleDrivePicker onCancelPicker={onCancelPicker } onFilePicked={loadFromGoogleDrive} /> : null
 
@@ -68,6 +71,7 @@ class App extends Component {
         {storageConfigModal}
         {databaseConnectionModal}
         {databaseConnectionMessageModal}
+        {styleModal}
         {exportModal}
         {googleDriveModal}
         <GoogleSignInModal/>
@@ -108,6 +112,7 @@ const mapStateToProps = (state) => ({
   viewingOpenDiagram: state.storage.mode === 'OPEN_DIAGRAM',
   editingConnectionParameters: state.storage.database.editingConnectionParameters,
   showDisconnectedDialog: state.storage.database.showDisconnectedDialog,
+  showStyleDialog: state.applicationDialogs.showStyleDialog,
   showExportDialog: state.applicationDialogs.showExportDialog
 })
 

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Form, Divider} from 'semantic-ui-react'
+import {Segment, Form, Divider, Button} from 'semantic-ui-react'
 import StyleTable from "./StyleTable"
 import {styleAttributeGroups} from "../model/styling";
 import {GeneralToolbox} from "./GeneralToolbox";
@@ -8,6 +8,18 @@ export default class GeneralInspector extends Component {
   render() {
     const {graph, onSaveGraphStyle} = this.props
     const fields = []
+
+    fields.push(
+      <Form.Field key='theme'>
+        <label>Theme</label>
+        <Button
+          basic
+          color='black'
+          size='tiny'
+          content='Choose Theme'
+          onClick={this.props.onShowStyleDialog}/>
+      </Form.Field>
+    )
 
     for (const group of styleAttributeGroups) {
       fields.push(

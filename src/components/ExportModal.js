@@ -3,6 +3,7 @@ import {Modal, Button, Tab} from 'semantic-ui-react'
 import ExportPngPanel from "./ExportPngPanel";
 import ExportCypherPanel from "./ExportCypherPanel";
 import ExportSvgPanel from "./ExportSvgPanel";
+import ExportJsonPanel from "./ExportJsonPanel";
 
 class ExportModal extends Component {
 
@@ -39,6 +40,16 @@ class ExportModal extends Component {
         render: () => (
           <Tab.Pane attached={false}>
             <ExportCypherPanel
+              graph={this.props.graph}
+            />
+          </Tab.Pane>
+        )
+      },
+      {
+        menuItem: 'JSON',
+        render: () => (
+          <Tab.Pane attached={false}>
+            <ExportJsonPanel
               graph={this.props.graph}
             />
           </Tab.Pane>
