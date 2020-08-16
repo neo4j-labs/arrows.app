@@ -160,5 +160,94 @@ export const themes = [
         }
       ]
     }
+  },
+  {
+    name: 'Browser',
+    description: 'Theme based on Neo4j Browser',
+    graph: {
+      "style": {
+        "node-color": "#4C8EDA",
+        "border-width": 2,
+        "border-color": "#2870c2",
+        "radius": 25,
+        "node-padding": 5,
+        "outside-position": "auto",
+        "caption-position": "inside",
+        "caption-max-width": 200,
+        "caption-color": "#ffffff",
+        "caption-font-size": 8,
+        "caption-font-weight": "normal",
+        "label-position": "outside",
+        "label-color": "#ffffff",
+        "label-background-color": "#4C8EDA",
+        "label-border-color": "#4C8EDA",
+        "label-border-width": 0,
+        "label-font-size": 8,
+        "label-padding": 2,
+        "label-margin": 2,
+        "detail-position": "inline",
+        "detail-orientation": "parallel",
+        "arrow-width": 1,
+        "arrow-color": "#A5ABB6",
+        "margin-start": 0,
+        "margin-end": 0,
+        "margin-peer": 20,
+        "attachment-start": "normal",
+        "attachment-end": "normal",
+        "type-color": "#000000",
+        "type-background-color": "#ffffff",
+        "type-border-color": "#000000",
+        "type-border-width": 0,
+        "type-font-size": 10,
+        "type-padding": 2,
+        "property-position": "outside",
+        "property-color": "#000000",
+        "property-font-size": 8,
+        "property-font-weight": "normal"
+      },
+      "nodes": [
+        {
+          "id": "n0",
+          "position": {
+            "x": 3.8854047888817544,
+            "y": 0
+          },
+          "caption": "Tom Hanks",
+          "style": {
+            "node-color": "#F79767",
+            "border-color": "#f36924"
+          },
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "id": "n1",
+          "position": {
+            "x": 144.87486013982567,
+            "y": 0
+          },
+          "caption": "The Da Vinci Code",
+          "style": {},
+          "labels": [
+            "Movie"
+          ],
+          "properties": {
+            "released": "2006",
+            "tagline": "Break The Codes",
+            "title": "The Da Vinci Code"
+          }
+        }
+      ],
+      "relationships": [
+        {
+          "id": "n0",
+          "type": "ACTED_IN",
+          "style": {},
+          "properties": {},
+          "fromId": "n0",
+          "toId": "n1"
+        }
+      ]
+    }
   }
 ]
