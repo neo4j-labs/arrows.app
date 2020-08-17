@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Form, Input} from 'semantic-ui-react'
+import {Segment, Divider, Form, Input} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
 import {selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle} from "../model/properties"
@@ -7,7 +7,7 @@ import {describeSelection} from "./SelectionCounters"
 import PropertyTable from "./PropertyTable"
 import StyleTable from "./StyleTable"
 import { DetailToolbox } from "./DetailToolbox"
-import {styleGroups, styleAttributes} from "../model/styling";
+import {categoriesPresent, styleAttributeGroups} from "../model/styling";
 import {combineLabels} from "../model/labels";
 import LabelTable from "./LabelTable";
 
@@ -104,20 +104,29 @@ export default class DetailInspector extends Component {
       )
     }
 
-    Object.entries(styleGroups).forEach(([groupKey, styleGroup]) => {
-      if (styleGroup.relevantTo(selectedNodes, relationships)) {
+    fields.push((
+      <Divider horizontal clearing style={{paddingTop: 50}}>Style</Divider>
+    ))
+
+    const relevantCategories = categoriesPresent(selectedNodes, relationships, graph)
+
+    for (const group of styleAttributeGroups) {
+      const relevantKeys = group.attributes
+        .filter(attribute => relevantCategories.includes(attribute.appliesTo))
+        .map(attribute => attribute.key)
+      if (relevantKeys.length > 0) {
         fields.push(
-          <StyleTable key={groupKey + 'Style'}
-                      title={groupKey + ' Style'}
+          <StyleTable key={group.name + 'Style'}
+                      title={group.name}
                       style={combineStyle(entities)}
                       graphStyle={graph.style}
-                      possibleStyleAttributes={Object.keys(styleAttributes).filter(key => styleAttributes[key].appliesTo === groupKey)}
+                      possibleStyleAttributes={relevantKeys}
                       onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
                       onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
           />
         )
       }
-    })
+    }
 
     return (
       <React.Fragment>

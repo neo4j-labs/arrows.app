@@ -34,11 +34,13 @@ export class StraightArrow {
     ctx.lineWidth = this.dimensions.arrowWidth
     ctx.strokeStyle = this.dimensions.arrowColor
     ctx.stroke()
-    ctx.translate(this.endAttach.x, this.endAttach.y)
-    ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle())
-    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
-    ctx.fillStyle = this.dimensions.arrowColor
-    ctx.fill()
+    if (this.dimensions.hasArrowHead) {
+      ctx.translate(this.endAttach.x, this.endAttach.y)
+      ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle())
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
+      ctx.fillStyle = this.dimensions.arrowColor
+      ctx.fill()
+    }
     ctx.restore()
   }
 
@@ -54,12 +56,14 @@ export class StraightArrow {
     ctx.lineCap = 'round'
     ctx.strokeStyle = selectionBorder
     ctx.stroke()
-    ctx.translate(this.endAttach.x, this.endAttach.y)
-    ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle())
-    ctx.lineWidth = indicatorWidth
-    ctx.lineJoin = 'round'
-    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
-    ctx.stroke()
+    if (this.dimensions.hasArrowHead) {
+      ctx.translate(this.endAttach.x, this.endAttach.y)
+      ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle())
+      ctx.lineWidth = indicatorWidth
+      ctx.lineJoin = 'round'
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
+      ctx.stroke()
+    }
     ctx.restore()
   }
 

@@ -35,7 +35,7 @@ export default class StyleTable extends Component {
       }
     }
 
-    possibleStyleAttributes.sort().forEach((styleKey, index) => {
+    possibleStyleAttributes.forEach((styleKey, index) => {
       const specialised = style.hasOwnProperty(styleKey)
       const {styleValue, styleValuePlaceholder} = StyleTable.styleInput(styleKey, specialised, style, graphStyle)
       rows.push((

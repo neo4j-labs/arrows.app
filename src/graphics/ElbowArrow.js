@@ -54,13 +54,14 @@ export class ElbowArrow {
     ctx.lineWidth = this.dimensions.arrowWidth
     ctx.strokeStyle = this.dimensions.arrowColor
     ctx.stroke()
-    ctx.translate(...this.path.end.xy)
-    ctx.rotate(this.path.endDirection)
-    ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0)
-    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
-    ctx.fillStyle = this.dimensions.arrowColor
-    ctx.fill()
-
+    if (this.dimensions.hasArrowHead) {
+      ctx.translate(...this.path.end.xy)
+      ctx.rotate(this.path.endDirection)
+      ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0)
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
+      ctx.fillStyle = this.dimensions.arrowColor
+      ctx.fill()
+    }
     ctx.restore()
   }
 
@@ -73,13 +74,15 @@ export class ElbowArrow {
     ctx.lineCap = 'round'
     ctx.strokeStyle = selectionBorder
     ctx.stroke()
-    ctx.translate(...this.path.end.xy)
-    ctx.rotate(this.path.endDirection)
-    ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0)
-    ctx.lineWidth = indicatorWidth
-    ctx.lineJoin = 'round'
-    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
-    ctx.stroke()
+    if (this.dimensions.hasArrowHead) {
+      ctx.translate(...this.path.end.xy)
+      ctx.rotate(this.path.endDirection)
+      ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0)
+      ctx.lineWidth = indicatorWidth
+      ctx.lineJoin = 'round'
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
+      ctx.stroke()
+    }
     ctx.restore()
   }
 
