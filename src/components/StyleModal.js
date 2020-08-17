@@ -19,7 +19,7 @@ class StyleModal extends Component {
       return (
         <Card>
           <div style={{
-            height: 200,
+            height: 230,
             padding: 10
           }}>
             <img src={dataUrl} alt={theme.description} style={{

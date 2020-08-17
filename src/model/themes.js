@@ -249,5 +249,222 @@ export const themes = [
         }
       ]
     }
+  },
+  {
+    name: 'Iconic',
+    description: 'Minimal undirected graphs suitable for very small pictures',
+    graph: {
+      "style": {
+        "node-color": "#ffffff",
+        "border-width": 2,
+        "border-color": "#000000",
+        "radius": 10,
+        "node-padding": 5,
+        "outside-position": "auto",
+        "caption-position": "outside",
+        "caption-max-width": 200,
+        "caption-color": "#000000",
+        "caption-font-size": 10,
+        "caption-font-weight": "normal",
+        "label-position": "outside",
+        "label-color": "#000000",
+        "label-background-color": "#ffffff",
+        "label-border-color": "#000000",
+        "label-border-width": 2,
+        "label-font-size": 10,
+        "label-padding": 1,
+        "label-margin": 4,
+        "directionality": "undirected",
+        "detail-position": "inline",
+        "detail-orientation": "parallel",
+        "arrow-width": 2,
+        "arrow-color": "#000000",
+        "margin-start": 0,
+        "margin-end": 0,
+        "margin-peer": 20,
+        "attachment-start": "normal",
+        "attachment-end": "normal",
+        "type-color": "#000000",
+        "type-background-color": "#ffffff",
+        "type-border-color": "#000000",
+        "type-border-width": 0,
+        "type-font-size": 10,
+        "type-padding": 5,
+        "property-position": "outside",
+        "property-color": "#000000",
+        "property-font-size": 10,
+        "property-font-weight": "normal"
+      },
+      "nodes": [
+        {
+          "id": "n0",
+          "position": {
+            "x": -16.5,
+            "y": 0
+          },
+          "caption": "",
+          "style": {
+            "node-color": "#7b64ff"
+          },
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "id": "n1",
+          "position": {
+            "x": -39.78102752569192,
+            "y": 40.6310118348138
+          },
+          "caption": "",
+          "style": {},
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "id": "n2",
+          "position": {
+            "x": 6.781027525691918,
+            "y": 40.6310118348138
+          },
+          "caption": "",
+          "style": {},
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "id": "n3",
+          "position": {
+            "x": -39.78102752569192,
+            "y": -40.631011834813805
+          },
+          "caption": "",
+          "style": {
+            "node-color": "#fcdc00"
+          },
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "id": "n4",
+          "position": {
+            "x": -63.32825392188784,
+            "y": 0
+          },
+          "caption": "",
+          "style": {},
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "id": "n5",
+          "position": {
+            "x": 30.328253921887843,
+            "y": 0
+          },
+          "caption": "",
+          "style": {},
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "id": "n6",
+          "position": {
+            "x": 6.781027525691918,
+            "y": -40.631011834813805
+          },
+          "caption": "",
+          "style": {},
+          "labels": [],
+          "properties": {}
+        },
+        {
+          "id": "n7",
+          "position": {
+            "x": 53.609281447579775,
+            "y": 40.6310118348138
+          },
+          "caption": "",
+          "style": {
+            "node-color": "#c45100"
+          },
+          "labels": [],
+          "properties": {}
+        }
+      ],
+      "relationships": [
+        {
+          "id": "n0",
+          "type": "",
+          "style": {},
+          "properties": {},
+          "fromId": "n0",
+          "toId": "n1"
+        },
+        {
+          "id": "n1",
+          "type": "",
+          "style": {},
+          "properties": {},
+          "fromId": "n0",
+          "toId": "n2"
+        },
+        {
+          "id": "n2",
+          "type": "",
+          "style": {},
+          "properties": {},
+          "fromId": "n1",
+          "toId": "n2"
+        },
+        {
+          "id": "n3",
+          "type": "",
+          "style": {},
+          "properties": {},
+          "fromId": "n0",
+          "toId": "n3"
+        },
+        {
+          "id": "n4",
+          "type": "",
+          "style": {},
+          "properties": {},
+          "fromId": "n0",
+          "toId": "n4"
+        },
+        {
+          "id": "n5",
+          "type": "",
+          "style": {},
+          "properties": {},
+          "fromId": "n0",
+          "toId": "n5"
+        },
+        {
+          "id": "n6",
+          "type": "",
+          "style": {},
+          "properties": {},
+          "fromId": "n0",
+          "toId": "n6"
+        },
+        {
+          "id": "n7",
+          "type": "",
+          "style": {},
+          "properties": {},
+          "fromId": "n5",
+          "toId": "n7"
+        },
+        {
+          "id": "n8",
+          "type": "",
+          "style": {},
+          "properties": {},
+          "fromId": "n4",
+          "toId": "n1"
+        }
+      ]
+    }
   }
 ]
