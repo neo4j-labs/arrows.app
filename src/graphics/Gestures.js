@@ -104,7 +104,7 @@ export default class Gestures {
 
           drawRing(ctx, newNodePosition, blueGreen, newNodeRadius)
 
-          const dimensions = { arrowWidth: 4, headWidth: 16, headHeight: 24, chinHeight:2.4, arrowColor: blueGreen }
+          const dimensions = { arrowWidth: 4, hasArrowHead: true, headWidth: 16, headHeight: 24, chinHeight:2.4, arrowColor: blueGreen }
           if (targetNode && sourceNode === targetNode) {
             const arrow = new BalloonArrow(sourceNodePosition, newNodeRadius, 0,44, 256, 40, dimensions)
             arrow.draw(ctx)

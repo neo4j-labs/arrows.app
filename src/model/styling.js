@@ -111,6 +111,7 @@ export const styleAttributeGroups = [
   },
   {
     name: 'Arrows', entityTypes: ['relationship'], attributes: [
+      {key: 'directionality', appliesTo: 'Relationship', type: 'directionality', defaultValue: 'directed'},
       {key: 'detail-position', appliesTo: 'RelationshipWithDetail', type: 'detail-position', defaultValue: 'inline'},
       {key: 'detail-orientation', appliesTo: 'RelationshipWithDetail', type: 'orientation', defaultValue: 'parallel'},
       {key: 'arrow-width', appliesTo: 'Relationship', type: 'line-width', defaultValue: 5},
@@ -163,6 +164,7 @@ export const styleTypes = {
   'font-size': {  editor: 'slider', min: 5, max: 100, step: 1 },
   'color': { editor: 'colorPicker' },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
+  'directionality': { editor: 'dropdown', options: ['directed', 'undirected'] },
   'outside-position': { editor: 'dropdown', options: ['auto', 'top-left', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left'] },
   'inside-outside': { editor: 'dropdown', options: ['inside', 'outside'] },
   'detail-position': { editor: 'dropdown', options: ['inline', 'above', 'below'] },

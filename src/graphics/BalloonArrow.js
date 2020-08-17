@@ -39,11 +39,13 @@ export class BalloonArrow {
     ctx.lineWidth = this.dimensions.arrowWidth
     ctx.strokeStyle = this.dimensions.arrowColor
     ctx.stroke()
-    ctx.rotate(Math.PI + this.deflection)
-    ctx.translate(-this.nodeRadius, 0)
-    ctx.fillStyle = this.dimensions.arrowColor
-    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
-    ctx.fill()
+    if (this.dimensions.hasArrowHead) {
+      ctx.rotate(Math.PI + this.deflection)
+      ctx.translate(-this.nodeRadius, 0)
+      ctx.fillStyle = this.dimensions.arrowColor
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
+      ctx.fill()
+    }
     ctx.restore()
   }
 
@@ -58,12 +60,14 @@ export class BalloonArrow {
     ctx.lineCap = 'round'
     ctx.strokeStyle = selectionBorder
     ctx.stroke()
-    ctx.rotate(Math.PI + this.deflection)
-    ctx.translate(-this.nodeRadius, 0)
-    ctx.lineWidth = indicatorWidth
-    ctx.lineJoin = 'round'
-    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
-    ctx.stroke()
+    if (this.dimensions.hasArrowHead) {
+      ctx.rotate(Math.PI + this.deflection)
+      ctx.translate(-this.nodeRadius, 0)
+      ctx.lineWidth = indicatorWidth
+      ctx.lineJoin = 'round'
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
+      ctx.stroke()
+    }
     ctx.restore()
   }
 

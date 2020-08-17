@@ -53,12 +53,14 @@ export class ParallelArrow {
     ctx.lineWidth = this.dimensions.arrowWidth
     ctx.strokeStyle = this.dimensions.arrowColor
     ctx.stroke()
-    ctx.translate(this.centreDistance, 0)
-    ctx.rotate(-this.endDeflection)
-    ctx.translate(-this.endRadius, 0)
-    ctx.fillStyle = this.dimensions.arrowColor
-    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
-    ctx.fill()
+    if (this.dimensions.hasArrowHead) {
+      ctx.translate(this.centreDistance, 0)
+      ctx.rotate(-this.endDeflection)
+      ctx.translate(-this.endRadius, 0)
+      ctx.fillStyle = this.dimensions.arrowColor
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
+      ctx.fill()
+    }
     ctx.restore()
   }
 
@@ -73,13 +75,15 @@ export class ParallelArrow {
     ctx.lineCap = 'round'
     ctx.strokeStyle = selectionBorder
     ctx.stroke()
-    ctx.translate(this.centreDistance, 0)
-    ctx.rotate(-this.endDeflection)
-    ctx.translate(-this.endRadius, 0)
-    ctx.lineWidth = indicatorWidth
-    ctx.lineJoin = 'round'
-    arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
-    ctx.stroke()
+    if (this.dimensions.hasArrowHead) {
+      ctx.translate(this.centreDistance, 0)
+      ctx.rotate(-this.endDeflection)
+      ctx.translate(-this.endRadius, 0)
+      ctx.lineWidth = indicatorWidth
+      ctx.lineJoin = 'round'
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, false, true)
+      ctx.stroke()
+    }
     ctx.restore()
   }
 
