@@ -4,7 +4,7 @@ import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
-import { getGraph, getPresentGraph } from "../selectors";
+import {getPresentGraph, getVisualGraph} from "../selectors";
 import {
   nodeSelected,
   selectedNodeIdMap, selectedNodeIds, selectedNodes,
@@ -171,7 +171,9 @@ export const tryMoveNode = ({ nodeId, oldMousePosition, newMousePosition, forced
   return function (dispatch, getState) {
     const state = getState()
     const { viewTransformation, mouse } = state
-    const graph = getGraph(state)
+    const visualGraph = getVisualGraph(state)
+    const graph = visualGraph.graph
+    const visualNode = visualGraph.nodes[nodeId]
     let naturalPosition
     const otherSelectedNodes = selectedNodeIds(state.selection).filter((selectedNodeId) => selectedNodeId !== nodeId)
     const activelyMovedNode = graph.nodes.find((node) => idsMatch(node.id, nodeId))
@@ -189,7 +191,7 @@ export const tryMoveNode = ({ nodeId, oldMousePosition, newMousePosition, forced
     let guides = new Guides()
     let newPosition = naturalPosition
     if (snaps.snapped) {
-      guides = new Guides(snaps.guidelines, naturalPosition)
+      guides = new Guides(snaps.guidelines, naturalPosition, visualNode.radius)
       newPosition = snaps.snappedPosition
     }
     const delta = newPosition.vectorFrom(activelyMovedNode.position)

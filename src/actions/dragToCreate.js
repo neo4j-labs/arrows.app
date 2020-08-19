@@ -22,6 +22,7 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
   return function (dispatch, getState) {
     const state = getState()
     const visualGraph = getVisualGraph(state)
+    let newNodeRadius = visualGraph.graph.style.radius
     const graph = visualGraph.graph
     const targetSnaps = snapToTargetNode(visualGraph, null, mousePosition)
     if (targetSnaps.snapped) {
@@ -42,7 +43,7 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
         dispatch(ringDraggedDisconnected(
           sourceNodeId,
           snaps.snappedPosition,
-          new Guides(snaps.guidelines, mousePosition),
+          new Guides(snaps.guidelines, mousePosition, newNodeRadius),
           mousePosition
         ))
       } else {

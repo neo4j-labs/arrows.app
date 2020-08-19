@@ -3,12 +3,12 @@
  */
 import { drawCircle, drawSolidCircle, drawStraightLine } from "./canvasRenderer";
 import { Point } from "../model/Point";
-import { defaultNodeRadius } from "./constants";
 
 export class Guides {
-  constructor(guidelines = [], naturalPosition) {
+  constructor(guidelines = [], naturalPosition, naturalRadius) {
     this.guidelines = guidelines
     this.naturalPosition = naturalPosition
+    this.naturalRadius = naturalRadius
   }
 
   drawSnaplines (ctx, displayOptions) {
@@ -40,7 +40,7 @@ export class Guides {
   drawActualPosition (ctx, displayOptions) {
     if (this.naturalPosition) {
       const transform = (position) => displayOptions.viewTransformation.transform(position)
-      drawSolidCircle(ctx, transform(this.naturalPosition), 'grey', defaultNodeRadius * displayOptions.viewTransformation.scale)
+      drawSolidCircle(ctx, transform(this.naturalPosition), 'grey', this.naturalRadius * displayOptions.viewTransformation.scale)
     }
   }
 }
