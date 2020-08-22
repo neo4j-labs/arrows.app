@@ -1,8 +1,7 @@
-import React from 'react';
+import crel from 'crel';
 import {ViewTransformation} from "../../state/ViewTransformation";
 import {getVisualGraph} from "../../selectors/index";
 import {Vector} from "../../model/Vector";
-import {renderToStaticMarkup} from 'react-dom/server'
 import SvgAdaptor from "./SvgAdaptor";
 
 export const renderSvg = (graph) => {
@@ -17,7 +16,7 @@ export const renderSvg = (graph) => {
       left: 0, top: 0, right: 100, bottom: 100
     }
 
-  const e = React.createElement
+  const e = crel
   const svgAdaptor = new SvgAdaptor(e);
   visualGraph.draw(svgAdaptor, {
     viewTransformation: new ViewTransformation(1,
@@ -25,7 +24,7 @@ export const renderSvg = (graph) => {
   })
   const width = Math.ceil(boundingBox.width)
   const height = Math.ceil(boundingBox.height)
-  const svgString = renderToStaticMarkup(svgAdaptor.asSvg(width, height))
+  const svgString = svgAdaptor.asSvg(width, height).outerHTML
 
   return {
     width,

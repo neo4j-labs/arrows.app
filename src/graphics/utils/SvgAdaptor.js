@@ -108,7 +108,7 @@ export default class SvgAdaptor {
       points: points.map(point => `${point.x},${point.y}`).join(' '),
       fill: 'none',
       stroke: this.current().strokeStyle,
-      strokeWidth: this.current().lineWidth
+      'stroke-width': this.current().lineWidth
     }))
   }
 
@@ -118,7 +118,7 @@ export default class SvgAdaptor {
       points: points.map(point => `${point.x},${point.y}`).join(' '),
       fill: fill ? this.current().fillStyle : 'none',
       stroke: stroke ? this.current().strokeStyle : 'none',
-      strokeWidth: this.current().lineWidth
+      'stroke-width': this.current().lineWidth
     }))
   }
 
@@ -129,7 +129,7 @@ export default class SvgAdaptor {
         d: this.currentPath.join(' '),
         fill: 'none',
         stroke: this.current().strokeStyle,
-        strokeWidth: this.current().lineWidth
+        'stroke-width': this.current().lineWidth
       }))
     }
   }
@@ -142,14 +142,14 @@ export default class SvgAdaptor {
     const oMetrics = this.measureText('o')
     const middleHeight = (oMetrics.actualBoundingBoxAscent + oMetrics.actualBoundingBoxDescent) / 2
     this.children.push(this.e('text', {
-      xmlSpace: 'preserve',
+      'xml:space': 'preserve',
       transform: this.current().transforms.join(' '),
       x,
       y: this.current().textBaseline === 'middle' ? y + middleHeight : y,
-      fontFamily: this.current().font.fontFace,
-      fontSize: this.current().font.fontSize,
-      fontWeight: this.current().font.fontWeight,
-      textAnchor: ((a) => a === 'center' ? 'middle' : a )(this.current().textAlign),
+      'font-family': this.current().font.fontFace,
+      'font-size': this.current().font.fontSize,
+      'font-weight': this.current().font.fontWeight,
+      'text-anchor': ((a) => a === 'center' ? 'middle' : a )(this.current().textAlign),
       fill: this.current().fillStyle
     }, text))
   }
@@ -194,7 +194,7 @@ export default class SvgAdaptor {
   asSvg(width, height) {
     return this.e('svg', {
         xmlns: 'http://www.w3.org/2000/svg',
-        xmlnsXlink: 'http://www.w3.org/1999/xlink',
+        'xmlns:xlink': 'http://www.w3.org/1999/xlink',
         width,
         height,
         viewBox: [0, 0, width, height].join(' ')
