@@ -23,6 +23,7 @@ export default class extends Component {
         stringValue: props.value + ''
       }
     }
+    return state
   }
 
   onChange(stringValue) {
