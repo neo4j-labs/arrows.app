@@ -105,7 +105,12 @@ export default class DetailInspector extends Component {
     }
 
     fields.push((
-      <Divider horizontal clearing style={{paddingTop: 50}}>Style</Divider>
+      <Divider
+        key='StyleDivider'
+        horizontal
+        clearing
+        style={{paddingTop: 50}}
+      >Style</Divider>
     ))
 
     const relevantCategories = categoriesPresent(selectedNodes, relationships, graph)
