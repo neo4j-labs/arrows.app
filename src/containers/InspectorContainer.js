@@ -1,7 +1,7 @@
 import {connect} from "react-redux";
 import {
   setProperty, setNodeCaption, setRelationshipType, renameProperty, removeProperty,
-  setArrowsProperty, removeArrowsProperty, reverseRelationships, addLabel, renameLabel, removeLabel
+  setArrowsProperty, removeArrowsProperty, reverseRelationships, addLabel, renameLabel, removeLabel, duplicateSelection
 } from "../actions/graph";
 import DetailInspector from "../components/DetailInspector"
 import { getSelectedNodes } from "../selectors/inspection";
@@ -49,6 +49,9 @@ const mapDispatchToProps = dispatch => {
     },
     onDeleteArrowsProperty: (selection, key) => {
       dispatch(removeArrowsProperty(selection, key))
+    },
+    onDuplicate: () => {
+      dispatch(duplicateSelection())
     },
     reverseRelationships: selection => {
       dispatch(reverseRelationships(selection))

@@ -378,11 +378,13 @@ export const duplicateSelection = () => {
     const actionMemos = state.actionMemos
 
     const nodesToDuplicate = selectedNodes(graph, selection)
+    const nodeIdMap = {}
+    const oldNodeToNewNodeMap = {}
+    const relationshipsToBeDuplicated = {}
+
     if (nodesToDuplicate.length > 0) {
       const offset = duplicateNodeOffset(graph, nodesToDuplicate, actionMemos)
 
-      const nodeIdMap = {}
-      const oldNodeToNewNodeMap = {}
       let newNodeId = nextAvailableId(graph.nodes)
       nodesToDuplicate.forEach((oldNode) => {
         nodeIdMap[newNodeId] = {
@@ -393,31 +395,31 @@ export const duplicateSelection = () => {
         newNodeId = nextId(newNodeId)
       })
 
-      const relationshipsToBeDuplicated = {}
       graph.relationships.forEach(relationship => {
         if (nodeSelected(selection, relationship.fromId) || nodeSelected(selection, relationship.toId)) {
           relationshipsToBeDuplicated[relationship.id] = true
         }
       })
-      selectedRelationshipIds(selection).forEach((relationshipId) => {
-        relationshipsToBeDuplicated[relationshipId] = true
-      })
-
-      const relationshipIdMap = {}
-      let newRelationshipId = nextAvailableId(graph.relationships)
-      Object.keys(relationshipsToBeDuplicated).forEach((relationshipId) => {
-        const oldRelationship = graph.relationships.find(r => idsMatch(relationshipId, r.id))
-        relationshipIdMap[newRelationshipId] = {
-          oldRelationshipId: relationshipId,
-          relationshipType: oldRelationship.type,
-          fromId: oldNodeToNewNodeMap[oldRelationship.fromId] || oldRelationship.fromId,
-          toId: oldNodeToNewNodeMap[oldRelationship.toId] || oldRelationship.toId
-        }
-        newRelationshipId = nextId(newRelationshipId)
-      })
-
-      dispatch(duplicateNodesAndRelationships(nodeIdMap, relationshipIdMap))
     }
+
+    selectedRelationshipIds(selection).forEach((relationshipId) => {
+      relationshipsToBeDuplicated[relationshipId] = true
+    })
+
+    const relationshipIdMap = {}
+    let newRelationshipId = nextAvailableId(graph.relationships)
+    Object.keys(relationshipsToBeDuplicated).forEach((relationshipId) => {
+      const oldRelationship = graph.relationships.find(r => idsMatch(relationshipId, r.id))
+      relationshipIdMap[newRelationshipId] = {
+        oldRelationshipId: relationshipId,
+        relationshipType: oldRelationship.type,
+        fromId: oldNodeToNewNodeMap[oldRelationship.fromId] || oldRelationship.fromId,
+        toId: oldNodeToNewNodeMap[oldRelationship.toId] || oldRelationship.toId
+      }
+      newRelationshipId = nextId(newRelationshipId)
+    })
+
+    dispatch(duplicateNodesAndRelationships(nodeIdMap, relationshipIdMap))
   }
 }
 
