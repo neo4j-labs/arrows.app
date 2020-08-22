@@ -17,7 +17,7 @@ class StyleModal extends Component {
       const {dataUrl} = renderSvg(graph)
 
       return (
-        <Card>
+        <Card key={theme.name}>
           <div style={{
             height: 230,
             padding: 10
