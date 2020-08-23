@@ -37,12 +37,14 @@ export default class extends Component {
 
   createPicker() {
     const setupPicker = (accessToken) => {
-      const view = new window.google.picker.View(window.google.picker.ViewId.DOCS)
+      const view = new window.google.picker.DocsView()
       view.setMimeTypes("application/vnd.neo4j.arrows+json")
+      view.setMode(window.google.picker.DocsViewMode.LIST)
       this.picker = new window.google.picker.PickerBuilder()
         .addView(view)
         .hideTitleBar(true)
         .setOAuthToken(accessToken)
+        .setAppId(config.appId)
         .setDeveloperKey(config.apiKey)
         .setCallback(this.pickerCallback.bind(this))
         .build();

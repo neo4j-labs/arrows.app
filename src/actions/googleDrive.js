@@ -5,7 +5,7 @@ import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 import {indexableText} from "../model/Graph";
 import { getPresentGraph } from "../selectors"
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-export const SCOPES = 'https://www.googleapis.com/auth/drive https://www.googleapis.com/auth/drive.install';
+export const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install';
 
 export const initGoogleDriveApi = (store) => {
   const initClient = () => {
