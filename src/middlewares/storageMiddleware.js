@@ -4,6 +4,7 @@ import {updatingGraph, updatingGraphSucceeded} from "../actions/neo4jStorage";
 import { getPresentGraph } from "../selectors"
 import { ActionCreators as UndoActionCreators } from "redux-undo"
 import { saveAppData } from "../actions/localStorage"
+import {updateGoogleDriveFileId} from "../actions/storage";
 
 const updateQueue = []
 
@@ -70,7 +71,8 @@ export const storageMiddleware = store => next => action => {
               data,
               storage.googleDrive.fileId,
               newState.diagramName,
-              () => {
+              (fileId) => {
+                store.dispatch(updateGoogleDriveFileId(fileId))
                 store.dispatch(updatingGraphSucceeded())
               }
             )
