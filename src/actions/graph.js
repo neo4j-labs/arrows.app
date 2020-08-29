@@ -370,6 +370,18 @@ const duplicateNodeOffset = (graph, selectedNodes, actionMemos) => {
   return offset
 }
 
+const inverseNodeMap = (actionMemos) => {
+  if (actionMemos.lastDuplicateAction) {
+    const action = actionMemos.lastDuplicateAction
+    const map = {}
+    for (const [newNodeId, nodeSpec] of Object.entries(action.nodeIdMap)) {
+      map[nodeSpec.oldNodeId] = newNodeId
+    }
+    return map
+  }
+  return {}
+}
+
 export const duplicateSelection = () => {
   return function (dispatch, getState) {
     const state = getState()
@@ -406,6 +418,8 @@ export const duplicateSelection = () => {
       relationshipsToBeDuplicated[relationshipId] = true
     })
 
+    const previousNodeMap = inverseNodeMap(actionMemos)
+
     const relationshipIdMap = {}
     let newRelationshipId = nextAvailableId(graph.relationships)
     Object.keys(relationshipsToBeDuplicated).forEach((relationshipId) => {
@@ -413,8 +427,8 @@ export const duplicateSelection = () => {
       relationshipIdMap[newRelationshipId] = {
         oldRelationshipId: relationshipId,
         relationshipType: oldRelationship.type,
-        fromId: oldNodeToNewNodeMap[oldRelationship.fromId] || oldRelationship.fromId,
-        toId: oldNodeToNewNodeMap[oldRelationship.toId] || oldRelationship.toId
+        fromId: oldNodeToNewNodeMap[oldRelationship.fromId] || previousNodeMap[oldRelationship.fromId] || oldRelationship.fromId,
+        toId: oldNodeToNewNodeMap[oldRelationship.toId] || previousNodeMap[oldRelationship.toId] || oldRelationship.toId
       }
       newRelationshipId = nextId(newRelationshipId)
     })
