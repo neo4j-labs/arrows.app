@@ -11,6 +11,7 @@ import help_duplicate from  '../help/help_duplicate.gif'
 import help_scale from  '../help/help_scale.gif'
 import {hideHelpDialog} from "../actions/applicationDialogs";
 import {rememberHelpDismissed} from "../actions/localStorage";
+import {informationLinks} from "./informationLinks";
 
 class HelpModal extends Component {
 
@@ -19,6 +20,19 @@ class HelpModal extends Component {
   }
 
   render() {
+    const links = informationLinks.map(link => {
+      const [linkText, href] = link
+      return (
+        <p style={{
+          marginLeft: '20px',
+        }}>
+          <a href={href} target='_blank'>
+            {linkText}
+          </a>
+        </p>
+      )
+    })
+
     return (
       <Modal
         size="fullscreen"
@@ -27,6 +41,14 @@ class HelpModal extends Component {
       >
         <Modal.Header>Help</Modal.Header>
         <Modal.Content scrolling>
+          <div
+            style={{
+              padding: '2px 10px',
+              display: 'flex',
+              flexDirection: 'row',
+            }}>
+            {links}
+          </div>
           <Message
             icon='help'
             header='New to Arrows?'

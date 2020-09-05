@@ -1,8 +1,25 @@
 import React from "react";
 import neo4j_logo_white from "../images/neo4j_logo_white.png";
 import {footerHeight} from "../model/applicationLayout";
+import {informationLinks} from "./informationLinks";
 
 const Footer = (props) => {
+  const links = informationLinks.map(link => {
+    const [linkText, href] = link
+    return (
+      <p style={{
+        color: '#BCC0C9',
+        fontSize: '11px',
+        lineHeight: '26px',
+        marginLeft: '20px',
+      }}>
+        <a href={href} target='_blank'>
+          {linkText}
+        </a>
+      </p>
+    )
+  })
+
   return (
     <footer
       style={{
@@ -31,16 +48,7 @@ const Footer = (props) => {
           Help
         </a>
       </p>
-      <p style={{
-        color: '#BCC0C9',
-        fontSize: '11px',
-        lineHeight: '26px',
-        marginLeft: '20px',
-      }}>
-        <a href='/about/' target='_blank'>
-          About
-        </a>
-      </p>
+      {links}
       <p style={{
         flex: 2,
       }}/>
