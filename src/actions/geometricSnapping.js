@@ -70,14 +70,63 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
 
   let x = naturalPosition.x, y = naturalPosition.y
 
+  const coLinearIntervals = (natural, coLinear) => {
+    const intervals = []
+    const nearest = coLinear.sort((a, b) => Math.abs(natural - a) - Math.abs(natural - b))[0]
+    const sorted = coLinear.sort((a, b) => a - b)
+    const nearestIndex = sorted.indexOf(nearest)
+    const polarity = Math.sign(nearest - natural)
+    if ((nearestIndex > 0 && polarity < 0) || (nearestIndex < sorted.length - 1 && polarity > 0)) {
+      const secondNearest = sorted[nearestIndex + polarity]
+      const interval = nearest - secondNearest
+      const candidate = nearest + interval
+      intervals.push({
+        candidate,
+        error: Math.abs(candidate - natural)
+      })
+    }
+    if ((nearestIndex > 0 && polarity > 0) || (nearestIndex < sorted.length - 1 && polarity < 0)) {
+      const opposite = sorted[nearestIndex - polarity]
+      const interval = nearest - opposite
+      const candidate = nearest - (interval / 2)
+      intervals.push({
+        candidate,
+        error: Math.abs(candidate - natural)
+      })
+    }
+    return intervals
+  }
+
   let guidelines = []
   if (columns[0] && columns[0].error < snapTolerance) {
     x = columns[0].x
     guidelines.push({type: 'VERTICAL', x})
+    const intervals = coLinearIntervals(naturalPosition.y,
+      graph.nodes.filter((node) => includeNode(node.id) && node.position.x === x).map(node => node.position.y))
+    intervals.sort(byAscendingError)
+    if (intervals.length > 0) {
+      const interval  = intervals[0]
+      if (interval.error < snapTolerance) {
+        y = interval.candidate
+        guidelines.push({type: 'HORIZONTAL', y})
+      }
+    }
   }
-  if (rows[0] && rows[0].error < snapTolerance) {
+  if (guidelines.length < 2 && rows[0] && rows[0].error < snapTolerance) {
     y = rows[0].y
     guidelines.push({type: 'HORIZONTAL', y})
+    if (guidelines.length < 2) {
+      const intervals = coLinearIntervals(naturalPosition.x,
+        graph.nodes.filter((node) => includeNode(node.id) && node.position.y === y).map(node => node.position.x))
+      intervals.sort(byAscendingError)
+      if (intervals.length > 0) {
+        const interval  = intervals[0]
+        if (interval.error < snapTolerance) {
+          x = interval.candidate
+          guidelines.push({type: 'VERTICAL', x})
+        }
+      }
+    }
   }
   while (guidelines.length < 2 && rings.length > 0 && rings[0].error < snapTolerance) {
     let ring = rings.shift()
