@@ -34,6 +34,7 @@ export class PropertyRow extends Component {
     const { propertyKey, onKeyChange, valueFieldValue, valueFieldPlaceHolder, onValueChange, onDeleteProperty, onNext } = this.props
     const handleKeyPress = (source, evt) => {
       if (evt.key === 'Enter') {
+        evt.preventDefault()
         if (source === 'key') {
           this.valueInput && this.valueInput.focus()
         } else {
