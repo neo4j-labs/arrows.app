@@ -21,9 +21,12 @@ export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, natural
 
 export const snapToDistancesAndAngles = (graph, neighbours, includeNode, naturalPosition) => {
 
+  const isNeighbour = (nodeId) => !!neighbours.find(neighbour => neighbour.id === nodeId)
+
   const relationshipDistances = [];
   graph.relationships.forEach((relationship) => {
-    if (includeNode(relationship.fromId) && includeNode(relationship.toId)) {
+    if ((isNeighbour(relationship.fromId) && includeNode(relationship.toId)) ||
+      (includeNode(relationship.fromId) && isNeighbour(relationship.toId))) {
       const distance = graph.nodes.find((node) => idsMatch(node.id, relationship.toId))
         .position.vectorFrom(graph.nodes.find((node) => idsMatch(node.id, relationship.fromId)).position)
         .distance();
