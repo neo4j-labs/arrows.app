@@ -101,24 +101,38 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
   }
 
   let guidelines = []
-  if (columns[0] && columns[0].error < snapTolerance) {
-    x = columns[0].x
-    guidelines.push({type: 'VERTICAL', x})
-    const intervals = coLinearIntervals(naturalPosition.y,
-      graph.nodes.filter((node) => includeNode(node.id) && node.position.x === x).map(node => node.position.y))
-    intervals.sort(byAscendingError)
-    if (intervals.length > 0) {
-      const interval  = intervals[0]
-      if (interval.error < snapTolerance) {
-        y = interval.candidate
-        guidelines.push({type: 'HORIZONTAL', y})
+
+  const verticalSnap = () => {
+    if (columns[0] && columns[0].error < snapTolerance) {
+      x = columns[0].x
+      guidelines.push({type: 'VERTICAL', x})
+    }
+  }
+
+  const horizontalSnap = () => {
+    if (rows[0] && rows[0].error < snapTolerance) {
+      y = rows[0].y
+      guidelines.push({type: 'HORIZONTAL', y})
+    }
+  }
+
+  const horizontalInterval = () => {
+    if (guidelines[0] && guidelines[0].type === 'VERTICAL') {
+      const intervals = coLinearIntervals(naturalPosition.y,
+        graph.nodes.filter((node) => includeNode(node.id) && node.position.x === x).map(node => node.position.y))
+      intervals.sort(byAscendingError)
+      if (intervals.length > 0) {
+        const interval  = intervals[0]
+        if (interval.error < snapTolerance) {
+          y = interval.candidate
+          guidelines.push({type: 'HORIZONTAL', y})
+        }
       }
     }
   }
-  if (guidelines.length < 2 && rows[0] && rows[0].error < snapTolerance) {
-    y = rows[0].y
-    guidelines.push({type: 'HORIZONTAL', y})
-    if (guidelines.length < 2) {
+
+  const verticalInterval = () => {
+    if (guidelines[0] && guidelines[0].type === 'HORIZONTAL') {
       const intervals = coLinearIntervals(naturalPosition.x,
         graph.nodes.filter((node) => includeNode(node.id) && node.position.y === y).map(node => node.position.x))
       intervals.sort(byAscendingError)
@@ -131,6 +145,12 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
       }
     }
   }
+
+  const guideGenerators = [verticalSnap, horizontalSnap, horizontalInterval, verticalInterval]
+  while (guidelines.length < 2 && guideGenerators.length > 0) {
+    guideGenerators.shift()()
+  }
+
   while (guidelines.length < 2 && rings.length > 0 && rings[0].error < snapTolerance) {
     let ring = rings.shift()
     let constraintPossible = true
