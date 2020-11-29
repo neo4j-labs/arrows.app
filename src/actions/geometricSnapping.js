@@ -102,21 +102,21 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
 
   let guidelines = []
 
-  const verticalSnap = () => {
+  const vSnap = () => {
     if (columns[0] && columns[0].error < snapTolerance) {
       x = columns[0].x
       guidelines.push({type: 'VERTICAL', x})
     }
   }
 
-  const horizontalSnap = () => {
+  const hSnap = () => {
     if (rows[0] && rows[0].error < snapTolerance) {
       y = rows[0].y
       guidelines.push({type: 'HORIZONTAL', y})
     }
   }
 
-  const horizontalInterval = () => {
+  const hInterval = () => {
     if (guidelines[0] && guidelines[0].type === 'VERTICAL') {
       const intervals = coLinearIntervals(naturalPosition.y,
         graph.nodes.filter((node) => includeNode(node.id) && node.position.x === x).map(node => node.position.y))
@@ -131,7 +131,7 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     }
   }
 
-  const verticalInterval = () => {
+  const vInterval = () => {
     if (guidelines[0] && guidelines[0].type === 'HORIZONTAL') {
       const intervals = coLinearIntervals(naturalPosition.x,
         graph.nodes.filter((node) => includeNode(node.id) && node.position.y === y).map(node => node.position.x))
@@ -146,7 +146,33 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     }
   }
 
-  const guideGenerators = [verticalSnap, horizontalSnap, horizontalInterval, verticalInterval]
+  const hNeighbourInterval = () => {
+    const intervals = coLinearIntervals(naturalPosition.y,
+      neighbours.map(node => node.position.y))
+    intervals.sort(byAscendingError)
+    if (intervals.length > 0) {
+      const interval = intervals[0]
+      if (interval.error < snapTolerance) {
+        y = interval.candidate
+        guidelines.push({type: 'HORIZONTAL', y})
+      }
+    }
+  }
+
+  const vNeighbourInterval = () => {
+    const intervals = coLinearIntervals(naturalPosition.x,
+      neighbours.map(node => node.position.x))
+    intervals.sort(byAscendingError)
+    if (intervals.length > 0) {
+      const interval = intervals[0]
+      if (interval.error < snapTolerance) {
+        x = interval.candidate
+        guidelines.push({type: 'VERTICAL', x})
+      }
+    }
+  }
+
+  const guideGenerators = [vSnap, hSnap, hInterval, vInterval, hNeighbourInterval, vNeighbourInterval]
   while (guidelines.length < 2 && guideGenerators.length > 0) {
     guideGenerators.shift()()
   }
