@@ -1,6 +1,6 @@
 # [arrows.app](https://arrows.app/)
 
-![Arrow.app logo](https://arrows.app/about/assets/arrows_logo.svg)
+![Arrow.app logo](https://arrows.app/arrows_logo.svg)
 
 Web-based tool for drawing pictures of graphs, for use in documents or presentations.
 
