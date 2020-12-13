@@ -2,7 +2,7 @@
 
 ![Arrow.app logo](https://arrows.app/about/assets/arrows_logo.svg)
 
-Web-based tool for drawing pictures of graphs, for use in documents or presentatons.
+Web-based tool for drawing pictures of graphs, for use in documents or presentations.
 
 * **Quick:** Intuitive drawing with a mouse.
 * **Neo4j Property Graph Model:** Draw nodes, relationships, properties, labels.
