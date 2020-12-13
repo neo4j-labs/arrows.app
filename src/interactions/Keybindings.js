@@ -66,7 +66,7 @@ const hocProps = {
 }
 
 export const getKeybindingString = name => {
-  const binding = KeyBindings[name]
+  const binding = KeyBindings[name][0]
   let result = ''
   const isMac = navigator.appVersion.indexOf('Mac') !== -1
   const addSymbol = symbol => (result += result.length > 0 ? ' ' + symbol : symbol)
