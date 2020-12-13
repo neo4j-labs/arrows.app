@@ -36,7 +36,7 @@ const Footer = (props) => {
         fontSize: '11px',
         lineHeight: '26px',
       }}>
-        Arrows.app powered by <a href="https://neo4j.com/labs/arrows">Neo4j Labs</a>
+        Arrows.app powered by <a href="https://neo4j.com/labs/arrows" target='_blank'>Neo4j Labs</a>
       </p>
       <p style={{
         color: '#BCC0C9',
