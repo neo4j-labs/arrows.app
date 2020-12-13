@@ -13,6 +13,7 @@ import {storageMiddleware} from "./middlewares/storageMiddleware";
 import {initialiseStorageFromWindowLocationHash} from "./actions/storage";
 import {windowLocationHashMiddleware} from "./middlewares/windowLocationHashMiddleware";
 import {initGoogleDriveApi} from "./actions/googleDrive";
+import {windowResized} from "./actions/applicationLayout";
 
 const middleware = [storageMiddleware, windowLocationHashMiddleware, viewportMiddleware]
 
@@ -23,6 +24,7 @@ let store = createStore(
 )
 initialiseStorageFromWindowLocationHash(store)
 initGoogleDriveApi(store)
+store.dispatch(windowResized(window.innerWidth, window.innerHeight))
 
 const renderApp = () => {
   render(

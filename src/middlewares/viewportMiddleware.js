@@ -8,6 +8,7 @@ import {getVisualGraph} from "../selectors/index";
 import BoundingBox from "../graphics/utils/BoundingBox";
 
 const observedActionTypes = [
+  'NEW_DIAGRAM',
   'CREATE_NODE',
   'MOVE_NODES',
   'MOVE_NODES_END_DRAG',
