@@ -6,10 +6,14 @@ handlers:
 - url: /
   static_files: build/index.html
   upload: build/index.html
+  secure: always
+  redirect_http_response_code: 301
 
 - url: /(.*)
   static_files: build/\1
   upload: build/(.*)
+  secure: always
+  redirect_http_response_code: 301
 
 skip_files:
 - README.md
