@@ -57,7 +57,8 @@ export default class extends Component {
     if (action === 'picked' && docs.length > 0) {
       const fileId = docs[0].id
       this.props.onFilePicked(fileId)
-    } else {
+    }
+    if (action === 'cancel') {
       this.props.onCancelPicker()
     }
   }

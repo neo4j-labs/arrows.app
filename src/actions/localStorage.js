@@ -1,6 +1,5 @@
 import { constructGraphFromFile } from "../storage/googleDriveStorage"
-import { loadClusters } from "./gang"
-import { fetchingGraphSucceeded } from "./neo4jStorage"
+import { fetchingGraphSucceeded } from "./storage";
 
 const key_helpDismissed = "neo4j-arrows-app.helpDismissed";
 const key_rememberedConnectionParameters = "neo4j-arrows-app.rememberedConnectionParameters";
@@ -41,7 +40,6 @@ export const loadGraphFromLocalStorage = () => {
     const data = loadAppData()
     const graphData = constructGraphFromFile(data)
 
-    graphData.gangs && dispatch(loadClusters(graphData.gangs))
     dispatch(fetchingGraphSucceeded(graphData.graph))
   }
 }

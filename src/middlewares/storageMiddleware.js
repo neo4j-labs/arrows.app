@@ -1,10 +1,14 @@
 import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
-import {renameGoogleDriveStore, saveFile} from "../actions/googleDrive";
-import {updatingGraph, updatingGraphSucceeded} from "../actions/neo4jStorage";
+import {renameGoogleDriveStore, saveFile } from "../actions/googleDrive";
 import { getPresentGraph } from "../selectors"
 import { ActionCreators as UndoActionCreators } from "redux-undo"
 import { saveAppData } from "../actions/localStorage"
-import {updateGoogleDriveFileId} from "../actions/storage";
+import {
+  createdFileOnGoogleDrive,
+  updatingGraph,
+  updatingGraphSucceeded
+} from "../actions/storage";
+import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 
 const updateQueue = []
 
@@ -24,8 +28,11 @@ export const storageMiddleware = store => next => action => {
     graph: getPresentGraph(state)
   })
 
-  const state = hideGraphHistory(store.getState())
-  const storage = state.storage
+  const oldState = hideGraphHistory(store.getState())
+  const result = next(action)
+  const newState = hideGraphHistory(store.getState())
+  const storage = newState.storage
+  const graph = newState.graph
 
   if (action.type === 'SET_DIAGRAM_NAME') {
     if (storage.mode === "GOOGLE_DRIVE") {
@@ -33,21 +40,26 @@ export const storageMiddleware = store => next => action => {
     }
   }
 
-  if (action.category === 'GRAPH' || historyActions.includes(action.type)) {
-    const oldState = hideGraphHistory(store.getState())
-    const result = next(action)
-    const newState = hideGraphHistory(store.getState())
-    const data = {graph: newState.graph}
-    const layers = newState.applicationLayout.layers
+  if (storage.mode === 'GOOGLE_DRIVE' && storage.googleDrive.signedIn) {
+    switch (storage.status) {
+      case 'GET': {
+        const fileId = storage.googleDrive.fileId;
+        store.dispatch(fetchGraphFromDrive(fileId))
+        break
+      }
 
-    if (layers && layers.length > 0) {
-      layers.forEach(layer => {
-        if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['googleDrive']) {
-          data[layer.name] = layer.storageActionHandler['googleDrive'](newState)
+      case 'POST': {
+        const onFileSaved = (fileId) => {
+          store.dispatch(createdFileOnGoogleDrive(fileId))
         }
-      })
-    }
 
+        saveFile(graph, null, newState.diagramName, onFileSaved)
+        break
+      }
+    }
+  }
+
+  if (action.category === 'GRAPH' || historyActions.includes(action.type)) {
     switch (storage.mode) {
       case "LOCAL_STORAGE":
         if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
@@ -55,10 +67,10 @@ export const storageMiddleware = store => next => action => {
             store.dispatch(updatingGraph())
           }
 
-          saveAppData(data)
+          saveAppData({graph})
           store.dispatch(updatingGraphSucceeded())
         }
-        return result
+        break
 
       case "GOOGLE_DRIVE":
         if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
@@ -68,30 +80,30 @@ export const storageMiddleware = store => next => action => {
 
           deBounce(() => {
             saveFile(
-              data,
+              graph,
               storage.googleDrive.fileId,
               newState.diagramName,
               (fileId) => {
-                store.dispatch(updateGoogleDriveFileId(fileId))
+                if (fileId !== storage.googleDrive.fileId) {
+                  console.warn("Unexpected change of fileId from %o to %o",
+                    storage.googleDrive.fileId, fileId)
+                }
                 store.dispatch(updatingGraphSucceeded())
               }
             )
           }, driveUpdateInterval)
         }
-        return result
+        break
 
       case "DATABASE":
         if (action.category === 'GRAPH') {
           updateQueue.push(action)
-          drainUpdateQueue(state)
+          drainUpdateQueue(newState)
         }
-        return result
-      default:
-        return result
+        break
     }
-  } else {
-    return next(action)
   }
+  return result
 }
 
 const drainUpdateQueue = (state) => {

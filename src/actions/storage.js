@@ -1,24 +1,15 @@
-import {initializeConnection} from "./databaseConnection";
 import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 import {loadGraphFromLocalStorage} from "./localStorage";
 
 export const localUrlRegex = /^#\/local/
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
-export const neo4jUrlRegex = /^#\/neo4j/
-
-export function loadFromGoogleDriveFile(dispatch, fileId) {
-  dispatch(usingGoogleDriveStorage())
-  dispatch(updateGoogleDriveFileId(fileId))
-  dispatch(fetchGraphFromDrive(fileId))
-}
 
 export function initialiseStorageFromWindowLocationHash(store) {
   const hash = window.location.hash
 
   const localMatch = localUrlRegex.exec(hash)
   if (localMatch) {
-    store.dispatch(usingLocalStorage())
     store.dispatch(loadGraphFromLocalStorage())
   }
 
@@ -27,28 +18,33 @@ export function initialiseStorageFromWindowLocationHash(store) {
     const initialFiles = googleDriveMatch[1].split(',')
     if (initialFiles.length > 0) {
       const fileId = initialFiles[0]
-      store.dispatch(usingGoogleDriveStorage())
-      store.dispatch(updateGoogleDriveFileId(fileId))
+      store.dispatch(getFileFromGoogleDrive(fileId))
     }
   }
+}
 
-  const neo4jMatch = neo4jUrlRegex.exec(hash)
-  if (neo4jMatch) {
-    store.dispatch(usingNeo4jStorage())
-    store.dispatch(initializeConnection())
-    store.dispatch(fetchGraphFromDatabase())
+export function newGoogleDriveDiagram() {
+  return {
+    type: 'NEW_GOOGLE_DRIVE_DIAGRAM'
   }
 }
 
-export function usingNeo4jStorage() {
+export function newLocalStorageDiagram() {
   return {
-    type: 'USE_NEO4J_STORAGE'
+    type: 'NEW_LOCAL_STORAGE_DIAGRAM'
   }
 }
 
-export function usingGoogleDriveStorage() {
+export function getFileFromGoogleDrive(fileId) {
   return {
-    type: 'USE_GOOGLE_DRIVE_STORAGE'
+    type: 'GET_FILE_FROM_GOOGLE_DRIVE',
+    fileId
+  }
+}
+
+export function storeCurrentDiagramAsNewFileOnGoogleDrive() {
+  return {
+    type: 'STORE_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE'
   }
 }
 
@@ -58,9 +54,9 @@ export function usingLocalStorage() {
   }
 }
 
-export function updateGoogleDriveFileId(fileId) {
+export function createdFileOnGoogleDrive(fileId) {
   return {
-    type: 'UPDATE_GOOGLE_DRIVE_FILE_ID',
+    type: 'CREATED_FILE_ON_GOOGLE_DRIVE',
     fileId
   }
 }
@@ -83,5 +79,50 @@ export const reloadGraph = () => {
         dispatch(fetchGraphFromDatabase())
         break
     }
+  }
+}
+
+export const pickDiagram = () => ({
+  type: 'PICK_DIAGRAM'
+})
+
+export const pickDiagramCancel = () => ({
+  type: 'PICK_DIAGRAM_CANCEL'
+})
+
+export function fetchingGraph() {
+  return {
+    type: 'FETCHING_GRAPH'
+  }
+}
+
+export function fetchingGraphFailed() {
+  return {
+    type: 'FETCHING_GRAPH_FAILED'
+  }
+}
+
+export function fetchingGraphSucceeded(storedGraph) {
+  return {
+    type: 'FETCHING_GRAPH_SUCCEEDED',
+    storedGraph
+  }
+}
+
+export function updatingGraph() {
+  return {
+    type: 'UPDATING_GRAPH'
+  }
+}
+
+export function updatingGraphFailed() {
+  return {
+    type: 'UPDATING_GRAPH_FAILED'
+  }
+}
+
+export function updatingGraphSucceeded() {
+  return {
+    type: 'UPDATING_GRAPH_SUCCEEDED'
   }
 }

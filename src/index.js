@@ -22,8 +22,8 @@ let store = createStore(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__(),
   applyMiddleware(thunkMiddleware, ...middleware)
 )
-initialiseStorageFromWindowLocationHash(store)
 initGoogleDriveApi(store)
+initialiseStorageFromWindowLocationHash(store)
 store.dispatch(windowResized(window.innerWidth, window.innerHeight))
 
 const renderApp = () => {

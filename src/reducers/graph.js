@@ -9,9 +9,10 @@ import {nodeSelected, relationshipSelected} from "../model/selection";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
-    case 'NEW_DIAGRAM': {
+    case 'NEW_GOOGLE_DRIVE_DIAGRAM':
+    case 'NEW_LOCAL_STORAGE_DIAGRAM':
       return emptyGraph()
-    }
+
     case 'CREATE_NODE': {
       const newNodes = state.nodes.slice();
       newNodes.push({

@@ -1,9 +1,8 @@
-import { fetchingGraph, fetchingGraphSucceeded } from "../actions/neo4jStorage";
 import { Point } from "../model/Point";
 import { setDiagramName } from "../actions/diagramName";
-import { loadClusters } from "../actions/gang"
 import {completeWithDefaults} from "../model/styling";
 import {emptyGraph} from "../model/Graph";
+import {fetchingGraph, fetchingGraphSucceeded} from "../actions/storage";
 
 export function fetchGraphFromDrive(fileId) {
   return function (dispatch) {
@@ -12,7 +11,6 @@ export function fetchGraphFromDrive(fileId) {
     const fetchData = () => getFileInfo(fileId)
       .then(data => {
         const layers = constructGraphFromFile(JSON.parse(data))
-        layers.gangs && dispatch(loadClusters(layers.gangs))
         dispatch(fetchingGraphSucceeded(layers.graph))
       })
 

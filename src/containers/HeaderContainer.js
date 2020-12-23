@@ -2,8 +2,13 @@ import {connect} from 'react-redux'
 import Header from '../components/Header'
 import {toggleInspector} from "../actions/applicationLayout";
 import {setDiagramName} from "../actions/diagramName";
-import {showExportDialog} from "../actions/applicationDialogs";
-import { newDiagram } from "../actions/diagram";
+import {showExportDialog, showHelpDialog} from "../actions/applicationDialogs";
+import {
+  newGoogleDriveDiagram,
+  newLocalStorageDiagram,
+  pickDiagram,
+  storeCurrentDiagramAsNewFileOnGoogleDrive
+} from "../actions/storage";
 
 const mapStateToProps = state => {
   return {
@@ -15,8 +20,14 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onArrowsClick: () => {
-      dispatch(newDiagram())
+    onNewGoogleDriveDiagram: () => {
+      dispatch(newGoogleDriveDiagram())
+    },
+    onNewLocalStorageDiagram: () => {
+      dispatch(newLocalStorageDiagram())
+    },
+    pickFromGoogleDrive: () => {
+      dispatch(pickDiagram())
     },
     setDiagramName: (diagramName) => {
       dispatch(setDiagramName(diagramName))
@@ -27,6 +38,12 @@ const mapDispatchToProps = dispatch => {
     onExportClick: () => {
       dispatch(showExportDialog())
     },
+    storeInGoogleDrive: () => {
+      dispatch(storeCurrentDiagramAsNewFileOnGoogleDrive())
+    },
+    onHelpClick: () => {
+      dispatch(showHelpDialog())
+    }
   }
 }
 

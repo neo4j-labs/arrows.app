@@ -2,9 +2,9 @@ import { Point } from "../model/Point";
 import { databaseTypeToStringType } from "../model/Relationship";
 import { propertiesFromDatabaseEntity, styleFromDatabaseEntity } from "../model/properties";
 import { emptyGraph } from "../model/Graph";
-import { fetchingGraphFailed, fetchingGraphSucceeded } from "../actions/neo4jStorage";
-import { createCluster, loadClusters } from "../actions/gang"
+import { loadClusters } from "../actions/gang"
 import {labelsFromDatabaseEntity} from "../model/labels";
+import {fetchingGraphFailed, fetchingGraphSucceeded} from "../actions/storage";
 
 function toNumber(prop) {
   if (prop) {

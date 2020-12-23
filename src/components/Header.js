@@ -58,14 +58,24 @@ const Header = (props) => {
 
   return (
     <Menu attached='top' style={{ borderRadius: 0 }} borderless>
-      <Menu.Item
-        title="Open"
-        onClick={props.onArrowsClick}
-        style={{ padding: '0 0 0 1em', cursor: 'pointer' }}>
+      <div role="listbox" aria-expanded="true" className="ui item simple dropdown" tabIndex="0">
         <i className="icon" style={{ height: '1.5em' }}>
           <img src={arrows_logo} style={{ height: '1.5em' }} alt='Arrows.app logo'/>
         </i>
-      </Menu.Item>
+        <div className="menu transition visible">
+          <div role="option" className="item">
+            <i aria-hidden="true" className="dropdown icon"/>
+            <span className="text">New</span>
+            <div className="menu transition">
+              <div role="option" className="item" onClick={props.onNewGoogleDriveDiagram}>use Google Drive</div>
+              <div role="option" className="item" onClick={props.onNewLocalStorageDiagram}>use Local Storage</div>
+            </div>
+          </div>
+          <div role="option" className="item" onClick={props.pickFromGoogleDrive}>Open...</div>
+          <div className="divider"/>
+          <div role="option" className="item" onClick={props.onHelpClick}>Help</div>
+        </div>
+      </div>
       <DiagramNameEditor
         diagramName={props.diagramName}
         setDiagramName={props.setDiagramName}
@@ -74,6 +84,16 @@ const Header = (props) => {
         {storageIcon(props)}
         {storageStatusMessage(props)}
       </Menu.Item>
+      {props.storage.mode !== 'GOOGLE_DRIVE' ?
+        <Menu.Item>
+          <Button
+            onClick={props.storeInGoogleDrive}
+            icon='google drive'
+            color='orange'
+            content='Store in Google Drive'
+          />
+        </Menu.Item> : null
+      }
       <Menu.Menu position={'right'}>
         <Menu.Item>
           <Button
