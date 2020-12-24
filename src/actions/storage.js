@@ -103,9 +103,15 @@ export function gettingGraphSucceeded(storedGraph) {
   }
 }
 
+export function putGraph() {
+  return {
+    type: 'PUT_GRAPH'
+  }
+}
+
 export function puttingGraph() {
   return {
-    type: 'UPDATING_GRAPH'
+    type: 'PUTTING_GRAPH'
   }
 }
 

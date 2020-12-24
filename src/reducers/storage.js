@@ -84,6 +84,26 @@ export default function storage(state = {
           signedIn: action.signedIn
         }
       }
+    case 'PUT_GRAPH':
+      return {
+        ...state,
+        status: 'PUT'
+      }
+    case 'PUTTING_GRAPH':
+      return {
+        ...state,
+        status: 'PUTTING'
+      }
+    case 'PUTTING_GRAPH_SUCCEEDED':
+      return {
+        ...state,
+        status: 'READY'
+      }
+    case 'PUTTING_GRAPH_FAILED':
+      return {
+        ...state,
+        status: 'FAILED'
+      }
 
     default:
       return state

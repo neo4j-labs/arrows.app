@@ -13,7 +13,6 @@ import {
 const mapStateToProps = state => {
   return {
     diagramName: state.diagramName,
-    storageStatus: state.storageStatus,
     storage: state.storage
   }
 }

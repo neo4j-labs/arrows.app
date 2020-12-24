@@ -4,7 +4,7 @@ import { getPresentGraph } from "../selectors"
 import { ActionCreators as UndoActionCreators } from "redux-undo"
 import { saveAppData } from "../actions/localStorage"
 import {
-  postedFileOnGoogleDrive,
+  postedFileOnGoogleDrive, putGraph,
   puttingGraph,
   puttingGraphSucceeded
 } from "../actions/storage";
@@ -63,7 +63,7 @@ export const storageMiddleware = store => next => action => {
     switch (storage.mode) {
       case "LOCAL_STORAGE":
         if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
-          if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
+          if (oldState.storage.status !== 'PUTTING') {
             store.dispatch(puttingGraph())
           }
 
@@ -74,11 +74,13 @@ export const storageMiddleware = store => next => action => {
 
       case "GOOGLE_DRIVE":
         if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
-          if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
-            store.dispatch(puttingGraph())
+          if (oldState.storage.status !== 'PUT') {
+            store.dispatch(putGraph())
           }
 
           deBounce(() => {
+            store.dispatch(puttingGraph())
+
             saveFile(
               graph,
               storage.googleDrive.fileId,

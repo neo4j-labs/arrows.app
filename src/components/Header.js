@@ -13,14 +13,15 @@ const storageStatusMessage = (props) => {
   const storageName = storageNames[props.storage.mode]
   if (storageName) {
     const statusMessages = {
-      IDLE: `Saved to ${storageName}`,
-      GETTING_GRAPH: `Saving to ${storageName}...`,
-      GETTING_GRAPH_FAILED: `Failed to load from ${storageName}, see Javascript console for details.`,
-      UPDATING_GRAPH: `Saving to ${storageName}...`,
-      PUTTING_GRAPH_FAILED: `Failed to save to ${storageName}, see Javascript console for details.`
+      READY: `Saved to ${storageName}`,
+      GET: `Loading from ${storageName}`,
+      GETTING: `Loading from ${storageName}`,
+      PUT: `Unsaved changes`,
+      PUTTING: `Saving to ${storageName}...`,
+      FAILED: `Failed to save to ${storageName}, see Javascript console for details.`
     }
     return (
-      <span>{statusMessages[props.storageStatus.status]}</span>
+      <span>{statusMessages[props.storage.status] || ''}</span>
     )
   } else {
     return null
