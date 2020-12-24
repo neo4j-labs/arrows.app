@@ -233,7 +233,7 @@ const graph = (state = emptyGraph(), action) => {
         relationships: state.relationships.map(relationship => relationshipSelected(action.selection, relationship.id) ? reverse(relationship) : relationship)
       }
 
-    case 'FETCHING_GRAPH_SUCCEEDED':
+    case 'GETTING_GRAPH_SUCCEEDED':
       return action.storedGraph
 
     default:

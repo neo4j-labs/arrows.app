@@ -44,13 +44,13 @@ export default function storage(state = {
         }
       }
     }
-    case 'FETCHING_GRAPH': {
+    case 'GETTING_GRAPH': {
       return {
         ...state,
         status: 'GETTING'
       }
     }
-    case 'STORE_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE': {
+    case 'POST_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE': {
       return {
         mode: 'GOOGLE_DRIVE',
         status: 'POST',
@@ -60,13 +60,13 @@ export default function storage(state = {
         }
       }
     }
-    case 'FETCHING_GRAPH_SUCCEEDED': {
+    case 'GETTING_GRAPH_SUCCEEDED': {
       return {
         ...state,
         status: 'READY'
       }
     }
-    case 'CREATED_FILE_ON_GOOGLE_DRIVE':
+    case 'POSTED_FILE_ON_GOOGLE_DRIVE':
       return {
         ...state,
         status: 'READY',

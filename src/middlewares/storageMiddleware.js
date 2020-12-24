@@ -4,9 +4,9 @@ import { getPresentGraph } from "../selectors"
 import { ActionCreators as UndoActionCreators } from "redux-undo"
 import { saveAppData } from "../actions/localStorage"
 import {
-  createdFileOnGoogleDrive,
-  updatingGraph,
-  updatingGraphSucceeded
+  postedFileOnGoogleDrive,
+  puttingGraph,
+  puttingGraphSucceeded
 } from "../actions/storage";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 
@@ -50,7 +50,7 @@ export const storageMiddleware = store => next => action => {
 
       case 'POST': {
         const onFileSaved = (fileId) => {
-          store.dispatch(createdFileOnGoogleDrive(fileId))
+          store.dispatch(postedFileOnGoogleDrive(fileId))
         }
 
         saveFile(graph, null, newState.diagramName, onFileSaved)
@@ -64,18 +64,18 @@ export const storageMiddleware = store => next => action => {
       case "LOCAL_STORAGE":
         if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
           if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
-            store.dispatch(updatingGraph())
+            store.dispatch(puttingGraph())
           }
 
           saveAppData({graph})
-          store.dispatch(updatingGraphSucceeded())
+          store.dispatch(puttingGraphSucceeded())
         }
         break
 
       case "GOOGLE_DRIVE":
         if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
           if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
-            store.dispatch(updatingGraph())
+            store.dispatch(puttingGraph())
           }
 
           deBounce(() => {
@@ -88,7 +88,7 @@ export const storageMiddleware = store => next => action => {
                   console.warn("Unexpected change of fileId from %o to %o",
                     storage.googleDrive.fileId, fileId)
                 }
-                store.dispatch(updatingGraphSucceeded())
+                store.dispatch(puttingGraphSucceeded())
               }
             )
           }, driveUpdateInterval)

@@ -7,7 +7,7 @@ import {
   newGoogleDriveDiagram,
   newLocalStorageDiagram,
   pickDiagram,
-  storeCurrentDiagramAsNewFileOnGoogleDrive
+  postCurrentDiagramAsNewFileOnGoogleDrive
 } from "../actions/storage";
 
 const mapStateToProps = state => {
@@ -39,7 +39,7 @@ const mapDispatchToProps = dispatch => {
       dispatch(showExportDialog())
     },
     storeInGoogleDrive: () => {
-      dispatch(storeCurrentDiagramAsNewFileOnGoogleDrive())
+      dispatch(postCurrentDiagramAsNewFileOnGoogleDrive())
     },
     onHelpClick: () => {
       dispatch(showHelpDialog())

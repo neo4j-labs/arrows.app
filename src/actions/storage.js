@@ -42,21 +42,15 @@ export function getFileFromGoogleDrive(fileId) {
   }
 }
 
-export function storeCurrentDiagramAsNewFileOnGoogleDrive() {
+export function postCurrentDiagramAsNewFileOnGoogleDrive() {
   return {
-    type: 'STORE_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE'
+    type: 'POST_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE'
   }
 }
 
-export function usingLocalStorage() {
+export function postedFileOnGoogleDrive(fileId) {
   return {
-    type: 'USE_LOCAL_STORAGE'
-  }
-}
-
-export function createdFileOnGoogleDrive(fileId) {
-  return {
-    type: 'CREATED_FILE_ON_GOOGLE_DRIVE',
+    type: 'POSTED_FILE_ON_GOOGLE_DRIVE',
     fileId
   }
 }
@@ -90,39 +84,39 @@ export const pickDiagramCancel = () => ({
   type: 'PICK_DIAGRAM_CANCEL'
 })
 
-export function fetchingGraph() {
+export function gettingGraph() {
   return {
-    type: 'FETCHING_GRAPH'
+    type: 'GETTING_GRAPH'
   }
 }
 
-export function fetchingGraphFailed() {
+export function gettingGraphFailed() {
   return {
-    type: 'FETCHING_GRAPH_FAILED'
+    type: 'GETTING_GRAPH_FAILED'
   }
 }
 
-export function fetchingGraphSucceeded(storedGraph) {
+export function gettingGraphSucceeded(storedGraph) {
   return {
-    type: 'FETCHING_GRAPH_SUCCEEDED',
+    type: 'GETTING_GRAPH_SUCCEEDED',
     storedGraph
   }
 }
 
-export function updatingGraph() {
+export function puttingGraph() {
   return {
     type: 'UPDATING_GRAPH'
   }
 }
 
-export function updatingGraphFailed() {
+export function puttingGraphFailed() {
   return {
-    type: 'UPDATING_GRAPH_FAILED'
+    type: 'PUTTING_GRAPH_FAILED'
   }
 }
 
-export function updatingGraphSucceeded() {
+export function puttingGraphSucceeded() {
   return {
-    type: 'UPDATING_GRAPH_SUCCEEDED'
+    type: 'PUTTING_GRAPH_SUCCEEDED'
   }
 }

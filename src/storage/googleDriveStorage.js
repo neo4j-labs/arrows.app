@@ -2,16 +2,16 @@ import { Point } from "../model/Point";
 import { setDiagramName } from "../actions/diagramName";
 import {completeWithDefaults} from "../model/styling";
 import {emptyGraph} from "../model/Graph";
-import {fetchingGraph, fetchingGraphSucceeded} from "../actions/storage";
+import {gettingGraph, gettingGraphSucceeded} from "../actions/storage";
 
 export function fetchGraphFromDrive(fileId) {
   return function (dispatch) {
-    dispatch(fetchingGraph())
+    dispatch(gettingGraph())
 
     const fetchData = () => getFileInfo(fileId)
       .then(data => {
         const layers = constructGraphFromFile(JSON.parse(data))
-        dispatch(fetchingGraphSucceeded(layers.graph))
+        dispatch(gettingGraphSucceeded(layers.graph))
       })
 
     const fetchFileName = () =>
