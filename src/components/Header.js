@@ -17,11 +17,11 @@ const storageStatusMessage = (props) => {
   const storageName = storageNames[props.storage.mode]
   if (storageName) {
     const statusMessages = {
-      IDLE: `Graph stored safely in ${storageName}`,
-      GETTING_GRAPH: `Loading graph from ${storageName}...`,
-      GETTING_GRAPH_FAILED: `Failed to load graph from ${storageName}, see Javascript console for details.`,
-      UPDATING_GRAPH: `Saving graph to ${storageName}...`,
-      PUTTING_GRAPH_FAILED: `Failed to save graph to ${storageName}, see Javascript console for details.`
+      IDLE: `Saved to ${storageName}`,
+      GETTING_GRAPH: `Saving to ${storageName}...`,
+      GETTING_GRAPH_FAILED: `Failed to load from ${storageName}, see Javascript console for details.`,
+      UPDATING_GRAPH: `Saving to ${storageName}...`,
+      PUTTING_GRAPH_FAILED: `Failed to save to ${storageName}, see Javascript console for details.`
     }
     return (
       <Popup trigger={<Icon name={moodIcons[props.storageStatus.mood]}/>}
