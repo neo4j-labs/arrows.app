@@ -6,7 +6,8 @@ const diagramName = (state = defaultName, action) => {
     case 'NEW_LOCAL_STORAGE_DIAGRAM':
       return defaultName
 
-    case 'SET_DIAGRAM_NAME':
+    case 'GETTING_DIAGRAM_NAME_SUCCEEDED':
+    case 'RENAME_DIAGRAM':
       return action.diagramName
 
     default:

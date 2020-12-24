@@ -1,5 +1,5 @@
 import { Point } from "../model/Point";
-import { setDiagramName } from "../actions/diagramName";
+import { gettingDiagramNameSucceeded } from "../actions/diagramName";
 import {completeWithDefaults} from "../model/styling";
 import {emptyGraph} from "../model/Graph";
 import {gettingGraph, gettingGraphSucceeded} from "../actions/storage";
@@ -18,7 +18,7 @@ export function fetchGraphFromDrive(fileId) {
       getFileInfo(fileId, true)
         .then(fileMetadata => {
           const fileName = JSON.parse(fileMetadata).name
-          dispatch(setDiagramName(fileName))
+          dispatch(gettingDiagramNameSucceeded(fileName))
         })
 
     fetchFileName()
