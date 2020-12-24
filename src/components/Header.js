@@ -40,7 +40,7 @@ const storageIcon = (props) => {
       )
     case 'LOCAL_STORAGE':
       return (
-        <Icon name='disk'/>
+        <Icon name='window maximize outline'/>
       )
     default:
       return null
