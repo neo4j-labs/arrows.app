@@ -4,11 +4,12 @@ import { DiagramNameEditor } from "./DiagramNameEditor"
 import arrows_logo from "../images/arrows_logo.svg"
 import GoogleDriveShare from "./GoogleDriveShareWrapper"
 
+const storageNames = {
+  LOCAL_STORAGE: 'Web Browser storage',
+  GOOGLE_DRIVE: 'Google Drive'
+}
+
 const storageStatusMessage = (props) => {
-  const storageNames = {
-    LOCAL_STORAGE: 'Web Browser storage',
-    GOOGLE_DRIVE: 'Google Drive'
-  }
   const storageName = storageNames[props.storage.mode]
   if (storageName) {
     const statusMessages = {
@@ -61,8 +62,8 @@ const Header = (props) => {
             <i aria-hidden="true" className="dropdown icon"/>
             <span className="text">New</span>
             <div className="menu transition">
-              <div role="option" className="item" onClick={props.onNewGoogleDriveDiagram}>use Google Drive</div>
-              <div role="option" className="item" onClick={props.onNewLocalStorageDiagram}>use Local Storage</div>
+              <div role="option" className="item" onClick={props.onNewGoogleDriveDiagram}>use {storageNames.GOOGLE_DRIVE}</div>
+              <div role="option" className="item" onClick={props.onNewLocalStorageDiagram}>use {storageNames.LOCAL_STORAGE}</div>
             </div>
           </div>
           <div role="option" className="item" onClick={props.pickFromGoogleDrive}>Open...</div>
