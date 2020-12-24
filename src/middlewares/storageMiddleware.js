@@ -33,10 +33,17 @@ export const storageMiddleware = store => next => action => {
   const newState = hideGraphHistory(store.getState())
   const storage = newState.storage
   const graph = newState.graph
+  const diagramName = newState.diagramName
 
   if (action.type === 'SET_DIAGRAM_NAME') {
-    if (storage.mode === "GOOGLE_DRIVE") {
-      renameGoogleDriveStore(storage.googleDrive.fileId, action.diagramName)
+    switch (storage.mode) {
+      case "GOOGLE_DRIVE":
+        renameGoogleDriveStore(storage.googleDrive.fileId, action.diagramName)
+        break
+
+      case "LOCAL_STORAGE":
+        saveAppData({graph, diagramName})
+        break
     }
   }
 
@@ -67,7 +74,7 @@ export const storageMiddleware = store => next => action => {
             store.dispatch(puttingGraph())
           }
 
-          saveAppData({graph})
+          saveAppData({graph, diagramName})
           store.dispatch(puttingGraphSucceeded())
         }
         break

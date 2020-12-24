@@ -1,5 +1,6 @@
 import { constructGraphFromFile } from "../storage/googleDriveStorage"
 import { gettingGraphSucceeded } from "./storage";
+import {setDiagramName} from "./diagramName";
 
 const key_helpDismissed = "neo4j-arrows-app.helpDismissed";
 const key_rememberedConnectionParameters = "neo4j-arrows-app.rememberedConnectionParameters";
@@ -40,6 +41,9 @@ export const loadGraphFromLocalStorage = () => {
     const data = loadAppData()
     const graphData = constructGraphFromFile(data)
 
+    if (data.diagramName) {
+      dispatch(setDiagramName(data.diagramName))
+    }
     dispatch(gettingGraphSucceeded(graphData.graph))
   }
 }
