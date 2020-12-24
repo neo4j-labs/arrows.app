@@ -1,18 +1,13 @@
 import React from 'react'
-import { Icon, Menu, Popup, Button } from 'semantic-ui-react'
+import { Icon, Menu, Button } from 'semantic-ui-react'
 import { DiagramNameEditor } from "./DiagramNameEditor"
 import arrows_logo from "../images/arrows_logo.svg"
 import GoogleDriveShare from "./GoogleDriveShareWrapper"
 
 const storageStatusMessage = (props) => {
   const storageNames = {
-    DATABASE: 'Neo4j database',
+    LOCAL_STORAGE: 'Web Browser storage',
     GOOGLE_DRIVE: 'Google Drive'
-  }
-  const moodIcons = {
-    HAPPY: 'check circle outline',
-    BUSY: 'dot circle outline',
-    SAD: 'warning'
   }
   const storageName = storageNames[props.storage.mode]
   if (storageName) {
@@ -24,8 +19,7 @@ const storageStatusMessage = (props) => {
       PUTTING_GRAPH_FAILED: `Failed to save to ${storageName}, see Javascript console for details.`
     }
     return (
-      <Popup trigger={<Icon name={moodIcons[props.storageStatus.mood]}/>}
-             content={statusMessages[props.storageStatus.status]}/>
+      <span>{statusMessages[props.storageStatus.status]}</span>
     )
   } else {
     return null
@@ -80,7 +74,7 @@ const Header = (props) => {
         diagramName={props.diagramName}
         setDiagramName={props.setDiagramName}
       />
-      <Menu.Item onClick={props.storage.mode === 'DATABASE' ? props.onEditConnectionParameters : null}>
+      <Menu.Item style={{opacity: 0.6}}>
         {storageIcon(props)}
         {storageStatusMessage(props)}
       </Menu.Item>
