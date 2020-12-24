@@ -78,16 +78,6 @@ const Header = (props) => {
         {storageIcon(props)}
         {storageStatusMessage(props)}
       </Menu.Item>
-      {props.storage.mode !== 'GOOGLE_DRIVE' ?
-        <Menu.Item>
-          <Button
-            onClick={props.storeInGoogleDrive}
-            icon='google drive'
-            color='orange'
-            content='Store in Google Drive'
-          />
-        </Menu.Item> : null
-      }
       <Menu.Menu position={'right'}>
         <Menu.Item>
           <Button
@@ -106,7 +96,16 @@ const Header = (props) => {
               color='orange'
               content='Share'
             />
-          </Menu.Item> : null}
+          </Menu.Item> :
+          <Menu.Item>
+            <Button
+              onClick={props.storeInGoogleDrive}
+              icon='google drive'
+              color='orange'
+              content='Save to Google Drive'
+            />
+          </Menu.Item>
+        }
         <Menu.Item
           title="Open/Close Inspector"
           onClick={props.showInspector}>
