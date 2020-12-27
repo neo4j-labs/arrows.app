@@ -2,9 +2,9 @@ import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
 import {renameGoogleDriveStore, saveFile } from "../actions/googleDrive";
 import { getPresentGraph } from "../selectors"
 import { ActionCreators as UndoActionCreators } from "redux-undo"
-import { saveAppData } from "../actions/localStorage"
+import {loadGraphFromLocalStorage, saveAppData} from "../actions/localStorage"
 import {
-  postedFileOnGoogleDrive, putGraph,
+  postedFileOnGoogleDrive, postedFileToLocalStorage, putGraph,
   puttingGraph,
   puttingGraphSucceeded
 } from "../actions/storage";
@@ -42,7 +42,7 @@ export const storageMiddleware = store => next => action => {
         break
 
       case "LOCAL_STORAGE":
-        saveAppData({graph, diagramName})
+        saveAppData(storage.fileId,{graph, diagramName})
         break
     }
   }
@@ -66,6 +66,23 @@ export const storageMiddleware = store => next => action => {
     }
   }
 
+  if (storage.mode === 'LOCAL_STORAGE') {
+    switch (storage.status) {
+      case 'GET': {
+        const fileId = storage.fileId;
+        store.dispatch(loadGraphFromLocalStorage(fileId))
+        break
+      }
+
+      case 'POST': {
+        const fileId = storage.fileId;
+        saveAppData(fileId,{graph, diagramName})
+        store.dispatch(postedFileToLocalStorage())
+        break
+      }
+    }
+  }
+
   if (action.category === 'GRAPH' || historyActions.includes(action.type)) {
     switch (storage.mode) {
       case "LOCAL_STORAGE":
@@ -74,7 +91,7 @@ export const storageMiddleware = store => next => action => {
             store.dispatch(puttingGraph())
           }
 
-          saveAppData({graph, diagramName})
+          saveAppData(storage.fileId, {graph, diagramName})
           store.dispatch(puttingGraphSucceeded())
         }
         break

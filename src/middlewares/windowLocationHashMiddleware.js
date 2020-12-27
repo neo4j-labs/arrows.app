@@ -13,7 +13,7 @@ export const windowLocationHashMiddleware = store => next => action => {
       window.location.hash = `#/neo4j`
       break
     case 'LOCAL_STORAGE':
-      window.location.hash = `#/local`
+      window.location.hash = `#/local/id=${storage.fileId}`
       break
   }
 

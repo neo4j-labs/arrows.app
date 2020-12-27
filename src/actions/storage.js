@@ -1,20 +1,24 @@
 import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
-import {loadGraphFromLocalStorage} from "./localStorage";
+import {key_appData} from "./localStorage";
 
-export const localUrlRegex = /^#\/local/
+export const localUrlNoIdRegex = /^#\/local$/
+export const localUrlRegex = /^#\/local\/id=(.*)/
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 
 export function initialiseStorageFromWindowLocationHash(store) {
   const hash = window.location.hash
 
+  const localNoIdMatch = localUrlNoIdRegex.exec(hash)
   const localMatch = localUrlRegex.exec(hash)
-  if (localMatch) {
-    store.dispatch(loadGraphFromLocalStorage())
-  }
-
   const googleDriveMatch = googleDriveUrlRegex.exec(hash)
-  if (googleDriveMatch && googleDriveMatch.length > 1) {
+
+  if (localNoIdMatch) {
+    store.dispatch(getFileFromLocalStorage(key_appData))
+  } else if (localMatch) {
+    const fileId = localMatch[1]
+    store.dispatch(getFileFromLocalStorage(fileId))
+  } else if (googleDriveMatch && googleDriveMatch.length > 1) {
     const initialFiles = googleDriveMatch[1].split(',')
     if (initialFiles.length > 0) {
       const fileId = initialFiles[0]
@@ -42,6 +46,13 @@ export function getFileFromGoogleDrive(fileId) {
   }
 }
 
+export function getFileFromLocalStorage(fileId) {
+  return {
+    type: 'GET_FILE_FROM_LOCAL_STORAGE',
+    fileId
+  }
+}
+
 export function postCurrentDiagramAsNewFileOnGoogleDrive() {
   return {
     type: 'POST_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE'
@@ -52,6 +63,12 @@ export function postedFileOnGoogleDrive(fileId) {
   return {
     type: 'POSTED_FILE_ON_GOOGLE_DRIVE',
     fileId
+  }
+}
+
+export function postedFileToLocalStorage() {
+  return {
+    type: 'POSTED_FILE_TO_LOCAL_STORAGE'
   }
 }
 
