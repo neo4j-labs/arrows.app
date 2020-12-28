@@ -1,4 +1,4 @@
-import { constructGraphFromFile } from "../storage/googleDriveStorage"
+import {constructGraphFromFile} from "../storage/googleDriveStorage"
 import {gettingGraph, gettingGraphSucceeded} from "./storage";
 import {gettingDiagramNameSucceeded} from "./diagramName";
 
@@ -20,12 +20,6 @@ export const forgetConnectionParameters = () => {
   localStorage.removeItem(key_rememberedConnectionParameters)
 }
 
-export const saveAppData = (fileId, data) => {
-  save(fileId, data)
-}
-
-export const loadAppData = (fileId) => load(fileId)
-
 const save = (key, value) => {
   localStorage.setItem(
     key,
@@ -41,7 +35,7 @@ export const loadGraphFromLocalStorage = (fileId) => {
   return function (dispatch) {
     dispatch(gettingGraph())
 
-    const data = loadAppData(fileId)
+    const data = load(fileId)
     const graphData = constructGraphFromFile(data)
 
     if (data.diagramName) {
@@ -49,6 +43,10 @@ export const loadGraphFromLocalStorage = (fileId) => {
     }
     dispatch(gettingGraphSucceeded(graphData.graph))
   }
+}
+
+export const saveGraphToLocalStorage = (fileId, data) => {
+  save(fileId, data)
 }
 
 export const loadRecentlyAccessedDiagrams = () => {
