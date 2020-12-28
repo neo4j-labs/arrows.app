@@ -35,7 +35,7 @@ export const loadGraphFromLocalStorage = (fileId) => {
   return function (dispatch) {
     dispatch(gettingGraph())
 
-    const data = load(fileId)
+    const data = load('GRAPH|' + fileId)
     const graphData = constructGraphFromFile(data)
 
     if (data.diagramName) {
@@ -46,7 +46,7 @@ export const loadGraphFromLocalStorage = (fileId) => {
 }
 
 export const saveGraphToLocalStorage = (fileId, data) => {
-  save(fileId, data)
+  save('GRAPH|' + fileId, data)
 }
 
 export const loadRecentlyAccessedDiagrams = () => {
