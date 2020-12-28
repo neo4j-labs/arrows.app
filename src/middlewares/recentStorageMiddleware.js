@@ -1,13 +1,25 @@
 import {updateRecentStorage} from "../actions/recentStorage";
+import {saveRecentlyAccessedDiagrams} from "../actions/localStorage";
 
 export const recentStorageMiddleware = store => next => action => {
 
-  const oldStorage = store.getState().storage
+  const oldState = store.getState()
+  const oldStorage = oldState.storage
   const result = next(action)
-  const newStorage = store.getState().storage
+  const newState = store.getState()
+  const newStorage = newState.storage
 
-  if (!(oldStorage.mode === newStorage.mode && oldStorage.fileId === newStorage.fileId)) {
-    store.dispatch(updateRecentStorage(newStorage.mode, newStorage.fileId))
+  if (!(
+    oldStorage.mode === newStorage.mode &&
+    oldStorage.fileId === newStorage.fileId &&
+    oldState.diagramName === newState.diagramName
+  )) {
+    store.dispatch(updateRecentStorage(newStorage.mode, newStorage.fileId, newState.diagramName))
   }
+
+  if (action.type === 'UPDATE_RECENT_STORAGE') {
+    saveRecentlyAccessedDiagrams(newState.recentStorage)
+  }
+
   return result
 }

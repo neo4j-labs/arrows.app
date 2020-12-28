@@ -4,6 +4,7 @@ import {gettingDiagramNameSucceeded} from "./diagramName";
 
 const key_helpDismissed = "neo4j-arrows-app.helpDismissed";
 const key_rememberedConnectionParameters = "neo4j-arrows-app.rememberedConnectionParameters";
+const key_recentlyAccessedDiagrams = "neo4j-arrows-app.recentlyAccessedDiagrams";
 export const key_appData = "neo4j-arrows-app.appData";
 
 export const rememberHelpDismissed = () => save(key_helpDismissed, true)
@@ -50,3 +51,10 @@ export const loadGraphFromLocalStorage = (fileId) => {
   }
 }
 
+export const loadRecentlyAccessedDiagrams = () => {
+  return load(key_recentlyAccessedDiagrams)
+}
+
+export const saveRecentlyAccessedDiagrams = (data) => {
+  save(key_recentlyAccessedDiagrams, data)
+}
