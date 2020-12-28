@@ -28,22 +28,19 @@ const storageStatusMessage = (props) => {
   }
 }
 
-const storageIcon = (props) => {
-  switch (props.storage.mode) {
+const storageIcon = (storageMode) => {
+  switch (storageMode) {
     case 'DATABASE':
-      return (
-        <Icon name='database'/>
-      )
+      return 'database'
+
     case 'GOOGLE_DRIVE':
-      return (
-        <Icon name='google drive'/>
-      )
+      return 'google drive'
+
     case 'LOCAL_STORAGE':
-      return (
-        <Icon name='window maximize outline'/>
-      )
+      return 'window maximize outline'
+
     default:
-      return null
+      return 'square outline'
   }
 }
 
@@ -53,7 +50,10 @@ const Header = (props) => {
   }
 
   const recentlyAccessFiles = props.recentStorage.map(entry => (
-    <div role="option" className="item" onClick={() => props.openRecentFile(entry)}>{entry.diagramName}</div>
+    <div role="option" className="item" onClick={() => props.openRecentFile(entry)}>
+      <i aria-hidden="true" className={'icon ' + storageIcon(entry.mode)}/>
+      <span className="text">{entry.diagramName}</span>
+    </div>
   ))
 
   return (
@@ -90,7 +90,7 @@ const Header = (props) => {
         setDiagramName={props.setDiagramName}
       />
       <Menu.Item style={{opacity: 0.6}}>
-        {storageIcon(props)}
+        <Icon name={storageIcon(props.storage.mode)}/>
         {storageStatusMessage(props)}
       </Menu.Item>
       <Menu.Menu position={'right'}>
