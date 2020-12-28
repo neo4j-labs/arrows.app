@@ -38,7 +38,7 @@ export const storageMiddleware = store => next => action => {
   if (action.type === 'RENAME_DIAGRAM') {
     switch (storage.mode) {
       case "GOOGLE_DRIVE":
-        renameGoogleDriveStore(storage.googleDrive.fileId, action.diagramName)
+        renameGoogleDriveStore(storage.fileId, action.diagramName)
         break
 
       case "LOCAL_STORAGE":
@@ -50,7 +50,7 @@ export const storageMiddleware = store => next => action => {
   if (storage.mode === 'GOOGLE_DRIVE' && storage.googleDrive.signedIn) {
     switch (storage.status) {
       case 'GET': {
-        const fileId = storage.googleDrive.fileId;
+        const fileId = storage.fileId;
         store.dispatch(fetchGraphFromDrive(fileId))
         break
       }
@@ -107,12 +107,12 @@ export const storageMiddleware = store => next => action => {
 
             saveFile(
               graph,
-              storage.googleDrive.fileId,
+              storage.fileId,
               newState.diagramName,
               (fileId) => {
-                if (fileId !== storage.googleDrive.fileId) {
+                if (fileId !== storage.fileId) {
                   console.warn("Unexpected change of fileId from %o to %o",
-                    storage.googleDrive.fileId, fileId)
+                    storage.fileId, fileId)
                 }
                 store.dispatch(puttingGraphSucceeded())
               }

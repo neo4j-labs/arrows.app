@@ -82,8 +82,8 @@ export const reloadGraph = () => {
     const { storage } = getState()
     switch (storage.mode) {
       case "GOOGLE_DRIVE":
-        if (storage.googleDrive.fileId) {
-          dispatch(fetchGraphFromDrive(storage.googleDrive.fileId))
+        if (storage.fileId) {
+          dispatch(fetchGraphFromDrive(storage.fileId))
         }
         break
       case "DATABASE":

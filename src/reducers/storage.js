@@ -3,6 +3,7 @@ import {generateLocalFileId} from "../storage/localFileId";
 export default function storage(state = {
   mode: 'LOCAL_STORAGE',
   status: 'GET',
+  fileId: null,
   googleDrive: {}
 }, action) {
   switch (action.type) {
@@ -11,10 +12,7 @@ export default function storage(state = {
         ...state,
         mode: 'GOOGLE_DRIVE',
         status: 'POST',
-        googleDrive: {
-          ...state.googleDrive,
-          fileId: null
-        }
+        fileId: null,
       }
     }
     case 'NEW_LOCAL_STORAGE_DIAGRAM': {
@@ -39,16 +37,15 @@ export default function storage(state = {
     }
     case 'GET_FILE_FROM_GOOGLE_DRIVE': {
       return {
+        ...state,
         mode: 'GOOGLE_DRIVE',
         status: 'GET',
-        googleDrive: {
-          ...state.googleDrive,
-          fileId: action.fileId
-        }
+        fileId: action.fileId,
       }
     }
     case 'GET_FILE_FROM_LOCAL_STORAGE': {
       return {
+        ...state,
         mode: 'LOCAL_STORAGE',
         status: 'GET',
         fileId: action.fileId
@@ -62,12 +59,10 @@ export default function storage(state = {
     }
     case 'POST_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE': {
       return {
+        ...state,
         mode: 'GOOGLE_DRIVE',
         status: 'POST',
-        googleDrive: {
-          ...state.googleDrive,
-          fileId: null
-        }
+        fileId: null,
       }
     }
     case 'GETTING_GRAPH_SUCCEEDED': {
@@ -80,10 +75,7 @@ export default function storage(state = {
       return {
         ...state,
         status: 'READY',
-        googleDrive: {
-          ...state.googleDrive,
-          fileId: action.fileId
-        }
+        fileId: action.fileId,
       }
     case 'POSTED_FILE_TO_LOCAL_STORAGE':
       return {
