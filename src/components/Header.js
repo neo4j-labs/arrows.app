@@ -52,6 +52,10 @@ const Header = (props) => {
     new GoogleDriveShare(storage).openDialog()
   }
 
+  const recentlyAccessFiles = props.recentStorage.map(entry => (
+    <div role="option" className="item" onClick={() => props.openRecentFile(entry)}>{entry.diagramName}</div>
+  ))
+
   return (
     <Menu attached='top' style={{ borderRadius: 0 }} borderless>
       <div role="listbox" aria-expanded="true" className="ui item simple dropdown" tabIndex="0">
@@ -67,7 +71,16 @@ const Header = (props) => {
               <div role="option" className="item" onClick={props.onNewLocalStorageDiagram}>use {storageNames.LOCAL_STORAGE}</div>
             </div>
           </div>
-          <div role="option" className="item" onClick={props.pickFromGoogleDrive}>Open...</div>
+          <div role="option" className="item">
+            <i aria-hidden="true" className="dropdown icon"/>
+            <span className="text">Open</span>
+            <div className="menu transition">
+              <div className="header">Recently accessed</div>
+              {recentlyAccessFiles}
+              <div className="divider"/>
+              <div role="option" className="item" onClick={props.pickFromGoogleDrive}>Pick from Google Drive...</div>
+            </div>
+          </div>
           <div className="divider"/>
           <div role="option" className="item" onClick={props.onHelpClick}>Help</div>
         </div>

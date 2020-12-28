@@ -39,6 +39,19 @@ export function newLocalStorageDiagram() {
   }
 }
 
+export function openRecentFile(entry) {
+  switch (entry.mode) {
+    case 'GOOGLE_DRIVE':
+      return getFileFromGoogleDrive(entry.fileId)
+
+    case 'LOCAL_STORAGE':
+      return getFileFromLocalStorage(entry.fileId)
+
+    default:
+      return {}
+  }
+}
+
 export function getFileFromGoogleDrive(fileId) {
   return {
     type: 'GET_FILE_FROM_GOOGLE_DRIVE',

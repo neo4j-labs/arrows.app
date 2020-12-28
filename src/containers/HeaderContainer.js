@@ -6,12 +6,14 @@ import {showExportDialog, showHelpDialog} from "../actions/applicationDialogs";
 import {
   newGoogleDriveDiagram,
   newLocalStorageDiagram,
+  openRecentFile,
   pickDiagram,
   postCurrentDiagramAsNewFileOnGoogleDrive
 } from "../actions/storage";
 
 const mapStateToProps = state => {
   return {
+    recentStorage: state.recentStorage.slice(1,11),
     diagramName: state.diagramName,
     storage: state.storage
   }
@@ -27,6 +29,9 @@ const mapDispatchToProps = dispatch => {
     },
     pickFromGoogleDrive: () => {
       dispatch(pickDiagram())
+    },
+    openRecentFile: (entry) => {
+      dispatch(openRecentFile(entry))
     },
     setDiagramName: (diagramName) => {
       dispatch(renameDiagram(diagramName))
