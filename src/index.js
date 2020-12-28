@@ -14,8 +14,14 @@ import {initialiseStorageFromWindowLocationHash} from "./actions/storage";
 import {windowLocationHashMiddleware} from "./middlewares/windowLocationHashMiddleware";
 import {initGoogleDriveApi} from "./actions/googleDrive";
 import {windowResized} from "./actions/applicationLayout";
+import {recentStorageMiddleware} from "./middlewares/recentStorageMiddleware";
 
-const middleware = [storageMiddleware, windowLocationHashMiddleware, viewportMiddleware]
+const middleware = [
+  recentStorageMiddleware,
+  storageMiddleware,
+  windowLocationHashMiddleware,
+  viewportMiddleware
+]
 
 let store = createStore(
   reducer,

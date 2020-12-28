@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux'
+import recentStorage from "./recentStorage";
 import storage from "./storage";
 import diagramName from "./diagramName";
 import graph from "./graph";
@@ -14,6 +15,7 @@ import gangs from './gangs'
 import features from './features'
 
 const arrowsApp = combineReducers({
+  recentStorage,
   storage,
   diagramName,
   graph,
