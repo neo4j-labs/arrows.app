@@ -50,7 +50,12 @@ const Header = (props) => {
   }
 
   const recentlyAccessFiles = props.recentStorage.map(entry => (
-    <div role="option" className="item" onClick={() => props.openRecentFile(entry)}>
+    <div role="option" className="item" onClick={() => props.openRecentFile(entry)} style={{
+      maxWidth: '20em',
+      overflow: 'hidden',
+      whiteSpace: 'nowrap',
+      textOverflow: 'ellipsis'
+    }}>
       <i aria-hidden="true" className={'icon ' + storageIcon(entry.mode)}/>
       <span className="text">{entry.diagramName}</span>
     </div>
