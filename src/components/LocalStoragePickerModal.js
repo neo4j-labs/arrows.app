@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Button, Modal, Table} from 'semantic-ui-react'
+import formatDistanceToNow from 'date-fns/formatDistanceToNow'
 
 class LocalStoragePickerModal extends Component {
 
@@ -20,7 +21,7 @@ class LocalStoragePickerModal extends Component {
     const rows = this.props.recentStorage.map(entry => (
       <Table.Row active={this.state.fileId === entry.fileId} onClick={() => this.onClickRow(entry.fileId)}>
         <Table.Cell>{entry.diagramName}</Table.Cell>
-        <Table.Cell>{entry.timestamp}</Table.Cell>
+        <Table.Cell>{formatDistanceToNow(entry.timestamp, {addSuffix: true})}</Table.Cell>
       </Table.Row>
     ))
 
