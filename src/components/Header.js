@@ -49,6 +49,13 @@ const Header = (props) => {
     new GoogleDriveShare(storage).openDialog()
   }
 
+  const newDiagramOptions = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].map(mode => (
+    <div role="option" className="item" onClick={() => props.onNewDiagram(mode)}>
+      <i aria-hidden="true" className={'icon ' + storageIcon(mode)}/>
+      <span>{storageNames[mode]}</span>
+    </div>
+  ))
+
   const recentlyAccessFiles = props.recentStorage.map(entry => (
     <div role="option" className="item" onClick={() => props.openRecentFile(entry)} style={{
       maxWidth: '20em',
@@ -72,8 +79,8 @@ const Header = (props) => {
             <i aria-hidden="true" className="dropdown icon"/>
             <span className="text">New</span>
             <div className="menu transition">
-              <div role="option" className="item" onClick={props.onNewGoogleDriveDiagram}>use {storageNames.GOOGLE_DRIVE}</div>
-              <div role="option" className="item" onClick={props.onNewLocalStorageDiagram}>use {storageNames.LOCAL_STORAGE}</div>
+              <div className="header">Store in</div>
+              {newDiagramOptions}
             </div>
           </div>
           <div role="option" className="item">

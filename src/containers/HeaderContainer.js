@@ -21,11 +21,15 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    onNewGoogleDriveDiagram: () => {
-      dispatch(newGoogleDriveDiagram())
-    },
-    onNewLocalStorageDiagram: () => {
-      dispatch(newLocalStorageDiagram())
+    onNewDiagram: (mode) => {
+      switch (mode) {
+        case 'GOOGLE_DRIVE':
+          dispatch(newGoogleDriveDiagram())
+          break
+        case 'LOCAL_STORAGE':
+          dispatch(newLocalStorageDiagram())
+          break
+      }
     },
     pickFromGoogleDrive: () => {
       dispatch(pickDiagram())
