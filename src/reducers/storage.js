@@ -24,9 +24,19 @@ export default function storage(state = {
       }
     }
     case 'PICK_DIAGRAM': {
-      return {
-        ...state,
-        status: 'PICKING_FROM_GOOGLE_DRIVE',
+      switch (action.mode) {
+        case 'GOOGLE_DRIVE':
+          return {
+            ...state,
+            status: 'PICKING_FROM_GOOGLE_DRIVE',
+          }
+        case 'LOCAL_STORAGE':
+          return {
+            ...state,
+            status: 'PICKING_FROM_LOCAL_STORAGE',
+          }
+        default:
+          return state
       }
     }
     case 'PICK_DIAGRAM_CANCEL': {

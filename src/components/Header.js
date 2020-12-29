@@ -68,6 +68,13 @@ const Header = (props) => {
     </div>
   ))
 
+  const browseDiagramOptions = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].map(mode => (
+    <div role="option" className="item" onClick={() => props.pickFileToOpen(mode)}>
+      <i aria-hidden="true" className={'icon ' + storageIcon(mode)}/>
+      <span>{storageNames[mode]}</span>
+    </div>
+  ))
+
   return (
     <Menu attached='top' style={{ borderRadius: 0 }} borderless>
       <div role="listbox" aria-expanded="true" className="ui item simple dropdown" tabIndex="0">
@@ -90,7 +97,8 @@ const Header = (props) => {
               <div className="header">Recently accessed</div>
               {recentlyAccessFiles}
               <div className="divider"/>
-              <div role="option" className="item" onClick={props.pickFromGoogleDrive}>Pick from Google Drive...</div>
+              <div className="header">Browse</div>
+              {browseDiagramOptions}
             </div>
           </div>
           <div className="divider"/>

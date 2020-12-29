@@ -106,8 +106,9 @@ export const reloadGraph = () => {
   }
 }
 
-export const pickDiagram = () => ({
-  type: 'PICK_DIAGRAM'
+export const pickDiagram = (mode) => ({
+  type: 'PICK_DIAGRAM',
+  mode
 })
 
 export const pickDiagramCancel = () => ({

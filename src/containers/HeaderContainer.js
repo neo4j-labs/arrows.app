@@ -31,8 +31,8 @@ const mapDispatchToProps = dispatch => {
           break
       }
     },
-    pickFromGoogleDrive: () => {
-      dispatch(pickDiagram())
+    pickFileToOpen: (mode) => {
+      dispatch(pickDiagram(mode))
     },
     openRecentFile: (entry) => {
       dispatch(openRecentFile(entry))
