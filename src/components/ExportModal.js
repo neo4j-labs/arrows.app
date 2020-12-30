@@ -4,11 +4,24 @@ import ExportPngPanel from "./ExportPngPanel";
 import ExportCypherPanel from "./ExportCypherPanel";
 import ExportSvgPanel from "./ExportSvgPanel";
 import ExportJsonPanel from "./ExportJsonPanel";
+import {loadFavoriteExportTab, saveFavoriteExportTab} from "../actions/localStorage";
 
 class ExportModal extends Component {
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      activeIndex: loadFavoriteExportTab() || 0
+    }
+  }
+
   onCancel = () => {
     this.props.onCancel()
+  }
+
+  handleTabChange = (e, { activeIndex }) => {
+    this.setState({activeIndex})
+    saveFavoriteExportTab(activeIndex)
   }
 
   render() {
@@ -66,7 +79,12 @@ class ExportModal extends Component {
       >
         <Modal.Header>Export</Modal.Header>
         <Modal.Content scrolling>
-          <Tab menu={{secondary: true}} panes={panes}/>
+          <Tab
+            menu={{secondary: true}}
+            panes={panes}
+            activeIndex={this.state.activeIndex}
+            onTabChange={this.handleTabChange}
+          />
         </Modal.Content>
         <Modal.Actions>
           <Button
