@@ -22,6 +22,18 @@ export const hideExportDialog = () => {
   }
 }
 
+export const showImportDialog = () => {
+  return {
+    type: 'SHOW_IMPORT_DIALOG'
+  }
+}
+
+export const hideImportDialog = () => {
+  return {
+    type: 'HIDE_IMPORT_DIALOG'
+  }
+}
+
 export const showHelpDialog = () => {
   return {
     type: 'SHOW_HELP_DIALOG'

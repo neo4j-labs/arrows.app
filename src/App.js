@@ -16,6 +16,7 @@ import {getFileFromGoogleDrive, pickDiagramCancel} from "./actions/storage"
 import FooterContainer from "./containers/FooterContainer";
 import StyleContainer from "./containers/StyleContainer";
 import LocalStoragePickerContainer from "./containers/LocalStoragePickerContainer";
+import ImportContainer from "./containers/ImportContainer";
 
 class App extends Component {
   constructor (props) {
@@ -28,6 +29,7 @@ class App extends Component {
       inspectorVisible,
       showStyleDialog,
       showExportDialog,
+      showImportDialog,
       pickingFromGoogleDrive,
       pickingFromLocalStorage,
       onCancelPicker,
@@ -36,6 +38,7 @@ class App extends Component {
 
     const styleModal = showStyleDialog ? (<StyleContainer/>) : null
     const exportModal = showExportDialog ? (<ExportContainer/>) : null
+    const importModal = showImportDialog ? (<ImportContainer/>) : null
     const googleDriveModal = pickingFromGoogleDrive ? <GoogleDrivePicker onCancelPicker={onCancelPicker} onFilePicked={loadFromGoogleDrive} /> : null
     const localStorageModal = pickingFromLocalStorage ? <LocalStoragePickerContainer/> : null
 
@@ -63,6 +66,7 @@ class App extends Component {
       }}>
         {styleModal}
         {exportModal}
+        {importModal}
         {googleDriveModal}
         {localStorageModal}
         <GoogleSignInModal/>
@@ -102,7 +106,8 @@ const mapStateToProps = (state) => ({
   pickingFromGoogleDrive: state.storage.status === 'PICKING_FROM_GOOGLE_DRIVE',
   pickingFromLocalStorage: state.storage.status === 'PICKING_FROM_LOCAL_STORAGE',
   showStyleDialog: state.applicationDialogs.showStyleDialog,
-  showExportDialog: state.applicationDialogs.showExportDialog
+  showExportDialog: state.applicationDialogs.showExportDialog,
+  showImportDialog: state.applicationDialogs.showImportDialog
 })
 
 

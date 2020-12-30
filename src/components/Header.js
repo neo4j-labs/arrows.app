@@ -102,6 +102,8 @@ const Header = (props) => {
             </div>
           </div>
           <div className="divider"/>
+          <div role="option" className="item" onClick={props.onImportClick}>Import</div>
+          <div className="divider"/>
           <div role="option" className="item" onClick={props.onHelpClick}>Help</div>
         </div>
       </div>
