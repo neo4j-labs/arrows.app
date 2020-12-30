@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Form, TextArea} from "semantic-ui-react";
 
 class ExportJsonPanel extends Component {
 
@@ -8,11 +9,15 @@ class ExportJsonPanel extends Component {
 
   render() {
     return (
-      <code>
-        <pre>
-          {JSON.stringify(this.props.graph, null, 2)}
-        </pre>
-      </code>
+      <Form>
+        <TextArea
+          style={{
+            height: 500,
+            fontFamily: 'monospace'
+          }}
+          value={JSON.stringify(this.props.graph, null, 2)}
+        />
+      </Form>
     )
   }
 }

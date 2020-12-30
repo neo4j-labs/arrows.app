@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Button, Checkbox} from 'semantic-ui-react'
+import {Form, Button, Checkbox, TextArea} from 'semantic-ui-react'
 import {exportCypher} from "../storage/exportCypher";
 
 class ExportCypherPanel extends Component {
@@ -33,7 +33,7 @@ class ExportCypherPanel extends Component {
       )
     })
     return (
-      <React.Fragment>
+      <Form>
         <Form.Field>
           <Button.Group size="mini">
             {keywordButtons}
@@ -43,10 +43,14 @@ class ExportCypherPanel extends Component {
           <Checkbox label='Include style properties' checked={this.state.includeStyling}
                     onChange={this.toggleStyling}/>
         </Form.Field>
-        <code>
-          {exportCypher(this.props.graph, this.state.keyword, this.state.includeStyling)}
-        </code>
-      </React.Fragment>
+        <TextArea
+          style={{
+            height: 500,
+            fontFamily: 'monospace'
+          }}
+          value={exportCypher(this.props.graph, this.state.keyword, this.state.includeStyling)}
+        />
+      </Form>
     )
   }
 }

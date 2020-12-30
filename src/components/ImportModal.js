@@ -30,10 +30,20 @@ class ImportModal extends Component {
       >
         <Modal.Header>Import</Modal.Header>
         <Modal.Content scrolling>
+          <Message>
+            <p>
+              For now, JSON is the only supported input format.
+              You'll need to use the same format as you can see in the Export window.
+              Other formats might be supported in the future.
+            </p>
+          </Message>
           <Form>
             <TextArea
               placeholder='Paste JSON here...'
-              style={{ height: 300 }}
+              style={{
+                height: 300,
+                fontFamily: 'monospace'
+              }}
               onChange={(event) => this.setState({text: event.target.value})}
               value={this.state.text}
             />
