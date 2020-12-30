@@ -9,7 +9,7 @@ export const recentStorageMiddleware = store => next => action => {
   const newState = store.getState()
   const newStorage = newState.storage
 
-  if (!(
+  if (newState.recentStorage.length < 1 || !(
     oldStorage.mode === newStorage.mode &&
     oldStorage.fileId === newStorage.fileId &&
     oldState.diagramName === newState.diagramName

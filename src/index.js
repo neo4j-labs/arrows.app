@@ -10,7 +10,6 @@ import registerServiceWorker from './registerServiceWorker'
 import 'semantic-ui-css/semantic.min.css'
 import {viewportMiddleware} from "./middlewares/viewportMiddleware"
 import {storageMiddleware} from "./middlewares/storageMiddleware";
-import {initialiseStorageFromWindowLocationHash} from "./actions/storage";
 import {windowLocationHashMiddleware} from "./middlewares/windowLocationHashMiddleware";
 import {initGoogleDriveApi} from "./actions/googleDrive";
 import {windowResized} from "./actions/applicationLayout";
@@ -29,7 +28,6 @@ let store = createStore(
   applyMiddleware(thunkMiddleware, ...middleware)
 )
 initGoogleDriveApi(store)
-initialiseStorageFromWindowLocationHash(store)
 store.dispatch(windowResized(window.innerWidth, window.innerHeight))
 
 const renderApp = () => {

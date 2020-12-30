@@ -1,4 +1,4 @@
-const defaultName = 'Untitled graph'
+export const defaultName = 'Untitled graph'
 
 const diagramName = (state = defaultName, action) => {
   switch (action.type) {

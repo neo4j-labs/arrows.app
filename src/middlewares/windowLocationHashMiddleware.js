@@ -1,3 +1,7 @@
+export const localUrlNoIdRegex = /^#\/local$/
+export const localUrlRegex = /^#\/local\/id=(.*)/
+export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
+
 export const windowLocationHashMiddleware = store => next => action => {
   const result = next(action)
   const newState = store.getState()
