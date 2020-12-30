@@ -13,6 +13,7 @@ import actionMemos from "./actionMemos";
 import applicationDialogs from "./applicationDialogs";
 import gangs from './gangs'
 import features from './features'
+import googleDrive from "./googleDrive"
 
 const arrowsApp = combineReducers({
   recentStorage,
@@ -28,7 +29,8 @@ const arrowsApp = combineReducers({
   actionMemos,
   applicationDialogs,
   gangs,
-  features
+  features,
+  googleDrive
 })
 
 export default arrowsApp

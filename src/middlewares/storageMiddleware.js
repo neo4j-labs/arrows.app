@@ -47,7 +47,7 @@ export const storageMiddleware = store => next => action => {
     }
   }
 
-  if (storage.mode === 'GOOGLE_DRIVE' && storage.googleDrive.signedIn) {
+  if (storage.mode === 'GOOGLE_DRIVE' && newState.googleDrive.signedIn) {
     switch (storage.status) {
       case 'GET': {
         const fileId = storage.fileId;

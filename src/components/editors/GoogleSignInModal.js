@@ -26,7 +26,7 @@ class GoogleSignInModal extends Component {
 
 const mapStateToProps = state => {
   return {
-    showModal: state.storage.mode === 'GOOGLE_DRIVE' && !state.storage.googleDrive.signedIn
+    showModal: state.storage.mode === 'GOOGLE_DRIVE' && !state.googleDrive.signedIn
   }
 }
 

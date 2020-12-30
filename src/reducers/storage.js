@@ -8,7 +8,6 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
   switch (action.type) {
     case 'NEW_GOOGLE_DRIVE_DIAGRAM': {
       return {
-        ...state,
         mode: 'GOOGLE_DRIVE',
         status: 'POST',
         fileId: null,
@@ -16,7 +15,6 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
     }
     case 'NEW_LOCAL_STORAGE_DIAGRAM': {
       return {
-        ...state,
         mode: 'LOCAL_STORAGE',
         status: 'POST',
         fileId: generateLocalFileId()
@@ -46,7 +44,6 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
     }
     case 'GET_FILE_FROM_GOOGLE_DRIVE': {
       return {
-        ...state,
         mode: 'GOOGLE_DRIVE',
         status: 'GET',
         fileId: action.fileId,
@@ -54,7 +51,6 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
     }
     case 'GET_FILE_FROM_LOCAL_STORAGE': {
       return {
-        ...state,
         mode: 'LOCAL_STORAGE',
         status: 'GET',
         fileId: action.fileId
@@ -68,7 +64,6 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
     }
     case 'POST_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE': {
       return {
-        ...state,
         mode: 'GOOGLE_DRIVE',
         status: 'POST',
         fileId: null,
@@ -90,15 +85,6 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
       return {
         ...state,
         status: 'READY',
-      }
-    case 'GOOGLE_DRIVE_SIGN_IN_STATUS':
-      return {
-        ...state,
-        googleDrive: {
-          ...state.googleDrive,
-          apiInitialized: true,
-          signedIn: action.signedIn
-        }
       }
     case 'PUT_GRAPH':
       return {
@@ -144,14 +130,12 @@ const initialiseStorageFromWindowLocationHash = () => {
         mode: 'LOCAL_STORAGE',
         status: 'GET',
         fileId,
-        googleDrive: {}
       }
     } else {
       return {
         mode: 'LOCAL_STORAGE',
         status: 'POST',
         fileId,
-        googleDrive: {}
       }
     }
   } else if (localMatch) {
@@ -160,7 +144,6 @@ const initialiseStorageFromWindowLocationHash = () => {
       mode: 'LOCAL_STORAGE',
       status: 'GET',
       fileId,
-      googleDrive: {}
     }
   } else if (googleDriveMatch && googleDriveMatch.length > 1) {
     const initialFiles = googleDriveMatch[1].split(',')
@@ -170,7 +153,6 @@ const initialiseStorageFromWindowLocationHash = () => {
         mode: 'GOOGLE_DRIVE',
         status: 'GET',
         fileId,
-        googleDrive: {}
       }
     }
   } else {
@@ -181,7 +163,6 @@ const initialiseStorageFromWindowLocationHash = () => {
         mode: mostRecentlyAccessed.mode,
         status: 'GET',
         fileId: mostRecentlyAccessed.fileId,
-        googleDrive: {}
       }
     } else {
       const fileId = generateLocalFileId()
@@ -189,7 +170,6 @@ const initialiseStorageFromWindowLocationHash = () => {
         mode: 'LOCAL_STORAGE',
         status: 'POST',
         fileId,
-        googleDrive: {}
       }
     }
   }
