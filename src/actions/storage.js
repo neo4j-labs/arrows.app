@@ -64,6 +64,20 @@ export const googleDriveSignInStatusChanged = (signedIn) => ({
   signedIn
 })
 
+export const cancelGoogleDriveAuthorization = () => (dispatch, getState) => {
+  const state = getState()
+  const { storage, recentStorage } = state
+  const recentLocalFiles = recentStorage.filter(entry => entry.mode === 'LOCAL_STORAGE')
+
+  if (storage.status === 'PICKING_FROM_GOOGLE_DRIVE') {
+    dispatch(pickDiagramCancel())
+  } else if (recentLocalFiles.length > 0) {
+    dispatch(openRecentFile(recentLocalFiles[0]))
+  } else {
+    dispatch(newLocalStorageDiagram())
+  }
+}
+
 export const reloadGraph = () => {
   return function (dispatch, getState) {
     const { storage } = getState()
