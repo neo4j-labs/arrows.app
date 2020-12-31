@@ -20,6 +20,16 @@ class ImportModal extends Component {
     }
   }
 
+  fileChange = () => {
+    const files = this.fileInputRef.files
+    if (files.length > 0) {
+      const file = files[0]
+      file.text().then(text => {
+        this.setState({text})
+      })
+    }
+  }
+
   render() {
     return (
       <Modal
@@ -33,13 +43,27 @@ class ImportModal extends Component {
           <Message>
             <p>
               For now, JSON is the only supported input format.
-              You'll need to use the same format as you can see in the Export window.
+              You'll need to use the same JSON structure as you can see in the Export window.
               Other formats might be supported in the future.
             </p>
           </Message>
           <Form>
+            <Form.Field>
+              <Button
+                content="Choose File"
+                labelPosition="left"
+                icon="file"
+                onClick={() => this.fileInputRef.click()}
+              />
+              <input
+                ref={(element) => this.fileInputRef = element}
+                type="file"
+                hidden
+                onChange={this.fileChange}
+              />
+            </Form.Field>
             <TextArea
-              placeholder='Paste JSON here...'
+              placeholder='Choose a file, or paste JSON here...'
               style={{
                 height: 300,
                 fontFamily: 'monospace'
