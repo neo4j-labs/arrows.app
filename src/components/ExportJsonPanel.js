@@ -13,7 +13,9 @@ class ExportJsonPanel extends Component {
 
     return (
       <Form>
-        <a className='ui button' href={dataUrl} download={this.props.diagramName + ".json"}><Icon name="download"/>Download</a>
+        <Form.Field>
+          <a className='ui button' href={dataUrl} download={this.props.diagramName + ".json"}><Icon name="download"/>Download</a>
+        </Form.Field>
         <TextArea
           style={{
             height: 500,
