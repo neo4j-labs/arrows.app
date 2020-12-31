@@ -1,5 +1,10 @@
 import {generateLocalFileId} from "../storage/localFileId"
-import {googleDriveUrlRegex, localUrlNoIdRegex, localUrlRegex} from "../middlewares/windowLocationHashMiddleware";
+import {
+  googleDriveUrlRegex,
+  importJsonRegex,
+  localUrlNoIdRegex,
+  localUrlRegex
+} from "../middlewares/windowLocationHashMiddleware";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
 import {loadLegacyAppData, loadRecentlyAccessedDiagrams, saveGraphToLocalStorage} from "../actions/localStorage";
 import {defaultName} from "./diagramName";
@@ -115,16 +120,33 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
 const initialiseStorageFromWindowLocationHash = () => {
   const hash = window.location.hash
 
+  const importJsonMatch = importJsonRegex.exec(hash)
   const localNoIdMatch = localUrlNoIdRegex.exec(hash)
   const localMatch = localUrlRegex.exec(hash)
   const googleDriveMatch = googleDriveUrlRegex.exec(hash)
 
-  if (localNoIdMatch) {
-    const fileId = generateLocalFileId()
+  if (importJsonMatch) {
+    const b64Json = importJsonMatch[1]
+    try {
+      const data = JSON.parse(atob(b64Json))
+      const graph = constructGraphFromFile(data).graph
+      const fileId = generateLocalFileId()
+      saveGraphToLocalStorage(fileId, {graph, defaultName})
+      return {
+        mode: 'LOCAL_STORAGE',
+        status: 'GET',
+        fileId,
+      }
+    } catch (e) {
+      console.log(e)
+      return newLocalFile()
+    }
+  } else if (localNoIdMatch) {
     const data = loadLegacyAppData()
     if (data) {
       const graph = constructGraphFromFile(data).graph
       const diagramName = data.diagramName || defaultName
+      const fileId = generateLocalFileId()
       saveGraphToLocalStorage(fileId, {graph, diagramName})
       return {
         mode: 'LOCAL_STORAGE',
@@ -132,11 +154,7 @@ const initialiseStorageFromWindowLocationHash = () => {
         fileId,
       }
     } else {
-      return {
-        mode: 'LOCAL_STORAGE',
-        status: 'POST',
-        fileId,
-      }
+      return newLocalFile()
     }
   } else if (localMatch) {
     const fileId = localMatch[1]
@@ -165,12 +183,16 @@ const initialiseStorageFromWindowLocationHash = () => {
         fileId: mostRecentlyAccessed.fileId,
       }
     } else {
-      const fileId = generateLocalFileId()
-      return {
-        mode: 'LOCAL_STORAGE',
-        status: 'POST',
-        fileId,
-      }
+      return newLocalFile()
     }
+  }
+}
+
+const newLocalFile = () => {
+  const fileId = generateLocalFileId()
+  return {
+    mode: 'LOCAL_STORAGE',
+    status: 'POST',
+    fileId,
   }
 }

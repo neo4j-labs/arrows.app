@@ -5,6 +5,7 @@ import ExportCypherPanel from "./ExportCypherPanel";
 import ExportSvgPanel from "./ExportSvgPanel";
 import ExportJsonPanel from "./ExportJsonPanel";
 import {loadFavoriteExportTab, saveFavoriteExportTab} from "../actions/localStorage";
+import ExportUrlPanel from "./ExportUrlPanel";
 
 class ExportModal extends Component {
 
@@ -65,6 +66,16 @@ class ExportModal extends Component {
             <ExportJsonPanel
               graph={this.props.graph}
               diagramName={this.props.diagramName}
+            />
+          </Tab.Pane>
+        )
+      },
+      {
+        menuItem: 'URL',
+        render: () => (
+          <Tab.Pane attached={false}>
+            <ExportUrlPanel
+              graph={this.props.graph}
             />
           </Tab.Pane>
         )

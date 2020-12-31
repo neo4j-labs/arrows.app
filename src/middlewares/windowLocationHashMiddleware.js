@@ -1,3 +1,4 @@
+export const importJsonRegex = /^#\/import\/json=(.*)/
 export const localUrlNoIdRegex = /^#\/local$/
 export const localUrlRegex = /^#\/local\/id=(.*)/
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
