@@ -24,29 +24,30 @@ class ExportCypherPanel extends Component {
 
   render() {
     const cypher = exportCypher(this.props.graph, this.state.keyword, this.state.includeStyling)
-    const keywordButtons = ['CREATE', 'MERGE', 'MATCH'].map(keyword => {
+    const keywordRadioButtons = ['CREATE', 'MERGE', 'MATCH'].map(keyword => {
       return (
-        <Button
+        <Form.Radio
           key={keyword}
-          primary={this.state.keyword === keyword}
-          onClick={() => {
+          label={keyword}
+          value={keyword}
+          checked={this.state.keyword === keyword}
+          onClick={(e, { value }) => {
             this.setState({
-              keyword: keyword
+              keyword: value
             })
           }}
-        >{keyword}</Button>
+        />
       )
     })
     return (
       <Form>
-        <Form.Field>
+        <Form.Group inline>
           <label>Cypher Clause:</label>
-          <Button.Group size="mini">
-            {keywordButtons}
-          </Button.Group>
-        </Form.Field>
-        <Form.Field>
-          <Checkbox label='Include style properties' checked={this.state.includeStyling}
+          {keywordRadioButtons}
+        </Form.Group>
+        <Form.Field inline>
+          <label>Styling:</label>
+          <Checkbox label='Include entity-specific style properties' checked={this.state.includeStyling}
                     onChange={this.toggleStyling}/>
         </Form.Field>
         <Form.Field>
