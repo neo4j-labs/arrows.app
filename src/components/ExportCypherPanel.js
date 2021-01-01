@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Button, Checkbox, TextArea} from 'semantic-ui-react'
+import {Form, Button, Checkbox, TextArea, Icon} from 'semantic-ui-react'
 import {exportCypher} from "../storage/exportCypher";
 
 class ExportCypherPanel extends Component {
@@ -20,6 +20,11 @@ class ExportCypherPanel extends Component {
 
   copyToClipboard = (cypher) => {
     navigator.clipboard.writeText(cypher)
+  }
+
+  runInNeo4jBrowser = (cypher) => {
+    const url = 'neo4j-desktop://graphapps/neo4j-browser?cmd=edit&arg=' + encodeURIComponent(cypher)
+    window.open(url)
   }
 
   render() {
@@ -51,11 +56,19 @@ class ExportCypherPanel extends Component {
                     onChange={this.toggleStyling}/>
         </Form.Field>
         <Form.Field>
-          <Button onClick={() => this.copyToClipboard(cypher)}>Copy to clipboard</Button>
+          <Button onClick={() => this.copyToClipboard(cypher)} primary icon labelPosition='left'>
+            <Icon name='clipboard outline' />
+            Copy to clipboard
+          </Button>
+          <Button onClick={() => this.runInNeo4jBrowser(cypher)} primary icon labelPosition='left'>
+            <Icon name='terminal' />
+            Run in Neo4j Browser
+          </Button>
         </Form.Field>
         <TextArea
           style={{
             height: 500,
+            fontSize: '1.5em',
             fontFamily: 'monospace'
           }}
           value={cypher}
