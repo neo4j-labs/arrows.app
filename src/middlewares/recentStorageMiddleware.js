@@ -9,7 +9,7 @@ export const recentStorageMiddleware = store => next => action => {
   const newState = store.getState()
   const newStorage = newState.storage
 
-  if (newState.recentStorage.length < 1 || !(
+  if (!(
     oldStorage.mode === newStorage.mode &&
     oldStorage.fileId === newStorage.fileId &&
     oldState.diagramName === newState.diagramName
@@ -22,4 +22,9 @@ export const recentStorageMiddleware = store => next => action => {
   }
 
   return result
+}
+
+export const initRecentStorage = (state) => {
+  const { storage, diagramName } = state
+  return updateRecentStorage(storage.mode, storage.fileId, diagramName)
 }
