@@ -129,14 +129,7 @@ const initialiseStorageFromWindowLocationHash = () => {
     const b64Json = importJsonMatch[1]
     try {
       const data = JSON.parse(atob(b64Json))
-      const graph = constructGraphFromFile(data).graph
-      const fileId = generateLocalFileId()
-      saveGraphToLocalStorage(fileId, {graph, defaultName})
-      return {
-        mode: 'LOCAL_STORAGE',
-        status: 'GET',
-        fileId,
-      }
+      return storeNewDiagramInLocalStorage(data)
     } catch (e) {
       console.log(e)
       return newLocalFile()
@@ -144,15 +137,7 @@ const initialiseStorageFromWindowLocationHash = () => {
   } else if (localNoIdMatch) {
     const data = loadLegacyAppData()
     if (data) {
-      const graph = constructGraphFromFile(data).graph
-      const diagramName = data.diagramName || defaultName
-      const fileId = generateLocalFileId()
-      saveGraphToLocalStorage(fileId, {graph, diagramName})
-      return {
-        mode: 'LOCAL_STORAGE',
-        status: 'GET',
-        fileId,
-      }
+      return storeNewDiagramInLocalStorage(data)
     } else {
       return newLocalFile()
     }
@@ -193,6 +178,18 @@ const newLocalFile = () => {
   return {
     mode: 'LOCAL_STORAGE',
     status: 'POST',
+    fileId,
+  }
+}
+
+const storeNewDiagramInLocalStorage = (data) => {
+  const graph = constructGraphFromFile(data).graph
+  const diagramName = data.diagramName || defaultName
+  const fileId = generateLocalFileId()
+  saveGraphToLocalStorage(fileId, {graph, diagramName})
+  return {
+    mode: 'LOCAL_STORAGE',
+    status: 'GET',
     fileId,
   }
 }

@@ -7,7 +7,8 @@ class ExportUrlPanel extends Component {
   }
 
   render() {
-    const jsonString = JSON.stringify(this.props.graph)
+    const { graph, diagramName } = this.props
+    const jsonString = JSON.stringify({graph, diagramName})
     const url = window.location.origin + "/#/import/json=" + btoa(jsonString)
 
     return (

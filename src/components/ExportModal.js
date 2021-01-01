@@ -76,6 +76,7 @@ class ExportModal extends Component {
           <Tab.Pane attached={false}>
             <ExportUrlPanel
               graph={this.props.graph}
+              diagramName={this.props.diagramName}
             />
           </Tab.Pane>
         )
