@@ -58,10 +58,23 @@ export const constructGraphFromFile = (data) => {
     id: node.id,
     position: new Point(node.position.x, node.position.y),
     caption: node.caption,
-    style: node.style || {},
     labels: node.labels || [],
-    properties: node.properties,
+    properties: node.properties || {},
+    style: node.style || {},
   }))
+
+  const relationships = graph.relationships
+    .filter(relationship =>
+      nodes.some(node => node.id === relationship.fromId) &&
+      nodes.some(node => node.id === relationship.toId))
+    .map(relationship => ({
+      id: relationship.id,
+      fromId: relationship.fromId,
+      toId: relationship.toId,
+      type: relationship.type || '',
+      properties: relationship.properties || {},
+      style: relationship.style || {},
+    }))
 
   gangs.forEach(cluster => {
     cluster.position = new Point(cluster.position.x, cluster.position.y)
@@ -74,7 +87,7 @@ export const constructGraphFromFile = (data) => {
   return {
     graph: {
       nodes,
-      relationships: graph.relationships,
+      relationships,
       style: completeWithDefaults(graph.style)
     },
     gangs
