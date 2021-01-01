@@ -187,7 +187,7 @@ const graph = (state = emptyGraph(), action) => {
         relationships: state.relationships.map(relationship => relationshipSelected(action.selection, relationship.id) ? setType(relationship, action.relationshipType) : relationship)
       }
 
-    case 'DUPLICATE_NODES_AND_RELATIONSHIPS' :
+    case 'DUPLICATE_NODES_AND_RELATIONSHIPS': {
       const newNodes = state.nodes.slice();
       Object.keys(action.nodeIdMap).forEach(newNodeId => {
         const spec = action.nodeIdMap[newNodeId]
@@ -219,6 +219,14 @@ const graph = (state = emptyGraph(), action) => {
       })
 
       return {style: state.style, nodes: newNodes, relationships: newRelationships}
+    }
+
+    case 'IMPORT_NODES_AND_RELATIONSHIPS': {
+      const newNodes = [...state.nodes, ...action.nodes]
+      const newRelationships = [...state.relationships, ...action.relationships]
+
+      return {style: state.style, nodes: newNodes, relationships: newRelationships}
+    }
 
     case 'DELETE_NODES_AND_RELATIONSHIPS' :
       return {

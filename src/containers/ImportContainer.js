@@ -2,7 +2,7 @@ import {connect} from "react-redux"
 import ImportModal from "../components/ImportModal";
 import {hideImportDialog} from "../actions/applicationDialogs";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
-import {gettingGraphSucceeded} from "../actions/storage";
+import {importNodesAndRelationships} from "../actions/graph";
 
 const mapStateToProps = () => {
   return {
@@ -23,7 +23,7 @@ const mapDispatchToProps = dispatch => {
         }
       }
 
-      dispatch(gettingGraphSucceeded(graphData.graph))
+      dispatch(importNodesAndRelationships(graphData.graph))
       dispatch(hideImportDialog())
       return {}
     },
