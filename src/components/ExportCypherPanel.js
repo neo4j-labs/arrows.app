@@ -18,7 +18,12 @@ class ExportCypherPanel extends Component {
     })
   }
 
+  copyToClipboard = (cypher) => {
+    navigator.clipboard.writeText(cypher)
+  }
+
   render() {
+    const cypher = exportCypher(this.props.graph, this.state.keyword, this.state.includeStyling)
     const keywordButtons = ['CREATE', 'MERGE', 'MATCH'].map(keyword => {
       return (
         <Button
@@ -35,6 +40,7 @@ class ExportCypherPanel extends Component {
     return (
       <Form>
         <Form.Field>
+          <label>Cypher Clause:</label>
           <Button.Group size="mini">
             {keywordButtons}
           </Button.Group>
@@ -43,12 +49,15 @@ class ExportCypherPanel extends Component {
           <Checkbox label='Include style properties' checked={this.state.includeStyling}
                     onChange={this.toggleStyling}/>
         </Form.Field>
+        <Form.Field>
+          <Button onClick={() => this.copyToClipboard(cypher)}>Copy to clipboard</Button>
+        </Form.Field>
         <TextArea
           style={{
             height: 500,
             fontFamily: 'monospace'
           }}
-          value={exportCypher(this.props.graph, this.state.keyword, this.state.includeStyling)}
+          value={cypher}
         />
       </Form>
     )
