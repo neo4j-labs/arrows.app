@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Form, Icon, TextArea} from "semantic-ui-react";
 
 class ExportJsonPanel extends Component {
 
@@ -7,12 +8,22 @@ class ExportJsonPanel extends Component {
   }
 
   render() {
+    const jsonString = JSON.stringify(this.props.graph, null, 2)
+    const dataUrl = "data:application/json;base64," + btoa(jsonString)
+
     return (
-      <code>
-        <pre>
-          {JSON.stringify(this.props.graph, null, 2)}
-        </pre>
-      </code>
+      <Form>
+        <Form.Field>
+          <a className='ui button' href={dataUrl} download={this.props.diagramName + ".json"}><Icon name="download"/>Download</a>
+        </Form.Field>
+        <TextArea
+          style={{
+            height: 500,
+            fontFamily: 'monospace'
+          }}
+          value={jsonString}
+        />
+      </Form>
     )
   }
 }

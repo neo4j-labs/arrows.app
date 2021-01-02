@@ -2,6 +2,7 @@ import {retrieveHelpDismissed} from "../actions/localStorage";
 export default function applicationDialogs(state = {
   showStyleDialog: false,
   showExportDialog: false,
+  showImportDialog: false,
   showHelpDialog: !retrieveHelpDismissed()
 }, action) {
   switch (action.type) {
@@ -27,6 +28,18 @@ export default function applicationDialogs(state = {
       return {
         ...state,
         showExportDialog: false
+      }
+
+    case 'SHOW_IMPORT_DIALOG':
+      return {
+        ...state,
+        showImportDialog: true
+      }
+
+    case 'HIDE_IMPORT_DIALOG':
+      return {
+        ...state,
+        showImportDialog: false
       }
 
     case 'SHOW_HELP_DIALOG':

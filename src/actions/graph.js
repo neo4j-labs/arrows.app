@@ -442,3 +442,44 @@ export const reverseRelationships = selection => ({
   type: 'REVERSE_RELATIONSHIPS',
   selection
 })
+
+export const importNodesAndRelationships = (importedGraph) => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const graph = getPresentGraph(state)
+
+    const newNodes = []
+    const newRelationships = []
+    const nodeIdMap = {}
+
+    let newNodeId = nextAvailableId(graph.nodes)
+    importedGraph.nodes.forEach(oldNode => {
+      nodeIdMap[oldNode.id] = newNodeId
+      const newNode = {
+        ...oldNode,
+        id: newNodeId
+      }
+      newNodes.push(newNode)
+      newNodeId = nextId(newNodeId)
+    })
+
+    let newRelationshipId = nextAvailableId(graph.relationships)
+    importedGraph.relationships.forEach(oldRelationship => {
+      const newRelationship = {
+        ...oldRelationship,
+        id: newRelationshipId,
+        fromId: nodeIdMap[oldRelationship.fromId],
+        toId: nodeIdMap[oldRelationship.toId]
+      }
+      newRelationships.push(newRelationship)
+      newRelationshipId = nextId(newRelationshipId)
+    })
+
+    dispatch({
+      category: 'GRAPH',
+      type: 'IMPORT_NODES_AND_RELATIONSHIPS',
+      nodes: newNodes,
+      relationships: newRelationships,
+    })
+  }
+}

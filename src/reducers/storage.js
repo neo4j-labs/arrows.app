@@ -1,113 +1,195 @@
-export const defaultConnectionUri = "bolt://localhost";
+import {generateLocalFileId} from "../storage/localFileId"
+import {
+  googleDriveUrlRegex,
+  importJsonRegex,
+  localUrlNoIdRegex,
+  localUrlRegex
+} from "../middlewares/windowLocationHashMiddleware";
+import {constructGraphFromFile} from "../storage/googleDriveStorage";
+import {loadLegacyAppData, loadRecentlyAccessedDiagrams, saveGraphToLocalStorage} from "../actions/localStorage";
+import {defaultName} from "./diagramName";
 
-const initialConnectionParameters = () => {
-  return {
-    connectionUri: defaultConnectionUri,
-    username: "",
-    password: "",
-    rememberCredentials: false
-  }
-}
-
-export default function storage(state = {
-  mode: 'NONE',
-  database: {
-    connectionParameters: initialConnectionParameters(),
-    editingConnectionParameters: false,
-    connectionParametersEditable: true,
-    showDisconnectedDialog: false,
-    errorMsg: null
-  },
-  googleDrive: {}
-}, action) {
+export default function storage(state = initialiseStorageFromWindowLocationHash(), action) {
   switch (action.type) {
-    case 'NEW_DIAGRAM': {
+    case 'NEW_GOOGLE_DRIVE_DIAGRAM': {
       return {
-        ...state,
-        mode: 'NONE'
-      }
-    }
-    case 'OPEN_DIAGRAM': {
-      return {
-        ...state,
-        previousMode: state.mode,
-        mode: 'OPEN_DIAGRAM'
-      }
-    }
-    case 'USE_NEO4J_STORAGE':
-      return {
-        ...state,
-        mode: 'DATABASE'
-      }
-    case 'USE_GOOGLE_DRIVE_STORAGE':
-      return {
-        ...state,
         mode: 'GOOGLE_DRIVE',
+        status: 'POST',
+        fileId: null,
       }
-    case 'USE_LOCAL_STORAGE':
+    }
+    case 'NEW_LOCAL_STORAGE_DIAGRAM': {
       return {
-        ...state,
         mode: 'LOCAL_STORAGE',
+        status: 'POST',
+        fileId: generateLocalFileId()
       }
-    case 'UPDATE_GOOGLE_DRIVE_FILE_ID':
+    }
+    case 'PICK_DIAGRAM': {
+      switch (action.mode) {
+        case 'GOOGLE_DRIVE':
+          return {
+            ...state,
+            status: 'PICKING_FROM_GOOGLE_DRIVE',
+          }
+        case 'LOCAL_STORAGE':
+          return {
+            ...state,
+            status: 'PICKING_FROM_LOCAL_STORAGE',
+          }
+        default:
+          return state
+      }
+    }
+    case 'PICK_DIAGRAM_CANCEL': {
       return {
         ...state,
-        googleDrive: {
-          ...state.googleDrive,
-          fileId: action.fileId
-        }
+        status: 'READY',
       }
-    case 'GOOGLE_DRIVE_SIGN_IN_STATUS':
+    }
+    case 'GET_FILE_FROM_GOOGLE_DRIVE': {
+      return {
+        mode: 'GOOGLE_DRIVE',
+        status: 'GET',
+        fileId: action.fileId,
+      }
+    }
+    case 'GET_FILE_FROM_LOCAL_STORAGE': {
+      return {
+        mode: 'LOCAL_STORAGE',
+        status: 'GET',
+        fileId: action.fileId
+      }
+    }
+    case 'GETTING_GRAPH': {
       return {
         ...state,
-        googleDrive: {
-          ...state.googleDrive,
-          signedIn: action.signedIn
-        }
+        status: 'GETTING'
       }
-    case 'EDIT_CONNECTION_PARAMETERS':
+    }
+    case 'POST_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE': {
+      return {
+        mode: 'GOOGLE_DRIVE',
+        status: 'POST',
+        fileId: null,
+      }
+    }
+    case 'GETTING_GRAPH_SUCCEEDED': {
       return {
         ...state,
-        database: {
-          ...state.database,
-          editingConnectionParameters: true
-        }
+        status: 'READY'
       }
-
-    case 'CANCEL_EDIT_CONNECTION_PARAMETERS':
+    }
+    case 'POSTED_FILE_ON_GOOGLE_DRIVE':
       return {
         ...state,
-        database: {
-          ...state.database,
-          editingConnectionParameters: false
-        }
+        status: 'READY',
+        fileId: action.fileId,
       }
-
-    case 'UPDATE_CONNECTION_PARAMETERS':
+    case 'POSTED_FILE_TO_LOCAL_STORAGE':
       return {
         ...state,
-        database: {
-          ...state.database,
-          editingConnectionParameters: false,
-          showDisconnectedDialog: false,
-          connectionParameters: action.connectionParameters,
-          errorMsg: null
-        }
+        status: 'READY',
       }
-
-    case 'FAILED_DATABASE_CONNECTION':
+    case 'PUT_GRAPH':
       return {
         ...state,
-        database: {
-          ...state.database,
-          editingConnectionParameters: state.database.connectionParametersEditable,
-          showDisconnectedDialog: !state.database.connectionParametersEditable,
-          connectionParameters: action.connectionParameters,
-          errorMsg: action.errorMsg
-        }
+        status: 'PUT'
+      }
+    case 'PUTTING_GRAPH':
+      return {
+        ...state,
+        status: 'PUTTING'
+      }
+    case 'PUTTING_GRAPH_SUCCEEDED':
+      return {
+        ...state,
+        status: 'READY'
+      }
+    case 'PUTTING_GRAPH_FAILED':
+      return {
+        ...state,
+        status: 'FAILED'
       }
 
     default:
       return state
+  }
+}
+
+const initialiseStorageFromWindowLocationHash = () => {
+  const hash = window.location.hash
+
+  const importJsonMatch = importJsonRegex.exec(hash)
+  const localNoIdMatch = localUrlNoIdRegex.exec(hash)
+  const localMatch = localUrlRegex.exec(hash)
+  const googleDriveMatch = googleDriveUrlRegex.exec(hash)
+
+  if (importJsonMatch) {
+    const b64Json = importJsonMatch[1]
+    try {
+      const data = JSON.parse(atob(b64Json))
+      return storeNewDiagramInLocalStorage(data)
+    } catch (e) {
+      console.log(e)
+      return newLocalFile()
+    }
+  } else if (localNoIdMatch) {
+    const data = loadLegacyAppData()
+    if (data) {
+      return storeNewDiagramInLocalStorage(data)
+    } else {
+      return newLocalFile()
+    }
+  } else if (localMatch) {
+    const fileId = localMatch[1]
+    return {
+      mode: 'LOCAL_STORAGE',
+      status: 'GET',
+      fileId,
+    }
+  } else if (googleDriveMatch && googleDriveMatch.length > 1) {
+    const initialFiles = googleDriveMatch[1].split(',')
+    if (initialFiles.length > 0) {
+      const fileId = initialFiles[0]
+      return {
+        mode: 'GOOGLE_DRIVE',
+        status: 'GET',
+        fileId,
+      }
+    }
+  } else {
+    const recentlyAccessed = loadRecentlyAccessedDiagrams() || []
+    if (recentlyAccessed.length > 0) {
+      const mostRecentlyAccessed = recentlyAccessed[0]
+      return {
+        mode: mostRecentlyAccessed.mode,
+        status: 'GET',
+        fileId: mostRecentlyAccessed.fileId,
+      }
+    } else {
+      return newLocalFile()
+    }
+  }
+}
+
+const newLocalFile = () => {
+  const fileId = generateLocalFileId()
+  return {
+    mode: 'LOCAL_STORAGE',
+    status: 'POST',
+    fileId,
+  }
+}
+
+const storeNewDiagramInLocalStorage = (data) => {
+  const graph = constructGraphFromFile(data).graph
+  const diagramName = data.diagramName || defaultName
+  const fileId = generateLocalFileId()
+  saveGraphToLocalStorage(fileId, {graph, diagramName})
+  return {
+    mode: 'LOCAL_STORAGE',
+    status: 'GET',
+    fileId,
   }
 }

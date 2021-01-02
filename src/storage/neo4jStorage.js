@@ -1,7 +1,7 @@
-import { fetchingGraph } from "../actions/neo4jStorage";
 import { readGraph } from "./cypherReadQueries";
 import { writeQueriesForAction } from "./cypherWriteQueries";
 import { getPresentGraph } from "../selectors"
+import {gettingGraph} from "../actions/storage";
 
 const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
 
@@ -17,7 +17,7 @@ export const updateDriver = (newDriver) => {
 export function fetchGraphFromDatabase() {
   return function (dispatch) {
     if (driver) {
-      dispatch(fetchingGraph())
+      dispatch(gettingGraph())
 
       let session = driver.session(neo4j.READ)
 

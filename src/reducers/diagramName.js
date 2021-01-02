@@ -1,11 +1,13 @@
-const defaultName = 'Untitled graph'
+export const defaultName = 'Untitled graph'
 
 const diagramName = (state = defaultName, action) => {
   switch (action.type) {
-    case 'NEW_DIAGRAM':
+    case 'NEW_GOOGLE_DRIVE_DIAGRAM':
+    case 'NEW_LOCAL_STORAGE_DIAGRAM':
       return defaultName
 
-    case 'SET_DIAGRAM_NAME':
+    case 'GETTING_DIAGRAM_NAME_SUCCEEDED':
+    case 'RENAME_DIAGRAM':
       return action.diagramName
 
     default:

@@ -2,9 +2,9 @@ import { Point } from "../model/Point";
 import { databaseTypeToStringType } from "../model/Relationship";
 import { propertiesFromDatabaseEntity, styleFromDatabaseEntity } from "../model/properties";
 import { emptyGraph } from "../model/Graph";
-import { fetchingGraphFailed, fetchingGraphSucceeded } from "../actions/neo4jStorage";
-import { createCluster, loadClusters } from "../actions/gang"
+import { loadClusters } from "../actions/gang"
 import {labelsFromDatabaseEntity} from "../model/labels";
+import {gettingGraphFailed, gettingGraphSucceeded} from "../actions/storage";
 
 function toNumber(prop) {
   if (prop) {
@@ -63,7 +63,7 @@ export function readGraph(session, dispatch) {
       return session.readTransaction((tx) => tx.run(`MATCH (n:Diagram0_Cluster) RETURN n`))
     }, (error) => {
       console.log(error)
-      dispatch(fetchingGraphFailed())
+      dispatch(gettingGraphFailed())
     })
     .then((result) => {
       const clusters = []
@@ -89,6 +89,6 @@ export function readGraph(session, dispatch) {
 
       dispatch(loadClusters(clusters))
 
-      dispatch(fetchingGraphSucceeded({ nodes, relationships, style }))
+      dispatch(gettingGraphSucceeded({ nodes, relationships, style }))
     })
 }

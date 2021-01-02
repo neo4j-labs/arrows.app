@@ -9,9 +9,10 @@ import {nodeSelected, relationshipSelected} from "../model/selection";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {
-    case 'NEW_DIAGRAM': {
+    case 'NEW_GOOGLE_DRIVE_DIAGRAM':
+    case 'NEW_LOCAL_STORAGE_DIAGRAM':
       return emptyGraph()
-    }
+
     case 'CREATE_NODE': {
       const newNodes = state.nodes.slice();
       newNodes.push({
@@ -186,7 +187,7 @@ const graph = (state = emptyGraph(), action) => {
         relationships: state.relationships.map(relationship => relationshipSelected(action.selection, relationship.id) ? setType(relationship, action.relationshipType) : relationship)
       }
 
-    case 'DUPLICATE_NODES_AND_RELATIONSHIPS' :
+    case 'DUPLICATE_NODES_AND_RELATIONSHIPS': {
       const newNodes = state.nodes.slice();
       Object.keys(action.nodeIdMap).forEach(newNodeId => {
         const spec = action.nodeIdMap[newNodeId]
@@ -218,6 +219,14 @@ const graph = (state = emptyGraph(), action) => {
       })
 
       return {style: state.style, nodes: newNodes, relationships: newRelationships}
+    }
+
+    case 'IMPORT_NODES_AND_RELATIONSHIPS': {
+      const newNodes = [...state.nodes, ...action.nodes]
+      const newRelationships = [...state.relationships, ...action.relationships]
+
+      return {style: state.style, nodes: newNodes, relationships: newRelationships}
+    }
 
     case 'DELETE_NODES_AND_RELATIONSHIPS' :
       return {
@@ -232,7 +241,7 @@ const graph = (state = emptyGraph(), action) => {
         relationships: state.relationships.map(relationship => relationshipSelected(action.selection, relationship.id) ? reverse(relationship) : relationship)
       }
 
-    case 'FETCHING_GRAPH_SUCCEEDED':
+    case 'GETTING_GRAPH_SUCCEEDED':
       return action.storedGraph
 
     default:

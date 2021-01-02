@@ -14,7 +14,7 @@ export default class {
     const setupShareClient = (accessToken) => {
       const shareClient = new window.gapi.drive.share.ShareClient()
       shareClient.setOAuthToken(accessToken)
-      shareClient.setItemIds([storage.googleDrive.fileId])
+      shareClient.setItemIds([storage.fileId])
       this.shareClient = shareClient
     }
 

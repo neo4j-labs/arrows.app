@@ -1,9 +1,7 @@
 import config from "../config";
-import {googleDriveSignInStatusChanged, updateGoogleDriveFileId, usingGoogleDriveStorage} from "./storage";
+import {googleDriveSignInStatusChanged} from "./storage";
 import {renderPngForThumbnail} from "../graphics/utils/offScreenCanvasRenderer";
-import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 import {indexableText} from "../model/Graph";
-import { getPresentGraph } from "../selectors"
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 export const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install';
 
@@ -25,23 +23,6 @@ export const initGoogleDriveApi = (store) => {
 
   const updateSignedInStatus = (signedIn) => {
     store.dispatch(googleDriveSignInStatusChanged(signedIn))
-    if (signedIn) {
-      const state = store.getState()
-      const graph = getPresentGraph(state)
-
-      if (state.storage.mode === 'GOOGLE_DRIVE') {
-        const fileId = state.storage.googleDrive.fileId;
-        if (fileId) {
-          store.dispatch(fetchGraphFromDrive(fileId))
-        } else {
-          saveFile(graph, null, state.diagramName, onFileSaved)
-        }
-      }
-    }
-  }
-
-  const onFileSaved = (fileId) => {
-    store.dispatch(updateGoogleDriveFileId(fileId))
   }
 
   if (window.gapi) {
@@ -49,20 +30,8 @@ export const initGoogleDriveApi = (store) => {
   }
 }
 
-export const initializeGoogleDriveStorage = () => {
-  return function (dispatch, getState) {
-    dispatch(usingGoogleDriveStorage())
-    const state = getState()
-    const graph = getPresentGraph(state)
-    if (state.storage.googleDrive.signedIn) {
-      const onFileSaved = (fileId) => {
-        dispatch(updateGoogleDriveFileId(fileId))
-      }
-      saveFile({ graph, gangs: state.gangs }, null, state.diagramName, onFileSaved)
-    } else {
-      window.gapi.auth2.getAuthInstance().signIn();
-    }
-  }
+export const signIn = () => {
+  window.gapi.auth2.getAuthInstance().signIn();
 }
 
 export const renameGoogleDriveStore = (fileId, userFileName) => {
@@ -83,12 +52,10 @@ const base64urlEncodeDataUrl = (dataUrl) => {
   return dataUrl.substring('data:image/png;base64,'.length).replace(/\+/g, '-').replace(/\//g, '_')
 }
 
-export const saveFile = (data, fileId, fileName, onFileSaved) => {
+export const saveFile = (graph, fileId, fileName, onFileSaved) => {
   const boundary = '-------314159265358979323846';
   const delimiter = "\r\n--" + boundary + "\r\n";
   const close_delim = "\r\n--" + boundary + "--";
-
-  const graph = data.graph
 
   const contentType = 'application/vnd.neo4j.arrows+json';
 
@@ -110,7 +77,7 @@ export const saveFile = (data, fileId, fileName, onFileSaved) => {
     JSON.stringify(metadata) +
     delimiter +
     'Content-Type: ' + contentType + '\r\n\r\n' +
-    JSON.stringify(data) +
+    JSON.stringify({graph}) +
     close_delim;
 
   const request = window.gapi.client.request({

@@ -74,6 +74,7 @@ class GraphDisplay extends Component {
 
   componentDidMount() {
     this.touchHandler = new MouseHandler(this.canvas)
+    this.fitCanvasSize(this.canvas, this.props.canvasSize.width, this.props.canvasSize.height)
     this.drawVisuals()
   }
 

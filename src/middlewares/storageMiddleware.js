@@ -1,10 +1,14 @@
 import { updateStore as updateNeoStore } from "../storage/neo4jStorage"
-import {renameGoogleDriveStore, saveFile} from "../actions/googleDrive";
-import {updatingGraph, updatingGraphSucceeded} from "../actions/neo4jStorage";
+import {renameGoogleDriveStore, saveFile } from "../actions/googleDrive";
 import { getPresentGraph } from "../selectors"
 import { ActionCreators as UndoActionCreators } from "redux-undo"
-import { saveAppData } from "../actions/localStorage"
-import {updateGoogleDriveFileId} from "../actions/storage";
+import {loadGraphFromLocalStorage, saveGraphToLocalStorage} from "../actions/localStorage"
+import {
+  postedFileOnGoogleDrive, postedFileToLocalStorage, putGraph,
+  puttingGraph,
+  puttingGraphSucceeded
+} from "../actions/storage";
+import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 
 const updateQueue = []
 
@@ -24,74 +28,108 @@ export const storageMiddleware = store => next => action => {
     graph: getPresentGraph(state)
   })
 
-  const state = hideGraphHistory(store.getState())
-  const storage = state.storage
+  const oldState = hideGraphHistory(store.getState())
+  const result = next(action)
+  const newState = hideGraphHistory(store.getState())
+  const storage = newState.storage
+  const graph = newState.graph
+  const diagramName = newState.diagramName
 
-  if (action.type === 'SET_DIAGRAM_NAME') {
-    if (storage.mode === "GOOGLE_DRIVE") {
-      renameGoogleDriveStore(storage.googleDrive.fileId, action.diagramName)
+  if (action.type === 'RENAME_DIAGRAM') {
+    switch (storage.mode) {
+      case "GOOGLE_DRIVE":
+        renameGoogleDriveStore(storage.fileId, action.diagramName)
+        break
+
+      case "LOCAL_STORAGE":
+        saveGraphToLocalStorage(storage.fileId,{graph, diagramName})
+        break
+    }
+  }
+
+  if (storage.mode === 'GOOGLE_DRIVE' && newState.googleDrive.signedIn) {
+    switch (storage.status) {
+      case 'GET': {
+        const fileId = storage.fileId;
+        store.dispatch(fetchGraphFromDrive(fileId))
+        break
+      }
+
+      case 'POST': {
+        const onFileSaved = (fileId) => {
+          store.dispatch(postedFileOnGoogleDrive(fileId))
+        }
+
+        saveFile(graph, null, newState.diagramName, onFileSaved)
+        break
+      }
+    }
+  }
+
+  if (storage.mode === 'LOCAL_STORAGE') {
+    switch (storage.status) {
+      case 'GET': {
+        const fileId = storage.fileId;
+        store.dispatch(loadGraphFromLocalStorage(fileId))
+        break
+      }
+
+      case 'POST': {
+        const fileId = storage.fileId;
+        saveGraphToLocalStorage(fileId,{graph, diagramName})
+        store.dispatch(postedFileToLocalStorage())
+        break
+      }
     }
   }
 
   if (action.category === 'GRAPH' || historyActions.includes(action.type)) {
-    const oldState = hideGraphHistory(store.getState())
-    const result = next(action)
-    const newState = hideGraphHistory(store.getState())
-    const data = {graph: newState.graph}
-    const layers = newState.applicationLayout.layers
-
-    if (layers && layers.length > 0) {
-      layers.forEach(layer => {
-        if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['googleDrive']) {
-          data[layer.name] = layer.storageActionHandler['googleDrive'](newState)
-        }
-      })
-    }
-
     switch (storage.mode) {
       case "LOCAL_STORAGE":
         if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
-          if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
-            store.dispatch(updatingGraph())
+          if (oldState.storage.status !== 'PUTTING') {
+            store.dispatch(puttingGraph())
           }
 
-          saveAppData(data)
-          store.dispatch(updatingGraphSucceeded())
+          saveGraphToLocalStorage(storage.fileId, {graph, diagramName})
+          store.dispatch(puttingGraphSucceeded())
         }
-        return result
+        break
 
       case "GOOGLE_DRIVE":
         if (oldState.graph !== newState.graph || oldState.gangs !== newState.gangs) {
-          if (oldState.storageStatus.status !== 'UPDATING_GRAPH') {
-            store.dispatch(updatingGraph())
+          if (oldState.storage.status !== 'PUT') {
+            store.dispatch(putGraph())
           }
 
           deBounce(() => {
+            store.dispatch(puttingGraph())
+
             saveFile(
-              data,
-              storage.googleDrive.fileId,
+              graph,
+              storage.fileId,
               newState.diagramName,
               (fileId) => {
-                store.dispatch(updateGoogleDriveFileId(fileId))
-                store.dispatch(updatingGraphSucceeded())
+                if (fileId !== storage.fileId) {
+                  console.warn("Unexpected change of fileId from %o to %o",
+                    storage.fileId, fileId)
+                }
+                store.dispatch(puttingGraphSucceeded())
               }
             )
           }, driveUpdateInterval)
         }
-        return result
+        break
 
       case "DATABASE":
         if (action.category === 'GRAPH') {
           updateQueue.push(action)
-          drainUpdateQueue(state)
+          drainUpdateQueue(newState)
         }
-        return result
-      default:
-        return result
+        break
     }
-  } else {
-    return next(action)
   }
+  return result
 }
 
 const drainUpdateQueue = (state) => {

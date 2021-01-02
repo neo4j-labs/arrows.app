@@ -117,6 +117,20 @@ export default function selection(state = {
           }))
         ]
       }
+    case 'IMPORT_NODES_AND_RELATIONSHIPS':
+      return {
+        editing: undefined,
+        entities: [
+          ...action.nodes.map(node => ({
+            entityType: 'node',
+            id: node.id
+          })),
+          ...action.relationships.map(relationship => ({
+            entityType: 'relationship',
+            id: relationship.id
+          }))
+        ]
+      }
     default:
       return state
   }

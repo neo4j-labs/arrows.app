@@ -7,18 +7,16 @@ import {windowResized} from "./actions/applicationLayout"
 import { compose } from 'recompose'
 import HeaderContainer from './containers/HeaderContainer'
 import InspectorChooser from "./containers/InspectorChooser"
-import StorageConfigContainer from "./containers/StorageConfigContainer"
-import DatabaseConnectionMessageContainer from "./containers/DatabaseConnectionMessageContainer"
 import {computeCanvasSize, inspectorWidth} from "./model/applicationLayout";
 import ExportContainer from "./containers/ExportContainer";
 import GoogleSignInModal from "./components/editors/GoogleSignInModal";
-import DatabaseConnectionContainer from "./containers/DatabaseConnectionContainer";
 import HelpModal from "./components/HelpModal";
 import GoogleDrivePicker from './components/GoogleDrivePickerWrapper'
-import { newDiagram } from "./actions/diagram"
-import { loadFromGoogleDriveFile } from "./actions/storage"
+import {getFileFromGoogleDrive, pickDiagramCancel} from "./actions/storage"
 import FooterContainer from "./containers/FooterContainer";
 import StyleContainer from "./containers/StyleContainer";
+import LocalStoragePickerContainer from "./containers/LocalStoragePickerContainer";
+import ImportContainer from "./containers/ImportContainer";
 
 class App extends Component {
   constructor (props) {
@@ -28,23 +26,21 @@ class App extends Component {
 
   render() {
     const {
-      viewingConfig,
       inspectorVisible,
-      editingConnectionParameters,
-      showDisconnectedDialog,
       showStyleDialog,
       showExportDialog,
-      viewingOpenDiagram,
+      showImportDialog,
+      pickingFromGoogleDrive,
+      pickingFromLocalStorage,
       onCancelPicker,
       loadFromGoogleDrive
     } = this.props
 
-    const storageConfigModal = viewingConfig ? (<StorageConfigContainer/>) : null
-    const databaseConnectionModal = editingConnectionParameters ? (<DatabaseConnectionContainer/>) : null
-    const databaseConnectionMessageModal = showDisconnectedDialog ? (<DatabaseConnectionMessageContainer/>) : null
     const styleModal = showStyleDialog ? (<StyleContainer/>) : null
     const exportModal = showExportDialog ? (<ExportContainer/>) : null
-    const googleDriveModal = viewingOpenDiagram ? <GoogleDrivePicker onCancelPicker={onCancelPicker } onFilePicked={loadFromGoogleDrive} /> : null
+    const importModal = showImportDialog ? (<ImportContainer/>) : null
+    const googleDriveModal = pickingFromGoogleDrive ? <GoogleDrivePicker onCancelPicker={onCancelPicker} onFilePicked={loadFromGoogleDrive} /> : null
+    const localStorageModal = pickingFromLocalStorage ? <LocalStoragePickerContainer/> : null
 
     const inspector = inspectorVisible ? (
       <aside style={{
@@ -68,12 +64,11 @@ class App extends Component {
         left: 0,
         margin: 0
       }}>
-        {storageConfigModal}
-        {databaseConnectionModal}
-        {databaseConnectionMessageModal}
         {styleModal}
         {exportModal}
+        {importModal}
         {googleDriveModal}
+        {localStorageModal}
         <GoogleSignInModal/>
         <HelpModal/>
         <HeaderContainer/>
@@ -108,20 +103,19 @@ class App extends Component {
 const mapStateToProps = (state) => ({
   inspectorVisible: state.applicationLayout.inspectorVisible,
   canvasHeight: computeCanvasSize(state.applicationLayout).height,
-  viewingConfig: state.storage.mode === 'NONE',
-  viewingOpenDiagram: state.storage.mode === 'OPEN_DIAGRAM',
-  editingConnectionParameters: state.storage.database.editingConnectionParameters,
-  showDisconnectedDialog: state.storage.database.showDisconnectedDialog,
+  pickingFromGoogleDrive: state.storage.status === 'PICKING_FROM_GOOGLE_DRIVE',
+  pickingFromLocalStorage: state.storage.status === 'PICKING_FROM_LOCAL_STORAGE',
   showStyleDialog: state.applicationDialogs.showStyleDialog,
-  showExportDialog: state.applicationDialogs.showExportDialog
+  showExportDialog: state.applicationDialogs.showExportDialog,
+  showImportDialog: state.applicationDialogs.showImportDialog
 })
 
 
 const mapDispatchToProps = dispatch => {
   return {
     onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight)),
-    onCancelPicker: () => dispatch(newDiagram()),
-    loadFromGoogleDrive: fileId => loadFromGoogleDriveFile(dispatch, fileId)
+    onCancelPicker: () => dispatch(pickDiagramCancel()),
+    loadFromGoogleDrive: fileId => dispatch(getFileFromGoogleDrive(fileId))
   }
 }
 

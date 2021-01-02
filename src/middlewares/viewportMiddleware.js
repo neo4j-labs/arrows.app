@@ -8,11 +8,12 @@ import {getVisualGraph} from "../selectors/index";
 import BoundingBox from "../graphics/utils/BoundingBox";
 
 const observedActionTypes = [
-  'NEW_DIAGRAM',
+  'NEW_GOOGLE_DRIVE_DIAGRAM',
+  'NEW_LOCAL_STORAGE_DIAGRAM',
   'CREATE_NODE',
   'MOVE_NODES',
   'MOVE_NODES_END_DRAG',
-  'FETCHING_GRAPH_SUCCEEDED',
+  'GETTING_GRAPH_SUCCEEDED',
   'DUPLICATE_NODES_AND_RELATIONSHIPS',
   'DELETE_NODES_AND_RELATIONSHIPS',
   'WINDOW_RESIZED',

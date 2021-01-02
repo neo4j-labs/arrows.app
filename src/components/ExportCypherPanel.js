@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Button, Checkbox} from 'semantic-ui-react'
+import {Form, Button, Checkbox, TextArea, Icon} from 'semantic-ui-react'
 import {exportCypher} from "../storage/exportCypher";
 
 class ExportCypherPanel extends Component {
@@ -18,35 +18,62 @@ class ExportCypherPanel extends Component {
     })
   }
 
+  copyToClipboard = (cypher) => {
+    navigator.clipboard.writeText(cypher)
+  }
+
+  runInNeo4jBrowser = (cypher) => {
+    const url = 'neo4j-desktop://graphapps/neo4j-browser?cmd=edit&arg=' + encodeURIComponent(cypher)
+    window.open(url)
+  }
+
   render() {
-    const keywordButtons = ['CREATE', 'MERGE', 'MATCH'].map(keyword => {
+    const cypher = exportCypher(this.props.graph, this.state.keyword, this.state.includeStyling)
+    const keywordRadioButtons = ['CREATE', 'MERGE', 'MATCH'].map(keyword => {
       return (
-        <Button
+        <Form.Radio
           key={keyword}
-          primary={this.state.keyword === keyword}
-          onClick={() => {
+          label={keyword}
+          value={keyword}
+          checked={this.state.keyword === keyword}
+          onClick={(e, { value }) => {
             this.setState({
-              keyword: keyword
+              keyword: value
             })
           }}
-        >{keyword}</Button>
+        />
       )
     })
     return (
-      <React.Fragment>
-        <Form.Field>
-          <Button.Group size="mini">
-            {keywordButtons}
-          </Button.Group>
-        </Form.Field>
-        <Form.Field>
-          <Checkbox label='Include style properties' checked={this.state.includeStyling}
+      <Form>
+        <Form.Group inline>
+          <label>Cypher Clause:</label>
+          {keywordRadioButtons}
+        </Form.Group>
+        <Form.Field inline>
+          <label>Styling:</label>
+          <Checkbox label='Include entity-specific style properties' checked={this.state.includeStyling}
                     onChange={this.toggleStyling}/>
         </Form.Field>
-        <code>
-          {exportCypher(this.props.graph, this.state.keyword, this.state.includeStyling)}
-        </code>
-      </React.Fragment>
+        <Form.Field>
+          <Button onClick={() => this.copyToClipboard(cypher)} primary icon labelPosition='left'>
+            <Icon name='clipboard outline' />
+            Copy to clipboard
+          </Button>
+          <Button onClick={() => this.runInNeo4jBrowser(cypher)} primary icon labelPosition='left'>
+            <Icon name='terminal' />
+            Run in Neo4j Browser
+          </Button>
+        </Form.Field>
+        <TextArea
+          style={{
+            height: 500,
+            fontSize: '1.5em',
+            fontFamily: 'monospace'
+          }}
+          value={cypher}
+        />
+      </Form>
     )
   }
 }

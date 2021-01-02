@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import { Button, Form, Checkbox, Modal, Message } from 'semantic-ui-react'
-import {defaultConnectionUri} from "../reducers/storage";
+
+export const defaultConnectionUri = "bolt://localhost";
 
 class DatabaseConnectionForm extends Component {
 
