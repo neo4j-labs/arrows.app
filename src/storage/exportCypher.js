@@ -11,7 +11,7 @@ const escape = name => {
 }
 
 const quote = value => {
-  if (typeof value === Number || !isNaN(parseFloat(value))) {
+  if (typeof value === 'number' || (!isNaN(value) && !isNaN(parseFloat(value)))) {
     return value
   } else {
     return '"' + value + '"'
