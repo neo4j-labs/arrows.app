@@ -37,13 +37,15 @@ const KeyBindings = {
 
 const actions = {}
 
+export const isMac = navigator.appVersion.indexOf('Mac') !== -1
+
 const findAction = ({ altKey, ctrlKey, metaKey, shiftKey, keyCode }) =>
   find(actions, ({bindings}) =>
     find(bindings, (binding) =>
       (keyCode === binding.code || (binding.codeRange && keyCode >= binding.codeRange.min && keyCode <= binding.codeRange.max)) &&
       (binding.altKey === 'optional' || altKey === !!binding.altKey) &&
-      (binding.ctrlKey === 'optional' || ctrlKey === !!binding.ctrlKey) &&
-      (binding.metaKey === 'optional' || metaKey === !!binding.metaKey) &&
+      (binding.ctrlKey === 'optional' || ctrlKey === !!binding.ctrlKey || (!isMac && ctrlKey === !!bindings.metaKey)) &&
+      (binding.metaKey === 'optional' || metaKey === !!binding.metaKey || (!isMac && ctrlKey === !!bindings.metaKey)) &&
       (binding.shiftKey === 'optional' || shiftKey === !!binding.shiftKey)
     )
   )
@@ -68,7 +70,6 @@ const hocProps = {
 export const getKeybindingString = name => {
   const binding = KeyBindings[name][0]
   let result = ''
-  const isMac = navigator.appVersion.indexOf('Mac') !== -1
   const addSymbol = symbol => (result += result.length > 0 ? ' ' + symbol : symbol)
 
   if (binding.shiftKey) addSymbol('⇧')

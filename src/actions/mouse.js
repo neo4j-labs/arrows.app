@@ -93,7 +93,7 @@ export const doubleClick = (canvasPosition) => {
   }
 }
 
-export const mouseDown = (canvasPosition, metaKey) => {
+export const mouseDown = (canvasPosition, multiSelectModifierKey) => {
   return function (dispatch, getState) {
     const state = getState();
     const visualGraph = getVisualGraph(state)
@@ -108,12 +108,12 @@ export const mouseDown = (canvasPosition, metaKey) => {
       if (item) {
         switch (item.entityType) {
           case 'node':
-            dispatch(toggleSelection([item], metaKey ? 'xor' : 'at-least'))
+            dispatch(toggleSelection([item], multiSelectModifierKey ? 'xor' : 'at-least'))
             dispatch(mouseDownOnNode(item, canvasPosition, graphPosition))
             break
 
           case 'relationship':
-            dispatch(toggleSelection([item], metaKey ? 'xor' : 'at-least'))
+            dispatch(toggleSelection([item], multiSelectModifierKey ? 'xor' : 'at-least'))
             break
 
           case 'nodeRing':
@@ -121,7 +121,7 @@ export const mouseDown = (canvasPosition, metaKey) => {
             break
         }
       } else {
-        if (!metaKey) {
+        if (!multiSelectModifierKey) {
           dispatch(clearSelection())
         }
         dispatch(mouseDownOnCanvas(canvasPosition, graphPosition))

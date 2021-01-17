@@ -1,6 +1,7 @@
 import {Point} from "../model/Point";
 import {doubleClick, endDrag, mouseDown, mouseMove, mouseUp, wheel} from "../actions/mouse";
 import {Vector} from "../model/Vector";
+import {isMac} from "./Keybindings";
 
 export default class MouseHandler {
   constructor(canvas) {
@@ -41,7 +42,7 @@ export default class MouseHandler {
       return
     }
 
-    this.dispatch(mouseDown(this.canvasPosition(evt), evt.metaKey))
+    this.dispatch(mouseDown(this.canvasPosition(evt), isMac ? evt.metaKey : evt.ctrlKey))
     evt.preventDefault()
   }
 
