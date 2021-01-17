@@ -33,10 +33,15 @@ export default class GeneralInspector extends Component {
       )
     }
 
+    const disabledSubmitButtonToPreventImplicitSubmission = (
+      <button type="submit" disabled style={{display: 'none'}} aria-hidden="true"/>
+    )
+
     return (
       <React.Fragment>
         <Segment basic style={{margin: 0}}>
           <Form style={{textAlign: 'left'}}>
+            {disabledSubmitButtonToPreventImplicitSubmission}
             <Form.Field key='_selected'>
               <label>No selection</label>
             </Form.Field>
