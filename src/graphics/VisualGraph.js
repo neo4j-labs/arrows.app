@@ -96,6 +96,8 @@ export default class VisualGraph {
   }
 
   boundingBox() {
-    return combineBoundingBoxes(Object.values(this.nodes).map(node => node.boundingBox()))
+    const nodeBoxes = Object.values(this.nodes).map(node => node.boundingBox())
+    const relationshipBoxes = Object.values(this.relationshipBundles).map(bundle => bundle.boundingBox())
+    return combineBoundingBoxes([...nodeBoxes, ...relationshipBoxes])
   }
 }

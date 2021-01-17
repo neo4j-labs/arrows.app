@@ -1,3 +1,5 @@
+import {Point} from "../../model/Point";
+
 export default class BoundingBox {
   constructor(left, right, top, bottom) {
     this.left = left
@@ -12,6 +14,15 @@ export default class BoundingBox {
 
   get height() {
     return this.bottom - this.top
+  }
+
+  corners() {
+    return [
+      new Point(this.left, this.top),
+      new Point(this.right, this.top),
+      new Point(this.left, this.bottom),
+      new Point(this.right, this.bottom)
+    ]
   }
 
   combine(other) {
@@ -58,4 +69,15 @@ export default class BoundingBox {
 
 export const combineBoundingBoxes = (boundingBoxes) => {
   return boundingBoxes.reduce((accumulator, value) => accumulator ? accumulator.combine(value) : value, null)
+}
+
+export const boundingBoxOfPoints = (points) => {
+  const xCoordinates = points.map(point => point.x)
+  const yCoordinates = points.map(point => point.y)
+  return new BoundingBox(
+    Math.min(...xCoordinates),
+    Math.max(...xCoordinates),
+    Math.min(...yCoordinates),
+    Math.max(...yCoordinates)
+  )
 }

@@ -9,6 +9,7 @@ import {normaliseAngle} from "./utils/angles";
 import {ElbowArrow} from "./ElbowArrow";
 import {RectilinearArrow} from "./RectilinearArrow";
 import {relationshipArrowDimensions} from "./arrowDimensions";
+import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class RoutedRelationshipBundle {
   constructor(relationships, graph, selection, measureTextContext) {
@@ -155,6 +156,11 @@ export class RoutedRelationshipBundle {
         relationship, graph, arrows[i], relationshipEditing(selection, relationship.id), measureTextContext
       ))
     }
+  }
+
+  boundingBox() {
+    return combineBoundingBoxes(this.routedRelationships
+      .map(routedRelationship => routedRelationship.boundingBox()))
   }
 
   draw(ctx) {

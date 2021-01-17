@@ -4,6 +4,7 @@ import {PropertiesOutside} from "./PropertiesOutside";
 import {maxWidth, totalHeight} from "./componentStackGeometry";
 import {Vector} from "../model/Vector";
 import {alignmentForShaftAngle, readableAngle} from "./relationshipTextAlignment";
+import {boundingBoxOfPoints} from "./utils/BoundingBox";
 
 export class VisualRelationship {
   constructor(resolvedRelationship, graph, arrow, editing, measureTextContext) {
@@ -53,6 +54,20 @@ export class VisualRelationship {
 
   get id() {
     return this.resolvedRelationship.id
+  }
+
+  boundingBox() {
+    const midPoint = this.arrow.midPoint()
+
+    const points = this.components
+      .map(component => component.boundingBox())
+      .flatMap(box => box.corners())
+    const transformedPoints = points.map(point => point
+      .translate(this.componentOffset)
+      .rotate(this.componentRotation)
+      .translate(midPoint.vectorFromOrigin()))
+
+    return boundingBoxOfPoints([midPoint, ...transformedPoints])
   }
 
   distanceFrom(point) {
