@@ -3,6 +3,7 @@ import {ViewTransformation} from "../../state/ViewTransformation";
 import {getVisualGraph} from "../../selectors/index";
 import {Vector} from "../../model/Vector";
 import SvgAdaptor from "./SvgAdaptor";
+import { Base64 } from 'js-base64';
 
 export const renderSvg = (graph) => {
   const renderState = {
@@ -29,6 +30,6 @@ export const renderSvg = (graph) => {
   return {
     width,
     height,
-    dataUrl: 'data:image/svg+xml;base64,' + btoa(svgString)
+    dataUrl: 'data:image/svg+xml;base64,' + Base64.encode(svgString)
   }
 }

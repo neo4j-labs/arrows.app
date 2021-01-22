@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Form, Icon, TextArea} from "semantic-ui-react";
+import { Base64 } from 'js-base64';
 
 class ExportJsonPanel extends Component {
 
@@ -9,7 +10,7 @@ class ExportJsonPanel extends Component {
 
   render() {
     const jsonString = JSON.stringify(this.props.graph, null, 2)
-    const dataUrl = "data:application/json;base64," + btoa(jsonString)
+    const dataUrl = "data:application/json;base64," + Base64.encode(jsonString)
 
     return (
       <Form>

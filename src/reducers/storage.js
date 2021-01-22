@@ -8,6 +8,7 @@ import {
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
 import {loadLegacyAppData, loadRecentlyAccessedDiagrams, saveGraphToLocalStorage} from "../actions/localStorage";
 import {defaultName} from "./diagramName";
+import { Base64 } from 'js-base64';
 
 export default function storage(state = initialiseStorageFromWindowLocationHash(), action) {
   switch (action.type) {
@@ -128,7 +129,7 @@ const initialiseStorageFromWindowLocationHash = () => {
   if (importJsonMatch) {
     const b64Json = importJsonMatch[1]
     try {
-      const data = JSON.parse(atob(b64Json))
+      const data = JSON.parse(Base64.decode(b64Json))
       return storeNewDiagramInLocalStorage(data)
     } catch (e) {
       console.log(e)

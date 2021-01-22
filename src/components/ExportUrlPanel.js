@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import { Base64 } from 'js-base64';
 
 class ExportUrlPanel extends Component {
 
@@ -9,7 +10,7 @@ class ExportUrlPanel extends Component {
   render() {
     const { graph, diagramName } = this.props
     const jsonString = JSON.stringify({graph, diagramName})
-    const url = window.location.origin + "/#/import/json=" + btoa(jsonString)
+    const url = window.location.origin + "/#/import/json=" + Base64.encode(jsonString)
 
     return (
       <p>
