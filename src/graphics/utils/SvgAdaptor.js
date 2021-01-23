@@ -30,8 +30,8 @@ export default class SvgAdaptor {
     this.current().transforms.push(`translate(${dx} ${dy})`)
   }
 
-  scale(x, y) {
-    // this.ctx.scale(x, y)
+  scale(x) {
+    this.current().transforms.push(`scale(${x})`)
   }
 
   rotate(angle) {
