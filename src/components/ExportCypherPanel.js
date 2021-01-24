@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Button, TextArea, Icon} from 'semantic-ui-react'
+import {Form, Button, TextArea, Icon, Message} from 'semantic-ui-react'
 import {exportCypher} from "../storage/exportCypher";
 
 class ExportCypherPanel extends Component {
@@ -41,12 +41,21 @@ class ExportCypherPanel extends Component {
         />
       )
     })
+    const mergeWarning = this.state.keyword === 'MERGE' ? (
+      <Message info>
+        MERGE query behaviour depends on what data is already present in the database. You may need to edit the
+        query to achieve exactly the behaviour you are looking for. Please see <a
+        href='https://neo4j.com/docs/cypher-manual/current/clauses/merge/'
+        target='_blank'>MERGE documentation</a> for guidance.
+      </Message>
+    ) : null
     return (
       <Form>
         <Form.Group inline>
           <label>Cypher Clause:</label>
           {keywordRadioButtons}
         </Form.Group>
+        {mergeWarning}
         <Form.Field>
           <Button onClick={() => this.copyToClipboard(cypher)} primary icon labelPosition='left'>
             <Icon name='clipboard outline' />
