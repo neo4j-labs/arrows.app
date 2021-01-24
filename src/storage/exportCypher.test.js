@@ -6,8 +6,8 @@ it('creates node', () => {
       {id: 'n1', labels: [], properties: {}, style: {}}
     ], relationships: []
   }
-  const cypher = exportCypher(graph, 'MATCH', {})
-  expect(cypher).toEqual('MATCH ()')
+  const cypher = exportCypher(graph, 'CREATE', {})
+  expect(cypher).toEqual('CREATE ()')
 })
 
 it('creates nodes', () => {

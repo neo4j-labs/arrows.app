@@ -113,9 +113,14 @@ export const exportCypher = (graph, keyword, options) => {
   const prefix = keyword === 'MERGE' ? '' : keyword + ' '
   const pathPrefix = keyword === 'MERGE' ? 'MERGE ' : ''
   const pathSeparator = keyword === 'MERGE' ? '\n' : ',\n'
+  const suffix = keyword === 'MATCH' ? '\nRETURN ' +
+    paths.map((path, pathIndex) => 'path' + pathIndex).join(', ') : ''
 
-  return prefix + paths.map(path => {
+  return prefix + paths.map((path, pathIndex) => {
     let line = pathPrefix
+    if (keyword === 'MATCH') {
+      line += `path${pathIndex} = `
+    }
     for (let i = 0; i < path.length; i++) {
       const part = path[i]
       if (i % 2 === 0) {
@@ -142,5 +147,5 @@ export const exportCypher = (graph, keyword, options) => {
       }
     }
     return line
-  }).join(pathSeparator)
+  }).join(pathSeparator) + suffix
 }
