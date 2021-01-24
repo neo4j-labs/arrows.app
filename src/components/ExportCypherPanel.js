@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Form, Button, Checkbox, TextArea, Icon} from 'semantic-ui-react'
+import {Form, Button, TextArea, Icon} from 'semantic-ui-react'
 import {exportCypher} from "../storage/exportCypher";
 
 class ExportCypherPanel extends Component {
@@ -10,12 +10,6 @@ class ExportCypherPanel extends Component {
       includeStyling: false,
       keyword: 'MATCH'
     }
-  }
-
-  toggleStyling = () => {
-    this.setState({
-      includeStyling: !this.state.includeStyling
-    })
   }
 
   copyToClipboard = (cypher) => {
@@ -53,11 +47,6 @@ class ExportCypherPanel extends Component {
           <label>Cypher Clause:</label>
           {keywordRadioButtons}
         </Form.Group>
-        <Form.Field inline>
-          <label>Styling:</label>
-          <Checkbox label='Include entity-specific style properties' checked={this.state.includeStyling}
-                    onChange={this.toggleStyling}/>
-        </Form.Field>
         <Form.Field>
           <Button onClick={() => this.copyToClipboard(cypher)} primary icon labelPosition='left'>
             <Icon name='clipboard outline' />
