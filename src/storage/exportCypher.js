@@ -36,7 +36,7 @@ const entityProperties = (entity, includeStyling) => {
   }
 }
 
-export const exportCypher = (graph, keyword, includeStyling) => {
+export const exportCypher = (graph, keyword, options) => {
   const captionMap = {}
   graph.nodes.forEach(node => {
     if (node.caption) {
@@ -110,14 +110,23 @@ export const exportCypher = (graph, keyword, includeStyling) => {
 
   const visitedNodes = {}
 
-  return keyword + ' ' + paths.map(path => {
-    let line = ''
+  const prefix = keyword === 'MERGE' ? '' : keyword + ' '
+  const pathPrefix = keyword === 'MERGE' ? 'MERGE ' : ''
+  const pathSeparator = keyword === 'MERGE' ? '\n' : ',\n'
+  const suffix = keyword === 'MATCH' ? '\nRETURN ' +
+    paths.map((path, pathIndex) => 'path' + pathIndex).join(', ') : ''
+
+  return prefix + paths.map((path, pathIndex) => {
+    let line = pathPrefix
+    if (keyword === 'MATCH') {
+      line += `path${pathIndex} = `
+    }
     for (let i = 0; i < path.length; i++) {
       const part = path[i]
       if (i % 2 === 0) {
         const node = part
         const labels = node.labels.map(label => `:${escape(label)}`).join('')
-        const properties = entityProperties(node, includeStyling)
+        const properties = entityProperties(node, options.includeStyling)
         if (visitedNodes[node.id]) {
           line += `(${idMap[node.id]})`
         } else {
@@ -130,7 +139,7 @@ export const exportCypher = (graph, keyword, includeStyling) => {
         if (type === '_RELATED' && keyword === 'MATCH') {
           type = null
         }
-        const properties = entityProperties(relationship, includeStyling)
+        const properties = entityProperties(relationship, options.includeStyling)
         const relationshipSpec = type || properties ? `[${space(type ? ':' + type : null, properties)}]` : ''
         const firstArrow = part.direction === 'reverse' ? '<-' : '-'
         const secondArrow = part.direction === 'forward' ? '->' : '-'
@@ -138,5 +147,5 @@ export const exportCypher = (graph, keyword, includeStyling) => {
       }
     }
     return line
-  }).join(`,\n`)
+  }).join(pathSeparator) + suffix
 }
