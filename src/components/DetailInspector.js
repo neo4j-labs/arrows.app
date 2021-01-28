@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Divider, Form, Input} from 'semantic-ui-react'
+import {Segment, Divider, Form, Input, Button, Popup} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
 import {selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle} from "../model/properties"
@@ -31,6 +31,7 @@ export default class DetailInspector extends Component {
 
   render() {
     const {selection, graph, onSaveCaption, onSaveType, onDuplicate, reverseRelationships, selectedNodes, onSelect} = this.props
+    const {onConvertCaptionsToLabels} = this.props
     const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
@@ -56,15 +57,35 @@ export default class DetailInspector extends Component {
       const value = commonValue(selectedNodes.map((node) => node.caption));
       const fieldValue = value || ''
       const placeholder = value === undefined ? '<multiple values>' : null
+      const textBox = (
+        <Input value={fieldValue}
+               onFocus={this.moveCursorToEnd}
+               onChange={(event) => onSaveCaption(selection, event.target.value)}
+               placeholder={placeholder}
+               ref={elm => this.captionInput = elm}
+               onKeyDown={handleKeyDown.bind(this)}/>
+      )
+      const convertToLabelsButton = (
+        <Button
+          key='convertCaptionsToLabels'
+          onClick={onConvertCaptionsToLabels}
+          basic
+          color='black'
+          floated='right'
+          size="tiny"
+          content='Use captions as labels'
+          type='button'
+        />
+      )
       fields.push(
         <Form.Field key='_caption'>
           <label>Caption</label>
-          <Input value={fieldValue}
-                 onFocus={this.moveCursorToEnd}
-                 onChange={(event) => onSaveCaption(selection, event.target.value)}
-                 placeholder={placeholder}
-                 ref={elm => this.captionInput = elm}
-                 onKeyDown={handleKeyDown.bind(this)}/>
+          <Popup
+            trigger={textBox}
+            content={convertToLabelsButton}
+            on='click'
+            position='bottom center'
+          />
         </Form.Field>
       )
     }

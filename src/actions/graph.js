@@ -244,6 +244,12 @@ export const addLabel = (selection, label) => ({
   label
 })
 
+export const addLabels = (nodeLabels) => ({
+  category: 'GRAPH',
+  type: 'ADD_LABELS',
+  nodeLabels
+})
+
 export const renameLabel = (selection, oldLabel, newLabel) => ({
   category: 'GRAPH',
   type: 'RENAME_LABEL',
@@ -481,5 +487,18 @@ export const importNodesAndRelationships = (importedGraph) => {
       nodes: newNodes,
       relationships: newRelationships,
     })
+  }
+}
+
+export const convertCaptionsToLabels = () => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const selection = state.selection
+    const graph = getPresentGraph(state)
+    const nodesToConvert = selectedNodes(graph, selection)
+    const nodeLabels = Object.fromEntries(nodesToConvert.map(node => {
+      return [node.id, node.caption]
+    }))
+    dispatch(addLabels(nodeLabels))
   }
 }

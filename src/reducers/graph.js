@@ -78,6 +78,14 @@ const graph = (state = emptyGraph(), action) => {
       }
     }
 
+    case 'ADD_LABELS': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) => action.nodeLabels.hasOwnProperty(node.id) ? addLabel(node, action.nodeLabels[node.id]) : node),
+        relationships: state.relationships
+      }
+    }
+
     case 'RENAME_LABEL': {
       return {
         style: state.style,
