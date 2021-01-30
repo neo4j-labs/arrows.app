@@ -31,7 +31,7 @@ export default class DetailInspector extends Component {
 
   render() {
     const {selection, graph, onSaveCaption, onSaveType, onDuplicate, reverseRelationships, selectedNodes, onSelect} = this.props
-    const {onConvertCaptionsToLabels} = this.props
+    const {onConvertCaptionsToLabels, onConvertCaptionsToPropertyValues} = this.props
     const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
@@ -65,24 +65,36 @@ export default class DetailInspector extends Component {
                ref={elm => this.captionInput = elm}
                onKeyDown={handleKeyDown.bind(this)}/>
       )
-      const convertToLabelsButton = (
-        <Button
-          key='convertCaptionsToLabels'
-          onClick={onConvertCaptionsToLabels}
-          basic
-          color='black'
-          floated='right'
-          size="tiny"
-          content='Use captions as labels'
-          type='button'
-        />
+      const buttons = (
+        <div>
+          <Button
+            key='convertCaptionsToLabels'
+            onClick={onConvertCaptionsToLabels}
+            basic
+            color='black'
+            floated='right'
+            size="tiny"
+            content='Use captions as labels'
+            type='button'
+          />
+          <Button
+            key='convertCaptionsToProperties'
+            onClick={onConvertCaptionsToPropertyValues}
+            basic
+            color='black'
+            floated='right'
+            size="tiny"
+            content='Use captions as properties'
+            type='button'
+          />
+        </div>
       )
       fields.push(
         <Form.Field key='_caption'>
           <label>Caption</label>
           <Popup
             trigger={textBox}
-            content={convertToLabelsButton}
+            content={buttons}
             on='click'
             position='bottom center'
           />

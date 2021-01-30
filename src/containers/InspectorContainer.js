@@ -12,7 +12,7 @@ import {
   renameLabel,
   removeLabel,
   duplicateSelection,
-  convertCaptionsToLabels
+  convertCaptionsToLabels, convertCaptionsToPropertyValues
 } from "../actions/graph";
 import DetailInspector from "../components/DetailInspector"
 import { getSelectedNodes } from "../selectors/inspection";
@@ -43,8 +43,11 @@ const mapDispatchToProps = dispatch => {
     onSaveCaption: (selection, caption) => {
       dispatch(setNodeCaption(selection, caption))
     },
-    onConvertCaptionsToLabels: (selection, caption) => {
-      dispatch(convertCaptionsToLabels(selection, caption))
+    onConvertCaptionsToLabels: () => {
+      dispatch(convertCaptionsToLabels())
+    },
+    onConvertCaptionsToPropertyValues: () => {
+      dispatch(convertCaptionsToPropertyValues())
     },
     onSaveType: (selection, type) => {
       dispatch(setRelationshipType(selection, type))

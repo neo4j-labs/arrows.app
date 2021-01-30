@@ -281,6 +281,13 @@ export const setProperty = (selection, key, value) => ({
   value
 })
 
+export const setPropertyValues = (key, nodePropertyValues) => ({
+  category: 'GRAPH',
+  type: 'SET_PROPERTY_VALUES',
+  key,
+  nodePropertyValues
+})
+
 export const setArrowsProperty = (selection, key, value) => ({
   category: 'GRAPH',
   type: 'SET_ARROWS_PROPERTY',
@@ -500,5 +507,20 @@ export const convertCaptionsToLabels = () => {
       return [node.id, node.caption]
     }))
     dispatch(addLabels(nodeLabels))
+    dispatch(setNodeCaption(selection, ''))
+  }
+}
+
+export const convertCaptionsToPropertyValues = () => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const selection = state.selection
+    const graph = getPresentGraph(state)
+    const nodesToConvert = selectedNodes(graph, selection)
+    const nodePropertyValues = Object.fromEntries(nodesToConvert.map(node => {
+      return [node.id, node.caption]
+    }))
+    dispatch(setPropertyValues('', nodePropertyValues))
+    dispatch(setNodeCaption(selection, ''))
   }
 }

@@ -118,6 +118,14 @@ const graph = (state = emptyGraph(), action) => {
       }
     }
 
+    case 'SET_PROPERTY_VALUES': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) => action.nodePropertyValues.hasOwnProperty(node.id) ? setProperty(node, action.key, action.nodePropertyValues[node.id]) : node),
+        relationships: state.relationships
+      }
+    }
+
     case 'SET_ARROWS_PROPERTY': {
       return {
         style: state.style,
