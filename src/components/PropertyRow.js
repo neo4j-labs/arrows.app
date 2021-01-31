@@ -31,7 +31,17 @@ export class PropertyRow extends Component {
   }
 
   render = () => {
-    const { propertyKey, onKeyChange, valueFieldValue, valueFieldPlaceHolder, onValueChange, onDeleteProperty, onNext } = this.props
+    const {
+      propertyKey,
+      onKeyChange,
+      valueFieldValue,
+      valueFieldPlaceHolder,
+      onValueChange,
+      onDeleteProperty,
+      onNext,
+      keyDisabled,
+      valueDisabled
+    } = this.props
     const handleKeyPress = (source, evt) => {
       if (evt.key === 'Enter') {
         evt.preventDefault()
@@ -61,6 +71,7 @@ export class PropertyRow extends Component {
               ref={elm => this.keyInput = elm}
               onKeyPress={(evt) => handleKeyPress('key', evt)}
               onKeyDown={handleKeyDown}
+              disabled={keyDisabled}
             />:
           </Form.Field>
         </Table.Cell>
@@ -74,6 +85,7 @@ export class PropertyRow extends Component {
               onKeyPress={(evt) => handleKeyPress('value', evt)}
               onKeyDown={handleKeyDown}
               transparent
+              disabled={valueDisabled}
             />
           </Form.Field>
         </Table.Cell>

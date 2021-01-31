@@ -16,7 +16,8 @@ export default class PropertyTable extends Component {
       local: false,
       properties: null,
       error: null,
-      lastValidKey: null
+      lastValidKey: null,
+      invalidKey: null
     }
   }
 
@@ -35,7 +36,7 @@ export default class PropertyTable extends Component {
 
   render() {
     const { properties, onSavePropertyKey, onSavePropertyValue, onDeleteProperty } = this.props
-    const { properties: localProperties, local, error, lastValidKey } = this.state
+    const { properties: localProperties, local, error, lastValidKey, invalidKey } = this.state
     let propertiesList
 
     if (local) {
@@ -65,7 +66,8 @@ export default class PropertyTable extends Component {
             local: false,
             error: null,
             properties: null,
-            lastValidKey: null
+            lastValidKey: null,
+            invalidKey: null
           })
         }
       } else {
@@ -77,7 +79,8 @@ export default class PropertyTable extends Component {
             local: true,
             error: "Duplicate properties found. Please rename the property.",
             properties: propertiesList,
-            lastValidKey: propertyKey
+            lastValidKey: propertyKey,
+            invalidKey: value
           })
         } else {
           onSavePropertyKey(propertyKey, value)
@@ -98,13 +101,17 @@ export default class PropertyTable extends Component {
           valueFieldPlaceHolder={valueFieldPlaceHolder}
           setFocusHandler={action => this.focusHandlers[index] = action}
           onNext={() => onNextProperty(index + 1)}
+          keyDisabled={error && invalidKey !== prop.key}
+          valueDisabled={error}
         />
       )
     })
     return (
       <Form.Field key='propertiesTable'>
         <label>Properties</label>
-        <Message negative hidden>Can not save atm</Message>
+        {
+          error ? <Message negative>{error}</Message> : null
+        }
         <Table compact collapsing style={{ marginTop: 0 }}>
           <Table.Body>
             {rows}
