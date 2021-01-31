@@ -17,7 +17,7 @@ export default class PropertyTable extends Component {
       properties: null,
       error: null,
       lastValidKey: null,
-      invalidKey: null
+      invalidIndex: null
     }
   }
 
@@ -36,7 +36,7 @@ export default class PropertyTable extends Component {
 
   render() {
     const { properties, onSavePropertyKey, onSavePropertyValue, onDeleteProperty } = this.props
-    const { properties: localProperties, local, error, lastValidKey, invalidKey } = this.state
+    const { properties: localProperties, local, error, lastValidKey, invalidIndex } = this.state
     let propertiesList
 
     if (local) {
@@ -57,7 +57,7 @@ export default class PropertyTable extends Component {
       }
     }
 
-    const onPropertyKeyChange = (propertyKey, value) => {
+    const onPropertyKeyChange = (propertyKey, value, index) => {
       if(local) {
         if(!propertiesList.find(prop => prop.key === value)) {
           // switch to global
@@ -67,7 +67,7 @@ export default class PropertyTable extends Component {
             error: null,
             properties: null,
             lastValidKey: null,
-            invalidKey: null
+            invalidIndex: null
           })
         }
       } else {
@@ -80,7 +80,7 @@ export default class PropertyTable extends Component {
             error: "Duplicate properties found. Please rename the property.",
             properties: propertiesList,
             lastValidKey: propertyKey,
-            invalidKey: value
+            invalidIndex: index
           })
         } else {
           onSavePropertyKey(propertyKey, value)
@@ -94,14 +94,14 @@ export default class PropertyTable extends Component {
         <PropertyRow
           key={'row-' + index}
           propertyKey={prop.key}
-          onKeyChange={event => onPropertyKeyChange(prop.key, event.target.value)}
+          onKeyChange={event => onPropertyKeyChange(prop.key, event.target.value, index)}
           onValueChange={(event) => onSavePropertyValue(prop.key, event.target.value)}
           onDeleteProperty={(event) => onDeleteProperty(prop.key)}
           valueFieldValue={valueFieldValue}
           valueFieldPlaceHolder={valueFieldPlaceHolder}
           setFocusHandler={action => this.focusHandlers[index] = action}
           onNext={() => onNextProperty(index + 1)}
-          keyDisabled={error && invalidKey !== prop.key}
+          keyDisabled={error && invalidIndex !== index}
           valueDisabled={error}
         />
       )
@@ -127,6 +127,7 @@ export default class PropertyTable extends Component {
           icon="plus"
           content='Property'
           type='button'
+          disabled={error}
         />
       </Form.Field>
     )

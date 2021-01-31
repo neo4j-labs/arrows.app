@@ -91,7 +91,7 @@ export class PropertyRow extends Component {
         </Table.Cell>
         <Table.Cell width={1}>
           <Icon
-            style={{visibility: this.state.mouseOver ? 'visible' : 'hidden'}}
+            style={{visibility: this.state.mouseOver && !valueDisabled ? 'visible' : 'hidden'}}
             name="trash alternate outline"
             onClick={onDeleteProperty}
           />
