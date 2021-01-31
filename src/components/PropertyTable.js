@@ -73,7 +73,6 @@ export default class PropertyTable extends Component {
       } else {
         if(propertiesList.find(prop => prop.key === value)) {
           // switch to local
-          console.log("DUPLICATE", value, propertiesList)
           propertiesList.find(prop => prop.key === propertyKey).key = value
           this.setState({
             local: true,
@@ -109,14 +108,14 @@ export default class PropertyTable extends Component {
     return (
       <Form.Field key='propertiesTable'>
         <label>Properties</label>
-        {
-          error ? <Message negative>{error}</Message> : null
-        }
         <Table compact collapsing style={{ marginTop: 0 }}>
           <Table.Body>
             {rows}
           </Table.Body>
         </Table>
+        {
+          error ? <Message negative>{error}</Message> : null
+        }
         <Button
           key='addProperty'
           onClick={addEmptyProperty}
