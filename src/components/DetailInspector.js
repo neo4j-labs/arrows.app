@@ -95,7 +95,7 @@ export default class DetailInspector extends Component {
 
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
       fields.push(
-        <PropertyTable key='properties'
+        <PropertyTable key={`properties-${entities.map(entity => entity.id).join(',')}`}
                        properties={properties}
                        onSavePropertyKey={(oldPropertyKey, newPropertyKey) => onSavePropertyKey(selection, oldPropertyKey, newPropertyKey)}
                        onSavePropertyValue={(propertyKey, propertyValue) => onSavePropertyValue(selection, propertyKey, propertyValue)}
