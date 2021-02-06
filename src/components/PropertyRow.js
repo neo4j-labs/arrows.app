@@ -1,12 +1,14 @@
 import React, {Component} from 'react'
-import {Table, Input, Form, Icon} from 'semantic-ui-react'
+import {Table, Input, Form, Icon, Popup, Button} from 'semantic-ui-react'
 
 export class PropertyRow extends Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      mouseOver: false
+      mouseOver: false,
+      focusKey: false,
+      focusValue: false,
     }
   }
 
@@ -22,6 +24,30 @@ export class PropertyRow extends Component {
     })
   }
 
+  onFocusKey = () => {
+    this.setState({
+      focusKey: true
+    })
+  }
+
+  onBlurKey = () => {
+    this.setState({
+      focusKey: false
+    })
+  }
+
+  onFocusValue = () => {
+    this.setState({
+      focusValue: true
+    })
+  }
+
+  onBlurValue = () => {
+    this.setState({
+      focusValue: false
+    })
+  }
+  
   componentDidMount () {
     if (!this.props.propertyKey || this.props.propertyKey.length === 0) {
       this.keyInput && this.keyInput.focus()
@@ -59,7 +85,21 @@ export class PropertyRow extends Component {
       }
     }
 
-    return (
+    const buttons = (
+      <div>
+        <Button
+          key='convertCaptionsToLabels'
+          basic
+          color='black'
+          floated='right'
+          size="tiny"
+          content='Use captions as labels'
+          type='button'
+        />
+      </div>
+    )
+
+    const row = (
       <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <Table.Cell width={3} collapsing>
           <Form.Field>
@@ -72,6 +112,8 @@ export class PropertyRow extends Component {
               onKeyPress={(evt) => handleKeyPress('key', evt)}
               onKeyDown={handleKeyDown}
               disabled={keyDisabled}
+              onFocus={this.onFocusKey}
+              onBlur={this.onBlurKey}
             />:
           </Form.Field>
         </Table.Cell>
@@ -84,6 +126,8 @@ export class PropertyRow extends Component {
               ref={elm => this.valueInput = elm}
               onKeyPress={(evt) => handleKeyPress('value', evt)}
               onKeyDown={handleKeyDown}
+              onFocus={this.onFocusValue}
+              onBlur={this.onBlurValue}
               transparent
               disabled={valueDisabled}
             />
@@ -97,6 +141,15 @@ export class PropertyRow extends Component {
           />
         </Table.Cell>
       </Table.Row>
+    )
+
+    return (
+      <Popup
+        trigger={row}
+        content={buttons}
+        open={this.state.focusKey || this.state.focusValue}
+        position={this.state.focusKey ? 'bottom left' : 'bottom right'}
+      />
     )
   }
 }
