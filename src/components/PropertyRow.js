@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Table, Input, Form, Icon, Popup, Button} from 'semantic-ui-react'
+import {Table, Input, Form, Icon, Popup, Button, List} from 'semantic-ui-react'
 
 export class PropertyRow extends Component {
 
@@ -85,7 +85,35 @@ export class PropertyRow extends Component {
       }
     }
 
-    const buttons = (
+    const globalPropertyKeys = [
+      {key: 'name', nodeCount: 3},
+      {key: 'title', nodeCount: 10},
+      {key: 'born', nodeCount: 4}
+    ]
+    const propertyKeyButtons = globalPropertyKeys.map(entry => (
+      <List.Item>
+        <List.Content>
+          <Button
+            basic
+            size='tiny'
+          >
+            {entry.key}
+          </Button>
+          &nbsp;{entry.nodeCount} nodes
+        </List.Content>
+      </List.Item>
+    ))
+
+    const buttons = this.state.focusKey ? (
+      <Form>
+        <Form.Field>
+          <label>Keys in graph</label>
+          <List>
+            {propertyKeyButtons}
+          </List>
+        </Form.Field>
+      </Form>
+    ) : (
       <div>
         <Button
           key='convertCaptionsToLabels'
@@ -93,7 +121,7 @@ export class PropertyRow extends Component {
           color='black'
           floated='right'
           size="tiny"
-          content='Use captions as labels'
+          content='Values'
           type='button'
         />
       </div>
@@ -149,6 +177,7 @@ export class PropertyRow extends Component {
         content={buttons}
         open={this.state.focusKey || this.state.focusValue}
         position={this.state.focusKey ? 'bottom left' : 'bottom right'}
+        flowing
       />
     )
   }
