@@ -10,10 +10,10 @@ import {NodePropertiesInside} from "./NodePropertiesInside";
 import {bisect} from "./bisect";
 import {NodeLabelsInsideNode} from "./NodeLabelsInsideNode";
 import {NodeCaptionFillNode} from "./NodeCaptionFillNode";
-import {everythingFits, scaleToFit, totalHeight} from "./componentStackGeometry";
 import {distribute} from "./circumferentialDistribution";
 import {orientationAngles, orientationFromAngle, orientationFromName} from "./circumferentialTextAlignment";
 import {Vector} from "../model/Vector";
+import {ComponentStack} from "./ComponentStack";
 
 export default class VisualNode {
   constructor(node, graph, selected, editing, measureTextContext) {
@@ -33,8 +33,8 @@ export default class VisualNode {
 
     this.internalVerticalOffset = 0
     this.internalScaleFactor = undefined
-    this.insideComponents = []
-    this.outsideComponents = []
+    this.insideComponents = new ComponentStack()
+    this.outsideComponents = new ComponentStack()
 
     const captionPosition = style('caption-position')
     const labelPosition = style('label-position')
@@ -79,13 +79,13 @@ export default class VisualNode {
     if (hasLabels) {
       switch (labelPosition) {
         case 'inside':
-          this.insideComponents.push(this.labels =
-            new NodeLabelsInsideNode(node.labels, totalHeight(this.insideComponents), editing, style, measureTextContext))
+          this.insideComponents.push(this.labels = new NodeLabelsInsideNode(
+            node.labels, editing, style, measureTextContext))
           break
 
         default:
           this.outsideComponents.push(this.labels = new NodeLabelsOutsideNode(
-            node.labels, this.outsideOrientation, totalHeight(this.outsideComponents), editing, style, measureTextContext))
+            node.labels, this.outsideOrientation, editing, style, measureTextContext))
       }
     }
 
@@ -93,23 +93,23 @@ export default class VisualNode {
       switch (propertyPosition) {
         case 'inside':
           this.insideComponents.push(this.properties = new NodePropertiesInside(
-            node.properties, totalHeight(this.insideComponents), editing, style, measureTextContext))
+            node.properties, editing, style, measureTextContext))
           break
 
         default:
           this.outsideComponents.push(this.properties = new PropertiesOutside(
-            node.properties, this.outsideOrientation, totalHeight(this.outsideComponents), editing, style, measureTextContext))
+            node.properties, this.outsideOrientation, editing, style, measureTextContext))
       }
     }
 
     if (this.internalScaleFactor === undefined) {
-      this.internalVerticalOffset = -totalHeight(this.insideComponents) / 2
-      this.internalScaleFactor = everythingFits(this.insideComponents, this.internalVerticalOffset, this.fitRadius) ?
-        1 : scaleToFit(this.insideComponents, this.internalVerticalOffset, this.fitRadius)
+      this.internalVerticalOffset = -this.insideComponents.totalHeight() / 2
+      this.internalScaleFactor = this.insideComponents.everythingFits(this.internalVerticalOffset, this.fitRadius) ?
+        1 : this.insideComponents.scaleToFit(this.internalVerticalOffset, this.fitRadius)
     }
 
     const outsideVerticalOffset = (() => {
-      const height = totalHeight(this.outsideComponents)
+      const height = this.outsideComponents.totalHeight()
       switch (this.outsideOrientation.vertical) {
         case 'top':
           return -height
@@ -161,9 +161,7 @@ export default class VisualNode {
       ctx.translate(...this.position.xy)
       ctx.translate(...this.outsideOffset.dxdy)
 
-      this.outsideComponents.forEach(component => {
-        component.drawSelectionIndicator(ctx)
-      })
+      this.outsideComponents.drawSelectionIndicator(ctx)
 
       ctx.restore()
     }
@@ -177,16 +175,15 @@ export default class VisualNode {
     ctx.scale(this.internalScaleFactor);
     ctx.translate(0, this.internalVerticalOffset);
 
-    this.insideComponents.forEach(component => {
-      component.draw(ctx)
-    })
+    this.insideComponents.draw(ctx)
+
     ctx.restore()
 
     ctx.save()
     ctx.translate(...this.outsideOffset.dxdy)
-    this.outsideComponents.forEach(component => {
-      component.draw(ctx)
-    })
+
+    this.outsideComponents.draw(ctx)
+
     ctx.restore()
 
     ctx.restore()
@@ -200,14 +197,13 @@ export default class VisualNode {
       this.position.y + this.radius
     )
 
-    this.outsideComponents.forEach(component => {
-      box = box.combine(component.boundingBox()
-        .translate(this.position.vectorFromOrigin())
-        .translate(this.outsideOffset)
-      )
-    })
+    if (this.outsideComponents.isEmpty()) {
+      return box
+    }
 
-    return box
+    return box.combine(this.outsideComponents.boundingBox()
+      .translate(this.position.vectorFromOrigin())
+      .translate(this.outsideOffset))
   }
 
   distanceFrom(point) {
@@ -215,7 +211,7 @@ export default class VisualNode {
     const outsidePoint = localPoint.translate(this.outsideOffset.invert())
     return Math.min(
       this.position.vectorFrom(point).distance(),
-      ...this.outsideComponents.map(component => component.distanceFrom(outsidePoint))
+      this.outsideComponents.distanceFrom(outsidePoint)
     )
   }
 }
