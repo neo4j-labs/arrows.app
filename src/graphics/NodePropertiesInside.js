@@ -2,11 +2,11 @@ import {Point} from "../model/Point";
 import {PropertiesBox} from "./PropertiesBox";
 
 export class NodePropertiesInside {
-  constructor(properties, verticalPosition, editing, style, textMeasurement) {
+  constructor(properties, editing, style, textMeasurement) {
     this.propertiesBox = new PropertiesBox(properties, editing, style, textMeasurement)
     this.width = this.propertiesBox.boxWidth
     this.height = this.propertiesBox.boxHeight
-    this.boxPosition = new Point(-this.width / 2, verticalPosition)
+    this.boxPosition = new Point(-this.width / 2, 0)
   }
 
   get type() {

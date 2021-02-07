@@ -2,7 +2,7 @@ import {Point} from "../model/Point";
 import {PropertiesBox} from "./PropertiesBox";
 
 export class PropertiesOutside {
-  constructor(properties, orientation, verticalPosition, editing, style, textMeasurement) {
+  constructor(properties, orientation, editing, style, textMeasurement) {
     this.propertiesBox = new PropertiesBox(properties, editing, style, textMeasurement)
     this.width = this.propertiesBox.boxWidth
     this.height = this.propertiesBox.boxHeight
@@ -16,7 +16,7 @@ export class PropertiesOutside {
           return -this.width
       }
     })()
-    this.boxPosition = new Point(horizontalPosition, verticalPosition)
+    this.boxPosition = new Point(horizontalPosition, 0)
   }
 
   get type() {

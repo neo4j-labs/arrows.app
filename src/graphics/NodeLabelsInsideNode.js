@@ -3,14 +3,14 @@ import Pill from "./Pill";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class NodeLabelsInsideNode {
-  constructor(labels, verticalPosition, editing, style, textMeasurement) {
+  constructor(labels, editing, style, textMeasurement) {
 
     this.pills = labels.map((label) => {
       return new Pill(label, editing, style, textMeasurement)
     })
 
     const margin = style('label-margin')
-    let yPos = verticalPosition
+    let yPos = 0
 
     this.pillPositions = []
     for (let i = 0; i < this.pills.length; i++) {

@@ -8,6 +8,8 @@ import {NodeCaptionFillNode} from "../graphics/NodeCaptionFillNode";
 import {NodeCaptionOutsideNode} from "../graphics/NodeCaptionOutsideNode";
 import {measureTextContext} from "../selectors";
 import {RelationshipType} from "../graphics/RelationshipType";
+import {ComponentStack} from "../graphics/ComponentStack";
+import {Vector} from "../model/Vector";
 
 export class GraphTextEditors extends Component {
 
@@ -21,19 +23,21 @@ export class GraphTextEditors extends Component {
         const visualNode = this.props.visualGraph.nodes[entity.id]
         let insideComponents = visualNode.insideComponents
         let outsideComponents = visualNode.outsideComponents
-        if (insideComponents.length === 0 && outsideComponents.length === 0) {
+        if (insideComponents.isEmpty() && outsideComponents.isEmpty()) {
           const style = styleAttribute => getStyleSelector(visualNode.node, styleAttribute)(this.props.visualGraph.graph)
           const captionPosition = style( 'caption-position')
           switch (captionPosition) {
             case 'inside':
               const insideCaption = new NodeCaptionFillNode(
                 '', visualNode.radius, 'true', style, measureTextContext)
-              insideComponents = [insideCaption]
+              insideComponents = new ComponentStack()
+              insideComponents.push(insideCaption)
               break
             default:
               const outsideCaption = new NodeCaptionOutsideNode(
                 '', visualNode.outsideOrientation, true, style, measureTextContext)
-              outsideComponents = [outsideCaption]
+              outsideComponents = new ComponentStack()
+              outsideComponents.push(outsideCaption)
               break
           }
 
@@ -42,16 +46,23 @@ export class GraphTextEditors extends Component {
           <div style={{
             transform: visualNode.position.vectorFromOrigin().asCSSTransform()
           }}>
-            <div style={{
-              transform: `scale(${visualNode.internalScaleFactor}) translate(0, ${visualNode.internalVerticalOffset}px)`
-            }}>
-              {insideComponents.map(component => this.componentEditor(visualNode, component))}
-            </div>
-            <div style={{
-              transform: visualNode.outsideOffset.asCSSTransform()
-            }}>
-              {outsideComponents.map(component => this.componentEditor(visualNode, component))}
-            </div>
+            {insideComponents.offsetComponents.map(offsetComponent => (
+              <div style={{
+                transform: [
+                  `scale(${visualNode.internalScaleFactor})`,
+                  `translate(0, ${visualNode.internalVerticalOffset + offsetComponent.top}px)`
+                ].join(' ')
+              }}>
+                {this.componentEditor(visualNode, offsetComponent.component)}
+              </div>
+            ))}
+            {outsideComponents.offsetComponents.map(offsetComponent => (
+              <div style={{
+                transform: visualNode.outsideOffset.plus(new Vector(0, offsetComponent.top)).asCSSTransform()
+              }}>
+                {this.componentEditor(visualNode, offsetComponent.component)}
+              </div>
+            ))}
           </div>
         )
 
@@ -66,23 +77,24 @@ export class GraphTextEditors extends Component {
         })
         if (visualRelationship) {
           let components = visualRelationship.components
-          if (components.length === 0) {
+          if (components.isEmpty()) {
             const style = styleAttribute => getStyleSelector(visualRelationship.resolvedRelationship.relationship, styleAttribute)(this.props.visualGraph.graph)
             const type = new RelationshipType(
               '', {horizontal: 'center', vertical: 'center'}, true, style, measureTextContext)
-            components = [type]
+            components = new ComponentStack()
+            components.push(type)
           }
-          return (
+          return components.offsetComponents.map(offsetComponent => (
             <div style={{
               transform: [
                 visualRelationship.arrow.midPoint().vectorFromOrigin().asCSSTransform(),
                 `rotate(${visualRelationship.componentRotation}rad)`,
-                visualRelationship.componentOffset.asCSSTransform()
+                visualRelationship.componentOffset.plus(new Vector(0, offsetComponent.top)).asCSSTransform()
               ].join(' ')
             }}>
-              {components.map(component => this.componentEditor(visualRelationship, component))}
+              {this.componentEditor(visualRelationship, offsetComponent.component)}
             </div>
-          )
+          ))
         }
         break
     }

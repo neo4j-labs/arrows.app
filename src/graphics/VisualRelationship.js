@@ -1,10 +1,10 @@
 import {getStyleSelector} from "../selectors/style";
 import {RelationshipType} from "./RelationshipType";
 import {PropertiesOutside} from "./PropertiesOutside";
-import {maxWidth, totalHeight} from "./componentStackGeometry";
 import {Vector} from "../model/Vector";
 import {alignmentForShaftAngle, readableAngle} from "./relationshipTextAlignment";
 import {boundingBoxOfPoints} from "./utils/BoundingBox";
+import {ComponentStack} from "./ComponentStack";
 
 export class VisualRelationship {
   constructor(resolvedRelationship, graph, arrow, editing, measureTextContext) {
@@ -19,7 +19,7 @@ export class VisualRelationship {
     this.componentRotation = readableAngle(orientationName, arrow.shaftAngle())
     const alignment = alignmentForShaftAngle(orientationName, positionName, arrow.shaftAngle())
 
-    this.components = []
+    this.components = new ComponentStack()
     const hasType = !!resolvedRelationship.type
     const hasProperties = Object.keys(resolvedRelationship.relationship.properties).length > 0
 
@@ -29,11 +29,11 @@ export class VisualRelationship {
     }
     if (hasProperties) {
       this.components.push(this.properties = new PropertiesOutside(
-        resolvedRelationship.relationship.properties, alignment, totalHeight(this.components), editing, style, measureTextContext))
+        resolvedRelationship.relationship.properties, alignment, editing, style, measureTextContext))
     }
 
-    const width = maxWidth(this.components)
-    const height = totalHeight(this.components)
+    const width = this.components.maxWidth()
+    const height = this.components.totalHeight()
     const margin = arrow.dimensions.arrowWidth
 
     switch (orientationName) {
@@ -59,9 +59,11 @@ export class VisualRelationship {
   boundingBox() {
     const midPoint = this.arrow.midPoint()
 
-    const points = this.components
-      .map(component => component.boundingBox())
-      .flatMap(box => box.corners())
+    if (this.components.isEmpty()) {
+      return boundingBoxOfPoints([midPoint])
+    }
+
+    const points = this.components.boundingBox().corners()
     const transformedPoints = points.map(point => point
       .translate(this.componentOffset)
       .rotate(this.componentRotation)
@@ -75,7 +77,7 @@ export class VisualRelationship {
     const componentPoint = localPoint.rotate(-this.componentRotation).translate(this.componentOffset.invert())
     return Math.min(
       this.arrow.distanceFrom(point),
-      ...this.components.map(component => component.distanceFrom(componentPoint))
+      this.components.distanceFrom(componentPoint)
     )
   }
 
@@ -93,9 +95,7 @@ export class VisualRelationship {
       ctx.rotate(this.componentRotation)
       ctx.translate(...this.componentOffset.dxdy)
 
-      this.components.forEach(component => {
-        component.drawSelectionIndicator(ctx)
-      })
+      this.components.drawSelectionIndicator(ctx)
 
       ctx.restore()
     }
@@ -106,9 +106,7 @@ export class VisualRelationship {
     ctx.rotate(this.componentRotation)
     ctx.translate(...this.componentOffset.dxdy)
 
-    this.components.forEach(component => {
-      component.draw(ctx)
-    })
+    this.components.draw(ctx)
 
     ctx.restore()
   }

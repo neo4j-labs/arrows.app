@@ -3,7 +3,7 @@ import Pill from "./Pill";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class NodeLabelsOutsideNode {
-  constructor(labels, orientation, verticalPosition, editing, style, textMeasurement) {
+  constructor(labels, orientation, editing, style, textMeasurement) {
     this.pills = labels.map((label) => {
       return new Pill(label, editing, style, textMeasurement)
     })
@@ -26,7 +26,7 @@ export class NodeLabelsOutsideNode {
         })()
         return new Vector(
           horizontalPosition,
-          verticalPosition + i * lineHeight
+          i * lineHeight
         )
       })
     }
@@ -34,8 +34,7 @@ export class NodeLabelsOutsideNode {
     this.width = Math.max(...this.pills.map(pill => pill.width + pill.borderWidth))
     const lastPillIndex = this.pills.length - 1
     this.height = this.pillPositions[lastPillIndex].dy +
-      this.pills[lastPillIndex].height + this.pills[lastPillIndex].borderWidth -
-      verticalPosition
+      this.pills[lastPillIndex].height + this.pills[lastPillIndex].borderWidth
   }
 
   get type() {
