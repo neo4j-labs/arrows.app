@@ -25,6 +25,7 @@ export default class VisualNode {
 
     this.internalRadius = style('radius')
     this.radius = this.internalRadius + style('border-width')
+    this.fitRadius = this.internalRadius - style('node-padding')
     this.background = new NodeBackground(node.position, this.internalRadius, editing, style)
     const neighbourObstacles = neighbourPositions(node, graph).map(position => {
       return { angle: position.vectorFrom(node.position).angle() }
@@ -62,7 +63,7 @@ export default class VisualNode {
               new NodeCaptionInsideNode(caption, editing, style, measureTextContext))
           } else {
             this.internalScaleFactor = bisect((factor) => {
-              this.caption = new NodeCaptionFillNode(caption, this.radius / factor, editing, style, measureTextContext)
+              this.caption = new NodeCaptionFillNode(caption, this.fitRadius / factor, editing, style, measureTextContext)
               return this.caption.contentsFit
             }, 1, 1e-6)
             this.insideComponents.push(this.caption)
@@ -103,8 +104,8 @@ export default class VisualNode {
 
     if (this.internalScaleFactor === undefined) {
       this.internalVerticalOffset = -totalHeight(this.insideComponents) / 2
-      this.internalScaleFactor = everythingFits(this.insideComponents, this.internalVerticalOffset, this.internalRadius) ?
-        1 : scaleToFit(this.insideComponents, this.internalVerticalOffset, this.internalRadius)
+      this.internalScaleFactor = everythingFits(this.insideComponents, this.internalVerticalOffset, this.fitRadius) ?
+        1 : scaleToFit(this.insideComponents, this.internalVerticalOffset, this.fitRadius)
     }
 
     const outsideVerticalOffset = (() => {

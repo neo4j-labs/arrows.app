@@ -18,8 +18,7 @@ export class NodeCaptionFillNode {
     this.orientation = { horizontal: 'center', vertical: 'center' }
     this.lineHeight = this.font.fontSize * 1.2
     const measureWidth = (string) => textMeasurement.measureText(string).width
-    const padding = style('node-padding')
-    this.layout = fitTextToCircle(this.caption, Math.max(1, this.radius - padding), measureWidth, this.lineHeight)
+    this.layout = fitTextToCircle(this.caption, Math.max(1, this.radius), measureWidth, this.lineHeight)
   }
 
   get type() {
