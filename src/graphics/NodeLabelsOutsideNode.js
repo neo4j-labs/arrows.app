@@ -8,9 +8,10 @@ export class NodeLabelsOutsideNode {
       return new Pill(label, editing, style, textMeasurement)
     })
 
+    this.margin = style('label-margin')
+
     if (labels.length > 0) {
-      const margin = style('label-margin')
-      const lineHeight = this.pills[0].height + margin + this.pills[0].borderWidth
+      const lineHeight = this.pills[0].height + this.margin + this.pills[0].borderWidth
 
       this.pillPositions = this.pills.map((pill, i) => {
         const pillWidth = pill.width + pill.borderWidth

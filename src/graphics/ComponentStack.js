@@ -9,9 +9,9 @@ export class ComponentStack {
   push(component) {
     let top = 0
     if (!this.isEmpty()) {
-      const above = this.offsetComponents[this.offsetComponents.length - 1]
-      // const margin = Math.max(above.component.margin, component.margin)
-      const margin = 0
+      const above = this.bottomComponent()
+      const safeMargin = (component) => component.margin || 0
+      const margin = Math.max(safeMargin(above.component), safeMargin(component))
       top = above.top + above.component.height + margin
     }
     this.offsetComponents.push({component, top})
@@ -21,8 +21,16 @@ export class ComponentStack {
     return this.offsetComponents.length === 0
   }
 
+  bottomComponent() {
+    return this.offsetComponents[this.offsetComponents.length - 1]
+  }
+
   totalHeight() {
-    return this.offsetComponents.reduce((sum, offsetComponent) => sum + offsetComponent.component.height, 0)
+    if (this.isEmpty()) {
+      return 0
+    }
+    const bottomComponent = this.bottomComponent()
+    return bottomComponent.top + bottomComponent.component.height
   }
 
   maxWidth() {
