@@ -93,6 +93,7 @@ export class PropertyRow extends Component {
             <Button
               basic
               size='tiny'
+              onClick={() => onKeyChange(entry.key)}
             >
               {entry.key}
             </Button>
@@ -130,7 +131,7 @@ export class PropertyRow extends Component {
           <Form.Field>
             <Input
               value={propertyKey}
-              onChange={onKeyChange}
+              onChange={(event) => onKeyChange(event.target.value)}
               transparent
               className={'property-key'}
               ref={elm => this.keyInput = elm}
@@ -147,7 +148,7 @@ export class PropertyRow extends Component {
             <Input
               value={valueFieldValue}
               placeholder={valueFieldPlaceHolder}
-              onChange={onValueChange}
+              onChange={(event) => onValueChange(event.target.value)}
               ref={elm => this.valueInput = elm}
               onKeyPress={(evt) => handleKeyPress('value', evt)}
               onKeyDown={handleKeyDown}
