@@ -32,6 +32,31 @@ export const combineProperties = (entities) => {
   return properties
 }
 
+export const summarizeProperties = (selectedEntities, graph) => {
+  const keysInSelection = new Set()
+  selectedEntities.forEach((entity) => {
+    Object.keys(entity.properties).forEach((key) => keysInSelection.add(key))
+  })
+
+  const keys = [], values = []
+  graph.nodes.forEach(node => {
+    Object.entries(node.properties).forEach(([key, value]) => {
+      if (key && !keysInSelection.has(key)) {
+        const existingKey = keys.find(keyEntry => keyEntry.key === key)
+        if (existingKey) {
+          existingKey.nodeCount++
+        } else {
+          keys.push({key, nodeCount: 1})
+        }
+      }
+    })
+  })
+  return {
+    keys,
+    values
+  }
+}
+
 const doesStyleApply = (entity, styleKey) => {
   if (isNode(entity)) {
     return nodeStyleAttributes.includes(styleKey)

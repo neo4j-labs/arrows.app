@@ -59,6 +59,7 @@ export class PropertyRow extends Component {
   render = () => {
     const {
       propertyKey,
+      propertySummary,
       onKeyChange,
       valueFieldValue,
       valueFieldPlaceHolder,
@@ -85,24 +86,20 @@ export class PropertyRow extends Component {
       }
     }
 
-    const globalPropertyKeys = [
-      {key: 'name', nodeCount: 3},
-      {key: 'title', nodeCount: 10},
-      {key: 'born', nodeCount: 4}
-    ]
-    const propertyKeyButtons = globalPropertyKeys.map(entry => (
-      <List.Item>
-        <List.Content>
-          <Button
-            basic
-            size='tiny'
-          >
-            {entry.key}
-          </Button>
-          &nbsp;{entry.nodeCount} nodes
-        </List.Content>
-      </List.Item>
-    ))
+    const propertyKeyButtons = propertySummary.keys
+      .map(entry => (
+        <List.Item>
+          <List.Content>
+            <Button
+              basic
+              size='tiny'
+            >
+              {entry.key}
+            </Button>
+            &nbsp;{entry.nodeCount} nodes
+          </List.Content>
+        </List.Item>
+      ))
 
     const buttons = this.state.focusKey ? (
       <Form>

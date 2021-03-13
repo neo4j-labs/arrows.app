@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import {Segment, Divider, Form, Input, Button, Popup} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
 import {selectedRelationships} from "../model/selection"
-import {combineProperties, combineStyle} from "../model/properties"
+import {combineProperties, combineStyle, summarizeProperties} from "../model/properties"
 import {describeSelection} from "./SelectionCounters"
 import PropertyTable from "./PropertyTable"
 import StyleTable from "./StyleTable"
@@ -45,6 +45,7 @@ export default class DetailInspector extends Component {
     }
 
     const properties = combineProperties(entities)
+    const propertySummary = summarizeProperties(entities, graph)
     const labels = combineLabels(selectedNodes)
 
     const handleKeyDown = (evt) => {
@@ -130,6 +131,7 @@ export default class DetailInspector extends Component {
       fields.push(
         <PropertyTable key={`properties-${entities.map(entity => entity.id).join(',')}`}
                        properties={properties}
+                       propertySummary={propertySummary}
                        onSavePropertyKey={(oldPropertyKey, newPropertyKey) => onSavePropertyKey(selection, oldPropertyKey, newPropertyKey)}
                        onSavePropertyValue={(propertyKey, propertyValue) => onSavePropertyValue(selection, propertyKey, propertyValue)}
                        onDeleteProperty={(propertyKey) => onDeleteProperty(selection, propertyKey)}
