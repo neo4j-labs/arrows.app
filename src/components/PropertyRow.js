@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Table, Input, Form, Icon, Popup, Button, List} from 'semantic-ui-react'
+import {Table, Input, Form, Icon, Popup, Button, Label} from 'semantic-ui-react'
 
 export class PropertyRow extends Component {
 
@@ -88,58 +88,63 @@ export class PropertyRow extends Component {
 
     const propertyKeyButtons = propertySummary.keys
       .map(entry => (
-        <List.Item>
-          <List.Content>
+        <Table.Row
+          key={'suggest_' + entry.key}
+          textAlign='right'
+        >
+          <Table.Cell>
+            <Label>{entry.nodeCount}</Label>
+          </Table.Cell>
+          <Table.Cell>
             <Button
               basic
+              color='black'
               size='tiny'
               onClick={() => onKeyChange(entry.key)}
             >
               {entry.key}
             </Button>
-            &nbsp;{entry.nodeCount} nodes
-          </List.Content>
-        </List.Item>
+          </Table.Cell>
+        </Table.Row>
       ))
 
-    const buttons = this.state.focusKey ? (
+    const buttons = (
       <Form>
         <Form.Field>
-          <label>Keys in graph</label>
-          <List>
-            {propertyKeyButtons}
-          </List>
+          <label>other property keys</label>
+          <Table basic='very' compact='very'>
+            <Table.Body>
+              {propertyKeyButtons}
+            </Table.Body>
+          </Table>
         </Form.Field>
       </Form>
-    ) : (
-      <div>
-        <Button
-          key='convertCaptionsToLabels'
-          basic
-          color='black'
-          floated='right'
-          size="tiny"
-          content='Values'
-          type='button'
-        />
-      </div>
     )
 
-    const row = (
+    const keyField = (
+      <Input
+        value={propertyKey}
+        onChange={(event) => onKeyChange(event.target.value)}
+        transparent
+        className={'property-key'}
+        ref={elm => this.keyInput = elm}
+        onKeyPress={(evt) => handleKeyPress('key', evt)}
+        onKeyDown={handleKeyDown}
+        disabled={keyDisabled}
+        onFocus={this.onFocusKey}
+        onBlur={this.onBlurKey}
+      />
+    )
+    return (
       <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <Table.Cell width={3} collapsing>
           <Form.Field>
-            <Input
-              value={propertyKey}
-              onChange={(event) => onKeyChange(event.target.value)}
-              transparent
-              className={'property-key'}
-              ref={elm => this.keyInput = elm}
-              onKeyPress={(evt) => handleKeyPress('key', evt)}
-              onKeyDown={handleKeyDown}
-              disabled={keyDisabled}
-              onFocus={this.onFocusKey}
-              onBlur={this.onBlurKey}
+            <Popup
+              trigger={keyField}
+              content={buttons}
+              on='focus'
+              position={'bottom right'}
+              flowing
             />:
           </Form.Field>
         </Table.Cell>
@@ -167,16 +172,6 @@ export class PropertyRow extends Component {
           />
         </Table.Cell>
       </Table.Row>
-    )
-
-    return (
-      <Popup
-        trigger={row}
-        content={buttons}
-        open={this.state.focusKey || this.state.focusValue}
-        position={this.state.focusKey ? 'bottom left' : 'bottom right'}
-        flowing
-      />
     )
   }
 }
