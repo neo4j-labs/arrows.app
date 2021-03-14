@@ -174,28 +174,26 @@ export class PropertyRow extends Component {
       <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <Table.Cell width={3} collapsing>
           <Form.Field>
-            {propertySummary.keys.length > 0 ? (
-              <Popup
-                trigger={keyField}
-                content={keyPopupContent}
-                on='focus'
-                position='bottom right'
-                flowing
-              />
-            ) : keyField}:
+            <Popup
+              trigger={keyField}
+              content={keyPopupContent}
+              on='focus'
+              {...(propertySummary.keys.length > 0 ? {} : {open: false})}
+              position='bottom right'
+              flowing
+            />
           </Form.Field>
         </Table.Cell>
         <Table.Cell width={3}>
           <Form.Field>
-            {suggestedValues.length > 0 ? (
-              <Popup
-                trigger={valueField}
-                content={valuePopupContent}
-                on='focus'
-                position='bottom left'
-                flowing
-              />
-            ) : valueField}
+            <Popup
+              trigger={valueField}
+              content={valuePopupContent}
+              on='focus'
+              {...(suggestedValues.length > 0 ? {} : {open: false})}
+              position='bottom left'
+              flowing
+            />
           </Form.Field>
         </Table.Cell>
         <Table.Cell width={1}>
