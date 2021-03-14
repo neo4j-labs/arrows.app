@@ -181,7 +181,7 @@ export class PropertyRow extends Component {
               {...(propertySummary.keys.length > 0 ? {} : {open: false})}
               position='bottom right'
               flowing
-            />
+            />:
           </Form.Field>
         </Table.Cell>
         <Table.Cell width={3}>

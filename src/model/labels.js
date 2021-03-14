@@ -10,6 +10,31 @@ export const combineLabels = (nodes) => {
   return labels
 }
 
+export const summarizeLabels = (selectedEntities, graph) => {
+  const labels = []
+
+  const labelsInSelection = new Set()
+  selectedEntities.forEach(entity => {
+    if (entity.labels) {
+      entity.labels.forEach(label => labelsInSelection.add(label))
+    }
+  })
+
+  graph.nodes.forEach(node => {
+    node.labels.forEach(label => {
+      if (label && !labelsInSelection.has(label)) {
+        const existingLabel = labels.find(labelEntry => labelEntry.label === label)
+        if (existingLabel) {
+          existingLabel.nodeCount++
+        } else {
+          labels.push({label, nodeCount: 1})
+        }
+      }
+    })
+  })
+  return labels
+}
+
 export const labelsFromDatabaseEntity = (entity) => {
   return entity.labels.filter(label => label !== 'Diagram0').map(databaseLabelToLabel)
 }

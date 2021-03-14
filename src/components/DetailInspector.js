@@ -8,7 +8,7 @@ import PropertyTable from "./PropertyTable"
 import StyleTable from "./StyleTable"
 import { DetailToolbox } from "./DetailToolbox"
 import {categoriesPresent, styleAttributeGroups} from "../model/styling";
-import {combineLabels} from "../model/labels";
+import {combineLabels, summarizeLabels} from "../model/labels";
 import LabelTable from "./LabelTable";
 
 export default class DetailInspector extends Component {
@@ -47,6 +47,7 @@ export default class DetailInspector extends Component {
     const properties = combineProperties(entities)
     const propertySummary = summarizeProperties(entities, graph)
     const labels = combineLabels(selectedNodes)
+    const labelSummary = summarizeLabels(entities, graph)
 
     const handleKeyDown = (evt) => {
       if (evt.key === 'Escape' || (evt.key === 'Enter' && evt.metaKey)) {
@@ -108,6 +109,7 @@ export default class DetailInspector extends Component {
         <LabelTable
           key='labels'
           labels={labels}
+          labelSummary={labelSummary}
           onAddLabel={(label) => onAddLabel(selection, label)}
           onRenameLabel={(oldLabel, newLabel) => onRenameLabel(selection, oldLabel, newLabel)}
           onRemoveLabel={(label) => onRemoveLabel(selection, label)}
