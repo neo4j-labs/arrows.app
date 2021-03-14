@@ -62,6 +62,20 @@ export const summarizeProperties = (selectedEntities, graph) => {
           keys.push({key, nodeCount: 1})
         }
       }
+      if (value) {
+        let valuesForKey = values.get(key)
+        if (!valuesForKey) {
+          values.set(key, valuesForKey = [])
+        }
+        const existingValue = valuesForKey.find(entry => entry.value === value)
+        if (existingValue) {
+          if (!existingValue.inSelection) {
+            existingValue.nodeCount++
+          }
+        } else {
+          valuesForKey.push({value, inSelection: false, nodeCount: 1})
+        }
+      }
     })
   })
   return {

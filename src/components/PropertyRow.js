@@ -95,41 +95,54 @@ export class PropertyRow extends Component {
       </Form>
     )
 
-    const filteredValueEntries = propertySummary.values.get(propertyKey)
+    const suggestedValues = propertySummary.values.get(propertyKey)
       .filter(entry => entry.value !== valueFieldValue)
+    const suggestedValuesInSelection = suggestedValues.filter(entry => entry.inSelection)
+    const suggestedValuesInRestOfGraph = suggestedValues.filter(entry => !entry.inSelection)
 
-    const propertyValueButtons = filteredValueEntries
-      .map(entry => (
-        <Table.Row
-          key={'suggest_' + entry.value}
-          textAlign='left'
-        >
-          <Table.Cell>
-            <Button
-              basic
-              color='black'
-              size='tiny'
-              onClick={() => onValueChange(entry.value)}
-            >
-              {entry.value}
-            </Button>
-          </Table.Cell>
-          <Table.Cell>
-            <Label>{entry.nodeCount}</Label>
-          </Table.Cell>
-        </Table.Row>
-      ))
+    const entryToSuggestion = entry => (
+      <Table.Row
+        key={'suggest_' + entry.value}
+        textAlign='left'
+      >
+        <Table.Cell>
+          <Button
+            basic
+            color='black'
+            size='tiny'
+            onClick={() => onValueChange(entry.value)}
+          >
+            {entry.value}
+          </Button>
+        </Table.Cell>
+        <Table.Cell>
+          <Label>{entry.nodeCount}</Label>
+        </Table.Cell>
+      </Table.Row>
+    )
 
     const valuePopupContent = (
       <Form>
-        <Form.Field>
-          <label>in selection</label>
-          <Table basic='very' compact='very'>
-            <Table.Body>
-              {propertyValueButtons}
-            </Table.Body>
-          </Table>
-        </Form.Field>
+        {suggestedValuesInSelection.length > 0 ? (
+          <Form.Field>
+            <label>in selection</label>
+            <Table basic='very' compact='very'>
+              <Table.Body>
+                {suggestedValuesInSelection.map(entryToSuggestion)}
+              </Table.Body>
+            </Table>
+          </Form.Field>
+        ) : null}
+        {suggestedValuesInRestOfGraph.length > 0 ? (
+          <Form.Field>
+            <label>other values</label>
+            <Table basic='very' compact='very'>
+              <Table.Body>
+                {suggestedValuesInRestOfGraph.map(entryToSuggestion)}
+              </Table.Body>
+            </Table>
+          </Form.Field>
+        ) : null}
       </Form>
     )
 
@@ -174,7 +187,7 @@ export class PropertyRow extends Component {
         </Table.Cell>
         <Table.Cell width={3}>
           <Form.Field>
-            {filteredValueEntries.length > 0 ? (
+            {suggestedValues.length > 0 ? (
               <Popup
                 trigger={valueField}
                 content={valuePopupContent}
