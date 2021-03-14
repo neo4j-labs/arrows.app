@@ -95,8 +95,10 @@ export class PropertyRow extends Component {
       </Form>
     )
 
-    const propertyValueButtons = propertySummary.values.get(propertyKey)
+    const filteredValueEntries = propertySummary.values.get(propertyKey)
       .filter(entry => entry.value !== valueFieldValue)
+
+    const propertyValueButtons = filteredValueEntries
       .map(entry => (
         <Table.Row
           key={'suggest_' + entry.value}
@@ -159,24 +161,28 @@ export class PropertyRow extends Component {
       <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <Table.Cell width={3} collapsing>
           <Form.Field>
-            <Popup
-              trigger={keyField}
-              content={keyPopupContent}
-              on='focus'
-              position='bottom right'
-              flowing
-            />:
+            {propertySummary.keys.length > 0 ? (
+              <Popup
+                trigger={keyField}
+                content={keyPopupContent}
+                on='focus'
+                position='bottom right'
+                flowing
+              />
+            ) : keyField}:
           </Form.Field>
         </Table.Cell>
         <Table.Cell width={3}>
           <Form.Field>
-            <Popup
-              trigger={valueField}
-              content={valuePopupContent}
-              on='focus'
-              position='bottom left'
-              flowing
-            />
+            {filteredValueEntries.length > 0 ? (
+              <Popup
+                trigger={valueField}
+                content={valuePopupContent}
+                on='focus'
+                position='bottom left'
+                flowing
+              />
+            ) : valueField}
           </Form.Field>
         </Table.Cell>
         <Table.Cell width={1}>
