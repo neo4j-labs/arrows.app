@@ -33,12 +33,25 @@ export const combineProperties = (entities) => {
 }
 
 export const summarizeProperties = (selectedEntities, graph) => {
+  const keys = [], values = new Map()
+
   const keysInSelection = new Set()
   selectedEntities.forEach((entity) => {
-    Object.keys(entity.properties).forEach((key) => keysInSelection.add(key))
+    Object.entries(entity.properties).forEach(([key, value]) => {
+      keysInSelection.add(key)
+      let valuesForKey = values.get(key)
+      if (!valuesForKey) {
+        values.set(key, valuesForKey = [])
+      }
+      const existingValue = valuesForKey.find(entry => entry.value === value)
+      if (existingValue) {
+        existingValue.nodeCount++
+      } else {
+        valuesForKey.push({value, inSelection: true, nodeCount: 1})
+      }
+    })
   })
 
-  const keys = [], values = []
   graph.nodes.forEach(node => {
     Object.entries(node.properties).forEach(([key, value]) => {
       if (key && !keysInSelection.has(key)) {

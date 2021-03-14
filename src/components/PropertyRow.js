@@ -82,13 +82,49 @@ export class PropertyRow extends Component {
         </Table.Row>
       ))
 
-    const buttons = (
+    const keyPopupContent = (
       <Form>
         <Form.Field>
           <label>other property keys</label>
           <Table basic='very' compact='very'>
             <Table.Body>
               {propertyKeyButtons}
+            </Table.Body>
+          </Table>
+        </Form.Field>
+      </Form>
+    )
+
+    const propertyValueButtons = propertySummary.values.get(propertyKey)
+      .filter(entry => entry.value !== valueFieldValue)
+      .map(entry => (
+        <Table.Row
+          key={'suggest_' + entry.value}
+          textAlign='left'
+        >
+          <Table.Cell>
+            <Button
+              basic
+              color='black'
+              size='tiny'
+              onClick={() => onValueChange(entry.value)}
+            >
+              {entry.value}
+            </Button>
+          </Table.Cell>
+          <Table.Cell>
+            <Label>{entry.nodeCount}</Label>
+          </Table.Cell>
+        </Table.Row>
+      ))
+
+    const valuePopupContent = (
+      <Form>
+        <Form.Field>
+          <label>in selection</label>
+          <Table basic='very' compact='very'>
+            <Table.Body>
+              {propertyValueButtons}
             </Table.Body>
           </Table>
         </Form.Field>
@@ -107,13 +143,25 @@ export class PropertyRow extends Component {
         disabled={keyDisabled}
       />
     )
+    const valueField = (
+      <Input
+        value={valueFieldValue}
+        placeholder={valueFieldPlaceHolder}
+        onChange={(event) => onValueChange(event.target.value)}
+        ref={elm => this.valueInput = elm}
+        onKeyPress={(evt) => handleKeyPress('value', evt)}
+        onKeyDown={handleKeyDown}
+        transparent
+        disabled={valueDisabled}
+      />
+    )
     return (
       <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
         <Table.Cell width={3} collapsing>
           <Form.Field>
             <Popup
               trigger={keyField}
-              content={buttons}
+              content={keyPopupContent}
               on='focus'
               position='bottom right'
               flowing
@@ -122,15 +170,12 @@ export class PropertyRow extends Component {
         </Table.Cell>
         <Table.Cell width={3}>
           <Form.Field>
-            <Input
-              value={valueFieldValue}
-              placeholder={valueFieldPlaceHolder}
-              onChange={(event) => onValueChange(event.target.value)}
-              ref={elm => this.valueInput = elm}
-              onKeyPress={(evt) => handleKeyPress('value', evt)}
-              onKeyDown={handleKeyDown}
-              transparent
-              disabled={valueDisabled}
+            <Popup
+              trigger={valueField}
+              content={valuePopupContent}
+              on='focus'
+              position='bottom left'
+              flowing
             />
           </Form.Field>
         </Table.Cell>
