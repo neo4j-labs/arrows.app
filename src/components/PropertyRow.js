@@ -6,9 +6,7 @@ export class PropertyRow extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      mouseOver: false,
-      focusKey: false,
-      focusValue: false,
+      mouseOver: false
     }
   }
 
@@ -24,30 +22,6 @@ export class PropertyRow extends Component {
     })
   }
 
-  onFocusKey = () => {
-    this.setState({
-      focusKey: true
-    })
-  }
-
-  onBlurKey = () => {
-    this.setState({
-      focusKey: false
-    })
-  }
-
-  onFocusValue = () => {
-    this.setState({
-      focusValue: true
-    })
-  }
-
-  onBlurValue = () => {
-    this.setState({
-      focusValue: false
-    })
-  }
-  
   componentDidMount () {
     if (!this.props.propertyKey || this.props.propertyKey.length === 0) {
       this.keyInput && this.keyInput.focus()
@@ -131,8 +105,6 @@ export class PropertyRow extends Component {
         onKeyPress={(evt) => handleKeyPress('key', evt)}
         onKeyDown={handleKeyDown}
         disabled={keyDisabled}
-        onFocus={this.onFocusKey}
-        onBlur={this.onBlurKey}
       />
     )
     return (
@@ -143,7 +115,7 @@ export class PropertyRow extends Component {
               trigger={keyField}
               content={buttons}
               on='focus'
-              position={'bottom right'}
+              position='bottom right'
               flowing
             />:
           </Form.Field>
@@ -157,8 +129,6 @@ export class PropertyRow extends Component {
               ref={elm => this.valueInput = elm}
               onKeyPress={(evt) => handleKeyPress('value', evt)}
               onKeyDown={handleKeyDown}
-              onFocus={this.onFocusValue}
-              onBlur={this.onBlurValue}
               transparent
               disabled={valueDisabled}
             />
