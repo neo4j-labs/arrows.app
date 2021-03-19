@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Divider, Form, Input, Button, Popup} from 'semantic-ui-react'
+import {Segment, Divider, Form, Input} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
 import {selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle, summarizeProperties} from "../model/properties"
@@ -10,6 +10,7 @@ import { DetailToolbox } from "./DetailToolbox"
 import {categoriesPresent, styleAttributeGroups} from "../model/styling";
 import {combineLabels, summarizeLabels} from "../model/labels";
 import LabelTable from "./LabelTable";
+import {CaptionInspector} from "./CaptionInspector";
 
 export default class DetailInspector extends Component {
   constructor(props) {
@@ -49,58 +50,16 @@ export default class DetailInspector extends Component {
     const labels = combineLabels(selectedNodes)
     const labelSummary = summarizeLabels(entities, graph)
 
-    const handleKeyDown = (evt) => {
-      if (evt.key === 'Escape' || (evt.key === 'Enter' && evt.metaKey)) {
-        this.captionInput.inputRef && this.captionInput.inputRef.blur()
-      }
-    }
-
     if (selectionIncludes.nodes && !selectionIncludes.relationships) {
       const value = commonValue(selectedNodes.map((node) => node.caption));
-      const fieldValue = value || ''
-      const placeholder = value === undefined ? '<multiple values>' : null
-      const textBox = (
-        <Input value={fieldValue}
-               onFocus={this.moveCursorToEnd}
-               onChange={(event) => onSaveCaption(selection, event.target.value)}
-               placeholder={placeholder}
-               ref={elm => this.captionInput = elm}
-               onKeyDown={handleKeyDown.bind(this)}/>
-      )
-      const buttons = (
-        <div>
-          <Button
-            key='convertCaptionsToLabels'
-            onClick={onConvertCaptionsToLabels}
-            basic
-            color='black'
-            floated='right'
-            size="tiny"
-            content='Use captions as labels'
-            type='button'
-          />
-          <Button
-            key='convertCaptionsToProperties'
-            onClick={onConvertCaptionsToPropertyValues}
-            basic
-            color='black'
-            floated='right'
-            size="tiny"
-            content='Use captions as properties'
-            type='button'
-          />
-        </div>
-      )
+
       fields.push(
-        <Form.Field key='_caption'>
-          <label>Caption</label>
-          <Popup
-            trigger={textBox}
-            content={buttons}
-            on='click'
-            position='bottom center'
-          />
-        </Form.Field>
+        <CaptionInspector
+          value={value}
+          onSaveCaption={(caption) => onSaveCaption(selection, caption)}
+          onConvertCaptionsToLabels={onConvertCaptionsToLabels}
+          onConvertCaptionsToPropertyValues={onConvertCaptionsToPropertyValues}
+        />
       )
     }
 
