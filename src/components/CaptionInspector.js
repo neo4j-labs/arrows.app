@@ -22,29 +22,31 @@ export class CaptionInspector extends Component {
              ref={elm => this.captionInput = elm}
              onKeyDown={handleKeyDown.bind(this)}/>
     )
-    const buttons = (
-      <div>
-        <Button
-          key='convertCaptionsToLabels'
-          onClick={onConvertCaptionsToLabels}
-          basic
-          color='black'
-          floated='right'
-          size="tiny"
-          content='Use captions as labels'
-          type='button'
-        />
-        <Button
-          key='convertCaptionsToProperties'
-          onClick={onConvertCaptionsToPropertyValues}
-          basic
-          color='black'
-          floated='right'
-          size="tiny"
-          content='Use captions as properties'
-          type='button'
-        />
-      </div>
+    const popupContent = (
+      <Form>
+        <Form.Field>
+          <Button
+            key='convertCaptionsToLabels'
+            onClick={onConvertCaptionsToLabels}
+            basic
+            color='black'
+            size="tiny"
+            content='Use as labels'
+            type='button'
+          />
+        </Form.Field>
+        <Form.Field>
+          <Button
+            key='convertCaptionsToProperties'
+            onClick={onConvertCaptionsToPropertyValues}
+            basic
+            color='black'
+            size="tiny"
+            content='Use as properties'
+            type='button'
+          />
+        </Form.Field>
+      </Form>
     )
 
     return (
@@ -52,9 +54,10 @@ export class CaptionInspector extends Component {
         <label>Caption</label>
         <Popup
           trigger={textBox}
-          content={buttons}
-          on='click'
-          position='bottom center'
+          content={popupContent}
+          on='focus'
+          {...(value || value === undefined ? {} : {open: false})}
+          position='bottom left'
         />
       </Form.Field>
     )
