@@ -45,11 +45,6 @@ export default class DetailInspector extends Component {
       relationships: relationships.length > 0
     }
 
-    const properties = combineProperties(entities)
-    const propertySummary = summarizeProperties(entities, graph)
-    const labels = combineLabels(selectedNodes)
-    const labelSummary = summarizeLabels(entities, graph)
-
     if (selectionIncludes.nodes && !selectionIncludes.relationships) {
       const value = commonValue(selectedNodes.map((node) => node.caption));
 
@@ -64,6 +59,9 @@ export default class DetailInspector extends Component {
     }
 
     if (selectionIncludes.nodes) {
+      const labels = combineLabels(selectedNodes)
+      const labelSummary = summarizeLabels(entities, graph)
+
       fields.push(
         <LabelTable
           key='labels'
@@ -78,6 +76,7 @@ export default class DetailInspector extends Component {
 
     if (selectionIncludes.relationships && !selectionIncludes.nodes) {
       const commonType = commonValue(relationships.map((relationship) => relationship.type))
+
       fields.push(
         <Form.Field key='_type'>
           <label>Type</label>
@@ -89,6 +88,9 @@ export default class DetailInspector extends Component {
     }
 
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
+      const properties = combineProperties(entities)
+      const propertySummary = summarizeProperties(entities, graph)
+
       fields.push(
         <PropertyTable key={`properties-${entities.map(entity => entity.id).join(',')}`}
                        properties={properties}
