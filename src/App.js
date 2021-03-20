@@ -17,11 +17,13 @@ import FooterContainer from "./containers/FooterContainer";
 import StyleContainer from "./containers/StyleContainer";
 import LocalStoragePickerContainer from "./containers/LocalStoragePickerContainer";
 import ImportContainer from "./containers/ImportContainer";
+import {handlePaste} from "./actions/import";
 
 class App extends Component {
   constructor (props) {
     super(props)
     window.onkeydown = this.fireKeyboardShortcutAction.bind(this)
+    window.addEventListener('paste', this.props.handlePaste)
   }
 
   render() {
@@ -115,7 +117,8 @@ const mapDispatchToProps = dispatch => {
   return {
     onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight)),
     onCancelPicker: () => dispatch(pickDiagramCancel()),
-    loadFromGoogleDrive: fileId => dispatch(getFileFromGoogleDrive(fileId))
+    loadFromGoogleDrive: fileId => dispatch(getFileFromGoogleDrive(fileId)),
+    handlePaste: clipboardEvent => dispatch(handlePaste(clipboardEvent))
   }
 }
 
