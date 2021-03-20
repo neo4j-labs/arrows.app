@@ -78,6 +78,14 @@ const graph = (state = emptyGraph(), action) => {
       }
     }
 
+    case 'ADD_LABELS': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) => action.nodeLabels.hasOwnProperty(node.id) ? addLabel(node, action.nodeLabels[node.id]) : node),
+        relationships: state.relationships
+      }
+    }
+
     case 'RENAME_LABEL': {
       return {
         style: state.style,
@@ -107,6 +115,14 @@ const graph = (state = emptyGraph(), action) => {
         style: state.style,
         nodes: state.nodes.map((node) => nodeSelected(action.selection, node.id) ? setProperty(node, action.key, action.value) : node),
         relationships: state.relationships.map((relationship) => relationshipSelected(action.selection, relationship.id) ? setProperty(relationship, action.key, action.value) : relationship)
+      }
+    }
+
+    case 'SET_PROPERTY_VALUES': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) => action.nodePropertyValues.hasOwnProperty(node.id) ? setProperty(node, action.key, action.nodePropertyValues[node.id]) : node),
+        relationships: state.relationships
       }
     }
 

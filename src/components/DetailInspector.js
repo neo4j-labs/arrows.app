@@ -2,14 +2,15 @@ import React, {Component} from 'react'
 import {Segment, Divider, Form, Input} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
 import {selectedRelationships} from "../model/selection"
-import {combineProperties, combineStyle} from "../model/properties"
+import {combineProperties, combineStyle, summarizeProperties} from "../model/properties"
 import {describeSelection} from "./SelectionCounters"
 import PropertyTable from "./PropertyTable"
 import StyleTable from "./StyleTable"
 import { DetailToolbox } from "./DetailToolbox"
 import {categoriesPresent, styleAttributeGroups} from "../model/styling";
-import {combineLabels} from "../model/labels";
+import {combineLabels, summarizeLabels} from "../model/labels";
 import LabelTable from "./LabelTable";
+import {CaptionInspector} from "./CaptionInspector";
 
 export default class DetailInspector extends Component {
   constructor(props) {
@@ -31,6 +32,7 @@ export default class DetailInspector extends Component {
 
   render() {
     const {selection, graph, onSaveCaption, onSaveType, onDuplicate, reverseRelationships, selectedNodes, onSelect} = this.props
+    const {onConvertCaptionsToLabels, onConvertCaptionsToPropertyValues} = this.props
     const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
     const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
@@ -43,37 +45,28 @@ export default class DetailInspector extends Component {
       relationships: relationships.length > 0
     }
 
-    const properties = combineProperties(entities)
-    const labels = combineLabels(selectedNodes)
-
-    const handleKeyDown = (evt) => {
-      if (evt.key === 'Escape' || (evt.key === 'Enter' && evt.metaKey)) {
-        this.captionInput.inputRef && this.captionInput.inputRef.blur()
-      }
-    }
-
     if (selectionIncludes.nodes && !selectionIncludes.relationships) {
       const value = commonValue(selectedNodes.map((node) => node.caption));
-      const fieldValue = value || ''
-      const placeholder = value === undefined ? '<multiple values>' : null
+
       fields.push(
-        <Form.Field key='_caption'>
-          <label>Caption</label>
-          <Input value={fieldValue}
-                 onFocus={this.moveCursorToEnd}
-                 onChange={(event) => onSaveCaption(selection, event.target.value)}
-                 placeholder={placeholder}
-                 ref={elm => this.captionInput = elm}
-                 onKeyDown={handleKeyDown.bind(this)}/>
-        </Form.Field>
+        <CaptionInspector
+          value={value}
+          onSaveCaption={(caption) => onSaveCaption(selection, caption)}
+          onConvertCaptionsToLabels={onConvertCaptionsToLabels}
+          onConvertCaptionsToPropertyValues={onConvertCaptionsToPropertyValues}
+        />
       )
     }
 
     if (selectionIncludes.nodes) {
+      const labels = combineLabels(selectedNodes)
+      const labelSummary = summarizeLabels(entities, graph)
+
       fields.push(
         <LabelTable
           key='labels'
           labels={labels}
+          labelSummary={labelSummary}
           onAddLabel={(label) => onAddLabel(selection, label)}
           onRenameLabel={(oldLabel, newLabel) => onRenameLabel(selection, oldLabel, newLabel)}
           onRemoveLabel={(label) => onRemoveLabel(selection, label)}
@@ -83,6 +76,7 @@ export default class DetailInspector extends Component {
 
     if (selectionIncludes.relationships && !selectionIncludes.nodes) {
       const commonType = commonValue(relationships.map((relationship) => relationship.type))
+
       fields.push(
         <Form.Field key='_type'>
           <label>Type</label>
@@ -94,9 +88,13 @@ export default class DetailInspector extends Component {
     }
 
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
+      const properties = combineProperties(entities)
+      const propertySummary = summarizeProperties(entities, graph)
+
       fields.push(
         <PropertyTable key={`properties-${entities.map(entity => entity.id).join(',')}`}
                        properties={properties}
+                       propertySummary={propertySummary}
                        onSavePropertyKey={(oldPropertyKey, newPropertyKey) => onSavePropertyKey(selection, oldPropertyKey, newPropertyKey)}
                        onSavePropertyValue={(propertyKey, propertyValue) => onSavePropertyValue(selection, propertyKey, propertyValue)}
                        onDeleteProperty={(propertyKey) => onDeleteProperty(selection, propertyKey)}

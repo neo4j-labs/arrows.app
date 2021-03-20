@@ -4,7 +4,7 @@ import {LabelRow} from "./LabelRow";
 
 export default class LabelTable extends Component {
   render() {
-    const { labels, onAddLabel, onRenameLabel, onRemoveLabel } = this.props
+    const { labels, onAddLabel, onRenameLabel, onRemoveLabel, labelSummary } = this.props
     const addEmptyLabel = () =>  {
       onAddLabel('')
     }
@@ -14,9 +14,10 @@ export default class LabelTable extends Component {
         <LabelRow
           key={'row-' + index}
           label={label}
+          labelSummary={labelSummary}
           status={labels[label].status}
           onAddLabel={() => onAddLabel(label)}
-          onRenameLabel={(event) => onRenameLabel(label, event.target.value)}
+          onRenameLabel={(newLabel) => onRenameLabel(label, newLabel)}
           onRemoveLabel={() => onRemoveLabel(label)}
         />
       )

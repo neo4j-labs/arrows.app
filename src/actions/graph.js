@@ -244,6 +244,12 @@ export const addLabel = (selection, label) => ({
   label
 })
 
+export const addLabels = (nodeLabels) => ({
+  category: 'GRAPH',
+  type: 'ADD_LABELS',
+  nodeLabels
+})
+
 export const renameLabel = (selection, oldLabel, newLabel) => ({
   category: 'GRAPH',
   type: 'RENAME_LABEL',
@@ -273,6 +279,13 @@ export const setProperty = (selection, key, value) => ({
   selection,
   key,
   value
+})
+
+export const setPropertyValues = (key, nodePropertyValues) => ({
+  category: 'GRAPH',
+  type: 'SET_PROPERTY_VALUES',
+  key,
+  nodePropertyValues
 })
 
 export const setArrowsProperty = (selection, key, value) => ({
@@ -481,5 +494,33 @@ export const importNodesAndRelationships = (importedGraph) => {
       nodes: newNodes,
       relationships: newRelationships,
     })
+  }
+}
+
+export const convertCaptionsToLabels = () => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const selection = state.selection
+    const graph = getPresentGraph(state)
+    const nodesToConvert = selectedNodes(graph, selection)
+    const nodeLabels = Object.fromEntries(nodesToConvert.map(node => {
+      return [node.id, node.caption]
+    }))
+    dispatch(addLabels(nodeLabels))
+    dispatch(setNodeCaption(selection, ''))
+  }
+}
+
+export const convertCaptionsToPropertyValues = () => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const selection = state.selection
+    const graph = getPresentGraph(state)
+    const nodesToConvert = selectedNodes(graph, selection)
+    const nodePropertyValues = Object.fromEntries(nodesToConvert.map(node => {
+      return [node.id, node.caption]
+    }))
+    dispatch(setPropertyValues('', nodePropertyValues))
+    dispatch(setNodeCaption(selection, ''))
   }
 }

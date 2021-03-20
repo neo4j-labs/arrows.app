@@ -32,6 +32,58 @@ export const combineProperties = (entities) => {
   return properties
 }
 
+export const summarizeProperties = (selectedEntities, graph) => {
+  const keys = [], values = new Map()
+
+  const keysInSelection = new Set()
+  selectedEntities.forEach((entity) => {
+    Object.entries(entity.properties).forEach(([key, value]) => {
+      keysInSelection.add(key)
+      let valuesForKey = values.get(key)
+      if (!valuesForKey) {
+        values.set(key, valuesForKey = [])
+      }
+      const existingValue = valuesForKey.find(entry => entry.value === value)
+      if (existingValue) {
+        existingValue.nodeCount++
+      } else {
+        valuesForKey.push({value, inSelection: true, nodeCount: 1})
+      }
+    })
+  })
+
+  graph.nodes.forEach(node => {
+    Object.entries(node.properties).forEach(([key, value]) => {
+      if (key && !keysInSelection.has(key)) {
+        const existingKey = keys.find(keyEntry => keyEntry.key === key)
+        if (existingKey) {
+          existingKey.nodeCount++
+        } else {
+          keys.push({key, nodeCount: 1})
+        }
+      }
+      if (value) {
+        let valuesForKey = values.get(key)
+        if (!valuesForKey) {
+          values.set(key, valuesForKey = [])
+        }
+        const existingValue = valuesForKey.find(entry => entry.value === value)
+        if (existingValue) {
+          if (!existingValue.inSelection) {
+            existingValue.nodeCount++
+          }
+        } else {
+          valuesForKey.push({value, inSelection: false, nodeCount: 1})
+        }
+      }
+    })
+  })
+  return {
+    keys,
+    values
+  }
+}
+
 const doesStyleApply = (entity, styleKey) => {
   if (isNode(entity)) {
     return nodeStyleAttributes.includes(styleKey)
