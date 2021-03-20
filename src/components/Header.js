@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {PureComponent} from 'react'
 import { Icon, Menu, Button } from 'semantic-ui-react'
 import { DiagramNameEditor } from "./DiagramNameEditor"
 import arrows_logo from "../images/arrows_logo.svg"
@@ -44,113 +44,131 @@ const storageIcon = (storageMode) => {
   }
 }
 
-const Header = (props) => {
-  const openShareDialog = storage => {
-    new GoogleDriveShare(storage).openDialog()
+class Header extends PureComponent {
+  constructor(props) {
+    super(props)
   }
 
-  const newDiagramOptions = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].map(mode => (
-    <div key={mode} role="option" className="item" onClick={() => props.onNewDiagram(mode)}>
-      <i aria-hidden="true" className={'icon ' + storageIcon(mode)}/>
-      <span>{storageNames[mode]}</span>
-    </div>
-  ))
+  // shouldComponentUpdate(nextProps, nextState, nextContext) {
+  //   console.log(this.props.storage, nextProps.storage,
+  //     this.props.storage !== nextProps.storage
+  //   )
+  //   return (
+  //     this.props.recentStorage !== nextProps.recentStorage ||
+  //     this.props.diagramName !== nextProps.diagramName ||
+  //     this.props.storage !== nextProps.storage
+  //   )
+  // }
 
-  const recentlyAccessFiles = props.recentStorage.map((entry, i) => (
-    <div key={'recentlyAccessFiles' + i} role="option" className="item" onClick={() => props.openRecentFile(entry)} style={{
-      maxWidth: '20em',
-      overflow: 'hidden',
-      whiteSpace: 'nowrap',
-      textOverflow: 'ellipsis'
-    }}>
-      <i aria-hidden="true" className={'icon ' + storageIcon(entry.mode)}/>
-      <span className="text">{entry.diagramName}</span>
-    </div>
-  ))
+  render() {
+    const openShareDialog = storage => {
+      new GoogleDriveShare(storage).openDialog()
+    }
 
-  const browseDiagramOptions = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].map(mode => (
-    <div key={mode} role="option" className="item" onClick={() => props.pickFileToOpen(mode)}>
-      <i aria-hidden="true" className={'icon ' + storageIcon(mode)}/>
-      <span>{storageNames[mode]}</span>
-    </div>
-  ))
-
-  return (
-    <Menu attached='top' style={{ borderRadius: 0 }} borderless>
-      <div role="listbox" aria-expanded="true" className="ui item simple dropdown" tabIndex="0">
-        <i className="icon" style={{ height: '1.5em' }}>
-          <img src={arrows_logo} style={{ height: '1.5em' }} alt='Arrows.app logo'/>
-        </i>
-        <div className="menu transition visible">
-          <div role="option" className="item">
-            <i aria-hidden="true" className="dropdown icon"/>
-            <span className="text">New</span>
-            <div className="menu transition">
-              <div className="header">Store in</div>
-              {newDiagramOptions}
-            </div>
-          </div>
-          <div role="option" className="item">
-            <i aria-hidden="true" className="dropdown icon"/>
-            <span className="text">Open</span>
-            <div className="menu transition">
-              <div className="header">Recently accessed</div>
-              {recentlyAccessFiles}
-              <div className="divider"/>
-              <div className="header">Browse</div>
-              {browseDiagramOptions}
-            </div>
-          </div>
-          <div className="divider"/>
-          <div role="option" className="item" onClick={props.onImportClick}>Import</div>
-          <div className="divider"/>
-          <div role="option" className="item" onClick={props.onHelpClick}>Help</div>
-        </div>
+    const newDiagramOptions = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].map(mode => (
+      <div key={mode} role="option" className="item" onClick={() => this.props.onNewDiagram(mode)}>
+        <i aria-hidden="true" className={'icon ' + storageIcon(mode)}/>
+        <span>{storageNames[mode]}</span>
       </div>
-      <DiagramNameEditor
-        diagramName={props.diagramName}
-        setDiagramName={props.setDiagramName}
-      />
-      <Menu.Item style={{opacity: 0.6}}>
-        <Icon name={storageIcon(props.storage.mode)}/>
-        {storageStatusMessage(props)}
-      </Menu.Item>
-      <Menu.Menu position={'right'}>
-        <Menu.Item>
-          <Button
-            onClick={props.onExportClick}
-            icon='download'
-            basic
-            color='black'
-            content='Download / Export'
-          />
+    ))
+
+    const recentlyAccessFiles = this.props.recentStorage.slice(1,11).map((entry, i) => (
+      <div key={'recentlyAccessFiles' + i} role="option" className="item" onClick={() => this.props.openRecentFile(entry)}
+           style={{
+             maxWidth: '20em',
+             overflow: 'hidden',
+             whiteSpace: 'nowrap',
+             textOverflow: 'ellipsis'
+           }}>
+        <i aria-hidden="true" className={'icon ' + storageIcon(entry.mode)}/>
+        <span className="text">{entry.diagramName}</span>
+      </div>
+    ))
+
+    const browseDiagramOptions = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].map(mode => (
+      <div key={mode} role="option" className="item" onClick={() => this.props.pickFileToOpen(mode)}>
+        <i aria-hidden="true" className={'icon ' + storageIcon(mode)}/>
+        <span>{storageNames[mode]}</span>
+      </div>
+    ))
+
+    return (
+      <Menu attached='top' style={{borderRadius: 0}} borderless>
+        <div role="listbox" aria-expanded="true" className="ui item simple dropdown" tabIndex="0">
+          <i className="icon" style={{height: '1.5em'}}>
+            <img src={arrows_logo} style={{height: '1.5em'}} alt='Arrows.app logo'/>
+          </i>
+          <div className="menu transition visible">
+            <div role="option" className="item">
+              <i aria-hidden="true" className="dropdown icon"/>
+              <span className="text">New</span>
+              <div className="menu transition">
+                <div className="header">Store in</div>
+                {newDiagramOptions}
+              </div>
+            </div>
+            <div role="option" className="item">
+              <i aria-hidden="true" className="dropdown icon"/>
+              <span className="text">Open</span>
+              <div className="menu transition">
+                <div className="header">Recently accessed</div>
+                {recentlyAccessFiles}
+                <div className="divider"/>
+                <div className="header">Browse</div>
+                {browseDiagramOptions}
+              </div>
+            </div>
+            <div className="divider"/>
+            <div role="option" className="item" onClick={this.props.onImportClick}>Import</div>
+            <div className="divider"/>
+            <div role="option" className="item" onClick={this.props.onHelpClick}>Help</div>
+          </div>
+        </div>
+        <DiagramNameEditor
+          diagramName={this.props.diagramName}
+          setDiagramName={this.props.setDiagramName}
+        />
+        <Menu.Item style={{opacity: 0.6}}>
+          <Icon name={storageIcon(this.props.storage.mode)}/>
+          {storageStatusMessage(this.props)}
         </Menu.Item>
-        {props.storage.mode === 'GOOGLE_DRIVE' ?
+        <Menu.Menu position={'right'}>
           <Menu.Item>
             <Button
-              onClick={() => openShareDialog(props.storage)}
-              icon='users'
-              color='orange'
-              content='Share'
-            />
-          </Menu.Item> :
-          <Menu.Item>
-            <Button
-              onClick={props.storeInGoogleDrive}
-              icon='google drive'
-              color='orange'
-              content='Save to Google Drive'
+              onClick={this.props.onExportClick}
+              icon='download'
+              basic
+              color='black'
+              content='Download / Export'
             />
           </Menu.Item>
-        }
-        <Menu.Item
-          title="Open/Close Inspector"
-          onClick={props.showInspector}>
-          <Icon name='sidebar'/>
-        </Menu.Item>
-      </Menu.Menu>
-    </Menu>
-  )
+          {this.props.storage.mode === 'GOOGLE_DRIVE' ?
+            <Menu.Item>
+              <Button
+                onClick={() => openShareDialog(this.props.storage)}
+                icon='users'
+                color='orange'
+                content='Share'
+              />
+            </Menu.Item> :
+            <Menu.Item>
+              <Button
+                onClick={this.props.storeInGoogleDrive}
+                icon='google drive'
+                color='orange'
+                content='Save to Google Drive'
+              />
+            </Menu.Item>
+          }
+          <Menu.Item
+            title="Open/Close Inspector"
+            onClick={this.props.showInspector}>
+            <Icon name='sidebar'/>
+          </Menu.Item>
+        </Menu.Menu>
+      </Menu>
+    )
+  }
 }
 
 export default Header

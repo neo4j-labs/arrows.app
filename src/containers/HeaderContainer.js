@@ -13,7 +13,7 @@ import {
 
 const mapStateToProps = state => {
   return {
-    recentStorage: state.recentStorage.slice(1,11),
+    recentStorage: state.recentStorage,
     diagramName: state.diagramName,
     storage: state.storage
   }

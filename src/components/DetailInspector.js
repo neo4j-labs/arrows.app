@@ -11,10 +11,18 @@ import {categoriesPresent, styleAttributeGroups} from "../model/styling";
 import {combineLabels, summarizeLabels} from "../model/labels";
 import LabelTable from "./LabelTable";
 import {CaptionInspector} from "./CaptionInspector";
+import {graphsDifferInMoreThanPositions} from "../model/Graph";
 
 export default class DetailInspector extends Component {
   constructor(props) {
     super(props)
+  }
+
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return nextProps.inspectorVisible && (
+      graphsDifferInMoreThanPositions(this.props.graph, nextProps.graph) ||
+      this.props.selection !== nextProps.selection
+    )
   }
 
   moveCursorToEnd(e) {

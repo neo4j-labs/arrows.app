@@ -50,3 +50,23 @@ export const neighbourPositions = (node, graph) => {
       return otherNode.position
     })
 }
+
+export const graphsDifferInMoreThanPositions = (graph1, graph2) => {
+  return nodesDifferInMoreThanPositions(graph1.nodes, graph2.nodes) ||
+    graph1.relationships !== graph2.relationships ||
+    graph1.style !== graph2.style
+}
+
+const nodesDifferInMoreThanPositions = (nodes1, nodes2) => {
+  if (nodes1.length !== nodes2.length) return true
+  return nodes1.some((node1, i) => {
+    const node2 = nodes2[i]
+    return (
+      node1.id !== node2.id ||
+      node1.caption !== node2.caption ||
+      node1.style !== node2.style ||
+      node1.labels !== node2.labels ||
+      node1.properties !== node2.properties
+    )
+  })
+}

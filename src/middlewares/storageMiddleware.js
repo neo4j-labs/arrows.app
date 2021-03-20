@@ -13,6 +13,7 @@ import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
 const updateQueue = []
 
 const driveUpdateInterval = 1000 // ms
+const localUpdateInterval = 500 // ms
 let waiting
 
 const deBounce = (func, delay) => {
@@ -90,9 +91,11 @@ export const storageMiddleware = store => next => action => {
           if (oldState.storage.status !== 'PUTTING') {
             store.dispatch(puttingGraph())
           }
+          deBounce(() => {
 
-          saveGraphToLocalStorage(storage.fileId, {graph, diagramName})
-          store.dispatch(puttingGraphSucceeded())
+            saveGraphToLocalStorage(storage.fileId, {graph, diagramName})
+            store.dispatch(puttingGraphSucceeded())
+          }, localUpdateInterval)
         }
         break
 
