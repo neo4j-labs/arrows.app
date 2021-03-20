@@ -50,6 +50,7 @@ export default class DetailInspector extends Component {
 
       fields.push(
         <CaptionInspector
+          key='caption'
           value={value}
           onSaveCaption={(caption) => onSaveCaption(selection, caption)}
           onConvertCaptionsToLabels={onConvertCaptionsToLabels}

@@ -7,7 +7,7 @@ const Footer = (props) => {
   const links = informationLinks.map(link => {
     const [linkText, href] = link
     return (
-      <p style={{
+      <p key={href} style={{
         color: '#BCC0C9',
         fontSize: '11px',
         lineHeight: '26px',

@@ -50,14 +50,14 @@ const Header = (props) => {
   }
 
   const newDiagramOptions = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].map(mode => (
-    <div role="option" className="item" onClick={() => props.onNewDiagram(mode)}>
+    <div key={mode} role="option" className="item" onClick={() => props.onNewDiagram(mode)}>
       <i aria-hidden="true" className={'icon ' + storageIcon(mode)}/>
       <span>{storageNames[mode]}</span>
     </div>
   ))
 
-  const recentlyAccessFiles = props.recentStorage.map(entry => (
-    <div role="option" className="item" onClick={() => props.openRecentFile(entry)} style={{
+  const recentlyAccessFiles = props.recentStorage.map((entry, i) => (
+    <div key={'recentlyAccessFiles' + i} role="option" className="item" onClick={() => props.openRecentFile(entry)} style={{
       maxWidth: '20em',
       overflow: 'hidden',
       whiteSpace: 'nowrap',
@@ -69,7 +69,7 @@ const Header = (props) => {
   ))
 
   const browseDiagramOptions = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].map(mode => (
-    <div role="option" className="item" onClick={() => props.pickFileToOpen(mode)}>
+    <div key={mode} role="option" className="item" onClick={() => props.pickFileToOpen(mode)}>
       <i aria-hidden="true" className={'icon ' + storageIcon(mode)}/>
       <span>{storageNames[mode]}</span>
     </div>

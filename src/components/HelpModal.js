@@ -22,14 +22,13 @@ class HelpModal extends Component {
       {key: getKeybindingString(UNDO), description: 'Undo'},
       {key: getKeybindingString(REDO), description: 'Redo'},
     ].map(binding => (
-      <Card>
+      <Card key={binding.key}>
         <Card.Content>
           <Card.Header>{binding.key}</Card.Header>
           <Card.Meta>{binding.description}</Card.Meta>
         </Card.Content>
       </Card>
     ))
-    console.log(getKeybindingString(SELECT_ALL))
     return (
       <Modal
         size="small"
