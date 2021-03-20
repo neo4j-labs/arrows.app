@@ -13,8 +13,7 @@ export default class GeneralInspector extends Component {
       <Form.Field key='theme'>
         <label>Theme</label>
         <Button
-          basic
-          color='black'
+          color='blue'
           size='tiny'
           content='Choose Theme'
           onClick={this.props.onShowStyleDialog}/>
