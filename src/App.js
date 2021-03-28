@@ -22,8 +22,8 @@ import {handlePaste} from "./actions/import";
 class App extends Component {
   constructor (props) {
     super(props)
-    window.onkeydown = this.fireKeyboardShortcutAction.bind(this)
-    window.addEventListener('paste', this.props.handlePaste)
+    window.addEventListener('keydown', this.fireKeyboardShortcutAction.bind(this))
+    window.addEventListener('paste', this.handlePaste.bind(this))
   }
 
   render() {
@@ -95,6 +95,11 @@ class App extends Component {
       ev.preventDefault()
       ev.stopPropagation()
     }
+  }
+
+  handlePaste(ev) {
+    if (ignoreTarget(ev)) return
+    this.props.handlePaste(ev)
   }
 
   componentDidMount() {
