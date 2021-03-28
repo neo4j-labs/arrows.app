@@ -1,8 +1,16 @@
 import {importNodesAndRelationships} from "./graph";
 import {Point} from "../model/Point";
+import {getPresentGraph, getVisualGraph} from "../selectors";
 
 export const handlePaste = (pasteEvent) => {
-  return function (dispatch) {
+  return function (dispatch, getState) {
+    const state = getState()
+    const graph = getPresentGraph(state)
+    const visualGraph = getVisualGraph(state)
+    const boundingBox = visualGraph.boundingBox()
+    const top = boundingBox.top + graph.style.radius
+    const left = boundingBox.right + graph.style.radius
+
     const clipboardData = pasteEvent.clipboardData
     const textPlainMimeType = 'text/plain'
     if (clipboardData.types.includes(textPlainMimeType)) {
@@ -11,18 +19,18 @@ export const handlePaste = (pasteEvent) => {
       const nodes = lines.map((line, i) => {
         return {
           id: 'n' + i,
-          position: new Point(0, 100 * i),
+          position: new Point(left, top + 3 * graph.style.radius * i),
           caption: line,
           style: {},
           labels: [],
           properties: {}
         }
       })
-      const graph = {
+      const importedGraph = {
         nodes,
         relationships: []
       }
-      dispatch(importNodesAndRelationships(graph))
+      dispatch(importNodesAndRelationships(importedGraph))
     }
   }
 }
