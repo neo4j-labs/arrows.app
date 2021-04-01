@@ -11,6 +11,8 @@ import {
   selectedRelationshipIdMap, selectedRelationshipIds
 } from "../model/selection";
 import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constants";
+import BoundingBox from "../graphics/utils/BoundingBox";
+import {translate} from "../model/Node";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)
@@ -460,6 +462,12 @@ export const importNodesAndRelationships = (importedGraph) => {
   return function (dispatch, getState) {
     const state = getState()
     const graph = getPresentGraph(state)
+    const visualGraph = getVisualGraph(state)
+    const boundingBox = visualGraph.boundingBox() || new BoundingBox(0,0,0,0)
+    const vector = new Vector(
+      boundingBox.right + graph.style.radius * 1.5,
+      boundingBox.top + graph.style.radius
+    )
 
     const newNodes = []
     const newRelationships = []
@@ -472,7 +480,7 @@ export const importNodesAndRelationships = (importedGraph) => {
         ...oldNode,
         id: newNodeId
       }
-      newNodes.push(newNode)
+      newNodes.push(translate(newNode, vector))
       newNodeId = nextId(newNodeId)
     })
 

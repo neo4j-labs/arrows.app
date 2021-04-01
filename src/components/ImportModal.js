@@ -12,7 +12,7 @@ class ImportModal extends Component {
   }
 
   tryImport = () => {
-    const result = this.props.tryImport(this.state.text)
+    const result = this.props.tryImport(this.state.text, this.props.separation)
     if (result.errorMessage) {
       this.setState({
         errorMessage: result.errorMessage
@@ -42,9 +42,18 @@ class ImportModal extends Component {
         <Modal.Content scrolling>
           <Message>
             <p>
-              For now, JSON is the only supported input format.
-              You'll need to use the same JSON structure as you can see in the Export window.
-              Other formats might be supported in the future.
+              Import using the same JSON structure as you can see in the Export window.
+            </p>
+            <p>
+              Alternatively, if you don't provide a JSON object,
+              input will be treated as plain text, and each line will become one node.
+              For example, copy and paste one column from a spreadsheet to create one
+              node per cell.
+            </p>
+            <p>
+              Both of these import formats are also available by simply pasting into the app;
+              you don't need to use this Import window if you already have the data on your
+              clipboard.
             </p>
           </Message>
           <Form>
@@ -63,7 +72,7 @@ class ImportModal extends Component {
               />
             </Form.Field>
             <TextArea
-              placeholder='Choose a file, or paste JSON here...'
+              placeholder='Choose a file, or paste text here...'
               style={{
                 height: 300,
                 fontFamily: 'monospace'

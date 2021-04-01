@@ -17,11 +17,15 @@ import FooterContainer from "./containers/FooterContainer";
 import StyleContainer from "./containers/StyleContainer";
 import LocalStoragePickerContainer from "./containers/LocalStoragePickerContainer";
 import ImportContainer from "./containers/ImportContainer";
+import {handlePaste} from "./actions/import";
+import {handleCopy} from "./actions/export";
 
 class App extends Component {
   constructor (props) {
     super(props)
-    window.onkeydown = this.fireKeyboardShortcutAction.bind(this)
+    window.addEventListener('keydown', this.fireKeyboardShortcutAction.bind(this))
+    window.addEventListener('copy', this.handleCopy.bind(this))
+    window.addEventListener('paste', this.handlePaste.bind(this))
   }
 
   render() {
@@ -95,6 +99,16 @@ class App extends Component {
     }
   }
 
+  handleCopy(ev) {
+    if (ignoreTarget(ev)) return
+    this.props.handleCopy(ev)
+  }
+
+  handlePaste(ev) {
+    if (ignoreTarget(ev)) return
+    this.props.handlePaste(ev)
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.props.onWindowResized)
   }
@@ -115,7 +129,9 @@ const mapDispatchToProps = dispatch => {
   return {
     onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight)),
     onCancelPicker: () => dispatch(pickDiagramCancel()),
-    loadFromGoogleDrive: fileId => dispatch(getFileFromGoogleDrive(fileId))
+    loadFromGoogleDrive: fileId => dispatch(getFileFromGoogleDrive(fileId)),
+    handleCopy: () => dispatch(handleCopy()),
+    handlePaste: clipboardEvent => dispatch(handlePaste(clipboardEvent))
   }
 }
 

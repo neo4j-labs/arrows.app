@@ -1,3 +1,5 @@
+import {ActionTypes} from "redux-undo";
+
 const allEntitiesSelected = (oldEntities, newEntities) => {
   return newEntities.every(newEntity =>
     oldEntities.some(oldEntity =>
@@ -72,6 +74,8 @@ export default function selection(state = {
 
     case 'CLEAR_SELECTION':
     case 'DELETE_NODES_AND_RELATIONSHIPS' :
+    case ActionTypes.UNDO:
+    case ActionTypes.REDO:
       return {
         editing: undefined,
         entities: []

@@ -17,7 +17,8 @@ const observedActionTypes = [
   'DUPLICATE_NODES_AND_RELATIONSHIPS',
   'DELETE_NODES_AND_RELATIONSHIPS',
   'WINDOW_RESIZED',
-  'TOGGLE_INSPECTOR'
+  'TOGGLE_INSPECTOR',
+  'IMPORT_NODES_AND_RELATIONSHIPS'
 ]
 
 export const nodeMovedOutsideCanvas = (visualGraph, canvasSize, viewTransformation, action) => {

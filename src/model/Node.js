@@ -5,6 +5,8 @@ export const moveTo = (node, newPosition) => {
   }
 }
 
+export const translate = (node, vector) => moveTo(node, node.position.translate(vector))
+
 export const addLabel = (node, label) => {
   const labels = node.labels.includes(label) ? node.labels : [...node.labels, label]
   return {
