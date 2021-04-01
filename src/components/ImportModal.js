@@ -12,7 +12,7 @@ class ImportModal extends Component {
   }
 
   tryImport = () => {
-    const result = this.props.tryImport(this.state.text)
+    const result = this.props.tryImport(this.state.text, this.props.separation)
     if (result.errorMessage) {
       this.setState({
         errorMessage: result.errorMessage

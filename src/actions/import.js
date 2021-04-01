@@ -9,6 +9,7 @@ export const handlePaste = (pasteEvent) => {
   return function (dispatch, getState) {
     const state = getState()
     const graph = getPresentGraph(state)
+    const separation = graph.style.radius * 2.5
 
     const clipboardData = pasteEvent.clipboardData
     const textPlainMimeType = 'text/plain'
@@ -17,7 +18,7 @@ export const handlePaste = (pasteEvent) => {
       const format = formats.find(format => format.recognise(text))
       if (format) {
         try {
-          const importedGraph = format.parse(text, graph)
+          const importedGraph = format.parse(text, separation)
           dispatch(importNodesAndRelationships(importedGraph))
         } catch (e) {
           console.error(e)
@@ -27,7 +28,7 @@ export const handlePaste = (pasteEvent) => {
   }
 }
 
-const formats = [
+export const formats = [
   {
     // JSON
     recognise: (plainText) => new RegExp('^{.*\}$', 's').test(plainText.trim()),
@@ -47,13 +48,13 @@ const formats = [
   {
     // plain text
     recognise: () => true,
-    parse: (plainText, graph) => {
+    parse: (plainText, separation) => {
       const lines = plainText.split('\n').filter(line => line && line.trim().length > 0)
 
       const nodes = lines.map((line, i) => {
         return {
           id: 'n' + i,
-          position: new Point(0, 2.5 * graph.style.radius * i),
+          position: new Point(0, separation * i),
           caption: line,
           style: {},
           labels: [],
