@@ -1,21 +1,14 @@
 import {importNodesAndRelationships} from "./graph";
 import {Point} from "../model/Point";
-import {getPresentGraph, getVisualGraph} from "../selectors";
+import {getPresentGraph} from "../selectors";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
 import {translate} from "../model/Node";
 import {Vector} from "../model/Vector";
-import BoundingBox from "../graphics/utils/BoundingBox";
 
 export const handlePaste = (pasteEvent) => {
   return function (dispatch, getState) {
     const state = getState()
     const graph = getPresentGraph(state)
-    const visualGraph = getVisualGraph(state)
-    const boundingBox = visualGraph.boundingBox() || new BoundingBox(0,0,0,0)
-    const vector = new Vector(
-      boundingBox.right + graph.style.radius * 1.5,
-      boundingBox.top + graph.style.radius
-    )
 
     const clipboardData = pasteEvent.clipboardData
     const textPlainMimeType = 'text/plain'
@@ -25,7 +18,6 @@ export const handlePaste = (pasteEvent) => {
       if (format) {
         try {
           const importedGraph = format.parse(text, graph)
-          importedGraph.nodes = importedGraph.nodes.map(node => translate(node, vector))
           dispatch(importNodesAndRelationships(importedGraph))
         } catch (e) {
           console.error(e)
