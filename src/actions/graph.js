@@ -44,14 +44,34 @@ export const createNode = () => (dispatch, getState) => {
   })
 }
 
-export const createNodeAndRelationship = (sourceNodeId, targetNodePosition) => (dispatch, getState) => {
+export const createNodesAndRelationships = (sourceNodeIds, targetNodeDisplacement) => (dispatch, getState) => {
+  const graph = getPresentGraph(getState())
+
+  const newRelationshipIds = []
+  const targetNodeIds = []
+  let newRelationshipId = nextAvailableId(graph.relationships)
+  let targetNodeId = nextAvailableId(graph.nodes)
+
+  const targetNodePositions = []
+
+  sourceNodeIds.forEach((sourceNodeId) => {
+    newRelationshipIds.push(newRelationshipId)
+    targetNodeIds.push(targetNodeId)
+
+    newRelationshipId = nextId(newRelationshipId)
+    targetNodeId = nextId(targetNodeId)
+
+    const sourceNodePosition = graph.nodes.find(node => node.id === sourceNodeId).position
+    targetNodePositions.push(sourceNodePosition.translate(targetNodeDisplacement))
+  })
+
   dispatch({
     category: 'GRAPH',
-    type: 'CREATE_NODE_AND_RELATIONSHIP',
-    sourceNodeId,
-    newRelationshipId: nextAvailableId(getPresentGraph(getState()).relationships),
-    targetNodeId: nextAvailableId(getPresentGraph(getState()).nodes),
-    targetNodePosition,
+    type: 'CREATE_NODES_AND_RELATIONSHIPS',
+    sourceNodeIds,
+    newRelationshipIds,
+    targetNodeIds,
+    targetNodePositions,
     caption: '',
     style: {}
   })

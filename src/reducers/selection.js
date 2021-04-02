@@ -89,13 +89,13 @@ export default function selection(state = {
         }]
       }
     }
-    case 'CREATE_NODE_AND_RELATIONSHIP': {
+    case 'CREATE_NODES_AND_RELATIONSHIPS': {
       return {
         editing: undefined,
-        entities: [{
+        entities: action.targetNodeIds.map(targetNodeId => ({
           entityType: 'node',
-          id: action.targetNodeId
-        }]
+          id: targetNodeId
+        }))
       }
     }
     case 'CONNECT_NODES': {
