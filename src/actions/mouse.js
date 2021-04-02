@@ -1,6 +1,6 @@
-import {getPositionsOfSelectedNodes, getTransformationHandles, getVisualGraph} from "../selectors/"
+import {getPositionsOfSelectedNodes, getPresentGraph, getTransformationHandles, getVisualGraph} from "../selectors/"
 import {activateEditing, clearSelection, toggleSelection} from "./selection"
-import {connectNodes, createNodeAndRelationship, moveNodesEndDrag, tryMoveHandle, tryMoveNode} from "./graph"
+import {connectNodes, createNodesAndRelationships, moveNodesEndDrag, tryMoveHandle, tryMoveNode} from "./graph"
 import {adjustViewport} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {selectItemsInMarquee, setMarquee} from "./selectionMarquee"
@@ -229,6 +229,7 @@ export const mouseUp = () => {
   return function (dispatch, getState) {
     const state = getState();
     const mouse = state.mouse
+    const graph = getPresentGraph(state)
 
     const eventHandlers = getEventHandlers(state, 'mouseUp')
     const preventDefault = eventHandlers.reduce((prevented, handler) => handler({
@@ -251,10 +252,18 @@ export const mouseUp = () => {
           const dragToCreate = state.gestures.dragToCreate;
 
           if (dragToCreate.sourceNodeId) {
-            if (dragToCreate.targetNodeId) {
-              dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
+            if (dragToCreate.targetNodeIds.length > 0) {
+              dispatch(connectNodes(
+                [dragToCreate.sourceNodeId, ...dragToCreate.secondarySourceNodeIds],
+                dragToCreate.targetNodeIds
+              ))
             } else if (dragToCreate.newNodePosition) {
-              dispatch(createNodeAndRelationship(dragToCreate.sourceNodeId, dragToCreate.newNodePosition))
+              const sourceNodePosition = graph.nodes.find(node => node.id === dragToCreate.sourceNodeId).position
+              const targetNodeDisplacement = dragToCreate.newNodePosition.vectorFrom(sourceNodePosition)
+              dispatch(createNodesAndRelationships(
+                [dragToCreate.sourceNodeId, ...dragToCreate.secondarySourceNodeIds],
+                targetNodeDisplacement
+              ))
             }
           }
           break

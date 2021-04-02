@@ -26,39 +26,42 @@ const graph = (state = emptyGraph(), action) => {
       return {style: state.style, nodes: newNodes, relationships: state.relationships}
     }
 
-    case 'CREATE_NODE_AND_RELATIONSHIP': {
-      const newNodes = state.nodes.slice();
-      const newRelationships = state.relationships.slice();
-      const newNode = {
-        id: action.targetNodeId,
-        position: action.targetNodePosition,
-        caption: action.caption,
-        style: action.style,
-        labels: [],
-        properties: {}
-      }
-      newNodes.push(newNode)
-      newRelationships.push({
-        id: action.newRelationshipId,
-        type: '',
-        style: {},
-        properties: {},
-        fromId: action.sourceNodeId,
-        toId: newNode.id
-      })
+    case 'CREATE_NODES_AND_RELATIONSHIPS': {
+      const newNodes = [...state.nodes, ...action.targetNodeIds.map((targetNodeId, i) => {
+        return {
+          id: targetNodeId,
+          position: action.targetNodePositions[i],
+          caption: action.caption,
+          style: action.style,
+          labels: [],
+          properties: {}
+        }
+      })]
+      const newRelationships = [...state.relationships, ...action.newRelationshipIds.map((newRelationshipId, i) => {
+        return {
+          id: newRelationshipId,
+          type: '',
+          style: {},
+          properties: {},
+          fromId: action.sourceNodeIds[i],
+          toId: action.targetNodeIds[i]
+        }
+      })]
+
       return {style: state.style, nodes: newNodes, relationships: newRelationships}
     }
 
     case 'CONNECT_NODES': {
-      const newRelationships = state.relationships.slice();
-      newRelationships.push({
-        id: action.newRelationshipId,
-        type: '',
-        style: {},
-        properties: {},
-        fromId: action.sourceNodeId,
-        toId: action.targetNodeId
-      })
+      const newRelationships = [...state.relationships, ...action.newRelationshipIds.map((newRelationshipId, i) => {
+        return {
+          id: newRelationshipId,
+          type: '',
+          style: {},
+          properties: {},
+          fromId: action.sourceNodeIds[i],
+          toId: action.targetNodeIds[i]
+        }
+      })]
       return {style: state.style, nodes: state.nodes, relationships: newRelationships}
     }
 
