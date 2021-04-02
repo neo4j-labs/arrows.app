@@ -44,7 +44,7 @@ const moveTowardCenter = (minScale, offset, boundingBox, canvasSize) => {
 
   const [dx, dy] = dimensions.map(d => {
     const currentDisplacement = offset[d.component]
-    const centreDisplacement = canvasSize[d.extent] / 2 - (boundingBox[d.max] + boundingBox[d.min]) * minScale / 2
+    const centreDisplacement = canvasPadding + canvasSize[d.extent] / 2 - (boundingBox[d.max] + boundingBox[d.min]) * minScale / 2
     const difference = centreDisplacement - currentDisplacement
     if (Math.abs(difference) > 1) {
       return currentDisplacement + difference * 0.1
