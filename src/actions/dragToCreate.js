@@ -28,28 +28,40 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
     const visualGraph = getVisualGraph(state)
     let newNodeRadius = visualGraph.graph.style.radius
     const graph = visualGraph.graph
-    const targetSnaps = snapToTargetNode(visualGraph, null, mousePosition)
-    if (targetSnaps.snapped) {
+    const sourceNode = graph.nodes.find((node) => idsMatch(node.id, sourceNodeId));
+    const primarySnap = snapToTargetNode(visualGraph, null, mousePosition)
+    if (primarySnap.snapped) {
+      const secondarySnaps = secondarySourceNodeIds.map(secondarySourceNodeId => {
+        const secondarySourceNode = graph.nodes.find((node) => idsMatch(node.id, secondarySourceNodeId));
+        const displacement = secondarySourceNode.position.vectorFrom(sourceNode.position)
+        return snapToTargetNode(visualGraph, null, mousePosition.translate(displacement))
+      })
+      const targetNodeIds = [
+        primarySnap.snappedNodeId,
+        ...(secondarySnaps.every(snap => snap.snapped) ?
+          secondarySnaps.map(snap => snap.snappedNodeId) :
+          secondarySnaps.map(() => primarySnap.snappedNodeId))
+      ]
       dispatch(ringDraggedConnected(
         sourceNodeId,
         secondarySourceNodeIds,
-        targetSnaps.snappedNodeId,
-        targetSnaps.snappedPosition,
+        targetNodeIds,
+        primarySnap.snappedPosition,
         mousePosition
       ))
     } else {
-      const snaps = snapToDistancesAndAngles(
+      const snap = snapToDistancesAndAngles(
         graph,
-        [graph.nodes.find((node) => idsMatch(node.id, sourceNodeId))],
-        (nodeId) => true,
+        [sourceNode],
+        () => true,
         mousePosition
       )
-      if (snaps.snapped) {
+      if (snap.snapped) {
         dispatch(ringDraggedDisconnected(
           sourceNodeId,
           secondarySourceNodeIds,
-          snaps.snappedPosition,
-          new Guides(snaps.guidelines, mousePosition, newNodeRadius),
+          snap.snappedPosition,
+          new Guides(snap.guidelines, mousePosition, newNodeRadius),
           mousePosition
         ))
       } else {
@@ -70,19 +82,19 @@ const ringDraggedDisconnected = (sourceNodeId, secondarySourceNodeIds, position,
     type: 'RING_DRAGGED',
     sourceNodeId,
     secondarySourceNodeIds,
-    targetNodeId: null,
+    targetNodeIds: [],
     position,
     guides,
     newMousePosition
   }
 }
 
-const ringDraggedConnected = (sourceNodeId, secondarySourceNodeIds, targetNodeId, position, newMousePosition) => {
+const ringDraggedConnected = (sourceNodeId, secondarySourceNodeIds, targetNodeIds, position, newMousePosition) => {
   return {
     type: 'RING_DRAGGED',
     sourceNodeId,
     secondarySourceNodeIds,
-    targetNodeId,
+    targetNodeIds,
     position,
     guides: new Guides(),
     newMousePosition

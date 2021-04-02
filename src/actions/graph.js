@@ -77,13 +77,21 @@ export const createNodesAndRelationships = (sourceNodeIds, targetNodeDisplacemen
   })
 }
 
-export const connectNodes = (sourceNodeId, targetNodeId) => (dispatch, getState) => {
+export const connectNodes = (sourceNodeIds, targetNodeIds) => (dispatch, getState) => {
+  const graph = getPresentGraph(getState())
+  const newRelationshipIds = []
+  let newRelationshipId = nextAvailableId(graph.relationships)
+  sourceNodeIds.forEach(() => {
+    newRelationshipIds.push(newRelationshipId)
+    newRelationshipId = nextId(newRelationshipId)
+  })
+
   dispatch({
     category: 'GRAPH',
     type: 'CONNECT_NODES',
-    sourceNodeId,
-    newRelationshipId: nextAvailableId(getPresentGraph(getState()).relationships),
-    targetNodeId
+    sourceNodeIds,
+    newRelationshipIds,
+    targetNodeIds
   })
 }
 

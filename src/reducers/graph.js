@@ -52,15 +52,16 @@ const graph = (state = emptyGraph(), action) => {
     }
 
     case 'CONNECT_NODES': {
-      const newRelationships = state.relationships.slice();
-      newRelationships.push({
-        id: action.newRelationshipId,
-        type: '',
-        style: {},
-        properties: {},
-        fromId: action.sourceNodeId,
-        toId: action.targetNodeId
-      })
+      const newRelationships = [...state.relationships, ...action.newRelationshipIds.map((newRelationshipId, i) => {
+        return {
+          id: newRelationshipId,
+          type: '',
+          style: {},
+          properties: {},
+          fromId: action.sourceNodeIds[i],
+          toId: action.targetNodeIds[i]
+        }
+      })]
       return {style: state.style, nodes: state.nodes, relationships: newRelationships}
     }
 

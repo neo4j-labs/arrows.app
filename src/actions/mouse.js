@@ -252,8 +252,11 @@ export const mouseUp = () => {
           const dragToCreate = state.gestures.dragToCreate;
 
           if (dragToCreate.sourceNodeId) {
-            if (dragToCreate.targetNodeId) {
-              dispatch(connectNodes(dragToCreate.sourceNodeId, dragToCreate.targetNodeId))
+            if (dragToCreate.targetNodeIds.length > 0) {
+              dispatch(connectNodes(
+                [dragToCreate.sourceNodeId, ...dragToCreate.secondarySourceNodeIds],
+                dragToCreate.targetNodeIds
+              ))
             } else if (dragToCreate.newNodePosition) {
               const sourceNodePosition = graph.nodes.find(node => node.id === dragToCreate.sourceNodeId).position
               const targetNodeDisplacement = dragToCreate.newNodePosition.vectorFrom(sourceNodePosition)

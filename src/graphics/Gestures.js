@@ -122,24 +122,31 @@ export default class Gestures {
 
       drawNewNodeAndRelationship(
         dragToCreate.sourceNodeId,
-        dragToCreate.targetNodeId,
+        dragToCreate.targetNodeIds[0],
         dragToCreate.newNodePosition
       )
 
-      dragToCreate.secondarySourceNodeIds.forEach(secondarySourceNodeId => {
+      dragToCreate.secondarySourceNodeIds.forEach((secondarySourceNodeId, i) => {
         const primarySourceNode = visualGraph.nodes[dragToCreate.sourceNodeId]
         const secondarySourceNode = visualGraph.nodes[secondarySourceNodeId]
         const displacement = secondarySourceNode.position.vectorFrom(primarySourceNode.position)
 
-        const newNodePosition = dragToCreate.targetNodeId ?
-          dragToCreate.newNodePosition :
-          dragToCreate.newNodePosition.translate(displacement)
+        const secondaryTargetNodeId = dragToCreate.targetNodeIds[i + 1]
+        if (secondaryTargetNodeId) {
+          const secondaryTargetNode = visualGraph.nodes[secondaryTargetNodeId]
 
-        drawNewNodeAndRelationship(
-          secondarySourceNodeId,
-          dragToCreate.targetNodeId,
-          newNodePosition
-        )
+          drawNewNodeAndRelationship(
+            secondarySourceNodeId,
+            dragToCreate.targetNodeIds[i + 1],
+            secondaryTargetNode.position
+          )
+        } else {
+          drawNewNodeAndRelationship(
+            secondarySourceNodeId,
+            null,
+            dragToCreate.newNodePosition.translate(displacement)
+          )
+        }
       })
 
       ctx.restore()
