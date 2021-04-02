@@ -3,6 +3,7 @@ import {snapToDistancesAndAngles} from "./geometricSnapping"
 import {idsMatch} from "../model/Id"
 import {Guides} from "../graphics/Guides"
 import {getVisualGraph} from "../selectors"
+import {selectedNodeIds} from "../model/selection";
 
 export const activateRing = (sourceNodeId, nodeType) => {
   return {
@@ -21,6 +22,9 @@ export const deactivateRing = () => {
 export const tryDragRing = (sourceNodeId, mousePosition) => {
   return function (dispatch, getState) {
     const state = getState()
+    const selection = state.selection
+    const secondarySourceNodeIds = selectedNodeIds(selection).filter(nodeId => nodeId !== sourceNodeId)
+
     const visualGraph = getVisualGraph(state)
     let newNodeRadius = visualGraph.graph.style.radius
     const graph = visualGraph.graph
@@ -28,6 +32,7 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
     if (targetSnaps.snapped) {
       dispatch(ringDraggedConnected(
         sourceNodeId,
+        secondarySourceNodeIds,
         targetSnaps.snappedNodeId,
         targetSnaps.snappedPosition,
         mousePosition
@@ -42,6 +47,7 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
       if (snaps.snapped) {
         dispatch(ringDraggedDisconnected(
           sourceNodeId,
+          secondarySourceNodeIds,
           snaps.snappedPosition,
           new Guides(snaps.guidelines, mousePosition, newNodeRadius),
           mousePosition
@@ -49,6 +55,7 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
       } else {
         dispatch(ringDraggedDisconnected(
           sourceNodeId,
+          secondarySourceNodeIds,
           mousePosition,
           new Guides(),
           mousePosition
@@ -58,10 +65,11 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
   }
 }
 
-const ringDraggedDisconnected = (sourceNodeId, position, guides, newMousePosition) => {
+const ringDraggedDisconnected = (sourceNodeId, secondarySourceNodeIds, position, guides, newMousePosition) => {
   return {
     type: 'RING_DRAGGED',
     sourceNodeId,
+    secondarySourceNodeIds,
     targetNodeId: null,
     position,
     guides,
@@ -69,10 +77,11 @@ const ringDraggedDisconnected = (sourceNodeId, position, guides, newMousePositio
   }
 }
 
-const ringDraggedConnected = (sourceNodeId, targetNodeId, position, newMousePosition) => {
+const ringDraggedConnected = (sourceNodeId, secondarySourceNodeIds, targetNodeId, position, newMousePosition) => {
   return {
     type: 'RING_DRAGGED',
     sourceNodeId,
+    secondarySourceNodeIds,
     targetNodeId,
     position,
     guides: new Guides(),

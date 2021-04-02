@@ -70,25 +70,21 @@ export default class Gestures {
       }
     }
 
-    if (dragToCreate.sourceNodeId) {
-      ctx.save()
-      ctx.translate(viewTransformation.offset.dx, viewTransformation.offset.dy)
-      ctx.scale(viewTransformation.scale, viewTransformation.scale)
-
-      const sourceNode = visualGraph.nodes[dragToCreate.sourceNodeId]
+    const drawNewNodeAndRelationship = (sourceNodeId, targetNodeId, newNodeNaturalPosition) => {
+      const sourceNode = visualGraph.nodes[sourceNodeId]
       let newNodeRadius = visualGraph.graph.style.radius
       if (sourceNode) {
         const sourceNodeRadius = sourceNode.radius
         const outerRadius = sourceNodeRadius + ringMargin
         const sourceNodePosition = sourceNode.position
 
-        const targetNode = visualGraph.nodes[dragToCreate.targetNodeId]
+        const targetNode = visualGraph.nodes[targetNodeId]
         if (targetNode) {
           newNodeRadius = targetNode.radius
         }
 
-        if (dragToCreate.newNodePosition) {
-          const delta = dragToCreate.newNodePosition.vectorFrom(sourceNodePosition)
+        if (newNodeNaturalPosition) {
+          const delta = newNodeNaturalPosition.vectorFrom(sourceNodePosition)
           let newNodePosition = sourceNodePosition
           if (delta.distance() < outerRadius) {
             newNodeRadius = outerRadius
@@ -98,7 +94,7 @@ export default class Gestures {
               newNodePosition = sourceNodePosition.translate(delta.scale(ratio))
               newNodeRadius = (1 - ratio) * outerRadius + ratio * newNodeRadius
             } else {
-              newNodePosition = dragToCreate.newNodePosition
+              newNodePosition = newNodeNaturalPosition
             }
           }
 
@@ -117,6 +113,34 @@ export default class Gestures {
           drawNodeRing(ctx, sourceNodePosition, purple, outerRadius)
         }
       }
+    }
+
+    if (dragToCreate.sourceNodeId) {
+      ctx.save()
+      ctx.translate(viewTransformation.offset.dx, viewTransformation.offset.dy)
+      ctx.scale(viewTransformation.scale, viewTransformation.scale)
+
+      drawNewNodeAndRelationship(
+        dragToCreate.sourceNodeId,
+        dragToCreate.targetNodeId,
+        dragToCreate.newNodePosition
+      )
+
+      dragToCreate.secondarySourceNodeIds.forEach(secondarySourceNodeId => {
+        const primarySourceNode = visualGraph.nodes[dragToCreate.sourceNodeId]
+        const secondarySourceNode = visualGraph.nodes[secondarySourceNodeId]
+        const displacement = secondarySourceNode.position.vectorFrom(primarySourceNode.position)
+
+        const newNodePosition = dragToCreate.targetNodeId ?
+          dragToCreate.newNodePosition :
+          dragToCreate.newNodePosition.translate(displacement)
+
+        drawNewNodeAndRelationship(
+          secondarySourceNodeId,
+          dragToCreate.targetNodeId,
+          newNodePosition
+        )
+      })
 
       ctx.restore()
     }
