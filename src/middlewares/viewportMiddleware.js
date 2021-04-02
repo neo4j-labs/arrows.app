@@ -1,9 +1,9 @@
-import { adjustViewport } from "../actions/viewTransformation"
-import { Point } from "../model/Point"
-import { ViewTransformation } from "../state/ViewTransformation";
-import { Vector } from "../model/Vector";
-import { tryMoveNode } from "../actions/graph";
-import {computeCanvasSize} from "../model/applicationLayout";
+import {adjustViewport} from "../actions/viewTransformation"
+import {Point} from "../model/Point"
+import {ViewTransformation} from "../state/ViewTransformation";
+import {Vector} from "../model/Vector";
+import {tryMoveNode} from "../actions/graph";
+import {canvasPadding, computeCanvasSize} from "../model/applicationLayout";
 import {getVisualGraph} from "../selectors/index";
 import BoundingBox from "../graphics/utils/BoundingBox";
 
@@ -27,7 +27,12 @@ export const nodeMovedOutsideCanvas = (visualGraph, canvasSize, viewTransformati
     .scale(viewTransformation.scale)
     .translate(viewTransformation.offset)
 
-  const canvasBoundingBox = new BoundingBox(0, canvasSize.width, 0, canvasSize.height)
+  const canvasBoundingBox = new BoundingBox(
+    canvasPadding,
+    canvasSize.width - canvasPadding,
+    canvasPadding,
+    canvasSize.height - canvasPadding
+  )
 
   return !canvasBoundingBox.containsBoundingBox(nodeBoundingBox)
 }
@@ -40,9 +45,9 @@ export const calculateViewportTranslation = (visualGraph, canvasSize) => {
     let visualsHeight = (boundingBox.bottom - boundingBox.top)
     let visualsCenter = new Point((boundingBox.right + boundingBox.left) / 2, (boundingBox.bottom + boundingBox.top) / 2)
 
-    const viewportWidth = canvasSize.width
-    const viewportHeight = canvasSize.height
-    const viewportCenter = new Point(viewportWidth / 2, viewportHeight / 2)
+    const viewportWidth = canvasSize.width - canvasPadding * 2
+    const viewportHeight = canvasSize.height - canvasPadding * 2
+    const viewportCenter = new Point(canvasPadding + viewportWidth / 2, canvasPadding + viewportHeight / 2)
 
     let scale = Math.min(1, Math.min(viewportHeight / visualsHeight, viewportWidth / visualsWidth))
 

@@ -5,7 +5,7 @@ import {adjustViewport} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {selectItemsInMarquee, setMarquee} from "./selectionMarquee"
 import {getEventHandlers} from "../selectors/layers";
-import {computeCanvasSize} from "../model/applicationLayout";
+import {canvasPadding, computeCanvasSize, subtractPadding} from "../model/applicationLayout";
 import {Vector} from "../model/Vector";
 
 const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inverse(canvasPosition)
@@ -15,7 +15,7 @@ export const wheel = (canvasPosition, vector, ctrlKey) => {
     const state = getState()
     const boundingBox = getVisualGraph(state).boundingBox()
     const currentScale = state.viewTransformation.scale
-    const canvasSize = computeCanvasSize(state.applicationLayout)
+    const canvasSize = subtractPadding(computeCanvasSize(state.applicationLayout))
 
     if (ctrlKey) {
       const graphPosition = toGraphPosition(state, canvasPosition)
@@ -69,12 +69,12 @@ const constrainScroll = (boundingBox, scale, effectiveOffset, canvasSize) => {
   dimensions.forEach(d => {
     const tooLarge = boundingBox[d.extent] * scale > canvasSize[d.extent]
     const min = boundingBox[d.min] * scale + effectiveOffset[d.component]
-    if (flip(tooLarge, min < 0)) {
-      constrainedOffset[d.component] = -boundingBox[d.min] * scale
+    if (flip(tooLarge, min < canvasPadding)) {
+      constrainedOffset[d.component] = canvasPadding - boundingBox[d.min] * scale
     }
     const max = boundingBox[d.max] * scale + effectiveOffset[d.component]
-    if (flip(tooLarge, max > canvasSize[d.extent])) {
-      constrainedOffset[d.component] = canvasSize[d.extent] - boundingBox[d.max] * scale
+    if (flip(tooLarge, max > canvasPadding + canvasSize[d.extent])) {
+      constrainedOffset[d.component] = canvasPadding + canvasSize[d.extent] - boundingBox[d.max] * scale
     }
   })
 
