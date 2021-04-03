@@ -46,9 +46,8 @@ class ImportModal extends Component {
             </p>
             <p>
               Alternatively, if you don't provide a JSON object,
-              input will be treated as plain text, and each line will become one node.
-              For example, copy and paste one column from a spreadsheet to create one
-              node per cell.
+              input will be treated as plain text, delimited by tabs and line breaks.
+              For example, copy and paste from a spreadsheet to create one node per cell.
             </p>
             <p>
               Both of these import formats are also available by simply pasting into the app;

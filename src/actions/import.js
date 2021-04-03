@@ -76,15 +76,18 @@ const formats = [
     parse: (plainText, separation) => {
       const lines = plainText.split('\n').filter(line => line && line.trim().length > 0)
 
-      const nodes = lines.map((line, i) => {
-        return {
-          id: 'n' + i,
-          position: new Point(0, separation * i),
-          caption: line,
-          style: {},
-          labels: [],
-          properties: {}
-        }
+      const nodes = lines.flatMap((line, row) => {
+        const cells = line.split('\t')
+        return cells.map((cell, column) => {
+          return {
+            id: 'n' + lines.length * column + row,
+            position: new Point(separation * column, separation * row),
+            caption: cell,
+            style: {},
+            labels: [],
+            properties: {}
+          }
+        })
       })
       return {
         nodes,
