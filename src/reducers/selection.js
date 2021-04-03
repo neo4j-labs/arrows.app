@@ -101,10 +101,10 @@ export default function selection(state = {
     case 'CONNECT_NODES': {
       return {
         editing: undefined,
-        entities: [{
+        entities: action.newRelationshipIds.map(newRelationshipId => ({
           entityType: 'relationship',
-          id: action.newRelationshipId
-        }]
+          id: newRelationshipId
+        }))
       }
     }
     case 'DUPLICATE_NODES_AND_RELATIONSHIPS' :
