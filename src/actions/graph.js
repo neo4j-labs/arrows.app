@@ -1,7 +1,7 @@
 import {snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId, nextId} from "../model/Id";
-import {Point} from "../model/Point";
+import {average, Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
 import {getPresentGraph, getVisualGraph} from "../selectors";
@@ -294,6 +294,38 @@ export const removeLabel = (selection, label) => ({
   selection,
   label
 })
+
+export const mergeOnPropertyValues = (selection, propertyKey) => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const graph = getPresentGraph(state)
+    const mergeSpecs = selectedNodes(graph, selection).reduce((result, node) => {
+      const propertyValue = node.properties[propertyKey]
+      let spec = result.find(spec => spec.propertyValue === propertyValue)
+      if (spec) {
+        spec.purgedNodeIds.push(node.id)
+        spec.positions.push(node.position)
+      } else {
+        spec = {
+          propertyValue,
+          survivingNodeId: node.id,
+          purgedNodeIds: [],
+          positions: [node.position]
+        }
+        result.push(spec)
+      }
+      return result
+    }, [])
+    for (const spec of mergeSpecs) {
+      spec.position = average(spec.positions)
+    }
+    dispatch({
+      category: 'GRAPH',
+      type: 'MERGE_NODES',
+      mergeSpecs
+    })
+  }
+}
 
 export const renameProperty = (selection, oldPropertyKey, newPropertyKey) => ({
   category: 'GRAPH',

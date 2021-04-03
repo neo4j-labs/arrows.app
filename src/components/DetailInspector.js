@@ -44,7 +44,7 @@ export default class DetailInspector extends Component {
     const {onConvertCaptionsToLabels, onConvertCaptionsToPropertyValues} = this.props
     const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
-    const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
+    const {onMergeOnValues, onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
 
     const relationships = selectedRelationships(graph, selection)
@@ -105,6 +105,7 @@ export default class DetailInspector extends Component {
         <PropertyTable key={`properties-${entities.map(entity => entity.id).join(',')}`}
                        properties={properties}
                        propertySummary={propertySummary}
+                       onMergeOnValues={(propertyKey) => onMergeOnValues(selection, propertyKey)}
                        onSavePropertyKey={(oldPropertyKey, newPropertyKey) => onSavePropertyKey(selection, oldPropertyKey, newPropertyKey)}
                        onSavePropertyValue={(propertyKey, propertyValue) => onSavePropertyValue(selection, propertyKey, propertyValue)}
                        onDeleteProperty={(propertyKey) => onDeleteProperty(selection, propertyKey)}

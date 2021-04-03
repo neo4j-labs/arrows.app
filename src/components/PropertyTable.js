@@ -35,7 +35,7 @@ export default class PropertyTable extends Component {
   }
 
   render() {
-    const { properties, propertySummary, onSavePropertyKey, onSavePropertyValue, onDeleteProperty } = this.props
+    const { properties, propertySummary, onMergeOnValues, onSavePropertyKey, onSavePropertyValue, onDeleteProperty } = this.props
     const { properties: localProperties, local, error, lastValidKey, invalidIndex } = this.state
     let propertiesList
 
@@ -94,6 +94,7 @@ export default class PropertyTable extends Component {
           key={'row-' + index}
           propertyKey={prop.key}
           propertySummary={propertySummary}
+          onMergeOnValues={() => onMergeOnValues(prop.key)}
           onKeyChange={newKey => onPropertyKeyChange(prop.key, newKey, index)}
           onValueChange={newValue => onSavePropertyValue(prop.key, newValue)}
           onDeleteProperty={() => onDeleteProperty(prop.key)}
