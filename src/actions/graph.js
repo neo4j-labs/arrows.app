@@ -8,7 +8,7 @@ import {getPresentGraph, getVisualGraph} from "../selectors";
 import {
   nodeSelected,
   selectedNodeIdMap, selectedNodeIds, selectedNodes,
-  selectedRelationshipIdMap, selectedRelationshipIds
+  selectedRelationshipIdMap, selectedRelationshipIds, selectedRelationships
 } from "../model/selection";
 import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constants";
 import BoundingBox from "../graphics/utils/BoundingBox";
@@ -485,6 +485,27 @@ export const reverseRelationships = selection => ({
   type: 'REVERSE_RELATIONSHIPS',
   selection
 })
+
+export const inlineRelationships = selection => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const graph = getPresentGraph(state)
+    const relationshipSpecs = selectedRelationships(graph, selection).map(relationship => {
+      const targetNode = graph.nodes.find(node => node.id === relationship.toId)
+      return {
+        addPropertiesNodeId: relationship.fromId,
+        properties: targetNode.properties,
+        removeRelationshipId: relationship.id,
+        removeNodeId: relationship.toId
+      }
+    })
+    dispatch({
+      category: 'GRAPH',
+      type: 'INLINE_RELATIONSHIPS',
+      relationshipSpecs
+    })
+  }
+}
 
 export const importNodesAndRelationships = (importedGraph) => {
   return function (dispatch, getState) {

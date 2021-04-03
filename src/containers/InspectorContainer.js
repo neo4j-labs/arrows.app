@@ -12,7 +12,7 @@ import {
   renameLabel,
   removeLabel,
   duplicateSelection,
-  convertCaptionsToLabels, convertCaptionsToPropertyValues
+  convertCaptionsToLabels, convertCaptionsToPropertyValues, inlineRelationships
 } from "../actions/graph";
 import DetailInspector from "../components/DetailInspector"
 import { getSelectedNodes } from "../selectors/inspection";
@@ -72,6 +72,9 @@ const mapDispatchToProps = dispatch => {
     },
     reverseRelationships: selection => {
       dispatch(reverseRelationships(selection))
+    },
+    inlineRelationships: selection => {
+      dispatch(inlineRelationships(selection))
     },
     onSelect: (entities) => {
       dispatch(toggleSelection(entities, 'replace'))

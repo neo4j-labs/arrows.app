@@ -260,6 +260,27 @@ const graph = (state = emptyGraph(), action) => {
         relationships: state.relationships.map(relationship => relationshipSelected(action.selection, relationship.id) ? reverse(relationship) : relationship)
       }
 
+    case 'INLINE_RELATIONSHIPS':
+      return {
+        ...state,
+        nodes: state.nodes
+          .filter(node => !action.relationshipSpecs.some(spec => spec.removeNodeId === node.id))
+          .map(node => {
+            const spec = action.relationshipSpecs.find(spec => spec.addPropertiesNodeId === node.id)
+            if (spec) {
+              let nodeWithProperties = node
+              for (const [key, value] of Object.entries(spec.properties)) {
+                nodeWithProperties = setProperty(nodeWithProperties, key, value)
+              }
+              return nodeWithProperties
+            } else {
+              return node
+            }
+          }),
+        relationships: state.relationships
+          .filter(relationship => !action.relationshipSpecs.some(spec => spec.removeRelationshipId === relationship.id))
+      }
+
     case 'GETTING_GRAPH_SUCCEEDED':
       return action.storedGraph
 
