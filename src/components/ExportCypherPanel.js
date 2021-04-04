@@ -8,7 +8,7 @@ class ExportCypherPanel extends Component {
     super(props);
     this.state = {
       includeStyling: false,
-      keyword: 'MATCH'
+      keyword: 'CREATE'
     }
   }
 
@@ -27,7 +27,7 @@ class ExportCypherPanel extends Component {
       includeStyling: this.state.includeStyling
     }
     const cypher = exportCypher(this.props.graph, this.state.keyword, options)
-    const keywordRadioButtons = ['MATCH', 'CREATE', 'MERGE'].map(keyword => {
+    const keywordRadioButtons = ['CREATE', 'MATCH', 'MERGE'].map(keyword => {
       return (
         <Form.Radio
           key={keyword}
