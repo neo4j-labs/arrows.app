@@ -17,7 +17,8 @@ class ExportCypherPanel extends Component {
   }
 
   runInNeo4jBrowser = (cypher) => {
-    const url = 'neo4j-desktop://graphapps/neo4j-browser?cmd=edit&arg=' + encodeURIComponent(cypher)
+    const url = 'neo4j-desktop://graphapps/neo4j-browser?cmd=edit&arg=' +
+      encodeURIComponent(cypher.replaceAll('&', '\\u0026'))
     window.open(url)
   }
 
