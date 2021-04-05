@@ -40,7 +40,7 @@ export default class DetailInspector extends Component {
 
   render() {
     const {selection, graph, onSaveCaption, onSaveType, onDuplicate} = this.props
-    const {reverseRelationships, inlineRelationships, selectedNodes, onSelect} = this.props
+    const {reverseRelationships, inlineRelationships, mergeNodes, selectedNodes, onSelect} = this.props
     const {onConvertCaptionsToLabels, onConvertCaptionsToPropertyValues} = this.props
     const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
@@ -162,6 +162,7 @@ export default class DetailInspector extends Component {
               onInlineRelationships={(selection) => {
                 return inlineRelationships(selection)
               }}
+              onMergeNodes={mergeNodes}
               onDuplicate={onDuplicate}
             />
             {fields}

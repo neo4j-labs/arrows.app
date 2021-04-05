@@ -14,6 +14,17 @@ export const DetailToolbox = (props) => {
       onClick={() => props.onReverseRelationships(props.selection)}/>
   )
 
+  const mergeNodesButton = (
+    <Button
+      basic
+      color='black'
+      floated='right'
+      size='tiny'
+      icon="crosshairs"
+      content='Merge'
+      onClick={() => props.onMergeNodes(props.selection)}/>
+  )
+
   const inlineRelationshipButton = (
     <Button
       basic
@@ -37,15 +48,21 @@ export const DetailToolbox = (props) => {
   )
 
   const someRelationshipsSelected = selectedRelationshipIds(props.selection).length > 0
+  const showMergeNodesButton = shouldShowMergeNodesButton(props.graph, props.selection)
   const showInlineRelationshipsButton = shouldShowInlineRelationshipsButton(props.graph, props.selection)
 
   return (
     <Form.Field>
       {someRelationshipsSelected ? relationshipToolboxItems : null}
+      {showMergeNodesButton ? mergeNodesButton : null}
       {showInlineRelationshipsButton ? inlineRelationshipButton : null}
       {selectionToolboxItems}
     </Form.Field>
   )
+}
+
+const shouldShowMergeNodesButton = (graph, selection) => {
+  return selectedNodeIds(selection).length > 1 && selectedRelationshipIds(selection).length === 0
 }
 
 const shouldShowInlineRelationshipsButton = (graph, selection) => {

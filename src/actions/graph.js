@@ -327,6 +327,27 @@ export const mergeOnPropertyValues = (selection, propertyKey) => {
   }
 }
 
+export const mergeNodes = (selection) => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const graph = getPresentGraph(state)
+    const nodes = selectedNodes(graph, selection)
+    if (nodes.length < 1) {
+      return
+    }
+    const spec = {
+      survivingNodeId: nodes[0].id,
+      purgedNodeIds: nodes.slice(1).map(node => node.id),
+      position: average(nodes.map(node => node.position))
+    }
+    dispatch({
+      category: 'GRAPH',
+      type: 'MERGE_NODES',
+      mergeSpecs: [spec]
+    })
+  }
+}
+
 export const renameProperty = (selection, oldPropertyKey, newPropertyKey) => ({
   category: 'GRAPH',
   type: 'RENAME_PROPERTY',
