@@ -105,6 +105,48 @@ const graph = (state = emptyGraph(), action) => {
       }
     }
 
+    case 'MERGE_NODES': {
+      const nodeIdMap = new Map()
+      for (const spec of action.mergeSpecs) {
+        for (const purgedNodeId of spec.purgedNodeIds) {
+          nodeIdMap.set(purgedNodeId, spec.survivingNodeId)
+        }
+      }
+      const translateNodeId = (nodeId) => nodeIdMap.has(nodeId) ? nodeIdMap.get(nodeId) : nodeId
+      return {
+        style: state.style,
+        nodes: state.nodes
+          .filter(node => {
+            return !action.mergeSpecs.some(spec => spec.purgedNodeIds.includes(node.id))
+          })
+          .map(node => {
+            const spec = action.mergeSpecs.find(spec => spec.survivingNodeId === node.id)
+            if (spec) {
+              let mergedProperties = node.properties
+              for (const purgedNodeId of spec.purgedNodeIds) {
+                const purgedNode = state.nodes.find(node => node.id === purgedNodeId)
+                mergedProperties = {...mergedProperties, ...purgedNode.properties}
+              }
+              return {
+                ...node,
+                properties: mergedProperties,
+                position: spec.position
+              }
+            } else {
+              return node
+            }
+          }),
+        relationships: state.relationships
+          .map(relationship => {
+            return {
+              ...relationship,
+              fromId: translateNodeId(relationship.fromId),
+              toId: translateNodeId(relationship.toId),
+            }
+          })
+      }
+    }
+
     case 'RENAME_PROPERTY': {
       return {
         style: state.style,
@@ -258,6 +300,27 @@ const graph = (state = emptyGraph(), action) => {
       return {
         ...state,
         relationships: state.relationships.map(relationship => relationshipSelected(action.selection, relationship.id) ? reverse(relationship) : relationship)
+      }
+
+    case 'INLINE_RELATIONSHIPS':
+      return {
+        ...state,
+        nodes: state.nodes
+          .filter(node => !action.relationshipSpecs.some(spec => spec.removeNodeId === node.id))
+          .map(node => {
+            const spec = action.relationshipSpecs.find(spec => spec.addPropertiesNodeId === node.id)
+            if (spec) {
+              let nodeWithProperties = node
+              for (const [key, value] of Object.entries(spec.properties)) {
+                nodeWithProperties = setProperty(nodeWithProperties, key, value)
+              }
+              return nodeWithProperties
+            } else {
+              return node
+            }
+          }),
+        relationships: state.relationships
+          .filter(relationship => !action.relationshipSpecs.some(spec => spec.removeRelationshipId === relationship.id))
       }
 
     case 'GETTING_GRAPH_SUCCEEDED':

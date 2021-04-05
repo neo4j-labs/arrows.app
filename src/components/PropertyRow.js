@@ -34,6 +34,7 @@ export class PropertyRow extends Component {
     const {
       propertyKey,
       propertySummary,
+      onMergeOnValues,
       onKeyChange,
       valueFieldValue,
       valueFieldPlaceHolder,
@@ -97,6 +98,7 @@ export class PropertyRow extends Component {
 
     const suggestedValues = propertySummary.values.get(propertyKey)
       .filter(entry => entry.value !== valueFieldValue)
+    const possibleToMergeByValue = suggestedValues.some(entry => entry.nodeCount > 1)
     const suggestedValuesInSelection = suggestedValues.filter(entry => entry.inSelection)
     const suggestedValuesInRestOfGraph = suggestedValues.filter(entry => !entry.inSelection)
 
@@ -123,6 +125,20 @@ export class PropertyRow extends Component {
 
     const valuePopupContent = (
       <Form>
+        {possibleToMergeByValue ? (
+          <Form.Field>
+            <Button
+              key='mergeOnValues'
+              onClick={onMergeOnValues}
+              basic
+              color='black'
+              size="tiny"
+              icon="crosshairs"
+              content='Merge on values'
+              type='button'
+            />
+          </Form.Field>
+        ) : null}
         {suggestedValuesInSelection.length > 0 ? (
           <Form.Field>
             <label>in selection</label>

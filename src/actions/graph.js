@@ -1,14 +1,14 @@
 import {snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId, nextId} from "../model/Id";
-import {Point} from "../model/Point";
+import {average, Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
 import {getPresentGraph, getVisualGraph} from "../selectors";
 import {
   nodeSelected,
   selectedNodeIdMap, selectedNodeIds, selectedNodes,
-  selectedRelationshipIdMap, selectedRelationshipIds
+  selectedRelationshipIdMap, selectedRelationshipIds, selectedRelationships
 } from "../model/selection";
 import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constants";
 import BoundingBox from "../graphics/utils/BoundingBox";
@@ -295,6 +295,59 @@ export const removeLabel = (selection, label) => ({
   label
 })
 
+export const mergeOnPropertyValues = (selection, propertyKey) => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const graph = getPresentGraph(state)
+    const mergeSpecs = selectedNodes(graph, selection).reduce((result, node) => {
+      const propertyValue = node.properties[propertyKey]
+      let spec = result.find(spec => spec.propertyValue === propertyValue)
+      if (spec) {
+        spec.purgedNodeIds.push(node.id)
+        spec.positions.push(node.position)
+      } else {
+        spec = {
+          propertyValue,
+          survivingNodeId: node.id,
+          purgedNodeIds: [],
+          positions: [node.position]
+        }
+        result.push(spec)
+      }
+      return result
+    }, [])
+    for (const spec of mergeSpecs) {
+      spec.position = average(spec.positions)
+    }
+    dispatch({
+      category: 'GRAPH',
+      type: 'MERGE_NODES',
+      mergeSpecs
+    })
+  }
+}
+
+export const mergeNodes = (selection) => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const graph = getPresentGraph(state)
+    const nodes = selectedNodes(graph, selection)
+    if (nodes.length < 1) {
+      return
+    }
+    const spec = {
+      survivingNodeId: nodes[0].id,
+      purgedNodeIds: nodes.slice(1).map(node => node.id),
+      position: average(nodes.map(node => node.position))
+    }
+    dispatch({
+      category: 'GRAPH',
+      type: 'MERGE_NODES',
+      mergeSpecs: [spec]
+    })
+  }
+}
+
 export const renameProperty = (selection, oldPropertyKey, newPropertyKey) => ({
   category: 'GRAPH',
   type: 'RENAME_PROPERTY',
@@ -485,6 +538,27 @@ export const reverseRelationships = selection => ({
   type: 'REVERSE_RELATIONSHIPS',
   selection
 })
+
+export const inlineRelationships = selection => {
+  return function (dispatch, getState) {
+    const state = getState()
+    const graph = getPresentGraph(state)
+    const relationshipSpecs = selectedRelationships(graph, selection).map(relationship => {
+      const targetNode = graph.nodes.find(node => node.id === relationship.toId)
+      return {
+        addPropertiesNodeId: relationship.fromId,
+        properties: targetNode.properties,
+        removeRelationshipId: relationship.id,
+        removeNodeId: relationship.toId
+      }
+    })
+    dispatch({
+      category: 'GRAPH',
+      type: 'INLINE_RELATIONSHIPS',
+      relationshipSpecs
+    })
+  }
+}
 
 export const importNodesAndRelationships = (importedGraph) => {
   return function (dispatch, getState) {

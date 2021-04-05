@@ -121,6 +121,22 @@ export default function selection(state = {
           }))
         ]
       }
+    case 'MERGE_NODES':
+      return {
+        editing: undefined,
+        entities: action.mergeSpecs.map(spec => ({
+          entityType: 'node',
+          id: spec.survivingNodeId
+        }))
+      }
+    case 'INLINE_RELATIONSHIPS':
+      return {
+        editing: undefined,
+        entities: action.relationshipSpecs.map(spec => ({
+          entityType: 'node',
+          id: spec.addPropertiesNodeId
+        }))
+      }
     case 'IMPORT_NODES_AND_RELATIONSHIPS':
       return {
         editing: undefined,

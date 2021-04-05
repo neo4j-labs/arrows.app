@@ -12,7 +12,7 @@ import {
   renameLabel,
   removeLabel,
   duplicateSelection,
-  convertCaptionsToLabels, convertCaptionsToPropertyValues
+  convertCaptionsToLabels, convertCaptionsToPropertyValues, inlineRelationships, mergeOnPropertyValues, mergeNodes
 } from "../actions/graph";
 import DetailInspector from "../components/DetailInspector"
 import { getSelectedNodes } from "../selectors/inspection";
@@ -52,6 +52,9 @@ const mapDispatchToProps = dispatch => {
     onSaveType: (selection, type) => {
       dispatch(setRelationshipType(selection, type))
     },
+    onMergeOnValues: (selection, propertyKey) => {
+      dispatch(mergeOnPropertyValues(selection, propertyKey))
+    },
     onSavePropertyKey: (selection, oldPropertyKey, newPropertyKey) => {
       dispatch(renameProperty(selection, oldPropertyKey, newPropertyKey))
     },
@@ -72,6 +75,12 @@ const mapDispatchToProps = dispatch => {
     },
     reverseRelationships: selection => {
       dispatch(reverseRelationships(selection))
+    },
+    mergeNodes: selection => {
+      dispatch(mergeNodes(selection))
+    },
+    inlineRelationships: selection => {
+      dispatch(inlineRelationships(selection))
     },
     onSelect: (entities) => {
       dispatch(toggleSelection(entities, 'replace'))

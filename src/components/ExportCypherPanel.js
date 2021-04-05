@@ -8,7 +8,7 @@ class ExportCypherPanel extends Component {
     super(props);
     this.state = {
       includeStyling: false,
-      keyword: 'MATCH'
+      keyword: 'CREATE'
     }
   }
 
@@ -17,7 +17,8 @@ class ExportCypherPanel extends Component {
   }
 
   runInNeo4jBrowser = (cypher) => {
-    const url = 'neo4j-desktop://graphapps/neo4j-browser?cmd=edit&arg=' + encodeURIComponent(cypher)
+    const url = 'neo4j-desktop://graphapps/neo4j-browser?cmd=edit&arg=' +
+      encodeURIComponent(cypher.replaceAll('&', '\\u0026'))
     window.open(url)
   }
 
@@ -26,7 +27,7 @@ class ExportCypherPanel extends Component {
       includeStyling: this.state.includeStyling
     }
     const cypher = exportCypher(this.props.graph, this.state.keyword, options)
-    const keywordRadioButtons = ['MATCH', 'CREATE', 'MERGE'].map(keyword => {
+    const keywordRadioButtons = ['CREATE', 'MATCH', 'MERGE'].map(keyword => {
       return (
         <Form.Radio
           key={keyword}

@@ -39,11 +39,12 @@ export default class DetailInspector extends Component {
   }
 
   render() {
-    const {selection, graph, onSaveCaption, onSaveType, onDuplicate, reverseRelationships, selectedNodes, onSelect} = this.props
+    const {selection, graph, onSaveCaption, onSaveType, onDuplicate} = this.props
+    const {reverseRelationships, inlineRelationships, mergeNodes, selectedNodes, onSelect} = this.props
     const {onConvertCaptionsToLabels, onConvertCaptionsToPropertyValues} = this.props
     const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
     const {onSaveArrowsPropertyValue, onDeleteArrowsProperty} = this.props
-    const {onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
+    const {onMergeOnValues, onSavePropertyKey, onSavePropertyValue, onDeleteProperty} = this.props
     const fields = []
 
     const relationships = selectedRelationships(graph, selection)
@@ -104,6 +105,7 @@ export default class DetailInspector extends Component {
         <PropertyTable key={`properties-${entities.map(entity => entity.id).join(',')}`}
                        properties={properties}
                        propertySummary={propertySummary}
+                       onMergeOnValues={(propertyKey) => onMergeOnValues(selection, propertyKey)}
                        onSavePropertyKey={(oldPropertyKey, newPropertyKey) => onSavePropertyKey(selection, oldPropertyKey, newPropertyKey)}
                        onSavePropertyValue={(propertyKey, propertyValue) => onSavePropertyValue(selection, propertyKey, propertyValue)}
                        onDeleteProperty={(propertyKey) => onDeleteProperty(selection, propertyKey)}
@@ -154,8 +156,13 @@ export default class DetailInspector extends Component {
               {describeSelection(selection, onSelect)}
             </Form.Field>
             <DetailToolbox
+              graph={graph}
               selection={selection}
               onReverseRelationships={reverseRelationships}
+              onInlineRelationships={(selection) => {
+                return inlineRelationships(selection)
+              }}
+              onMergeNodes={mergeNodes}
               onDuplicate={onDuplicate}
             />
             {fields}
