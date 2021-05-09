@@ -23,7 +23,8 @@ export const tryDragRing = (sourceNodeId, mousePosition) => {
   return function (dispatch, getState) {
     const state = getState()
     const selection = state.selection
-    const secondarySourceNodeIds = selectedNodeIds(selection).filter(nodeId => nodeId !== sourceNodeId)
+    const selected = selectedNodeIds(selection)
+    const secondarySourceNodeIds = selected.includes(sourceNodeId) ? selected.filter(nodeId => nodeId !== sourceNodeId) : []
 
     const visualGraph = getVisualGraph(state)
     let newNodeRadius = visualGraph.graph.style.radius
