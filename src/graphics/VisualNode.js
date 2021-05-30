@@ -25,6 +25,7 @@ export default class VisualNode {
 
     this.internalRadius = style('radius')
     this.radius = this.internalRadius + style('border-width')
+    this.outsideComponentRadius = this.radius + style('node-margin')
     this.fitRadius = this.internalRadius - style('node-padding')
     this.background = new NodeBackground(node.position, this.internalRadius, editing, style)
     const neighbourObstacles = neighbourPositions(node, graph).map(position => {
@@ -121,7 +122,7 @@ export default class VisualNode {
     })()
     this.outsideOffset = new Vector(1, 0)
       .rotate(this.outsideOrientation.angle)
-      .scale(this.radius)
+      .scale(this.outsideComponentRadius)
       .plus(new Vector(0, outsideVerticalOffset))
   }
 

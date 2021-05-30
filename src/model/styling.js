@@ -85,6 +85,7 @@ export const styleAttributeGroups = [
       {key: 'border-color', appliesTo: 'NodeWithBorder', type: 'color', defaultValue: black},
       {key: 'radius', appliesTo: 'Node', type: 'radius', defaultValue: defaultNodeRadius},
       {key: 'node-padding', appliesTo: 'NodeWithInsideDetail', type: 'spacing', defaultValue: 5},
+      {key: 'node-margin', appliesTo: 'NodeWithOutsideDetail', type: 'spacing', defaultValue: 2},
       {key: 'outside-position', appliesTo: 'NodeWithOutsideDetail', type: 'outside-position', defaultValue: 'auto'},
     ]
   },
