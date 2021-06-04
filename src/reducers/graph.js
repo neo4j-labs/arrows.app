@@ -226,14 +226,19 @@ const graph = (state = emptyGraph(), action) => {
     case 'MOVE_NODES':
     case 'MOVE_NODES_END_DRAG':
       const nodeIdToNode = {}
+      let clean = true
       state.nodes.forEach((node) => {
         nodeIdToNode[node.id] = node
       })
       action.nodePositions.forEach((nodePosition) => {
         if(nodeIdToNode[nodePosition.nodeId]) {
-          nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
+          const oldNode = nodeIdToNode[nodePosition.nodeId]
+          clean &= oldNode.position.isEqual(nodePosition.position)
+          nodeIdToNode[nodePosition.nodeId] = moveTo(oldNode, nodePosition.position)
         }
       })
+
+      if (clean) return state
 
       return {
         style: state.style,
