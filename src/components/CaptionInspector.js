@@ -55,7 +55,7 @@ export class CaptionInspector extends Component {
         <Popup
           trigger={textBox}
           content={popupContent}
-          on='focus'
+          on='click'
           {...(value || value === undefined ? {} : {open: false})}
           position='bottom left'
         />
