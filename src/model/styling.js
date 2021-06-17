@@ -130,7 +130,7 @@ export const styleAttributeGroups = [
       {key: 'type-background-color', appliesTo: 'RelationshipWithType', type: 'color', defaultValue: white},
       {key: 'type-border-color', appliesTo: 'RelationshipWithType', type: 'color', defaultValue: black},
       {key: 'type-border-width', appliesTo: 'RelationshipWithType', type: 'line-width', defaultValue: 0},
-      {key: 'type-font-size', appliesTo: 'RelationshipWithType', type: 'font-size', defaultValue: defaultFontSize * (4 / 5)},
+      {key: 'type-font-size', appliesTo: 'RelationshipWithType', type: 'font-size', defaultValue: 16},
       {key: 'type-padding', appliesTo: 'RelationshipWithType', type: 'spacing', defaultValue: 5},
     ]
   },
@@ -138,7 +138,7 @@ export const styleAttributeGroups = [
     name: 'Properties', entityTypes: ['node', 'relationship'], attributes: [
       {key: 'property-position', appliesTo: 'NodeOrRelationshipWithProperty', type: 'inside-outside', defaultValue: 'outside'},
       {key: 'property-color', appliesTo: 'NodeOrRelationshipWithProperty', type: 'color', defaultValue: black},
-      {key: 'property-font-size', appliesTo: 'NodeOrRelationshipWithProperty', type: 'font-size', defaultValue: defaultFontSize * (4/5)},
+      {key: 'property-font-size', appliesTo: 'NodeOrRelationshipWithProperty', type: 'font-size', defaultValue: 16},
       {key: 'property-font-weight', appliesTo: 'NodeOrRelationshipWithProperty', type: 'font-weight', defaultValue: 'normal'},
     ]
   }
