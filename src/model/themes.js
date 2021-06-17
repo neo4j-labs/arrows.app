@@ -71,11 +71,11 @@ export const themes = [
         "type-background-color": "#ffffff",
         "type-border-color": "#000000",
         "type-border-width": 0,
-        "type-font-size": 40,
+        "type-font-size": 16,
         "type-padding": 5,
         "property-position": "outside",
         "property-color": "#000000",
-        "property-font-size": 40,
+        "property-font-size": 16,
         "property-font-weight": "normal"
       }
     }
