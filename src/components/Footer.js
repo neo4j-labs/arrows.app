@@ -1,5 +1,5 @@
 import React from "react";
-import neo4j_logo_white from "../images/neo4j_logo_white.png";
+import neo4j_logo_white from "../images/Neo4j-logo-white.svg";
 import {footerHeight} from "../model/applicationLayout";
 import {informationLinks} from "./informationLinks";
 
@@ -56,7 +56,7 @@ const Footer = (props) => {
         lineHeight: '26px'
       }}>
         <a href='https://neo4j.com?ref=arrows.app' target='_blank'>
-          <img src={neo4j_logo_white} style={{ height: '24px' }} alt='Neo4j logo'/>
+          <img src={neo4j_logo_white} style={{ height: '20px', marginTop: '2px' }} alt='Neo4j logo'/>
         </a>
       </p>
     </footer>
