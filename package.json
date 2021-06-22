@@ -5,6 +5,7 @@
   "dependencies": {
     "crel": "^4.2.1",
     "date-fns": "^2.16.1",
+    "graphql": "^15.5.1",
     "js-base64": "^3.6.0",
     "lodash.find": "^4.6.0",
     "lodash.get": "^4.4.2",
