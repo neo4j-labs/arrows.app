@@ -366,5 +366,123 @@ describe("graphql", () => {
 
       compare(expected, received);
     });
+
+    it("should return larger blog schema with many nodes and relationships", () => {
+      const graph = {
+        style: {},
+        nodes: [
+          {
+            id: "n0",
+            caption: "",
+            style: {},
+            labels: ["Post"],
+            properties: {
+              title: "String",
+            },
+          },
+          {
+            id: "n1",
+            caption: "",
+            style: {},
+            labels: ["User"],
+            properties: {
+              name: "String",
+            },
+          },
+          {
+            id: "n2",
+            caption: "",
+            style: {},
+            labels: ["Comment"],
+            properties: {
+              content: "String",
+            },
+          },
+          {
+            id: "n3",
+            caption: "",
+            style: {},
+            labels: ["Blog"],
+            properties: {
+              name: "String",
+            },
+          },
+        ],
+        relationships: [
+          {
+            id: "n0",
+            type: "[POSTED]",
+            style: {},
+            properties: {},
+            fromId: "n1",
+            toId: "n0",
+          },
+          {
+            id: "n1",
+            type: "[HAS_COMMENT]",
+            style: {},
+            properties: {},
+            fromId: "n0",
+            toId: "n2",
+          },
+          {
+            id: "n2",
+            type: "[COMMENTED]",
+            style: {},
+            properties: {},
+            fromId: "n1",
+            toId: "n2",
+          },
+          {
+            id: "n3",
+            type: "[HAS_POST]",
+            style: {},
+            properties: {},
+            fromId: "n3",
+            toId: "n0",
+          },
+          {
+            id: "n4",
+            type: "[HAS_BLOG]",
+            style: {},
+            properties: {},
+            fromId: "n1",
+            toId: "n3",
+          },
+        ],
+      };
+
+      const received = exportGraphQL(graph);
+
+      const expected = `
+        type Post {
+          title: String
+          has_comment: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+          posted: [User] @relationship(type: "POSTED", direction: IN)
+          has_post: [Blog] @relationship(type: "HAS_POST", direction: IN)
+        }
+
+        type User {
+          name: String
+          posted: [Post] @relationship(type: "POSTED", direction: OUT)
+          commented: [Comment] @relationship(type: "COMMENTED", direction: OUT)
+          has_blog: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
+        }
+        
+        type Comment {
+          content: String
+          has_comment: [Post] @relationship(type: "HAS_COMMENT", direction: IN)
+          commented: [User] @relationship(type: "COMMENTED", direction: IN)
+        }
+        
+        type Blog {
+          name: String
+          has_blog: [User] @relationship(type: "HAS_BLOG", direction: IN)
+          has_post: [Post] @relationship(type: "HAS_POST", direction: OUT)
+        }
+      `;
+
+      compare(expected, received);
+    });
   });
 });
