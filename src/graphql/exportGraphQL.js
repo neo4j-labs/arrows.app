@@ -95,6 +95,12 @@ function exportGraphQL(graph) {
       );
     }
 
+    if (!rel.type) {
+      throw new Error(
+        "Relationships without a type are not supported with GraphQL export."
+      );
+    }
+
     const from = nodes.find((n) => n.graphID === rel.fromId);
     from.relationships.push({
       type: rel.type,
