@@ -112,32 +112,23 @@ function exportGraphQL(graph) {
     /**
      * @type {import("graphql").DefinitionNode}
      */
-    const def = {
+    const definition = {
       kind: "ObjectTypeDefinition",
       name: {
         kind: "Name",
         value: node.label,
       },
-      fields: [],
-    };
-
-    Object.entries({
-      ...node.properties,
-      __internalID__: node.graphID,
-    }).forEach(([key, value]) => {
-      /**
-       * @type {import("graphql").FieldDefinitionNode}
-       */
-      const field = {
+      fields: Object.entries({
+        ...node.properties,
+        __internalID__: node.graphID,
+      }).map(([key, value]) => ({
         kind: "FieldDefinition",
         name: { kind: "Name", value: key },
         type: typeStringToTypeNode(value),
-      };
+      })),
+    };
 
-      def.fields.push(field);
-    });
-
-    return def;
+    return definition;
   });
 
   // Second iteration as definitions are now created
