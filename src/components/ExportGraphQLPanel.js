@@ -37,29 +37,21 @@ class ExportGraphQLPanel extends Component {
       <React.Fragment>
         {this.state.error && (
           <Message info error>
-            <div>
-              <p>{this.state.error.message}</p>
-            </div>
+            <Message.Content>
+              {this.state.error.message}
+            </Message.Content>
           </Message>
         )}
 
         <Form>
           <Message info icon>
             <Icon name="info" />
-            <div>
-              <p>
-                Below you are seeing a GraphQL schema. Use this schema with the{" "}
-                <a href="https://neo4j.com/docs/graphql-manual/current/">
-                  Neo4j GraphQL Library.
-                </a>
-              </p>
-              <ul>
-                <li>
-                  Clicking on the "Download" link to download a file to your
-                  computer.
-                </li>
-              </ul>
-            </div>
+            <Message.Content>
+              This is a GraphQL schema based on the diagram. Use this schema with the{" "}
+              <a href="https://neo4j.com/docs/graphql-manual/current/" target='_blank'>
+                Neo4j GraphQL Library.
+              </a>
+            </Message.Content>
           </Message>
 
           <Form.Field>
