@@ -4,6 +4,7 @@ import ExportPngPanel from "./ExportPngPanel";
 import ExportCypherPanel from "./ExportCypherPanel";
 import ExportSvgPanel from "./ExportSvgPanel";
 import ExportJsonPanel from "./ExportJsonPanel";
+import ExportGraphQLPanel from "./ExportGraphQLPanel";
 import {loadFavoriteExportTab, saveFavoriteExportTab} from "../actions/localStorage";
 import ExportUrlPanel from "./ExportUrlPanel";
 
@@ -80,7 +81,18 @@ class ExportModal extends Component {
             />
           </Tab.Pane>
         )
-      }
+      },
+      {
+        menuItem: 'GraphQL',
+        render: () => (
+          <Tab.Pane attached={false}>
+            <ExportGraphQLPanel
+              graph={this.props.graph}
+              diagramName={this.props.diagramName}
+            />
+          </Tab.Pane>
+        ),
+      },
     ]
 
     return (
