@@ -17,12 +17,9 @@ class ExportGraphQLPanel extends Component {
     try {
       const typeDefs = exportGraphQL(this.props.graph);
 
-      this.setState((s) => ({
-        ...s,
-        typeDefs,
-      }));
+      this.setState({typeDefs});
     } catch (error) {
-      this.setState((s) => ({ ...s, error }));
+      this.setState({error});
     }
   }
 
