@@ -28,48 +28,47 @@ class ExportGraphQLPanel extends Component {
   }
 
   render() {
+    if (this.state.error) {
+      return (
+        <Message info error>
+          <Message.Content>
+            {this.state.error.message}
+          </Message.Content>
+        </Message>
+      )
+    }
+
     const dataUrl = "data:text;base64," + Base64.encode(this.state.typeDefs);
-
     return (
-      <React.Fragment>
-        {this.state.error && (
-          <Message info error>
-            <Message.Content>
-              {this.state.error.message}
-            </Message.Content>
-          </Message>
-        )}
-
-        <Form>
-          <Message info icon>
-            <Icon name="info" />
-            <Message.Content>
-              This is a GraphQL schema based on the diagram. Use this schema with the{" "}
-              <a href="https://neo4j.com/docs/graphql-manual/current/" target='_blank'>
-                Neo4j GraphQL Library.
-              </a>
-            </Message.Content>
-          </Message>
-
-          <Form.Field>
-            <a
-              className="ui button"
-              href={dataUrl}
-              download={`${this.props.diagramName}-schema.gql`}
-            >
-              <Icon name="download" />
-              Download
+      <Form>
+        <Message info icon>
+          <Icon name="info"/>
+          <Message.Content>
+            This is a GraphQL schema based on the diagram. Use this schema with the{" "}
+            <a href="https://neo4j.com/docs/graphql-manual/current/" target='_blank'>
+              Neo4j GraphQL Library.
             </a>
-          </Form.Field>
-          <TextArea
-            style={{
-              height: 500,
-              fontFamily: "monospace",
-            }}
-            value={this.state.typeDefs}
-          />
-        </Form>
-      </React.Fragment>
+          </Message.Content>
+        </Message>
+
+        <Form.Field>
+          <a
+            className="ui button"
+            href={dataUrl}
+            download={`${this.props.diagramName}-schema.gql`}
+          >
+            <Icon name="download"/>
+            Download
+          </a>
+        </Form.Field>
+        <TextArea
+          style={{
+            height: 500,
+            fontFamily: "monospace",
+          }}
+          value={this.state.typeDefs}
+        />
+      </Form>
     );
   }
 }
