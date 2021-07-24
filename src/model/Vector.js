@@ -16,6 +16,10 @@ export class Vector {
     return new Vector(this.dx * scaleFactor, this.dy * scaleFactor)
   }
 
+  dot(vector) {
+    return this.dx * vector.dx + this.dy * vector.dy
+  }
+
   invert() {
     return new Vector(-this.dx, -this.dy)
   }

@@ -3,6 +3,7 @@
  */
 import { drawCircle, drawSolidCircle, drawStraightLine } from "./canvasRenderer";
 import { Point } from "../model/Point";
+import {Vector} from "../model/Vector";
 
 export class Guides {
   constructor(guidelines = [], naturalPosition, naturalRadius) {
@@ -25,6 +26,13 @@ export class Guides {
         case 'VERTICAL':
           const x = transform(new Point(guideline.x, 0)).x
           drawStraightLine(ctx, new Point(x, 0), new Point(x, displayOptions.canvasSize.height), {dashed: true})
+          break
+
+        case 'ANGLE':
+          const point = transform(guideline.center)
+          const diagonal = displayOptions.canvasSize.width + displayOptions.canvasSize.height
+          const vector = new Vector(diagonal, 0).rotate(guideline.angle)
+          drawStraightLine(ctx, point.translate(vector.invert()), point.translate(vector), {dashed: true})
           break
 
         case 'CIRCLE':

@@ -1,7 +1,9 @@
 import {Point} from "../model/Point";
 import {idsMatch} from "../model/Id";
+import {Vector} from "../model/Vector";
 
 export const snapTolerance = 20
+export const angleTolerance = Math.PI / 8
 
 export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, naturalPosition, otherSelectedNodes) => {
 
@@ -42,7 +44,11 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     }
   })
 
-  let columns = [], rows = [], rings = [];
+  let columns = [], rows = [], ringsAndAngles = [];
+
+  const snappingAngles = [6, 4, 3]
+    .map(denominator => Math.PI / denominator)
+    .flatMap(angle => [-1, -0.5, 0, 0.5].map(offset => offset * Math.PI + angle))
 
   graph.nodes.forEach((node) => {
     if (includeNode(node.id)) {
@@ -59,17 +65,31 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
   neighbours.forEach((neighbour) => {
     relationshipDistances.forEach((entry) => {
       const distance = naturalPosition.vectorFrom(neighbour.position).distance();
-      rings.push({
+      ringsAndAngles.push({
+        type: 'RING',
         node: neighbour,
         radius: entry.distance,
         error: Math.abs(distance - entry.distance)
       })
     })
+    snappingAngles.forEach(snappingAngle => {
+      const unitVector = new Vector(1, 0).rotate(snappingAngle)
+      const offset = naturalPosition.vectorFrom(neighbour.position)
+      const error = offset.minus(unitVector.scale(offset.dot(unitVector))).distance()
+      if (error < snapTolerance && Math.abs(offset.angle() - snappingAngle) < angleTolerance) {
+        ringsAndAngles.push({
+          type: 'ANGLE',
+          node: neighbour,
+          angle: snappingAngle,
+          error
+        })
+      }
+    })
   })
   const byAscendingError = (a, b) => a.error - b.error;
   columns.sort(byAscendingError)
   rows.sort(byAscendingError)
-  rings.sort(byAscendingError)
+  ringsAndAngles.sort(byAscendingError)
 
   let x = naturalPosition.x, y = naturalPosition.y
 
@@ -177,43 +197,72 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     guideGenerators.shift()()
   }
 
-  while (guidelines.length < 2 && rings.length > 0 && rings[0].error < snapTolerance) {
-    let ring = rings.shift()
+  while (guidelines.length < 2 && ringsAndAngles.length > 0 && ringsAndAngles[0].error < snapTolerance) {
+    let ringOrAngle = ringsAndAngles.shift()
     let constraintPossible = true
     if (guidelines.length === 0) {
-      let offset = naturalPosition.vectorFrom(ring.node.position)
-      let positionOnCircle = ring.node.position.translate(offset.scale(ring.radius / offset.distance()))
-      x = positionOnCircle.x
-      y = positionOnCircle.y
+      let offset = naturalPosition.vectorFrom(ringOrAngle.node.position)
+      switch (ringOrAngle.type) {
+        case 'RING':
+          let positionOnCircle = ringOrAngle.node.position.translate(offset.scale(ringOrAngle.radius / offset.distance()))
+          x = positionOnCircle.x
+          y = positionOnCircle.y
+          break
+
+        case 'ANGLE':
+          const vector = new Vector(1, 0).scale(offset.distance()).rotate(ringOrAngle.angle)
+          const snappedPosition = ringOrAngle.node.position.translate(vector)
+          x = snappedPosition.x
+          y = snappedPosition.y
+          break
+      }
     } else {
       let otherGuide = guidelines[0]
       let dx, dy
       switch (otherGuide.type) {
         case 'VERTICAL':
-          dx = Math.abs(ring.node.position.x - otherGuide.x)
-          if (dx > ring.radius) {
-            constraintPossible = false
-          } else {
-            dy = Math.sqrt(ring.radius * ring.radius - dx * dx)
-            y = ring.node.position.y < y ? ring.node.position.y + dy : ring.node.position.y - dy
+          dx = Math.abs(ringOrAngle.node.position.x - otherGuide.x)
+          switch (ringOrAngle.type) {
+            case 'RING':
+              if (dx > ringOrAngle.radius) {
+                constraintPossible = false
+              } else {
+                dy = Math.sqrt(ringOrAngle.radius * ringOrAngle.radius - dx * dx)
+                y = ringOrAngle.node.position.y < y ? ringOrAngle.node.position.y + dy : ringOrAngle.node.position.y - dy
+              }
+              break
+
+            case 'ANGLE':
+              dy = dx * Math.tan(ringOrAngle.angle)
+              y = ringOrAngle.node.position.y + Math.sign(dx * dy) * dy
+              break
           }
           break
 
         case 'HORIZONTAL':
-          dy = Math.abs(ring.node.position.y - otherGuide.y)
-          if (dy > ring.radius) {
-            constraintPossible = false
-          } else {
-            dx = Math.sqrt(ring.radius * ring.radius - dy * dy)
-            x = ring.node.position.x < x ? ring.node.position.x + dx : ring.node.position.x - dx
+          dy = Math.abs(ringOrAngle.node.position.y - otherGuide.y)
+          switch (ringOrAngle.type) {
+            case 'RING':
+              if (dy > ringOrAngle.radius) {
+                constraintPossible = false
+              } else {
+                dx = Math.sqrt(ringOrAngle.radius * ringOrAngle.radius - dy * dy)
+                x = ringOrAngle.node.position.x < x ? ringOrAngle.node.position.x + dx : ringOrAngle.node.position.x - dx
+              }
+              break
+
+            case 'ANGLE':
+              dx = dy / Math.tan(ringOrAngle.angle)
+              x = ringOrAngle.node.position.x + Math.sign(dx * dy) * dx
+              break
           }
           break
 
         case 'CIRCLE':
-          let betweenCenters = ring.node.position.vectorFrom(otherGuide.center)
+          let betweenCenters = ringOrAngle.node.position.vectorFrom(otherGuide.center)
           let d = betweenCenters.distance()
-          if (d > Math.abs(ring.radius - otherGuide.radius) && d < ring.radius + otherGuide.radius) {
-            let a = (otherGuide.radius * otherGuide.radius - ring.radius * ring.radius + d * d) / (2 * d)
+          if (d > Math.abs(ringOrAngle.radius - otherGuide.radius) && d < ringOrAngle.radius + otherGuide.radius) {
+            let a = (otherGuide.radius * otherGuide.radius - ringOrAngle.radius * ringOrAngle.radius + d * d) / (2 * d)
             let midPoint = otherGuide.center.translate(betweenCenters.scale(a / d))
             let h = Math.sqrt(otherGuide.radius * otherGuide.radius - a * a)
             let bisector = betweenCenters.perpendicular().scale(h / d)
@@ -227,7 +276,17 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
           }
       }
     }
-    if (constraintPossible) guidelines.push({type: 'CIRCLE', center: ring.node.position, radius: ring.radius})
+    if (constraintPossible) {
+      switch (ringOrAngle.type) {
+        case 'RING':
+          guidelines.push({type: 'CIRCLE', center: ringOrAngle.node.position, radius: ringOrAngle.radius})
+          break
+
+        case 'ANGLE':
+          guidelines.push({type: 'ANGLE', center: ringOrAngle.node.position, angle: ringOrAngle.angle})
+          break
+      }
+    }
   }
 
   return {
