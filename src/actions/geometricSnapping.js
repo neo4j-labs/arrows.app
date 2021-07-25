@@ -1,6 +1,8 @@
 import {Point} from "../model/Point";
 import {idsMatch} from "../model/Id";
 import {Vector} from "../model/Vector";
+import {LineGuide} from "./guides/LineGuide";
+import {CircleGuide} from "./guides/CircleGuide";
 
 export const snapTolerance = 20
 export const angleTolerance = Math.PI / 8
@@ -24,6 +26,7 @@ export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, natural
 export const snapToDistancesAndAngles = (graph, neighbours, includeNode, naturalPosition) => {
 
   const isNeighbour = (nodeId) => !!neighbours.find(neighbour => neighbour.id === nodeId)
+  let snappedPosition = naturalPosition
 
   const relationshipDistances = [];
   graph.relationships.forEach((relationship) => {
@@ -44,7 +47,7 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     }
   })
 
-  let columns = [], rows = [], ringsAndAngles = [];
+  let columns = [], rows = [], circles = [], diagonals = [];
 
   const snappingAngles = [6, 4, 3]
     .map(denominator => Math.PI / denominator)
@@ -65,9 +68,8 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
   neighbours.forEach((neighbour) => {
     relationshipDistances.forEach((entry) => {
       const distance = naturalPosition.vectorFrom(neighbour.position).distance();
-      ringsAndAngles.push({
-        type: 'RING',
-        node: neighbour,
+      circles.push({
+        center: neighbour.position,
         radius: entry.distance,
         error: Math.abs(distance - entry.distance)
       })
@@ -77,9 +79,8 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
       const offset = naturalPosition.vectorFrom(neighbour.position)
       const error = offset.minus(unitVector.scale(offset.dot(unitVector))).distance()
       if (error < snapTolerance && Math.abs(offset.angle() - snappingAngle) < angleTolerance) {
-        ringsAndAngles.push({
-          type: 'ANGLE',
-          node: neighbour,
+        diagonals.push({
+          center: neighbour.position,
           angle: snappingAngle,
           error
         })
@@ -89,7 +90,8 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
   const byAscendingError = (a, b) => a.error - b.error;
   columns.sort(byAscendingError)
   rows.sort(byAscendingError)
-  ringsAndAngles.sort(byAscendingError)
+  circles.sort(byAscendingError)
+  diagonals.sort(byAscendingError)
 
   let x = naturalPosition.x, y = naturalPosition.y
 
@@ -125,15 +127,17 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
   const vSnap = () => {
     if (columns[0] && columns[0].error < snapTolerance) {
       x = columns[0].x
-      guidelines.push({type: 'VERTICAL', x})
+      return new LineGuide(new Point(x, 0), Math.PI / 2)
     }
+    return null
   }
 
   const hSnap = () => {
     if (rows[0] && rows[0].error < snapTolerance) {
       y = rows[0].y
-      guidelines.push({type: 'HORIZONTAL', y})
+      return new LineGuide(new Point(0, y), 0)
     }
+    return null
   }
 
   const hInterval = () => {
@@ -145,10 +149,11 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
         const interval  = intervals[0]
         if (interval.error < snapTolerance) {
           y = interval.candidate
-          guidelines.push({type: 'HORIZONTAL', y})
+          return new LineGuide(new Point(0, y), 0)
         }
       }
     }
+    return null
   }
 
   const vInterval = () => {
@@ -160,10 +165,11 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
         const interval  = intervals[0]
         if (interval.error < snapTolerance) {
           x = interval.candidate
-          guidelines.push({type: 'VERTICAL', x})
+          return new LineGuide(new Point(x, 0), Math.PI / 2)
         }
       }
     }
+    return null
   }
 
   const hNeighbourInterval = () => {
@@ -174,9 +180,10 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
       const interval = intervals[0]
       if (interval.error < snapTolerance) {
         y = interval.candidate
-        guidelines.push({type: 'HORIZONTAL', y})
+        return new LineGuide(new Point(0, y), 0)
       }
     }
+    return null
   }
 
   const vNeighbourInterval = () => {
@@ -187,111 +194,57 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
       const interval = intervals[0]
       if (interval.error < snapTolerance) {
         x = interval.candidate
-        guidelines.push({type: 'VERTICAL', x})
+        return new LineGuide(new Point(x, 0), Math.PI / 2)
       }
+    }
+    return null
+  }
+
+  const radiusSnap = () => {
+    if (circles.length > 0) {
+      const circle = circles.shift()
+      if (circle.error < snapTolerance) {
+        return new CircleGuide(circle.center, circle.radius)
+      }
+    }
+    return null
+  }
+
+  const angleSnap = () => {
+    if (diagonals.length > 0) {
+      const diagonal = diagonals.shift()
+      if (diagonal.error < snapTolerance) {
+        return new LineGuide(diagonal.center, diagonal.angle)
+      }
+    }
+    return null
+  }
+
+  const guideGenerators = [vSnap, hSnap, hInterval, radiusSnap, angleSnap, vInterval, hNeighbourInterval, vNeighbourInterval]
+  while (guidelines.length === 0 && guideGenerators.length > 0) {
+    const candidateGuide = guideGenerators.shift()()
+    if (candidateGuide !== null) {
+      guidelines.push(candidateGuide)
+      snappedPosition = candidateGuide.snap(naturalPosition)
     }
   }
 
-  const guideGenerators = [vSnap, hSnap, hInterval, vInterval, hNeighbourInterval, vNeighbourInterval]
-  while (guidelines.length < 2 && guideGenerators.length > 0) {
-    guideGenerators.shift()()
-  }
-
-  while (guidelines.length < 2 && ringsAndAngles.length > 0 && ringsAndAngles[0].error < snapTolerance) {
-    let ringOrAngle = ringsAndAngles.shift()
-    let constraintPossible = true
-    if (guidelines.length === 0) {
-      let offset = naturalPosition.vectorFrom(ringOrAngle.node.position)
-      switch (ringOrAngle.type) {
-        case 'RING':
-          let positionOnCircle = ringOrAngle.node.position.translate(offset.scale(ringOrAngle.radius / offset.distance()))
-          x = positionOnCircle.x
-          y = positionOnCircle.y
-          break
-
-        case 'ANGLE':
-          const vector = new Vector(1, 0).scale(offset.distance()).rotate(ringOrAngle.angle)
-          const snappedPosition = ringOrAngle.node.position.translate(vector)
-          x = snappedPosition.x
-          y = snappedPosition.y
-          break
-      }
-    } else {
-      let otherGuide = guidelines[0]
-      let dx, dy
-      switch (otherGuide.type) {
-        case 'VERTICAL':
-          dx = Math.abs(ringOrAngle.node.position.x - otherGuide.x)
-          switch (ringOrAngle.type) {
-            case 'RING':
-              if (dx > ringOrAngle.radius) {
-                constraintPossible = false
-              } else {
-                dy = Math.sqrt(ringOrAngle.radius * ringOrAngle.radius - dx * dx)
-                y = ringOrAngle.node.position.y < y ? ringOrAngle.node.position.y + dy : ringOrAngle.node.position.y - dy
-              }
-              break
-
-            case 'ANGLE':
-              dy = dx * Math.tan(ringOrAngle.angle)
-              y = ringOrAngle.node.position.y + Math.sign(dx * dy) * dy
-              break
-          }
-          break
-
-        case 'HORIZONTAL':
-          dy = Math.abs(ringOrAngle.node.position.y - otherGuide.y)
-          switch (ringOrAngle.type) {
-            case 'RING':
-              if (dy > ringOrAngle.radius) {
-                constraintPossible = false
-              } else {
-                dx = Math.sqrt(ringOrAngle.radius * ringOrAngle.radius - dy * dy)
-                x = ringOrAngle.node.position.x < x ? ringOrAngle.node.position.x + dx : ringOrAngle.node.position.x - dx
-              }
-              break
-
-            case 'ANGLE':
-              dx = dy / Math.tan(ringOrAngle.angle)
-              x = ringOrAngle.node.position.x + Math.sign(dx * dy) * dx
-              break
-          }
-          break
-
-        case 'CIRCLE':
-          let betweenCenters = ringOrAngle.node.position.vectorFrom(otherGuide.center)
-          let d = betweenCenters.distance()
-          if (d > Math.abs(ringOrAngle.radius - otherGuide.radius) && d < ringOrAngle.radius + otherGuide.radius) {
-            let a = (otherGuide.radius * otherGuide.radius - ringOrAngle.radius * ringOrAngle.radius + d * d) / (2 * d)
-            let midPoint = otherGuide.center.translate(betweenCenters.scale(a / d))
-            let h = Math.sqrt(otherGuide.radius * otherGuide.radius - a * a)
-            let bisector = betweenCenters.perpendicular().scale(h / d)
-            let intersections = [midPoint.translate(bisector), midPoint.translate(bisector.invert())]
-            let errors = intersections.map((point) => point.vectorFrom(naturalPosition).distance())
-            let intersection = errors[0] < errors[1] ? intersections[0] : intersections[1]
-            x = intersection.x
-            y = intersection.y
-          } else {
-            constraintPossible = false
-          }
-      }
-    }
-    if (constraintPossible) {
-      switch (ringOrAngle.type) {
-        case 'RING':
-          guidelines.push({type: 'CIRCLE', center: ringOrAngle.node.position, radius: ringOrAngle.radius})
-          break
-
-        case 'ANGLE':
-          guidelines.push({type: 'ANGLE', center: ringOrAngle.node.position, angle: ringOrAngle.angle})
-          break
+  if (guidelines.length === 1) {
+    while (guidelines.length === 1 && guideGenerators.length > 0) {
+      const candidateGuide = guideGenerators.shift()()
+      if (candidateGuide !== null) {
+        const combination = guidelines[0].combine(candidateGuide, naturalPosition)
+        if (combination.possible) {
+          guidelines.push(candidateGuide)
+          snappedPosition = combination.intersection
+        }
       }
     }
   }
 
   return {
     snapped: guidelines.length > 0,
-    guidelines: guidelines,
-    snappedPosition: new Point(x, y)
+    guidelines,
+    snappedPosition
   }
 }

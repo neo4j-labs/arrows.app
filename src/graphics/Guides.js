@@ -28,7 +28,7 @@ export class Guides {
           drawStraightLine(ctx, new Point(x, 0), new Point(x, displayOptions.canvasSize.height), {dashed: true})
           break
 
-        case 'ANGLE':
+        case 'LINE':
           const point = transform(guideline.center)
           const diagonal = displayOptions.canvasSize.width + displayOptions.canvasSize.height
           const vector = new Vector(diagonal, 0).rotate(guideline.angle)
