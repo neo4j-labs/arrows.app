@@ -66,8 +66,6 @@ export const intersectLineAndCircle = (line, circle, naturalPosition) => {
   const m = Math.tan(line.angle)
   const n = line.center.y - m * line.center.x
 
-  console.log(line, m, n)
-
   const a = 1 + sq(m)
   const b = -circle.center.x * 2 + (m * (n - circle.center.y)) * 2
   const c = sq(circle.center.x) + sq(n - circle.center.y) - sq(circle.radius)

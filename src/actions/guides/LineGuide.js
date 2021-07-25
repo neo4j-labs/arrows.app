@@ -13,7 +13,8 @@ export class LineGuide {
 
   snap(naturalPosition) {
     let offset = naturalPosition.vectorFrom(this.center)
-    const vector = new Vector(1, 0).scale(offset.distance()).rotate(this.angle)
+    let vector = new Vector(1, 0).scale(offset.distance()).rotate(this.angle)
+    if (offset.dot(vector) < 0) vector = vector.invert()
     return this.center.translate(vector)
   }
 
