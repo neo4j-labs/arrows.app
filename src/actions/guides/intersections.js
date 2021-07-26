@@ -15,7 +15,7 @@ const intersectVertical = (vertical, other) => {
 }
 
 const areParallel = (lineA, lineB) => {
-  return Math.abs(lineA.angle - lineB.angle) < 0.01
+  return Math.abs((lineA.angle - lineB.angle) % Math.PI) < 0.01
 }
 
 export const intersectLineAndLine = (lineA, lineB) => {

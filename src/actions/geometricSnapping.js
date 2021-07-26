@@ -28,13 +28,16 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
   const isNeighbour = (nodeId) => !!neighbours.find(neighbour => neighbour.id === nodeId)
   let snappedPosition = naturalPosition
 
+  let columns = [], rows = [], circles = [], diagonals = [];
+
   const relationshipDistances = [];
   graph.relationships.forEach((relationship) => {
     if ((isNeighbour(relationship.fromId) && includeNode(relationship.toId)) ||
       (includeNode(relationship.fromId) && isNeighbour(relationship.toId))) {
-      const distance = graph.nodes.find((node) => idsMatch(node.id, relationship.toId))
-        .position.vectorFrom(graph.nodes.find((node) => idsMatch(node.id, relationship.fromId)).position)
-        .distance();
+      const startNode = graph.nodes.find((node) => idsMatch(node.id, relationship.toId));
+      const endNode = graph.nodes.find((node) => idsMatch(node.id, relationship.fromId));
+      const relationshipVector = startNode.position.vectorFrom(endNode.position);
+      const distance = relationshipVector.distance();
       const similarDistance = relationshipDistances.find((entry) => Math.abs(entry.distance - distance) < 0.01);
       if (similarDistance) {
         similarDistance.relationships.push(relationship)
@@ -44,10 +47,38 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
           distance
         })
       }
+      const unitVector = relationshipVector.scale(1 / distance)
+      const offset = naturalPosition.vectorFrom(endNode.position)
+      const error = offset.minus(unitVector.scale(offset.dot(unitVector))).distance()
+      if (error < snapTolerance) {
+        diagonals.push({
+          center: endNode.position,
+          angle: relationshipVector.angle(),
+          error
+        })
+      }
     }
   })
 
-  let columns = [], rows = [], circles = [], diagonals = [];
+  for (const neighbourA of neighbours) {
+    for (const neighbourB of neighbours) {
+      if (neighbourA.id < neighbourB.id) {
+        const interNeighbourVector = neighbourB.position.vectorFrom(neighbourA.position)
+        const unitVector = interNeighbourVector.scale(1 / interNeighbourVector.distance())
+        const offset = naturalPosition.vectorFrom(neighbourA.position)
+        const error = offset.minus(unitVector.scale(offset.dot(unitVector))).distance()
+        const segment1 = naturalPosition.vectorFrom(neighbourA.position)
+        const segment2 = neighbourB.position.vectorFrom(naturalPosition)
+        if (error < snapTolerance && segment1.dot(segment2) > 0) {
+          diagonals.push({
+            center: neighbourA.position,
+            angle: interNeighbourVector.angle(),
+            error
+          })
+        }
+      }
+    }
+  }
 
   const snappingAngles = [6, 4, 3]
     .map(denominator => Math.PI / denominator)
@@ -235,8 +266,11 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
       if (candidateGuide !== null) {
         const combination = guidelines[0].combine(candidateGuide, naturalPosition)
         if (combination.possible) {
-          guidelines.push(candidateGuide)
-          snappedPosition = combination.intersection
+          const error = combination.intersection.vectorFrom(naturalPosition).distance()
+          if (error < snapTolerance) {
+            guidelines.push(candidateGuide)
+            snappedPosition = combination.intersection
+          }
         }
       }
     }
