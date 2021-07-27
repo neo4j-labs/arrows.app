@@ -30,43 +30,66 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
 
   let columns = [], rows = [], circles = [], diagonals = [];
 
-  const relationshipDistances = [];
+  const neighbourRelationships = {};
   graph.relationships.forEach((relationship) => {
-    if ((isNeighbour(relationship.fromId) && includeNode(relationship.toId)) ||
-      (includeNode(relationship.fromId) && isNeighbour(relationship.toId))) {
-      const startNode = graph.nodes.find((node) => idsMatch(node.id, relationship.toId));
-      const endNode = graph.nodes.find((node) => idsMatch(node.id, relationship.fromId));
-      const relationshipVector = startNode.position.vectorFrom(endNode.position);
-      const distance = relationshipVector.distance();
-      const similarDistance = relationshipDistances.find((entry) => Math.abs(entry.distance - distance) < 0.01);
-      if (similarDistance) {
-        similarDistance.relationships.push(relationship)
-      } else {
-        relationshipDistances.push({
-          relationships: [relationship],
-          distance
-        })
+    let pair = null
+    if (isNeighbour(relationship.fromId) && includeNode(relationship.toId)) {
+      pair = {
+        neighbour: graph.nodes.find((node) => idsMatch(node.id, relationship.fromId)),
+        nonNeighbour: graph.nodes.find((node) => idsMatch(node.id, relationship.toId))
       }
+    }
+    if (includeNode(relationship.fromId) && isNeighbour(relationship.toId)) {
+      pair = {
+        neighbour: graph.nodes.find((node) => idsMatch(node.id, relationship.toId)),
+        nonNeighbour: graph.nodes.find((node) => idsMatch(node.id, relationship.fromId))
+      }
+    }
+    if (pair) {
+      const pairs = neighbourRelationships[pair.neighbour.id] || []
+      pairs.push(pair)
+      neighbourRelationships[pair.neighbour.id] = pairs
+    }
+
+  })
+
+  for (const neighbourA of neighbours) {
+    const relationshipDistances = []
+
+    for (const relationship of neighbourRelationships[neighbourA.id] || []) {
+      const relationshipVector = relationship.nonNeighbour.position.vectorFrom(relationship.neighbour.position);
+      const distance = relationshipVector.distance()
+      const similarDistance = relationshipDistances.includes((entry) => Math.abs(entry - distance) < 0.01);
+      if (!similarDistance) {
+        relationshipDistances.push(distance)
+      }
+
       const unitVector = relationshipVector.scale(1 / distance)
-      const offset = naturalPosition.vectorFrom(endNode.position)
+      const offset = naturalPosition.vectorFrom(neighbourA.position)
       const error = offset.minus(unitVector.scale(offset.dot(unitVector))).distance()
       if (error < snapTolerance) {
         diagonals.push({
-          center: endNode.position,
+          center: neighbourA.position,
           angle: relationshipVector.angle(),
           error
         })
       }
     }
-  })
 
-  for (const neighbourA of neighbours) {
+    const offset = naturalPosition.vectorFrom(neighbourA.position)
+    for (const distance of relationshipDistances) {
+      circles.push({
+        center: neighbourA.position,
+        radius: distance,
+        error: Math.abs(offset.distance() - distance)
+      })
+    }
+
     for (const neighbourB of neighbours) {
       if (neighbourA.id < neighbourB.id) {
         const interNeighbourVector = neighbourB.position.vectorFrom(neighbourA.position)
         const unitVector = interNeighbourVector.scale(1 / interNeighbourVector.distance())
         {
-          const offset = naturalPosition.vectorFrom(neighbourA.position)
           const error = offset.minus(unitVector.scale(offset.dot(unitVector))).distance()
           const segment1 = naturalPosition.vectorFrom(neighbourA.position)
           const segment2 = neighbourB.position.vectorFrom(naturalPosition)
@@ -82,8 +105,8 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
         const midPoint = neighbourA.position.translate(interNeighbourVector.scale(0.5))
         const unitBisectVector = unitVector.rotate(Math.PI / 2)
         {
-          const offset = naturalPosition.vectorFrom(midPoint)
-          const error = offset.minus(unitBisectVector.scale(offset.dot(unitBisectVector))).distance()
+          const midPointOffset = naturalPosition.vectorFrom(midPoint)
+          const error = midPointOffset.minus(unitBisectVector.scale(midPointOffset.dot(unitBisectVector))).distance()
           if (error < snapTolerance) {
             diagonals.push({
               center: midPoint,
@@ -114,14 +137,6 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     }
   })
   neighbours.forEach((neighbour) => {
-    relationshipDistances.forEach((entry) => {
-      const distance = naturalPosition.vectorFrom(neighbour.position).distance();
-      circles.push({
-        center: neighbour.position,
-        radius: entry.distance,
-        error: Math.abs(distance - entry.distance)
-      })
-    })
     snappingAngles.forEach(snappingAngle => {
       const unitVector = new Vector(1, 0).rotate(snappingAngle)
       const offset = naturalPosition.vectorFrom(neighbour.position)
