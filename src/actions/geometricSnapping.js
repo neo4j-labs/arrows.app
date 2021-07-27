@@ -65,17 +65,34 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
       if (neighbourA.id < neighbourB.id) {
         const interNeighbourVector = neighbourB.position.vectorFrom(neighbourA.position)
         const unitVector = interNeighbourVector.scale(1 / interNeighbourVector.distance())
-        const offset = naturalPosition.vectorFrom(neighbourA.position)
-        const error = offset.minus(unitVector.scale(offset.dot(unitVector))).distance()
-        const segment1 = naturalPosition.vectorFrom(neighbourA.position)
-        const segment2 = neighbourB.position.vectorFrom(naturalPosition)
-        if (error < snapTolerance && segment1.dot(segment2) > 0) {
-          diagonals.push({
-            center: neighbourA.position,
-            angle: interNeighbourVector.angle(),
-            error
-          })
+        {
+          const offset = naturalPosition.vectorFrom(neighbourA.position)
+          const error = offset.minus(unitVector.scale(offset.dot(unitVector))).distance()
+          const segment1 = naturalPosition.vectorFrom(neighbourA.position)
+          const segment2 = neighbourB.position.vectorFrom(naturalPosition)
+          if (error < snapTolerance && segment1.dot(segment2) > 0) {
+            diagonals.push({
+              center: neighbourA.position,
+              angle: interNeighbourVector.angle(),
+              error
+            })
+          }
         }
+
+        const midPoint = neighbourA.position.translate(interNeighbourVector.scale(0.5))
+        const unitBisectVector = unitVector.rotate(Math.PI / 2)
+        {
+          const offset = naturalPosition.vectorFrom(midPoint)
+          const error = offset.minus(unitBisectVector.scale(offset.dot(unitBisectVector))).distance()
+          if (error < snapTolerance) {
+            diagonals.push({
+              center: midPoint,
+              angle: unitBisectVector.angle(),
+              error
+            })
+          }
+        }
+
       }
     }
   }
@@ -203,34 +220,6 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     return null
   }
 
-  const hNeighbourInterval = () => {
-    const intervals = coLinearIntervals(naturalPosition.y,
-      neighbours.map(node => node.position.y))
-    intervals.sort(byAscendingError)
-    if (intervals.length > 0) {
-      const interval = intervals[0]
-      if (interval.error < snapTolerance) {
-        y = interval.candidate
-        return new LineGuide(new Point(0, y), 0)
-      }
-    }
-    return null
-  }
-
-  const vNeighbourInterval = () => {
-    const intervals = coLinearIntervals(naturalPosition.x,
-      neighbours.map(node => node.position.x))
-    intervals.sort(byAscendingError)
-    if (intervals.length > 0) {
-      const interval = intervals[0]
-      if (interval.error < snapTolerance) {
-        x = interval.candidate
-        return new LineGuide(new Point(x, 0), Math.PI / 2)
-      }
-    }
-    return null
-  }
-
   const radiusSnap = () => {
     if (circles.length > 0) {
       const circle = circles.shift()
@@ -251,7 +240,7 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     return null
   }
 
-  const guideGenerators = [vSnap, hSnap, hInterval, radiusSnap, angleSnap, vInterval, hNeighbourInterval, vNeighbourInterval]
+  const guideGenerators = [vSnap, hSnap, hInterval, radiusSnap, angleSnap, vInterval]
   while (guidelines.length === 0 && guideGenerators.length > 0) {
     const candidateGuide = guideGenerators.shift()()
     if (candidateGuide !== null) {
