@@ -1,4 +1,4 @@
-import {Point} from "../../model/Point";
+import {Point} from "../Point";
 
 const isVertical = (line) => {
   return Math.abs(Math.PI / 2 - Math.abs(line.angle)) < 0.01

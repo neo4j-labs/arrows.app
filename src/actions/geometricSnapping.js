@@ -1,7 +1,7 @@
 import {Point} from "../model/Point";
 import {idsMatch} from "../model/Id";
-import {LineGuide} from "./guides/LineGuide";
-import {CircleGuide} from "./guides/CircleGuide";
+import {LineGuide} from "../model/guides/LineGuide";
+import {CircleGuide} from "../model/guides/CircleGuide";
 
 export const snapTolerance = 20
 export const angleTolerance = Math.PI / 8

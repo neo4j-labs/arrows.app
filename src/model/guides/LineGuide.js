@@ -1,6 +1,6 @@
 import {intersectLineAndCircle, intersectLineAndLine} from "./intersections";
-import {Vector} from "../../model/Vector";
-import {Point} from "../../model/Point";
+import {Vector} from "../Vector";
+import {Point} from "../Point";
 
 export class LineGuide {
   constructor(center, angle, naturalPosition) {
