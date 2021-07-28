@@ -2,6 +2,7 @@ import {Point} from "../model/Point";
 import {idsMatch} from "../model/Id";
 import {LineGuide} from "../model/guides/LineGuide";
 import {CircleGuide} from "../model/guides/CircleGuide";
+import {coLinearIntervals} from "../model/guides/intervals";
 
 export const snapTolerance = 20
 export const angleTolerance = Math.PI / 8
@@ -141,33 +142,6 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
 
   const byAscendingError = (a, b) => a.error - b.error;
   candidateGuides.sort(byAscendingError)
-
-  const coLinearIntervals = (natural, coLinear) => {
-    const intervals = []
-    const nearest = coLinear.sort((a, b) => Math.abs(natural - a) - Math.abs(natural - b))[0]
-    const sorted = coLinear.sort((a, b) => a - b)
-    const nearestIndex = sorted.indexOf(nearest)
-    const polarity = Math.sign(nearest - natural)
-    if ((nearestIndex > 0 && polarity < 0) || (nearestIndex < sorted.length - 1 && polarity > 0)) {
-      const secondNearest = sorted[nearestIndex + polarity]
-      const interval = nearest - secondNearest
-      const candidate = nearest + interval
-      intervals.push({
-        candidate,
-        error: Math.abs(candidate - natural)
-      })
-    }
-    if ((nearestIndex > 0 && polarity > 0) || (nearestIndex < sorted.length - 1 && polarity < 0)) {
-      const opposite = sorted[nearestIndex - polarity]
-      const interval = nearest - opposite
-      const candidate = nearest - (interval / 2)
-      intervals.push({
-        candidate,
-        error: Math.abs(candidate - natural)
-      })
-    }
-    return intervals
-  }
 
   let guidelines = []
 
