@@ -21,6 +21,11 @@ export class CircleGuide {
     return this.center.translate(offset.scale(this.radius / offset.distance()))
   }
 
+  scalar(position) {
+    let offset = position.vectorFrom(this.center)
+    return offset.angle()
+  }
+
   combine(otherGuide, naturalPosition) {
     switch (otherGuide.type) {
       case 'LINE':

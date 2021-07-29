@@ -2,7 +2,7 @@ import {Point} from "../model/Point";
 import {idsMatch} from "../model/Id";
 import {LineGuide} from "../model/guides/LineGuide";
 import {CircleGuide} from "../model/guides/CircleGuide";
-import {coLinearIntervals} from "../model/guides/intervals";
+import {angularIntervals, coLinearIntervals} from "../model/guides/intervals";
 
 export const snapTolerance = 20
 export const angleTolerance = Math.PI / 8
@@ -151,15 +151,28 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     snappedPosition = candidateGuide.snap(naturalPosition)
   }
 
-  if (guidelines.length === 1 && guidelines[0].type === 'LINE') {
+  if (guidelines.length === 1) {
     const guide = guidelines[0]
-    const intervals = coLinearIntervals(guide.scalar(snappedPosition),
-      graph.nodes.filter((node) => includeNode(node.id) && guide.calculateError(node.position) < 0.01).map(node => guide.scalar(node.position)))
+    const otherNodesOnGuide = graph.nodes
+      .filter((node) => includeNode(node.id) && guide.calculateError(node.position) < 0.01)
+      .map(node => guide.scalar(node.position));
+    const intervals = guide.type === 'CIRCLE' ?
+      angularIntervals(guide.scalar(snappedPosition), otherNodesOnGuide) :
+      coLinearIntervals(guide.scalar(snappedPosition), otherNodesOnGuide)
     intervals.sort(byAscendingError)
     if (intervals.length > 0) {
       const interval = intervals[0]
-      const intervalGuide = new LineGuide(guide.point(interval.candidate), guide.angle + Math.PI / 2, naturalPosition)
-      candidateGuides.push(intervalGuide)
+      switch (guide.type) {
+        case 'CIRCLE':
+          const angleGuide = new LineGuide(guide.center, interval.candidate, naturalPosition)
+          candidateGuides.push(angleGuide)
+          break
+
+        case 'LINE':
+          const intervalGuide = new LineGuide(guide.point(interval.candidate), guide.angle + Math.PI / 2, naturalPosition)
+          candidateGuides.push(intervalGuide)
+          break
+      }
       candidateGuides.sort(byAscendingError)
     }
   }
