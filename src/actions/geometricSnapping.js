@@ -33,26 +33,23 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
   let candidateGuides = []
 
   const neighbourRelationships = {};
+  const collectRelationship = (neighbourNodeId, nonNeighbourNodeId) => {
+    const pair = {
+      neighbour: graph.nodes.find((node) => idsMatch(node.id, neighbourNodeId)),
+      nonNeighbour: graph.nodes.find((node) => idsMatch(node.id, nonNeighbourNodeId))
+    }
+    const pairs = neighbourRelationships[pair.neighbour.id] || []
+    pairs.push(pair)
+    neighbourRelationships[pair.neighbour.id] = pairs
+  }
+
   graph.relationships.forEach((relationship) => {
-    let pair = null
     if (isNeighbour(relationship.fromId) && includeNode(relationship.toId)) {
-      pair = {
-        neighbour: graph.nodes.find((node) => idsMatch(node.id, relationship.fromId)),
-        nonNeighbour: graph.nodes.find((node) => idsMatch(node.id, relationship.toId))
-      }
+      collectRelationship(relationship.fromId, relationship.toId)
     }
     if (includeNode(relationship.fromId) && isNeighbour(relationship.toId)) {
-      pair = {
-        neighbour: graph.nodes.find((node) => idsMatch(node.id, relationship.toId)),
-        nonNeighbour: graph.nodes.find((node) => idsMatch(node.id, relationship.fromId))
-      }
+      collectRelationship(relationship.toId, relationship.fromId)
     }
-    if (pair) {
-      const pairs = neighbourRelationships[pair.neighbour.id] || []
-      pairs.push(pair)
-      neighbourRelationships[pair.neighbour.id] = pairs
-    }
-
   })
 
   const snappingAngles = [6, 4, 3]
