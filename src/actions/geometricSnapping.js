@@ -3,9 +3,11 @@ import {idsMatch} from "../model/Id";
 import {LineGuide} from "../model/guides/LineGuide";
 import {CircleGuide} from "../model/guides/CircleGuide";
 import {angularIntervals, coLinearIntervals} from "../model/guides/intervals";
+import {areParallel} from "../model/guides/intersections";
 
 export const snapTolerance = 20
-export const angleTolerance = Math.PI / 8
+const grossTolerance = snapTolerance * 5
+export const angleTolerance = Math.PI / 4
 
 export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, naturalPosition, otherSelectedNodes) => {
 
@@ -69,14 +71,14 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
       }
 
       const guide = new LineGuide(neighbourA.position, relationshipVector.angle(), naturalPosition)
-      if (guide.error < snapTolerance) {
+      if (guide.error < grossTolerance) {
         candidateGuides.push(guide)
       }
     }
 
     for (const distance of relationshipDistances) {
       const distanceGuide = new CircleGuide(neighbourA.position, distance, naturalPosition)
-      if (distanceGuide.error < snapTolerance) {
+      if (distanceGuide.error < grossTolerance) {
         candidateGuides.push(distanceGuide)
       }
     }
@@ -84,7 +86,7 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
     snappingAngles.forEach(snappingAngle => {
       const diagonalGuide = new LineGuide(neighbourA.position, snappingAngle, naturalPosition)
       const offset = naturalPosition.vectorFrom(neighbourA.position)
-      if (diagonalGuide.error < snapTolerance && Math.abs(offset.angle() - snappingAngle) < angleTolerance) {
+      if (diagonalGuide.error < grossTolerance && Math.abs(offset.angle() - snappingAngle) < angleTolerance) {
         candidateGuides.push(diagonalGuide)
       }
     })
@@ -95,7 +97,7 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
         const segment1 = naturalPosition.vectorFrom(neighbourA.position)
         const segment2 = neighbourB.position.vectorFrom(naturalPosition)
         const parallelGuide = new LineGuide(neighbourA.position, interNeighbourVector.angle(), naturalPosition)
-        if (parallelGuide.error < snapTolerance && segment1.dot(segment2) > 0) {
+        if (parallelGuide.error < grossTolerance && segment1.dot(segment2) > 0) {
           candidateGuides.push(parallelGuide)
         }
 
@@ -106,7 +108,7 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
           naturalPosition
         )
 
-        if (perpendicularGuide.error < snapTolerance) {
+        if (perpendicularGuide.error < grossTolerance) {
           candidateGuides.push(perpendicularGuide)
         }
       }
@@ -117,10 +119,10 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
   const rows = new Set()
   graph.nodes.forEach((node) => {
     if (includeNode(node.id)) {
-      if (Math.abs(naturalPosition.x - node.position.x) < snapTolerance) {
+      if (Math.abs(naturalPosition.x - node.position.x) < grossTolerance) {
         columns.add(node.position.x)
       }
-      if (Math.abs(naturalPosition.y - node.position.y) < snapTolerance) {
+      if (Math.abs(naturalPosition.y - node.position.y) < grossTolerance) {
         rows.add(node.position.y)
       }
     }
@@ -147,8 +149,10 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
 
   while (guidelines.length === 0 && candidateGuides.length > 0) {
     const candidateGuide = candidateGuides.shift()
-    guidelines.push(candidateGuide)
-    snappedPosition = candidateGuide.snap(naturalPosition)
+    if (candidateGuide.error < snapTolerance) {
+      guidelines.push(candidateGuide)
+      snappedPosition = candidateGuide.snap(naturalPosition)
+    }
   }
 
   if (guidelines.length === 1) {
@@ -187,6 +191,21 @@ export const snapToDistancesAndAngles = (graph, neighbours, includeNode, natural
           guidelines.push(candidateGuide)
           snappedPosition = combination.intersection
         }
+      }
+    }
+  }
+
+  while (candidateGuides.length > 0) {
+    const lineGuides = guidelines.filter(guide => guide.type === 'LINE')
+    const candidateGuide = candidateGuides.shift()
+    if (candidateGuide.calculateError(snappedPosition) < 0.01) {
+      if (candidateGuide.type === 'LINE') {
+        if (lineGuides.every(guide => !areParallel(guide, candidateGuide))) {
+          lineGuides.push(candidateGuide)
+          guidelines.push(candidateGuide)
+        }
+      } else {
+        guidelines.push(candidateGuide)
       }
     }
   }
