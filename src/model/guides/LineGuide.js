@@ -1,6 +1,8 @@
 import {intersectLineAndCircle, intersectLineAndLine} from "./intersections";
 import {Vector} from "../Vector";
 import {Point} from "../Point";
+import {coLinearIntervals} from "./intervals";
+import {byAscendingError} from "./guides";
 
 export class LineGuide {
   constructor(center, angle, naturalPosition) {
@@ -46,5 +48,18 @@ export class LineGuide {
       default:
         throw Error('unknown Guide type: ' + otherGuide.type)
     }
+  }
+
+  intervalGuide(nodes, naturalPosition) {
+    const otherNodesOnGuide = nodes
+      .filter((node) => this.calculateError(node.position) < 0.01)
+      .map(node => this.scalar(node.position));
+    const intervals = coLinearIntervals(this.scalar(naturalPosition), otherNodesOnGuide)
+    intervals.sort(byAscendingError)
+    if (intervals.length > 0) {
+      const interval = intervals[0]
+      return new LineGuide(this.point(interval.candidate), this.angle + Math.PI / 2, naturalPosition)
+    }
+    return null
   }
 }

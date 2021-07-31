@@ -1,4 +1,6 @@
 export const coLinearIntervals = (natural, coLinear) => {
+  if (coLinear.length < 2) return []
+
   const intervals = []
   const nearest = coLinear.sort((a, b) => Math.abs(natural - a) - Math.abs(natural - b))[0]
   const sorted = coLinear.sort((a, b) => a - b)

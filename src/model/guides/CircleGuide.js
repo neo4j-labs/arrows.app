@@ -1,4 +1,7 @@
 import {intersectCircleAndCircle, intersectLineAndCircle} from "./intersections";
+import {angularIntervals} from "./intervals";
+import {LineGuide} from "./LineGuide";
+import {byAscendingError} from "./guides";
 
 export class CircleGuide {
   constructor(center, radius, naturalPosition) {
@@ -37,5 +40,18 @@ export class CircleGuide {
       default:
         throw Error('unknown Guide type: ' + otherGuide.type)
     }
+  }
+
+  intervalGuide(nodes, naturalPosition) {
+    const otherNodesOnGuide = nodes
+      .filter((node) => this.calculateError(node.position) < 0.01)
+      .map(node => this.scalar(node.position));
+    const intervals = angularIntervals(this.scalar(naturalPosition), otherNodesOnGuide)
+    intervals.sort(byAscendingError)
+    if (intervals.length > 0) {
+      const interval = intervals[0]
+      return new LineGuide(this.center, interval.candidate, naturalPosition)
+    }
+    return null
   }
 }
