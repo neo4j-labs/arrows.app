@@ -524,6 +524,7 @@ describe("graphql", () => {
             style: {},
             properties: {
               boughtAt: "DateTime!",
+              price: "Float",
             },
             fromId: "n1",
             toId: "n0",
@@ -552,6 +553,7 @@ describe("graphql", () => {
 
         interface OwnedBy {
           boughtAt: DateTime!
+          price: Float
         }
       `;
 
