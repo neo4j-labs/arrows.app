@@ -1,5 +1,6 @@
 import { print } from "graphql";
 import extractNameFromTypeNode from "./extractNameFromTypeNode";
+import relNameToInterfaceName from "./relNameToInterfaceName";
 import typeStringToTypeNode from "./typeStringToTypeNode";
 
 function appendRelationField({ rel, toNode, definition, direction }) {
@@ -54,6 +55,13 @@ function appendRelationField({ rel, toNode, definition, direction }) {
       },
     ],
   };
+  if (rel.propertiesReference) {
+    relationshipDirective.arguments.push({
+      kind: "Argument",
+      name: { kind: "Name", value: "properties" },
+      value: { kind: "StringValue", value: rel.propertiesReference },
+    });
+  }
 
   field.directives.push(relationshipDirective);
   definition.fields.push(field);
@@ -68,6 +76,7 @@ function exportGraphQL(graph) {
     definitions: [],
   };
 
+  const interfaces = [];
   const nodes = graph.nodes.map((n) => {
     const label = (n.labels || [])[0];
     if (!label) {
@@ -101,35 +110,68 @@ function exportGraphQL(graph) {
       );
     }
 
+    const propertiesReferenceName = relNameToInterfaceName(
+      extractNameFromTypeNode(typeStringToTypeNode(rel.type))
+    );
+    const hasProperties = Object.keys(rel.properties).length > 0;
+
     const from = nodes.find((n) => n.graphID === rel.fromId);
     from.relationships.push({
       type: rel.type,
       toGraphID: rel.toId,
+      propertiesReference: hasProperties ? propertiesReferenceName : undefined,
     });
+
+    if (hasProperties) {
+      interfaces.push({
+        name: propertiesReferenceName,
+        properties: rel.properties,
+      });
+    }
   });
 
-  graphQLAST.definitions = nodes.map((node) => {
-    /**
-     * @type {import("graphql").DefinitionNode}
-     */
-    const definition = {
-      kind: "ObjectTypeDefinition",
-      name: {
-        kind: "Name",
-        value: node.label,
-      },
-      fields: Object.entries({
-        ...node.properties,
-        __internalID__: node.graphID,
-      }).map(([key, value]) => ({
-        kind: "FieldDefinition",
-        name: { kind: "Name", value: key },
-        type: typeStringToTypeNode(value),
-      })),
-    };
+  graphQLAST.definitions = nodes
+    .map((node) => {
+      /**
+       * @type {import("graphql").DefinitionNode}
+       */
+      const definition = {
+        kind: "ObjectTypeDefinition",
+        name: {
+          kind: "Name",
+          value: node.label,
+        },
+        fields: Object.entries({
+          ...node.properties,
+          __internalID__: node.graphID,
+        }).map(([key, value]) => ({
+          kind: "FieldDefinition",
+          name: { kind: "Name", value: key },
+          type: typeStringToTypeNode(value),
+        })),
+      };
 
-    return definition;
-  });
+      return definition;
+    })
+    .concat(
+      interfaces.map((iFace) => {
+        const definition = {
+          kind: "InterfaceTypeDefinition",
+          name: {
+            kind: "Name",
+            value: iFace.name,
+          },
+          fields: Object.entries({
+            ...iFace.properties,
+          }).map(([key, value]) => ({
+            kind: "FieldDefinition",
+            name: { kind: "Name", value: key },
+            type: typeStringToTypeNode(value),
+          })),
+        };
+        return definition;
+      })
+    );
 
   // Second iteration as definitions are now created
   // Here we can add relationship fields to definitions going either way

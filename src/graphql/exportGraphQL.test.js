@@ -484,5 +484,78 @@ describe("graphql", () => {
 
       compare(expected, received);
     });
+    it("should return relationship properties", () => {
+      const graph = {
+        style: {},
+        nodes: [
+          {
+            id: "n0",
+            caption: "",
+            style: {},
+            labels: ["Human"],
+            properties: {
+              name: "String!",
+            },
+          },
+          {
+            id: "n1",
+            caption: "",
+            style: {},
+            labels: ["Dog"],
+            properties: {
+              name: "String!",
+            },
+          },
+        ],
+        relationships: [
+          {
+            id: "n0",
+            type: "[LOVES]",
+            style: {},
+            properties: {
+              since: "DateTime!",
+            },
+            fromId: "n0",
+            toId: "n1",
+          },
+          {
+            id: "n1",
+            type: "OWNED_BY",
+            style: {},
+            properties: {
+              boughtAt: "DateTime!",
+            },
+            fromId: "n1",
+            toId: "n0",
+          },
+        ],
+      };
+
+      const received = exportGraphQL(graph);
+
+      const expected = `
+        type Human {
+          name: String!
+          loves: [Dog] @relationship(type: "LOVES", direction: OUT, properties: "Loves")
+          owned_by: Dog @relationship(type: "OWNED_BY", direction: IN, properties: "OwnedBy")
+        }
+
+        type Dog {
+          name: String!
+          loves: [Human] @relationship(type: "LOVES", direction: IN, properties: "Loves")
+          owned_by: Human @relationship(type: "OWNED_BY", direction: OUT, properties: "OwnedBy")
+        }
+
+        interface Loves {
+          since: DateTime!
+        }
+
+        interface OwnedBy {
+          boughtAt: DateTime!
+        }
+      `;
+
+      compare(expected, received);
+    });
   });
 });
