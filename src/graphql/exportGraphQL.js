@@ -1,5 +1,6 @@
 import { print } from "graphql";
 import extractNameFromTypeNode from "./extractNameFromTypeNode";
+import makeStringUnique from "./makeStringUnique";
 import snakeToCamelCase from "./snakeToCamelCase";
 import snakeToPascalCase from "./snakeToPascalCase";
 import typeStringToTypeNode from "./typeStringToTypeNode";
@@ -116,16 +117,24 @@ function exportGraphQL(graph) {
       );
     }
 
-    const propertiesReferenceName = snakeToPascalCase(
-      extractNameFromTypeNode(typeStringToTypeNode(rel.type))
-    );
+    let propertiesReferenceName;
     const hasProperties = Object.keys(rel.properties).length > 0;
+
+    // Generate rel property interface name
+    if (hasProperties) {
+      propertiesReferenceName = makeStringUnique(
+        interfaces.map((i) => i.name),
+        snakeToPascalCase(
+          extractNameFromTypeNode(typeStringToTypeNode(rel.type))
+        )
+      );
+    }
 
     const from = nodes.find((n) => n.graphID === rel.fromId);
     from.relationships.push({
       type: rel.type,
       toGraphID: rel.toId,
-      propertiesReference: hasProperties ? propertiesReferenceName : undefined,
+      propertiesReference: propertiesReferenceName,
     });
 
     if (hasProperties) {

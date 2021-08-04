@@ -559,5 +559,87 @@ describe("graphql", () => {
 
       compare(expected, received);
     });
+    it("should create unique interface names per relationship", () => {
+      const graph = {
+        style: {},
+        nodes: [
+          {
+            id: "n0",
+            caption: "",
+            labels: ["Movie"],
+            properties: {
+              title: "String",
+            },
+            style: {},
+          },
+          {
+            id: "n1",
+            caption: "",
+            labels: ["Actor"],
+            properties: {
+              name: "String",
+            },
+            style: {},
+          },
+          {
+            id: "n2",
+            caption: "",
+            style: {},
+            labels: ["Animal"],
+            properties: {
+              name: "String",
+            },
+          },
+        ],
+        relationships: [
+          {
+            id: "n0",
+            fromId: "n1",
+            toId: "n0",
+            type: "[ACTED_IN]",
+            properties: {
+              screenTime: "Int",
+            },
+            style: {},
+          },
+          {
+            id: "n1",
+            type: "[ACTED_IN]",
+            style: {},
+            properties: {
+              screenTime: "Int",
+            },
+            fromId: "n2",
+            toId: "n0",
+          },
+        ],
+      };
+
+      const received = exportGraphQL(graph);
+
+      const expected = `
+        type Movie {
+          title: String
+          actorActedIn: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+          animalActedIn: [Animal] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn1")
+        }
+        type Actor {
+          name: String
+          actedInMovie: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+        }
+        type Animal {
+          name: String
+          actedInMovie: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn1")
+        }
+        interface ActedIn {
+          screenTime: Int
+        }
+        interface ActedIn1 {
+          screenTime: Int
+        }
+      `;
+
+      compare(expected, received);
+    });
   });
 });
