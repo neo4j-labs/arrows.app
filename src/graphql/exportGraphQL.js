@@ -1,6 +1,7 @@
 import { print } from "graphql";
 import extractNameFromTypeNode from "./extractNameFromTypeNode";
-import relNameToInterfaceName from "./relNameToInterfaceName";
+import snakeToCamelCase from "./snakeToCamelCase";
+import snakeToPascalCase from "./snakeToPascalCase";
 import typeStringToTypeNode from "./typeStringToTypeNode";
 
 function appendRelationField({ rel, toNode, definition, direction }) {
@@ -23,12 +24,17 @@ function appendRelationField({ rel, toNode, definition, direction }) {
     relTypeNode.name.value = toNode.label;
   }
 
+  let relFieldName = snakeToCamelCase(relTypeName + "_" + toNode.label);
+  if (direction === "IN") {
+    relFieldName = snakeToCamelCase(toNode.label + "_" + relTypeName);
+  }
+
   /**
    * @type {import("graphql").FieldDefinitionNode}
    */
   const field = {
     kind: "FieldDefinition",
-    name: { kind: "Name", value: relTypeName.toLowerCase() },
+    name: { kind: "Name", value: relFieldName },
     type: relTypeNode,
     directives: [],
   };
@@ -110,7 +116,7 @@ function exportGraphQL(graph) {
       );
     }
 
-    const propertiesReferenceName = relNameToInterfaceName(
+    const propertiesReferenceName = snakeToPascalCase(
       extractNameFromTypeNode(typeStringToTypeNode(rel.type))
     );
     const hasProperties = Object.keys(rel.properties).length > 0;

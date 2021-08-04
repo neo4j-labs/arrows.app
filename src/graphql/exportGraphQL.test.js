@@ -226,12 +226,12 @@ describe("graphql", () => {
       const expected = `
         type Actor {
           name: String
-          acted_in: Movie @relationship(type: "ACTED_IN", direction: OUT)
+          actedInMovie: Movie @relationship(type: "ACTED_IN", direction: OUT)
         }
 
         type Movie {
           title: String
-          acted_in: Actor @relationship(type: "ACTED_IN", direction: IN)
+          actorActedIn: Actor @relationship(type: "ACTED_IN", direction: IN)
         }
       `;
 
@@ -304,12 +304,12 @@ describe("graphql", () => {
       const expected = `
         type Actor {
           name: String
-          acted_in: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+          actedInMovie: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
         }
 
         type Movie {
           title: String
-          acted_in: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+          actorActedIn: [Actor] @relationship(type: "ACTED_IN", direction: IN)
         }
       `;
 
@@ -355,12 +355,12 @@ describe("graphql", () => {
       const expected = `
         type Actor {
           name: String!
-          acted_in: [Movie]! @relationship(type: "ACTED_IN", direction: OUT)
+          actedInMovie: [Movie]! @relationship(type: "ACTED_IN", direction: OUT)
         }
 
         type Movie {
           title: String!
-          acted_in: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+          actorActedIn: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
         }
       `;
 
@@ -457,28 +457,28 @@ describe("graphql", () => {
       const expected = `
         type Post {
           title: String
-          has_comment: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
-          posted: [User] @relationship(type: "POSTED", direction: IN)
-          has_post: [Blog] @relationship(type: "HAS_POST", direction: IN)
+          hasCommentComment: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+          userPosted: [User] @relationship(type: "POSTED", direction: IN)
+          blogHasPost: [Blog] @relationship(type: "HAS_POST", direction: IN)
         }
 
         type User {
           name: String
-          posted: [Post] @relationship(type: "POSTED", direction: OUT)
-          commented: [Comment] @relationship(type: "COMMENTED", direction: OUT)
-          has_blog: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
+          postedPost: [Post] @relationship(type: "POSTED", direction: OUT)
+          commentedComment: [Comment] @relationship(type: "COMMENTED", direction: OUT)
+          hasBlogBlog: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
         }
         
         type Comment {
           content: String
-          has_comment: [Post] @relationship(type: "HAS_COMMENT", direction: IN)
-          commented: [User] @relationship(type: "COMMENTED", direction: IN)
+          postHasComment: [Post] @relationship(type: "HAS_COMMENT", direction: IN)
+          userCommented: [User] @relationship(type: "COMMENTED", direction: IN)
         }
         
         type Blog {
           name: String
-          has_blog: [User] @relationship(type: "HAS_BLOG", direction: IN)
-          has_post: [Post] @relationship(type: "HAS_POST", direction: OUT)
+          userHasBlog: [User] @relationship(type: "HAS_BLOG", direction: IN)
+          hasPostPost: [Post] @relationship(type: "HAS_POST", direction: OUT)
         }
       `;
 
@@ -537,14 +537,14 @@ describe("graphql", () => {
       const expected = `
         type Human {
           name: String!
-          loves: [Dog] @relationship(type: "LOVES", direction: OUT, properties: "Loves")
-          owned_by: Dog @relationship(type: "OWNED_BY", direction: IN, properties: "OwnedBy")
+          lovesDog: [Dog] @relationship(type: "LOVES", direction: OUT, properties: "Loves")
+          dogOwnedBy: Dog @relationship(type: "OWNED_BY", direction: IN, properties: "OwnedBy")
         }
 
         type Dog {
           name: String!
-          loves: [Human] @relationship(type: "LOVES", direction: IN, properties: "Loves")
-          owned_by: Human @relationship(type: "OWNED_BY", direction: OUT, properties: "OwnedBy")
+          humanLoves: [Human] @relationship(type: "LOVES", direction: IN, properties: "Loves")
+          ownedByHuman: Human @relationship(type: "OWNED_BY", direction: OUT, properties: "OwnedBy")
         }
 
         interface Loves {

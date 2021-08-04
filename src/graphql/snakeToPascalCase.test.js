@@ -1,6 +1,6 @@
-import relNameToInterfaceName from "./relNameToInterfaceName";
+import snakeToPascalCase from "./snakeToPascalCase";
 
-describe("relNameToInterfaceName utility function", () => {
+describe("snakeToPascalCase utility function", () => {
   const cases = [
     ["input", "Input"],
     ["INPUT", "Input"],
@@ -11,6 +11,6 @@ describe("relNameToInterfaceName utility function", () => {
     ["::::::a", "A"],
   ];
   test.each(cases)(`formats %s to %s`, (input, output) =>
-    expect(relNameToInterfaceName(input)).toEqual(output)
+    expect(snakeToPascalCase(input)).toEqual(output)
   );
 });
