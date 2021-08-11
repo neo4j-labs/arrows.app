@@ -1,5 +1,8 @@
 import { print } from "graphql";
 import extractNameFromTypeNode from "./extractNameFromTypeNode";
+import makeStringUnique from "./makeStringUnique";
+import snakeToCamelCase from "./snakeToCamelCase";
+import snakeToPascalCase from "./snakeToPascalCase";
 import typeStringToTypeNode from "./typeStringToTypeNode";
 
 function appendRelationField({ rel, toNode, definition, direction }) {
@@ -22,12 +25,17 @@ function appendRelationField({ rel, toNode, definition, direction }) {
     relTypeNode.name.value = toNode.label;
   }
 
+  let relFieldName = snakeToCamelCase(relTypeName + "_" + toNode.label);
+  if (direction === "IN") {
+    relFieldName = snakeToCamelCase(toNode.label + "_" + relTypeName);
+  }
+
   /**
    * @type {import("graphql").FieldDefinitionNode}
    */
   const field = {
     kind: "FieldDefinition",
-    name: { kind: "Name", value: relTypeName.toLowerCase() },
+    name: { kind: "Name", value: relFieldName },
     type: relTypeNode,
     directives: [],
   };
@@ -54,6 +62,13 @@ function appendRelationField({ rel, toNode, definition, direction }) {
       },
     ],
   };
+  if (rel.propertiesReference) {
+    relationshipDirective.arguments.push({
+      kind: "Argument",
+      name: { kind: "Name", value: "properties" },
+      value: { kind: "StringValue", value: rel.propertiesReference },
+    });
+  }
 
   field.directives.push(relationshipDirective);
   definition.fields.push(field);
@@ -68,6 +83,7 @@ function exportGraphQL(graph) {
     definitions: [],
   };
 
+  const interfaces = [];
   const nodes = graph.nodes.map((n) => {
     const label = (n.labels || [])[0];
     if (!label) {
@@ -101,35 +117,76 @@ function exportGraphQL(graph) {
       );
     }
 
+    let propertiesReferenceName;
+    const hasProperties = Object.keys(rel.properties).length > 0;
+
+    // Generate rel property interface name
+    if (hasProperties) {
+      propertiesReferenceName = makeStringUnique(
+        interfaces.map((i) => i.name),
+        snakeToPascalCase(
+          extractNameFromTypeNode(typeStringToTypeNode(rel.type))
+        )
+      );
+    }
+
     const from = nodes.find((n) => n.graphID === rel.fromId);
     from.relationships.push({
       type: rel.type,
       toGraphID: rel.toId,
+      propertiesReference: propertiesReferenceName,
     });
+
+    if (hasProperties) {
+      interfaces.push({
+        name: propertiesReferenceName,
+        properties: rel.properties,
+      });
+    }
   });
 
-  graphQLAST.definitions = nodes.map((node) => {
-    /**
-     * @type {import("graphql").DefinitionNode}
-     */
-    const definition = {
-      kind: "ObjectTypeDefinition",
-      name: {
-        kind: "Name",
-        value: node.label,
-      },
-      fields: Object.entries({
-        ...node.properties,
-        __internalID__: node.graphID,
-      }).map(([key, value]) => ({
-        kind: "FieldDefinition",
-        name: { kind: "Name", value: key },
-        type: typeStringToTypeNode(value),
-      })),
-    };
+  graphQLAST.definitions = nodes
+    .map((node) => {
+      /**
+       * @type {import("graphql").DefinitionNode}
+       */
+      const definition = {
+        kind: "ObjectTypeDefinition",
+        name: {
+          kind: "Name",
+          value: node.label,
+        },
+        fields: Object.entries({
+          ...node.properties,
+          __internalID__: node.graphID,
+        }).map(([key, value]) => ({
+          kind: "FieldDefinition",
+          name: { kind: "Name", value: key },
+          type: typeStringToTypeNode(value),
+        })),
+      };
 
-    return definition;
-  });
+      return definition;
+    })
+    .concat(
+      interfaces.map((iFace) => {
+        const definition = {
+          kind: "InterfaceTypeDefinition",
+          name: {
+            kind: "Name",
+            value: iFace.name,
+          },
+          fields: Object.entries({
+            ...iFace.properties,
+          }).map(([key, value]) => ({
+            kind: "FieldDefinition",
+            name: { kind: "Name", value: key },
+            type: typeStringToTypeNode(value),
+          })),
+        };
+        return definition;
+      })
+    );
 
   // Second iteration as definitions are now created
   // Here we can add relationship fields to definitions going either way

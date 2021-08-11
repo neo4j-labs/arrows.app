@@ -226,12 +226,12 @@ describe("graphql", () => {
       const expected = `
         type Actor {
           name: String
-          acted_in: Movie @relationship(type: "ACTED_IN", direction: OUT)
+          actedInMovie: Movie @relationship(type: "ACTED_IN", direction: OUT)
         }
 
         type Movie {
           title: String
-          acted_in: Actor @relationship(type: "ACTED_IN", direction: IN)
+          actorActedIn: Actor @relationship(type: "ACTED_IN", direction: IN)
         }
       `;
 
@@ -304,12 +304,12 @@ describe("graphql", () => {
       const expected = `
         type Actor {
           name: String
-          acted_in: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
+          actedInMovie: [Movie] @relationship(type: "ACTED_IN", direction: OUT)
         }
 
         type Movie {
           title: String
-          acted_in: [Actor] @relationship(type: "ACTED_IN", direction: IN)
+          actorActedIn: [Actor] @relationship(type: "ACTED_IN", direction: IN)
         }
       `;
 
@@ -355,12 +355,12 @@ describe("graphql", () => {
       const expected = `
         type Actor {
           name: String!
-          acted_in: [Movie]! @relationship(type: "ACTED_IN", direction: OUT)
+          actedInMovie: [Movie]! @relationship(type: "ACTED_IN", direction: OUT)
         }
 
         type Movie {
           title: String!
-          acted_in: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
+          actorActedIn: [Actor]! @relationship(type: "ACTED_IN", direction: IN)
         }
       `;
 
@@ -457,28 +457,185 @@ describe("graphql", () => {
       const expected = `
         type Post {
           title: String
-          has_comment: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
-          posted: [User] @relationship(type: "POSTED", direction: IN)
-          has_post: [Blog] @relationship(type: "HAS_POST", direction: IN)
+          hasCommentComment: [Comment] @relationship(type: "HAS_COMMENT", direction: OUT)
+          userPosted: [User] @relationship(type: "POSTED", direction: IN)
+          blogHasPost: [Blog] @relationship(type: "HAS_POST", direction: IN)
         }
 
         type User {
           name: String
-          posted: [Post] @relationship(type: "POSTED", direction: OUT)
-          commented: [Comment] @relationship(type: "COMMENTED", direction: OUT)
-          has_blog: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
+          postedPost: [Post] @relationship(type: "POSTED", direction: OUT)
+          commentedComment: [Comment] @relationship(type: "COMMENTED", direction: OUT)
+          hasBlogBlog: [Blog] @relationship(type: "HAS_BLOG", direction: OUT)
         }
         
         type Comment {
           content: String
-          has_comment: [Post] @relationship(type: "HAS_COMMENT", direction: IN)
-          commented: [User] @relationship(type: "COMMENTED", direction: IN)
+          postHasComment: [Post] @relationship(type: "HAS_COMMENT", direction: IN)
+          userCommented: [User] @relationship(type: "COMMENTED", direction: IN)
         }
         
         type Blog {
           name: String
-          has_blog: [User] @relationship(type: "HAS_BLOG", direction: IN)
-          has_post: [Post] @relationship(type: "HAS_POST", direction: OUT)
+          userHasBlog: [User] @relationship(type: "HAS_BLOG", direction: IN)
+          hasPostPost: [Post] @relationship(type: "HAS_POST", direction: OUT)
+        }
+      `;
+
+      compare(expected, received);
+    });
+    it("should return relationship properties", () => {
+      const graph = {
+        style: {},
+        nodes: [
+          {
+            id: "n0",
+            caption: "",
+            style: {},
+            labels: ["Human"],
+            properties: {
+              name: "String!",
+            },
+          },
+          {
+            id: "n1",
+            caption: "",
+            style: {},
+            labels: ["Dog"],
+            properties: {
+              name: "String!",
+            },
+          },
+        ],
+        relationships: [
+          {
+            id: "n0",
+            type: "[LOVES]",
+            style: {},
+            properties: {
+              since: "DateTime!",
+            },
+            fromId: "n0",
+            toId: "n1",
+          },
+          {
+            id: "n1",
+            type: "OWNED_BY",
+            style: {},
+            properties: {
+              boughtAt: "DateTime!",
+              price: "Float",
+            },
+            fromId: "n1",
+            toId: "n0",
+          },
+        ],
+      };
+
+      const received = exportGraphQL(graph);
+
+      const expected = `
+        type Human {
+          name: String!
+          lovesDog: [Dog] @relationship(type: "LOVES", direction: OUT, properties: "Loves")
+          dogOwnedBy: Dog @relationship(type: "OWNED_BY", direction: IN, properties: "OwnedBy")
+        }
+
+        type Dog {
+          name: String!
+          humanLoves: [Human] @relationship(type: "LOVES", direction: IN, properties: "Loves")
+          ownedByHuman: Human @relationship(type: "OWNED_BY", direction: OUT, properties: "OwnedBy")
+        }
+
+        interface Loves {
+          since: DateTime!
+        }
+
+        interface OwnedBy {
+          boughtAt: DateTime!
+          price: Float
+        }
+      `;
+
+      compare(expected, received);
+    });
+    it("should create unique interface names per relationship", () => {
+      const graph = {
+        style: {},
+        nodes: [
+          {
+            id: "n0",
+            caption: "",
+            labels: ["Movie"],
+            properties: {
+              title: "String",
+            },
+            style: {},
+          },
+          {
+            id: "n1",
+            caption: "",
+            labels: ["Actor"],
+            properties: {
+              name: "String",
+            },
+            style: {},
+          },
+          {
+            id: "n2",
+            caption: "",
+            style: {},
+            labels: ["Animal"],
+            properties: {
+              name: "String",
+            },
+          },
+        ],
+        relationships: [
+          {
+            id: "n0",
+            fromId: "n1",
+            toId: "n0",
+            type: "[ACTED_IN]",
+            properties: {
+              screenTime: "Int",
+            },
+            style: {},
+          },
+          {
+            id: "n1",
+            type: "[ACTED_IN]",
+            style: {},
+            properties: {
+              screenTime: "Int",
+            },
+            fromId: "n2",
+            toId: "n0",
+          },
+        ],
+      };
+
+      const received = exportGraphQL(graph);
+
+      const expected = `
+        type Movie {
+          title: String
+          actorActedIn: [Actor] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+          animalActedIn: [Animal] @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn1")
+        }
+        type Actor {
+          name: String
+          actedInMovie: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+        }
+        type Animal {
+          name: String
+          actedInMovie: [Movie] @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn1")
+        }
+        interface ActedIn {
+          screenTime: Int
+        }
+        interface ActedIn1 {
+          screenTime: Int
         }
       `;
 
