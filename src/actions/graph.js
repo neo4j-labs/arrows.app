@@ -13,6 +13,7 @@ import {
 import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constants";
 import BoundingBox from "../graphics/utils/BoundingBox";
 import {translate} from "../model/Node";
+import viewTransformation from "../reducers/viewTransformation";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)
@@ -96,10 +97,7 @@ export const connectNodes = (sourceNodeIds, targetNodeIds) => (dispatch, getStat
 }
 
 export const tryMoveHandle = ({corner, initialNodePositions, initialMousePosition, newMousePosition}) => {
-  return function (dispatch, getState) {
-    const { viewTransformation, mouse } = getState()
-
-    const vector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
+  function applyScale(vector, dispatch, mouse) {
     const maxDiameter = Math.max(...initialNodePositions.map(entry => entry.radius)) * 2
 
     const dimensions = ['x', 'y']
@@ -194,6 +192,31 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
     })
 
     dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides()))
+  }
+
+  function applyRotation(viewTransformation, dispatch, mouse) {
+
+    const center = average(initialNodePositions.map(entry => entry.position))
+    const initialAngle = viewTransformation.inverse(initialMousePosition).vectorFrom(center).angle()
+    const newAngle = viewTransformation.inverse(newMousePosition).vectorFrom(center).angle()
+    const rotationAngle = newAngle - initialAngle
+
+    const nodePositions = initialNodePositions.map(entry => {
+      return {
+        nodeId: entry.nodeId,
+        position: center.translate(entry.position.vectorFrom(center).rotate(rotationAngle))
+      }
+    })
+
+    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides()))
+  }
+
+  return function (dispatch, getState) {
+    const { viewTransformation, mouse } = getState()
+
+    const vector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
+    applyRotation(viewTransformation, dispatch, mouse)
+    // applyScale(vector, dispatch, mouse)
   }
 }
 
