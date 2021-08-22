@@ -13,7 +13,6 @@ import {
 import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constants";
 import BoundingBox from "../graphics/utils/BoundingBox";
 import {translate} from "../model/Node";
-import viewTransformation from "../reducers/viewTransformation";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)
@@ -214,9 +213,15 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
   return function (dispatch, getState) {
     const { viewTransformation, mouse } = getState()
 
-    const vector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
-    applyRotation(viewTransformation, dispatch, mouse)
-    // applyScale(vector, dispatch, mouse)
+    const center = average(initialNodePositions.map(entry => entry.position))
+    const centerVector = viewTransformation.inverse(initialMousePosition).vectorFrom(center)
+    const mouseVector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
+
+    if (Math.abs(centerVector.unit().dot(mouseVector.unit())) < 0.5) {
+      applyRotation(viewTransformation, dispatch, mouse)
+    } else {
+      applyScale(mouseVector, dispatch, mouse)
+    }
   }
 }
 

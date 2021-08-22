@@ -39,6 +39,10 @@ export class Vector {
     return Math.sqrt(this.dx * this.dx + this.dy * this.dy)
   }
 
+  unit() {
+    return this.scale(1 / this.distance())
+  }
+
   angle() {
     return Math.atan2(this.dy, this.dx)
   }
