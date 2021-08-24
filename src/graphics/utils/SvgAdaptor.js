@@ -102,6 +102,17 @@ export default class SvgAdaptor {
     }))
   }
 
+  image(image, x, y) {
+    this.children.push(this.e('image', {
+      transform: this.current().transforms.join(' '),
+      href: image.toDataURL(),
+      x,
+      y,
+      width: image.width,
+      height: image.height
+    }))
+  }
+
   polyLine(points) {
     this.children.push(this.e('polyline', {
       transform: this.current().transforms.join(' '),

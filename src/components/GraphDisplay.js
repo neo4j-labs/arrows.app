@@ -13,6 +13,7 @@ import {
 } from "../interactions/Keybindings";
 import MouseHandler from "../interactions/MouseHandler";
 import GraphTextContainer from "../containers/GraphTextContainer";
+import imageCache from '../graphics/utils/ImageCache'
 
 class GraphDisplay extends Component {
   constructor(props) {
@@ -76,6 +77,12 @@ class GraphDisplay extends Component {
     this.touchHandler = new MouseHandler(this.canvas)
     this.fitCanvasSize(this.canvas, this.props.canvasSize.width, this.props.canvasSize.height)
     this.drawVisuals()
+    this.imageLoadedCallback = () => { this.drawVisuals() }
+    imageCache.addImageLoadedListener(this.imageLoadedCallback)
+  }
+
+  componentWillUnmount() {
+    imageCache.removeImageLoadedListener(this.imageLoadedCallback)
   }
 
   componentDidUpdate() {

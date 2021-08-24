@@ -43,13 +43,23 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
           onChange={onChange}
         />
       )
+    case 'text':
+      return (
+        <Input
+          fluid
+          value={value}
+          placeholder={placeholder}
+          onChange={evt => onChange(evt.target.value)}
+          onKeyPress={onKeyPress}
+        />
+      )
     default:
       return (
         <Input
           fluid
           value={value}
           placeholder={placeholder}
-          onChange={onChange}
+          onChange={evt => onChange(evt.target.value)}
           onKeyPress={onKeyPress}
         />
       )

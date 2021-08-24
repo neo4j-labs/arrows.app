@@ -9,6 +9,7 @@ import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 import CanvasAdaptor from "../graphics/utils/CanvasAdaptor";
 import {nodeEditing, nodeSelected, relationshipSelected, selectedNodeIds} from "../model/selection";
 import {computeRelationshipAttachments} from "../graphics/relationshipAttachment";
+import imageCache from '../graphics/utils/ImageCache'
 
 const getSelection = (state) => state.selection
 const getMouse = (state) => state.mouse
@@ -44,7 +45,8 @@ export const getVisualNode = (() => {
       graph,
       nodeSelected(selection, node.id),
       nodeEditing(selection, node.id),
-      measureTextContext
+      measureTextContext,
+      imageCache
     )
   }
   return memoize(factory, { max: 10000 })

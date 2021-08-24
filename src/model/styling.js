@@ -87,6 +87,8 @@ export const styleAttributeGroups = [
       {key: 'node-padding', appliesTo: 'NodeWithInsideDetail', type: 'spacing', defaultValue: 5},
       {key: 'node-margin', appliesTo: 'NodeWithOutsideDetail', type: 'spacing', defaultValue: 2},
       {key: 'outside-position', appliesTo: 'NodeWithOutsideDetail', type: 'outside-position', defaultValue: 'auto'},
+      {key: 'icon-image', appliesTo: 'Node', type: 'icon', defaultValue: ''},
+      {key: 'icon-position', appliesTo: 'Node', type: 'inside-outside', defaultValue: 'inside' }
     ]
   },
   {
@@ -132,7 +134,7 @@ export const styleAttributeGroups = [
       {key: 'type-border-color', appliesTo: 'RelationshipWithType', type: 'color', defaultValue: black},
       {key: 'type-border-width', appliesTo: 'RelationshipWithType', type: 'line-width', defaultValue: 0},
       {key: 'type-font-size', appliesTo: 'RelationshipWithType', type: 'font-size', defaultValue: 16},
-      {key: 'type-padding', appliesTo: 'RelationshipWithType', type: 'spacing', defaultValue: 5},
+      {key: 'type-padding', appliesTo: 'RelationshipWithType', type: 'spacing', defaultValue: 5}
     ]
   },
   {
@@ -174,7 +176,8 @@ export const styleTypes = {
   'orientation': { editor: 'dropdown', options: ['parallel', 'perpendicular', 'horizontal'] },
   'property-alignment': { editor: 'dropdown', options: ['colon', 'center'] },
   'label-display': { editor: 'dropdown', options: ['pill', 'bare'] },
-  'attachment': { editor: 'dropdown', options: ['normal', 'top', 'right', 'bottom', 'left'] }
+  'attachment': { editor: 'dropdown', options: ['normal', 'top', 'right', 'bottom', 'left'] },
+  'icon': { editor: 'text' }
 }
 
 export const completeWithDefaults = (style) => {
@@ -216,6 +219,8 @@ export const validate = (styleKey, value) => {
         return value
       }
       break
+    case "text":
+      return value
   }
   return styleAttribute.defaultValue
 }

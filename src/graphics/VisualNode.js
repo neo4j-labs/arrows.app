@@ -10,13 +10,15 @@ import {NodePropertiesInside} from "./NodePropertiesInside";
 import {bisect} from "./bisect";
 import {NodeLabelsInsideNode} from "./NodeLabelsInsideNode";
 import {NodeCaptionFillNode} from "./NodeCaptionFillNode";
+import {NodeIconInside} from "./NodeIconInside";
+import {NodeIconOutside} from "./NodeIconOutside";
 import {distribute} from "./circumferentialDistribution";
 import {orientationAngles, orientationFromAngle, orientationFromName} from "./circumferentialTextAlignment";
 import {Vector} from "../model/Vector";
 import {ComponentStack} from "./ComponentStack";
 
 export default class VisualNode {
-  constructor(node, graph, selected, editing, measureTextContext) {
+  constructor(node, graph, selected, editing, measureTextContext, imageCache) {
     this.node = node
     this.selected = selected
     this.editing = editing
@@ -40,6 +42,9 @@ export default class VisualNode {
     const captionPosition = style('caption-position')
     const labelPosition = style('label-position')
     const propertyPosition = style('property-position')
+    const iconImage = style('icon-image')
+    const iconPosition = style('icon-position')
+    const hasIcon = !!iconImage
     const hasCaption = !!node.caption
     const hasLabels = node.labels.length > 0
     const hasProperties = Object.keys(node.properties).length > 0
@@ -100,6 +105,16 @@ export default class VisualNode {
         default:
           this.outsideComponents.push(this.properties = new PropertiesOutside(
             node.properties, this.outsideOrientation, editing, style, measureTextContext))
+      }
+    }
+
+    if (hasIcon) {
+      switch (iconPosition) {
+        case 'inside':
+          this.insideComponents.push(this.icon = new NodeIconInside(editing, style, imageCache))
+          break;
+        default:
+          this.outsideComponents.push(this.icon = new NodeIconOutside(this.outsideOrientation, editing, style, imageCache))
       }
     }
 
