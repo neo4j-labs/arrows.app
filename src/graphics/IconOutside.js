@@ -21,19 +21,7 @@ export class IconOutside {
           return -this.width
       }
     })()
-    const verticalPosition = (() => {
-      switch (orientation.vertical) {
-        case 'top':
-          return 0
-        case 'center':
-          return this.height / 2
-        case 'bottom':
-          return this.height
-        default:
-          return 0
-      }
-    })()
-    this.boxPosition = new Point(horizontalPosition, verticalPosition)
+    this.boxPosition = new Point(horizontalPosition, 0)
   }
 
   get type() {
