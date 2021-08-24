@@ -124,7 +124,8 @@ export const styleAttributeGroups = [
       {key: 'margin-end', appliesTo: 'Relationship', type: 'spacing', defaultValue: 5},
       {key: 'margin-peer', appliesTo: 'Relationship', type: 'spacing', defaultValue: 20},
       {key: 'attachment-start', appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'},
-      {key: 'attachment-end', appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'}
+      {key: 'attachment-end', appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'},
+      {key: 'icon-image', appliesTo: 'Relationship', type: 'icon', defaultValue: ''}
     ]
   },
   {

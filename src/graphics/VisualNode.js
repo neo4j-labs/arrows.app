@@ -11,7 +11,7 @@ import {bisect} from "./bisect";
 import {NodeLabelsInsideNode} from "./NodeLabelsInsideNode";
 import {NodeCaptionFillNode} from "./NodeCaptionFillNode";
 import {NodeIconInside} from "./NodeIconInside";
-import {NodeIconOutside} from "./NodeIconOutside";
+import {IconOutside} from "./IconOutside";
 import {distribute} from "./circumferentialDistribution";
 import {orientationAngles, orientationFromAngle, orientationFromName} from "./circumferentialTextAlignment";
 import {Vector} from "../model/Vector";
@@ -114,7 +114,7 @@ export default class VisualNode {
           this.insideComponents.push(this.icon = new NodeIconInside(editing, style, imageCache))
           break;
         default:
-          this.outsideComponents.push(this.icon = new NodeIconOutside(this.outsideOrientation, editing, style, imageCache))
+          this.outsideComponents.push(this.icon = new IconOutside(this.outsideOrientation, editing, style, imageCache))
       }
     }
 

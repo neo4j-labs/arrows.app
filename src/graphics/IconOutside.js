@@ -2,7 +2,7 @@ import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
 import {selectionBorder, selectionHandle} from "../model/colors";
 
-export class NodeIconOutside {
+export class IconOutside {
   constructor(orientation, editing, style, imageCache) {
     this.orientation = orientation
     this.editing = editing
@@ -11,7 +11,6 @@ export class NodeIconOutside {
     this.image = this.imageCache.getCanvas(this.iconImage)
     this.width = this.image.width
     this.height = this.image.height
-    console.log(orientation);
     const horizontalPosition = (() => {
       switch (orientation.horizontal) {
         case 'start':
