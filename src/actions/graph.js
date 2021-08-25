@@ -13,6 +13,7 @@ import {
 import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constants";
 import BoundingBox from "../graphics/utils/BoundingBox";
 import {translate} from "../model/Node";
+import {lockHandleDragType} from "./mouse";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)
@@ -95,7 +96,7 @@ export const connectNodes = (sourceNodeIds, targetNodeIds) => (dispatch, getStat
   })
 }
 
-export const tryMoveHandle = ({corner, initialNodePositions, initialMousePosition, newMousePosition}) => {
+export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMousePosition, newMousePosition}) => {
   function applyScale(vector, dispatch, mouse) {
     const maxDiameter = Math.max(...initialNodePositions.map(entry => entry.radius)) * 2
 
@@ -213,14 +214,32 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
   return function (dispatch, getState) {
     const { viewTransformation, mouse } = getState()
 
-    const center = average(initialNodePositions.map(entry => entry.position))
-    const centerVector = viewTransformation.inverse(initialMousePosition).vectorFrom(center)
     const mouseVector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
 
-    if (Math.abs(centerVector.unit().dot(mouseVector.unit())) < 0.5) {
-      applyRotation(viewTransformation, dispatch, mouse)
-    } else {
-      applyScale(mouseVector, dispatch, mouse)
+    let mode = dragType
+    if (mode === 'HANDLE') {
+      const center = average(initialNodePositions.map(entry => entry.position))
+      const centerVector = viewTransformation.inverse(initialMousePosition).vectorFrom(center)
+
+      if (Math.abs(centerVector.unit().dot(mouseVector.unit())) < 0.5) {
+        mode = 'HANDLE_ROTATE'
+      } else {
+        mode = 'HANDLE_SCALE'
+      }
+
+      if (mouseVector.distance() > 20) {
+        dispatch(lockHandleDragType(mode))
+      }
+    }
+
+    switch (mode) {
+      case 'HANDLE_ROTATE':
+        applyRotation(viewTransformation, dispatch, mouse)
+        break
+
+      case 'HANDLE_SCALE':
+        applyScale(mouseVector, dispatch, mouse)
+        break
     }
   }
 }

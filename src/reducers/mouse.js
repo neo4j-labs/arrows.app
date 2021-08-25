@@ -10,6 +10,13 @@ const mouse = (state = { dragType: 'NONE' }, action) => {
       }
     }
 
+    case 'LOCK_HANDLE_DRAG_MODE': {
+      return {
+        ...state,
+        dragType: action.dragType
+      }
+    }
+
     case 'MOUSE_DOWN_ON_NODE': {
       const mouseToNodeVector = action.node.position.vectorFrom(action.graphPosition)
       return {
