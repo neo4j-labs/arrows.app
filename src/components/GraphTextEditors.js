@@ -11,6 +11,10 @@ import {RelationshipType} from "../graphics/RelationshipType";
 import {ComponentStack} from "../graphics/ComponentStack";
 import {Vector} from "../model/Vector";
 
+const EditableComponentTypes = ['CAPTION', 'LABELS', 'TYPE', 'PROPERTIES']
+
+const editableComponentFilter = (component) => EditableComponentTypes.indexOf(component.component.type) !== -1
+
 export class GraphTextEditors extends Component {
 
   constructor(props) {
@@ -23,7 +27,7 @@ export class GraphTextEditors extends Component {
         const visualNode = this.props.visualGraph.nodes[entity.id]
         let insideComponents = visualNode.insideComponents
         let outsideComponents = visualNode.outsideComponents
-        if (insideComponents.isEmpty() && outsideComponents.isEmpty()) {
+        if (insideComponents.isEmpty(editableComponentFilter) && outsideComponents.isEmpty(editableComponentFilter)) {
           const style = styleAttribute => getStyleSelector(visualNode.node, styleAttribute)(this.props.visualGraph.graph)
           const captionPosition = style( 'caption-position')
           switch (captionPosition) {
@@ -46,8 +50,8 @@ export class GraphTextEditors extends Component {
           <div style={{
             transform: visualNode.position.vectorFromOrigin().asCSSTransform()
           }}>
-            {insideComponents.offsetComponents.map(offsetComponent => (
-              <div style={{
+            {insideComponents.offsetComponents.filter(editableComponentFilter).map(offsetComponent => (
+              <div key={offsetComponent.component.type} style={{
                 transform: [
                   `scale(${visualNode.internalScaleFactor})`,
                   `translate(0, ${visualNode.internalVerticalOffset + offsetComponent.top}px)`
@@ -56,8 +60,8 @@ export class GraphTextEditors extends Component {
                 {this.componentEditor(visualNode, offsetComponent.component)}
               </div>
             ))}
-            {outsideComponents.offsetComponents.map(offsetComponent => (
-              <div style={{
+            {outsideComponents.offsetComponents.filter(editableComponentFilter).map(offsetComponent => (
+              <div key={offsetComponent.component.type} style={{
                 transform: visualNode.outsideOffset.plus(new Vector(0, offsetComponent.top)).asCSSTransform()
               }}>
                 {this.componentEditor(visualNode, offsetComponent.component)}
@@ -77,7 +81,7 @@ export class GraphTextEditors extends Component {
         })
         if (visualRelationship) {
           let components = visualRelationship.components
-          if (components.isEmpty()) {
+          if (components.isEmpty(editableComponentFilter)) {
             const style = styleAttribute => getStyleSelector(visualRelationship.resolvedRelationship.relationship, styleAttribute)(this.props.visualGraph.graph)
             const type = new RelationshipType(
               '', {horizontal: 'center', vertical: 'center'}, true, style, measureTextContext)
@@ -85,7 +89,7 @@ export class GraphTextEditors extends Component {
             components.push(type)
           }
           return components.offsetComponents.map(offsetComponent => (
-            <div style={{
+            <div key={offsetComponent.component.type} style={{
               transform: [
                 visualRelationship.arrow.midPoint().vectorFromOrigin().asCSSTransform(),
                 `rotate(${visualRelationship.componentRotation}rad)`,
