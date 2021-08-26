@@ -64,7 +64,8 @@ export default class VisualNode {
       switch (captionPosition) {
         case 'inside':
           if ((hasLabels && labelPosition === 'inside') ||
-            (hasProperties && propertyPosition === 'inside')) {
+            (hasProperties && propertyPosition === 'inside') ||
+            (hasIcon && iconPosition === 'inside')) {
             this.insideComponents.push(this.caption =
               new NodeCaptionInsideNode(caption, editing, style, measureTextContext))
           } else {
