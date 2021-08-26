@@ -42,7 +42,7 @@ export default class VisualNode {
     const captionPosition = style('caption-position')
     const labelPosition = style('label-position')
     const propertyPosition = style('property-position')
-    const iconImage = style('icon-image')
+    const iconImage = style('node-icon-image')
     const iconPosition = style('icon-position')
     const hasIcon = !!iconImage
     const hasCaption = !!node.caption
@@ -111,10 +111,10 @@ export default class VisualNode {
     if (hasIcon) {
       switch (iconPosition) {
         case 'inside':
-          this.insideComponents.push(this.icon = new NodeIconInside(editing, style, imageCache))
+          this.insideComponents.push(this.icon = new NodeIconInside('node-icon-image', editing, style, imageCache))
           break;
         default:
-          this.outsideComponents.push(this.icon = new IconOutside(this.outsideOrientation, editing, style, imageCache))
+          this.outsideComponents.push(this.icon = new IconOutside('node-icon-image', this.outsideOrientation, editing, style, imageCache))
       }
     }
 

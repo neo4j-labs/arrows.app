@@ -2,6 +2,7 @@ import {defaultFontSize, defaultNodeRadius} from "../graphics/constants";
 import {black, white} from "./colors";
 import {getStyleSelector} from "../selectors/style";
 
+const hasIcon = (node, style) => !!style('node-icon-image')
 const hasCaption = (node) => node.caption && node.caption.length > 0
 const hasLabels = (node) => node.labels && node.labels.length > 0
 const hasType = (relationship) => relationship.type && relationship.type.length > 0
@@ -16,6 +17,7 @@ const styleFilters = {
   },
   'NodeWithInsideDetail': {
     relevantToNode: (node, style) => (
+      hasIcon(node, style) && style('icon-position') === 'inside' ||
       hasCaption(node) && style('caption-position') === 'inside' ||
       hasLabels(node) && style('label-position') === 'inside' ||
       hasProperty(node) && style('property-position') === 'inside'
@@ -23,10 +25,14 @@ const styleFilters = {
   },
   'NodeWithOutsideDetail': {
     relevantToNode: (node, style) => (
+      hasIcon(node, style) && style('icon-position') === 'outside' ||
       hasCaption(node) && style('caption-position') === 'outside' ||
       hasLabels(node) && style('label-position') === 'outside' ||
       hasProperty(node) && style('property-position') === 'outside'
     )
+  },
+  'NodeWithIcon': {
+    relevantToNode: hasIcon
   },
   'NodeWithCaption': {
     relevantToNode: hasCaption
@@ -87,8 +93,12 @@ export const styleAttributeGroups = [
       {key: 'node-padding', appliesTo: 'NodeWithInsideDetail', type: 'spacing', defaultValue: 5},
       {key: 'node-margin', appliesTo: 'NodeWithOutsideDetail', type: 'spacing', defaultValue: 2},
       {key: 'outside-position', appliesTo: 'NodeWithOutsideDetail', type: 'outside-position', defaultValue: 'auto'},
-      {key: 'icon-image', appliesTo: 'Node', type: 'icon', defaultValue: ''},
-      {key: 'icon-position', appliesTo: 'Node', type: 'inside-outside', defaultValue: 'inside' }
+      {key: 'node-icon-image', appliesTo: 'Node', type: 'icon', defaultValue: ''},
+    ]
+  },
+  {
+    name: 'Node Icons', entityTypes: ['node'], attributes: [
+      {key: 'icon-position', appliesTo: 'NodeWithIcon', type: 'inside-outside', defaultValue: 'inside' }
     ]
   },
   {
@@ -125,7 +135,7 @@ export const styleAttributeGroups = [
       {key: 'margin-peer', appliesTo: 'Relationship', type: 'spacing', defaultValue: 20},
       {key: 'attachment-start', appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'},
       {key: 'attachment-end', appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'},
-      {key: 'icon-image', appliesTo: 'Relationship', type: 'icon', defaultValue: ''}
+      {key: 'relationship-icon-image', appliesTo: 'Relationship', type: 'icon', defaultValue: ''}
     ]
   },
   {

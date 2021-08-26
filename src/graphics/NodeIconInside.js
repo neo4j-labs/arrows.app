@@ -1,10 +1,10 @@
 import BoundingBox from "./utils/BoundingBox";
 
 export class NodeIconInside {
-  constructor(editing, style, imageCache) {
+  constructor(imageKey, editing, style, imageCache) {
     this.editing = editing
     this.orientation = { horizontal: 'center', vertical: 'center' }
-    this.iconImage = style('icon-image')
+    this.iconImage = style(imageKey)
     this.imageCache = imageCache;
     this.image = this.imageCache.getCanvas(this.iconImage)
     this.width = this.image.width

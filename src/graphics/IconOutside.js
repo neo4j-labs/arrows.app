@@ -3,10 +3,10 @@ import BoundingBox from "./utils/BoundingBox";
 import {selectionBorder, selectionHandle} from "../model/colors";
 
 export class IconOutside {
-  constructor(orientation, editing, style, imageCache) {
+  constructor(imageKey, orientation, editing, style, imageCache) {
     this.orientation = orientation
     this.editing = editing
-    this.iconImage = style('icon-image')
+    this.iconImage = style(imageKey)
     this.imageCache = imageCache;
     this.image = this.imageCache.getCanvas(this.iconImage)
     this.width = this.image.width

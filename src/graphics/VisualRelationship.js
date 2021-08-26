@@ -21,7 +21,7 @@ export class VisualRelationship {
     const alignment = alignmentForShaftAngle(orientationName, positionName, arrow.shaftAngle())
 
     this.components = new ComponentStack()
-    const iconImage = style('icon-image')
+    const iconImage = style('relationship-icon-image')
     const hasIcon = !!iconImage
     const hasType = !!resolvedRelationship.type
     const hasProperties = Object.keys(resolvedRelationship.relationship.properties).length > 0
@@ -35,7 +35,7 @@ export class VisualRelationship {
         resolvedRelationship.relationship.properties, alignment, editing, style, measureTextContext))
     }
     if (hasIcon) {
-      this.components.push(this.icon = new IconOutside(alignment, editing, style, imageCache))
+      this.components.push(this.icon = new IconOutside('relationship-icon-image', alignment, editing, style, imageCache))
     }
 
     const width = this.components.maxWidth()
