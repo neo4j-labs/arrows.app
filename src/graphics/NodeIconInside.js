@@ -7,6 +7,8 @@ export class NodeIconInside {
     this.iconImage = style('icon-image')
     this.imageCache = imageCache;
     this.image = this.imageCache.getCanvas(this.iconImage)
+    this.width = this.image.width
+    this.height = this.image.height
   }
 
   get type() {
@@ -18,8 +20,8 @@ export class NodeIconInside {
 
     ctx.save()
 
-    const x = -1 * Math.floor(this.image.width / 2)
-    const y = -1 * Math.floor(this.image.height / 2)
+    const x = -Math.floor(this.width / 2)
+    const y = 0
     ctx.image(this.image, x, y)
 
     ctx.restore()
@@ -31,10 +33,10 @@ export class NodeIconInside {
 
   boundingBox() {
     return new BoundingBox(
-      -this.image.width / 2,
-      this.image.width / 2,
-      -this.image.height / 2,
-      this.image.height / 2
+      -this.width / 2,
+      this.width / 2,
+      0,
+      this.height
     )
   }
 
