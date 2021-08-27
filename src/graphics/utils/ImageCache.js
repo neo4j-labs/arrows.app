@@ -29,20 +29,6 @@ class ImageCache {
     return entry
   }
 
-  invertCanvas (ctx) {
-    const imgData = ctx.getImageData(0, 0, ImageSize, ImageSize)
-    const data = imgData.data
-
-    for (let i = 0; i < ImageSize * ImageSize; i++) {
-      data[i * 4 + 0] = 255 - data[i * 4 + 0]
-      data[i * 4 + 1] = 255 - data[i * 4 + 1]
-      data[i * 4 + 2] = 255 - data[i * 4 + 2]
-      data[i * 4 + 3] = data[i * 4 + 3]
-    }
-
-    ctx.putImageData(imgData, 0, 0)
-  }
-
   loadImage (src, onLoad, onError) {
     const canvas = document.createElement('canvas')
     canvas.width = ImageSize
@@ -68,41 +54,33 @@ class ImageCache {
     }
   }
 
-  drawIfNeeded (info, inverted) {
+  drawIfNeeded(info) {
     const { image, canvas, drawn, error } = info
 
     if (!drawn && image.complete && !error) {
       const ctx = canvas.getContext('2d')
       ctx.drawImage(image, 0, 0, ImageSize, ImageSize)
 
-      if (inverted) {
-        this.invertCanvas(ctx)
-      }
-
       info.drawn = true
     }
   }
 
-  getImageInfo (src, inverted) {
+  getImageInfo(src) {
     const entry = this.getOrCreateEntry(src)
-    const key = inverted ? 'inverted' : 'image'
+    const key = 'image'
     let info = entry[key]
     if (!info) {
-      const onLoadCallback = () => { this.drawIfNeeded(info, inverted) }
+      const onLoadCallback = () => { this.drawIfNeeded(info) }
       const onErrorCallback = () => { info.error = true }
       info = this.loadImage(src, onLoadCallback, onErrorCallback)
       entry[key] = info
     }
-    this.drawIfNeeded(info, inverted)
+    this.drawIfNeeded(info)
     return info
   }
 
-  getImage (src, inverted) {
-    return this.getImageInfo(src, inverted).image
-  }
-
-  getCanvas (src, inverted) {
-    return this.getImageInfo(src, inverted).canvas
+  getCanvas(src) {
+    return this.getImageInfo(src).canvas
   }
 }
 
