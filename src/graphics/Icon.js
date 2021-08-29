@@ -2,13 +2,13 @@ export class Icon {
   constructor(imageKey, style, imageCache) {
     this.iconImage = style(imageKey)
     const iconSize = style('icon-size')
-    this.image = imageCache[this.iconImage]
-    const largestDimension = this.image.width > this.image.height ? 'width' : 'height'
-    this.width = largestDimension === 'width' ? iconSize : iconSize * this.image.width / this.image.height
-    this.height = largestDimension === 'height' ? iconSize : iconSize * this.image.height / this.image.width
+    this.imageInfo = imageCache[this.iconImage]
+    const largestDimension = this.imageInfo.width > this.imageInfo.height ? 'width' : 'height'
+    this.width = largestDimension === 'width' ? iconSize : iconSize * this.imageInfo.width / this.imageInfo.height
+    this.height = largestDimension === 'height' ? iconSize : iconSize * this.imageInfo.height / this.imageInfo.width
   }
 
   draw(ctx, x, y) {
-    ctx.image(this.image, x, y, this.width, this.height)
+    ctx.image(this.imageInfo, x, y, this.width, this.height)
   }
 }
