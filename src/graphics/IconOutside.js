@@ -1,16 +1,15 @@
 import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
 import {selectionBorder, selectionHandle} from "../model/colors";
+import {Icon} from "./Icon";
 
 export class IconOutside {
   constructor(imageKey, orientation, editing, style, imageCache) {
     this.orientation = orientation
     this.editing = editing
-    this.iconImage = style(imageKey)
-    this.imageCache = imageCache;
-    this.image = this.imageCache[this.iconImage]
-    this.width = this.image.width
-    this.height = this.image.height
+    this.icon = new Icon(imageKey, style, imageCache)
+    this.width = this.icon.width
+    this.height = this.icon.height
     const horizontalPosition = (() => {
       switch (orientation.horizontal) {
         case 'start':
@@ -31,11 +30,7 @@ export class IconOutside {
   draw(ctx) {
     if (this.editing) return
 
-    ctx.save()
-
-    ctx.image(this.image, this.boxPosition.x, this.boxPosition.y)
-
-    ctx.restore()
+    this.icon.draw(ctx, this.boxPosition.x, this.boxPosition.y)
   }
 
   drawSelectionIndicator(ctx) {

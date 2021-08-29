@@ -1,14 +1,13 @@
 import BoundingBox from "./utils/BoundingBox";
+import {Icon} from "./Icon";
 
 export class NodeIconInside {
   constructor(imageKey, editing, style, imageCache) {
     this.editing = editing
     this.orientation = { horizontal: 'center', vertical: 'center' }
-    this.iconImage = style(imageKey)
-    this.imageCache = imageCache;
-    this.image = this.imageCache[this.iconImage]
-    this.width = this.image.width
-    this.height = this.image.height
+    this.icon = new Icon(imageKey, style, imageCache)
+    this.width = this.icon.width
+    this.height = this.icon.height
   }
 
   get type() {
@@ -18,13 +17,9 @@ export class NodeIconInside {
   draw(ctx) {
     if (this.editing) return
 
-    ctx.save()
-
     const x = -Math.floor(this.width / 2)
     const y = 0
-    ctx.image(this.image, x, y)
-
-    ctx.restore()
+    this.icon.draw(ctx, x, y)
   }
 
   get contentsFit() {
