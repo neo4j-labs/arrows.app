@@ -6,13 +6,17 @@ export default class extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      numericValue: props.value,
-      stringValue: props.value + ''
+      value: props.value
     }
   }
 
   componentDidMount() {
     this.props.setFocusHandler(() => this.inputElement && this.inputElement.focus())
+  }
+
+  onChange(value) {
+    this.setState({ value })
+    this.props.onChange(value)
   }
 
   render() {
@@ -27,7 +31,7 @@ export default class extends Component {
     const textBox = (
       <Input
         size='small'
-        value={this.state.stringValue}
+        value={this.state.value}
         placeholder={placeholder}
         transparent
         style={{ 'width': '8em' }}

@@ -49,7 +49,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
         <ImageUrlInput
           value={value}
           placeholder={placeholder}
-          onChange={evt => onChange(evt.target.value)}
+          onChange={onChange}
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}
         />
