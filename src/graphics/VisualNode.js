@@ -43,7 +43,6 @@ export default class VisualNode {
     const labelPosition = style('label-position')
     const propertyPosition = style('property-position')
     const iconImage = style('node-icon-image')
-    console.log(iconImage)
     const iconPosition = style('icon-position')
     const hasIcon = !!iconImage
     const hasCaption = !!node.caption
