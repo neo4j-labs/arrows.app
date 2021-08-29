@@ -102,14 +102,14 @@ export default class SvgAdaptor {
     }))
   }
 
-  image(image, x, y) {
+  image(image, x, y, width, height) {
     this.children.push(this.e('image', {
       transform: this.current().transforms.join(' '),
       href: image.dataUrl || image.canvas.toDataURL(),
       x,
       y,
-      width: image.width,
-      height: image.height
+      width,
+      height
     }))
   }
 

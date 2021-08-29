@@ -71,8 +71,8 @@ export default class CanvasAdaptor {
     if (stroke) this.ctx.stroke()
   }
 
-  image(image, x, y) {
-    this.ctx.drawImage(image.image, x, y, image.width, image.height)
+  image(image, x, y, width, height) {
+    this.ctx.drawImage(image.image, x, y, width, height)
   }
 
   polyLine(points) {

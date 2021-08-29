@@ -2,7 +2,7 @@ import {defaultFontSize, defaultNodeRadius} from "../graphics/constants";
 import {black, white} from "./colors";
 import {getStyleSelector} from "../selectors/style";
 
-const hasIcon = (node, style) => !!style('node-icon-image')
+const hasIcon = (node, style) => !!style('node-icon-image') || !!style('relationship-icon-image')
 const hasCaption = (node) => node.caption && node.caption.length > 0
 const hasLabels = (node) => node.labels && node.labels.length > 0
 const hasType = (relationship) => relationship.type && relationship.type.length > 0
@@ -33,6 +33,10 @@ const styleFilters = {
   },
   'NodeWithIcon': {
     relevantToNode: hasIcon
+  },
+  'NodeOrRelationshipWithIcon': {
+    relevantToNode: hasIcon,
+    relevantToRelationship: hasIcon
   },
   'NodeWithCaption': {
     relevantToNode: hasCaption
@@ -97,8 +101,9 @@ export const styleAttributeGroups = [
     ]
   },
   {
-    name: 'Node Icons', entityTypes: ['node'], attributes: [
-      {key: 'icon-position', appliesTo: 'NodeWithIcon', type: 'inside-outside', defaultValue: 'inside' }
+    name: 'Icons', entityTypes: ['node'], attributes: [
+      {key: 'icon-position', appliesTo: 'NodeWithIcon', type: 'inside-outside', defaultValue: 'inside' },
+      {key: 'icon-size', appliesTo: 'NodeOrRelationshipWithIcon', type: 'radius', defaultValue: 64 }
     ]
   },
   {
