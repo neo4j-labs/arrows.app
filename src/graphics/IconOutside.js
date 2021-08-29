@@ -8,9 +8,10 @@ export class IconOutside {
     this.editing = editing
     this.iconImage = style(imageKey)
     this.imageCache = imageCache;
-    this.image = this.imageCache.getCanvas(this.iconImage)
+    this.image = this.imageCache.getImageInfo(this.iconImage)
     this.width = this.image.width
     this.height = this.image.height
+    console.log(this)
     const horizontalPosition = (() => {
       switch (orientation.horizontal) {
         case 'start':

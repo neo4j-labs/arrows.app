@@ -6,7 +6,7 @@ export class NodeIconInside {
     this.orientation = { horizontal: 'center', vertical: 'center' }
     this.iconImage = style(imageKey)
     this.imageCache = imageCache;
-    this.image = this.imageCache.getCanvas(this.iconImage)
+    this.image = this.imageCache.getImageInfo(this.iconImage)
     this.width = this.image.width
     this.height = this.image.height
   }

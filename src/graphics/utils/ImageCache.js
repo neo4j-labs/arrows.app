@@ -44,14 +44,31 @@ class ImageCache {
     image.onerror = function () {
       onError()
     }
-    image.src = src
-
-    return {
+    const cacheEntry = {
       canvas,
       image,
       drawn: false,
-      error: false
+      error: false,
+      width: image.naturalWidth,
+      height: image.naturalHeight
     }
+
+    fetch(src)
+      .then(response => {
+        cacheEntry.contentType = response.headers.get('Content-Type').split(';')[0]
+        console.log(cacheEntry.contentType)
+        return response.blob()
+      })
+      .then(blob => {
+        if (cacheEntry.contentType === 'image/svg+xml') {
+          blob.text().then(text => {
+            cacheEntry.dataUrl = "data:image/svg+xml;utf8," + encodeURIComponent(text)
+          })
+        }
+        image.src = URL.createObjectURL(blob)
+      })
+
+    return cacheEntry
   }
 
   drawIfNeeded(info) {
@@ -62,6 +79,8 @@ class ImageCache {
       ctx.drawImage(image, 0, 0, ImageSize, ImageSize)
 
       info.drawn = true
+      info.width = image.naturalWidth
+      info.height = image.naturalHeight
     }
   }
 
@@ -77,10 +96,6 @@ class ImageCache {
     }
     this.drawIfNeeded(info)
     return info
-  }
-
-  getCanvas(src) {
-    return this.getImageInfo(src).canvas
   }
 }
 
