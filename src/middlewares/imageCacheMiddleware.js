@@ -1,4 +1,4 @@
-import {iconAttributes} from "../model/styling";
+import {imageAttributes} from "../model/styling";
 import {containsCachedImage, loadImage} from "../graphics/utils/ImageCache";
 import {imageEvent} from "../actions/cachedImages";
 import {getPresentGraph} from "../selectors";
@@ -40,7 +40,7 @@ const collectImageUrlsFromGraph = (graph) => {
 
 const collectImageUrlsFromStyle = (imageUrls, style) => {
   for (const [key, value] of Object.entries(style)) {
-    if (iconAttributes.includes(key) && value) {
+    if (imageAttributes.includes(key) && value) {
       imageUrls.add(value)
     }
   }

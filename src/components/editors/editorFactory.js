@@ -4,6 +4,7 @@ import ColorPicker from './ColorPicker'
 import Slider from './Slider'
 import Dropdown from "./Dropdown";
 import {styleAttributes, styleTypes} from "../../model/styling";
+import ImageUrlInput from "./ImageUrlInput";
 
 export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, onKeyPress, setFocusHandler) => {
   const attribute = styleAttributes[styleKey]
@@ -43,14 +44,14 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
           onChange={onChange}
         />
       )
-    case 'text':
+    case 'imageUrl':
       return (
-        <Input
-          fluid
+        <ImageUrlInput
           value={value}
           placeholder={placeholder}
           onChange={evt => onChange(evt.target.value)}
           onKeyPress={onKeyPress}
+          setFocusHandler={setFocusHandler}
         />
       )
     default:

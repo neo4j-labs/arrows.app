@@ -97,7 +97,7 @@ export const styleAttributeGroups = [
       {key: 'node-padding', appliesTo: 'NodeWithInsideDetail', type: 'spacing', defaultValue: 5},
       {key: 'node-margin', appliesTo: 'NodeWithOutsideDetail', type: 'spacing', defaultValue: 2},
       {key: 'outside-position', appliesTo: 'NodeWithOutsideDetail', type: 'outside-position', defaultValue: 'auto'},
-      {key: 'node-icon-image', appliesTo: 'Node', type: 'icon', defaultValue: ''},
+      {key: 'node-icon-image', appliesTo: 'Node', type: 'image', defaultValue: ''},
     ]
   },
   {
@@ -140,7 +140,7 @@ export const styleAttributeGroups = [
       {key: 'margin-peer', appliesTo: 'Relationship', type: 'spacing', defaultValue: 20},
       {key: 'attachment-start', appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'},
       {key: 'attachment-end', appliesTo: 'Relationship', type: 'attachment', defaultValue: 'normal'},
-      {key: 'relationship-icon-image', appliesTo: 'Relationship', type: 'icon', defaultValue: ''}
+      {key: 'relationship-icon-image', appliesTo: 'Relationship', type: 'image', defaultValue: ''}
     ]
   },
   {
@@ -178,9 +178,9 @@ export const relationshipStyleAttributes = styleAttributeGroups
   .flatMap(group => group.attributes)
   .map(attribute => attribute.key)
 
-export const iconAttributes = styleAttributeGroups
+export const imageAttributes = styleAttributeGroups
   .flatMap(group => group.attributes)
-  .filter(attribute => attribute.type === 'icon')
+  .filter(attribute => attribute.type === 'image')
   .map(attribute => attribute.key)
 
 export const styleTypes = {
@@ -198,7 +198,7 @@ export const styleTypes = {
   'property-alignment': { editor: 'dropdown', options: ['colon', 'center'] },
   'label-display': { editor: 'dropdown', options: ['pill', 'bare'] },
   'attachment': { editor: 'dropdown', options: ['normal', 'top', 'right', 'bottom', 'left'] },
-  'icon': { editor: 'text' }
+  'image': { editor: 'imageUrl' }
 }
 
 export const completeWithDefaults = (style) => {
@@ -240,7 +240,8 @@ export const validate = (styleKey, value) => {
         return value
       }
       break
-    case "text":
+
+    case "imageUrl":
       return value
   }
   return styleAttribute.defaultValue
