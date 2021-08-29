@@ -11,7 +11,6 @@ export class IconOutside {
     this.image = this.imageCache[this.iconImage]
     this.width = this.image.width
     this.height = this.image.height
-    console.log(this)
     const horizontalPosition = (() => {
       switch (orientation.horizontal) {
         case 'start':
