@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import {Message, Icon} from 'semantic-ui-react'
 import SvgExport from "./SvgExport";
+import ExportPngPanel from "./ExportPngPanel";
 
 class ExportSvgPanel extends Component {
 
@@ -18,6 +19,7 @@ class ExportSvgPanel extends Component {
         </Message>
         <SvgExport
           graph={this.props.graph}
+          cachedImages={this.props.cachedImages}
           diagramName={this.props.diagramName}
         />
       </React.Fragment>

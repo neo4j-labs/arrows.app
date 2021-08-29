@@ -2,6 +2,7 @@ import config from "../config";
 import {googleDriveSignInStatusChanged} from "./storage";
 import {renderPngForThumbnail} from "../graphics/utils/offScreenCanvasRenderer";
 import {indexableText} from "../model/Graph";
+import cachedImages from "../reducers/cahedImages";
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 export const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install';
 
@@ -52,7 +53,7 @@ const base64urlEncodeDataUrl = (dataUrl) => {
   return dataUrl.substring('data:image/png;base64,'.length).replace(/\+/g, '-').replace(/\//g, '_')
 }
 
-export const saveFile = (graph, fileId, fileName, onFileSaved) => {
+export const saveFile = (graph, cachedImages, fileId, fileName, onFileSaved) => {
   const boundary = '-------314159265358979323846';
   const delimiter = "\r\n--" + boundary + "\r\n";
   const close_delim = "\r\n--" + boundary + "--";
@@ -64,7 +65,7 @@ export const saveFile = (graph, fileId, fileName, onFileSaved) => {
     'mimeType': contentType,
     'contentHints': {
       'thumbnail': {
-        'image': base64urlEncodeDataUrl(renderPngForThumbnail(graph).dataUrl),
+        'image': base64urlEncodeDataUrl(renderPngForThumbnail(graph, cachedImages).dataUrl),
         'mimeType': 'image/png'
       },
       'indexableText': indexableText(graph)

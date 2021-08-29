@@ -3,9 +3,10 @@ import {getVisualGraph} from "../../selectors/index";
 import {Vector} from "../../model/Vector";
 import CanvasAdaptor from "./CanvasAdaptor";
 
-export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground) => {
+export const renderPngAtScaleFactor = (graph, cachedImages, scaleFactor, transparentBackground) => {
   const renderState = {
     graph,
+    cachedImages,
     selection: {
       entities: []
     }
@@ -36,7 +37,7 @@ export const renderPngAtScaleFactor = (graph, scaleFactor, transparentBackground
   }
 }
 
-export const renderPngForThumbnail = (graph) => {
+export const renderPngForThumbnail = (graph, cachedImages) => {
   const renderState = {
     graph,
     selection: {
@@ -55,5 +56,5 @@ export const renderPngForThumbnail = (graph) => {
   const maxPixels = targetWidth * targetWidth
   const naturalPixels = boundingBox.width * boundingBox.height
   const scaleFactor = Math.sqrt(maxPixels / naturalPixels)
-  return renderPngAtScaleFactor(graph, scaleFactor, false)
+  return renderPngAtScaleFactor(graph, cachedImages, scaleFactor, false)
 }

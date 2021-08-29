@@ -34,6 +34,7 @@ class ExportModal extends Component {
           <Tab.Pane attached={false}>
             <ExportPngPanel
               graph={this.props.graph}
+              cachedImages={this.props.cachedImages}
               diagramName={this.props.diagramName}
             />
           </Tab.Pane>
@@ -45,6 +46,7 @@ class ExportModal extends Component {
           <Tab.Pane attached={false}>
             <ExportSvgPanel
               graph={this.props.graph}
+              cachedImages={this.props.cachedImages}
               diagramName={this.props.diagramName}
             />
           </Tab.Pane>
