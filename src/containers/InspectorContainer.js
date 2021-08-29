@@ -23,6 +23,7 @@ const mapStateToProps = state => {
   const graph = getPresentGraph(state)
   return {
     graph,
+    cachedImages: state.cachedImages,
     selection: state.selection,
     selectedNodes: getSelectedNodes({ ...state, graph }),
     inspectorVisible: state.applicationLayout.inspectorVisible

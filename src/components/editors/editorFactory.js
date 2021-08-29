@@ -6,7 +6,7 @@ import Dropdown from "./Dropdown";
 import {styleAttributes, styleTypes} from "../../model/styling";
 import ImageUrlInput from "./ImageUrlInput";
 
-export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, onKeyPress, setFocusHandler) => {
+export const getStyleEditorComponent = (styleKey, value, placeholder, cachedImages, onChange, onKeyPress, setFocusHandler) => {
   const attribute = styleAttributes[styleKey]
   const styleType = styleTypes[attribute.type]
 
@@ -49,6 +49,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, onChange, 
         <ImageUrlInput
           value={value}
           placeholder={placeholder}
+          cachedImages={cachedImages}
           onChange={onChange}
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}

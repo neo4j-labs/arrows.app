@@ -16,7 +16,8 @@ export const imageCacheMiddleware = store => next => action => {
       if (!containsCachedImage(cachedImages, imageUrl)) {
         const loadingImage = loadImage(imageUrl, (cachedImage) => {
           store.dispatch(imageEvent(imageUrl, cachedImage))
-        }, () => {
+        }, (errorImage) => {
+          store.dispatch(imageEvent(imageUrl, errorImage))
         })
         store.dispatch(imageEvent(imageUrl, loadingImage))
       }

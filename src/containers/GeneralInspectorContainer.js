@@ -7,6 +7,7 @@ import {showStyleDialog} from "../actions/applicationDialogs";
 const mapStateToProps = state => {
   return {
     graph: getPresentGraph(state),
+    cachedImages: state.cachedImages,
     selection: state.selection,
   }
 }

@@ -18,12 +18,21 @@ export const loadImage = (imageUrl, onLoad, onError) => {
       height: image.naturalHeight
     })
   }
-  image.onerror = (event) => {
-    onError(event)
+  image.onerror = () => {
+    onError({
+      status: 'ERROR',
+      errorMessage: 'Image failed to load',
+      image: document.createElement('img'),
+      width: 0,
+      height: 0
+    })
   }
 
   fetch(imageUrl)
     .then(response => {
+      if (!response.ok) {
+        throw Error(response.statusText);
+      }
       contentType = response.headers.get('Content-Type').split(';')[0]
       return response.blob()
     })
@@ -35,9 +44,20 @@ export const loadImage = (imageUrl, onLoad, onError) => {
       }
       image.src = URL.createObjectURL(blob)
     })
+    .catch(reason => {
+      onError({
+        status: 'ERROR',
+        errorMessage: reason,
+        image: image,
+        width: 0,
+        height: 0
+      })
+    })
 
   return {
     status: 'LOADING',
-    image
+    image,
+    width: 0,
+    height: 0
   }
 }

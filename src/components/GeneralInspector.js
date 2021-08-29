@@ -27,6 +27,7 @@ export default class GeneralInspector extends Component {
                     style={{}}
                     graphStyle={graph.style}
                     possibleStyleAttributes={group.attributes.map(attribute => attribute.key)}
+                    cachedImages={this.props.cachedImages}
                     onSaveStyle={(styleKey, styleValue) => onSaveGraphStyle(styleKey, styleValue)}
         />
       )
