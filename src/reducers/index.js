@@ -14,6 +14,7 @@ import applicationDialogs from "./applicationDialogs";
 import gangs from './gangs'
 import features from './features'
 import googleDrive from "./googleDrive"
+import cachedImages from "./cahedImages";
 
 const arrowsApp = combineReducers({
   recentStorage,
@@ -30,7 +31,8 @@ const arrowsApp = combineReducers({
   applicationDialogs,
   gangs,
   features,
-  googleDrive
+  googleDrive,
+  cachedImages
 })
 
 export default arrowsApp

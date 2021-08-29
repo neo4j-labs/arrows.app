@@ -9,11 +9,11 @@ import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 import CanvasAdaptor from "../graphics/utils/CanvasAdaptor";
 import {nodeEditing, nodeSelected, relationshipSelected, selectedNodeIds} from "../model/selection";
 import {computeRelationshipAttachments} from "../graphics/relationshipAttachment";
-import imageCache from '../graphics/utils/ImageCache'
 
 const getSelection = (state) => state.selection
 const getMouse = (state) => state.mouse
 const getViewTransformation = (state) => state.viewTransformation
+const getCachedImages = (state) => state.cachedImages
 
 export const getPresentGraph = state => state.graph.present || state.graph
 
@@ -39,24 +39,24 @@ export const measureTextContext = (() => {
 })()
 
 export const getVisualNode = (() => {
-  const factory = (node, graph, selection) => {
+  const factory = (node, graph, selection, cachedImages) => {
     return new VisualNode(
       node,
       graph,
       nodeSelected(selection, node.id),
       nodeEditing(selection, node.id),
       measureTextContext,
-      imageCache
+      cachedImages
     )
   }
   return memoize(factory, { max: 10000 })
 })()
 
 export const getVisualGraph = createSelector(
-  [getGraph, getSelection],
-  (graph, selection) => {
+  [getGraph, getSelection, getCachedImages],
+  (graph, selection, cachedImages) => {
     const visualNodes = graph.nodes.reduce((nodeMap, node) => {
-      nodeMap[node.id] = getVisualNode(node, graph, selection)
+      nodeMap[node.id] = getVisualNode(node, graph, selection, cachedImages)
       return nodeMap
     }, {})
 
@@ -73,7 +73,7 @@ export const getVisualGraph = createSelector(
         graph)
     )
     const relationshipBundles = bundle(resolvedRelationships).map(bundle => {
-      return new RoutedRelationshipBundle(bundle, graph, selection, measureTextContext, imageCache);
+      return new RoutedRelationshipBundle(bundle, graph, selection, measureTextContext, cachedImages);
     })
 
     return new VisualGraph(graph, visualNodes, relationshipBundles, measureTextContext)

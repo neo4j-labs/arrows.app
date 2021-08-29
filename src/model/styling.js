@@ -173,6 +173,11 @@ export const relationshipStyleAttributes = styleAttributeGroups
   .flatMap(group => group.attributes)
   .map(attribute => attribute.key)
 
+export const iconAttributes = styleAttributeGroups
+  .flatMap(group => group.attributes)
+  .filter(attribute => attribute.type === 'icon')
+  .map(attribute => attribute.key)
+
 export const styleTypes = {
   'radius': { editor: 'slider', min: 1, max: 1000, step: 5 },
   'line-width': {  editor: 'slider', min: 0, max: 25, step: 1 },

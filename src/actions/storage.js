@@ -125,6 +125,7 @@ export function gettingGraphFailed() {
 export function gettingGraphSucceeded(storedGraph) {
   return function (dispatch) {
     dispatch({
+    category: 'GRAPH',
       type: 'GETTING_GRAPH_SUCCEEDED',
       storedGraph
     })
