@@ -1,3 +1,5 @@
+import {isImageInfoLoaded} from './utils/ImageCache'
+
 export class Icon {
   constructor(imageKey, style, imageCache) {
     this.iconImage = style(imageKey)
@@ -13,6 +15,8 @@ export class Icon {
   }
 
   draw(ctx, x, y) {
-    ctx.image(this.imageInfo, x, y, this.width, this.height)
+    if (isImageInfoLoaded(this.imageInfo)) {
+      ctx.image(this.imageInfo, x, y, this.width, this.height)
+    }
   }
 }

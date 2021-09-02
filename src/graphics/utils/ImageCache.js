@@ -2,6 +2,10 @@ export const containsCachedImage = (cachedImages, imageUrl) => {
   return cachedImages.hasOwnProperty(imageUrl)
 }
 
+export const isImageInfoLoaded = (imageInfo) => {
+  return imageInfo && imageInfo.status === 'LOADED'
+}
+
 export const loadImage = (imageUrl, onLoad, onError) => {
   let contentType = undefined
   let dataUrl = undefined
