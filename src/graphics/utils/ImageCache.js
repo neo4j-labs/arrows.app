@@ -6,6 +6,16 @@ export const isImageInfoLoaded = (imageInfo) => {
   return imageInfo && imageInfo.status === 'LOADED'
 }
 
+export const getCachedImage = (cachedImages, imageUrl) => {
+  return cachedImages[imageUrl] || {
+    status: 'UNKNOWN',
+    errorMessage: 'Image not cached',
+    image: document.createElement('img'),
+    width: 0,
+    height: 0
+  }
+}
+
 export const loadImage = (imageUrl, onLoad, onError) => {
   let contentType = undefined
   let dataUrl = undefined

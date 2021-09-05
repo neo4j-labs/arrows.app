@@ -1,10 +1,11 @@
 import {isImageInfoLoaded} from './utils/ImageCache'
+import {getCachedImage} from "./utils/ImageCache";
 
 export class Icon {
   constructor(imageKey, style, imageCache) {
     this.iconImage = style(imageKey)
     const iconSize = style('icon-size')
-    this.imageInfo = imageCache[this.iconImage]
+    this.imageInfo = getCachedImage(imageCache, this.iconImage)
     if (this.imageInfo.width === 0 || this.imageInfo.height === 0) {
       this.width = this.height = iconSize
     } else {
