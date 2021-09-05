@@ -17,7 +17,6 @@ export const getCachedImage = (cachedImages, imageUrl) => {
 }
 
 export const loadImage = (imageUrl, onLoad, onError) => {
-  let contentType = undefined
   let dataUrl = undefined
 
   const image = document.createElement('img')
@@ -25,7 +24,6 @@ export const loadImage = (imageUrl, onLoad, onError) => {
   image.onload = () => {
     onLoad({
       status: 'LOADED',
-      contentType,
       image,
       dataUrl,
       width: image.naturalWidth,
@@ -47,16 +45,15 @@ export const loadImage = (imageUrl, onLoad, onError) => {
       if (!response.ok) {
         throw Error(response.statusText);
       }
-      contentType = response.headers.get('Content-Type').split(';')[0]
       return response.blob()
     })
     .then(blob => {
-      if (contentType === 'image/svg+xml') {
-        blob.text().then(text => {
-          dataUrl = "data:image/svg+xml;utf8," + encodeURIComponent(text)
-        })
+      const reader = new FileReader()
+      reader.readAsDataURL(blob)
+      reader.onloadend = function() {
+        dataUrl = reader.result
+        image.src = dataUrl
       }
-      image.src = URL.createObjectURL(blob)
     })
     .catch(reason => {
       onError({
