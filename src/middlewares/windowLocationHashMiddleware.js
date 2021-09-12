@@ -4,22 +4,24 @@ export const localUrlRegex = /^#\/local\/id=(.*)/
 export const googleDriveUrlRegex = /^#\/googledrive\/ids=(.*)/
 
 export const windowLocationHashMiddleware = store => next => action => {
+  const oldStorage = store.getState().storage
   const result = next(action)
-  const newState = store.getState()
-  const storage = newState.storage
+  const newStorage = store.getState().storage
 
-  switch (storage.mode) {
-    case 'GOOGLE_DRIVE':
-      if (storage.fileId) {
-        window.location.hash = `#/googledrive/ids=${storage.fileId}`
-      }
-      break
-    case 'DATABASE':
-      window.location.hash = `#/neo4j`
-      break
-    case 'LOCAL_STORAGE':
-      window.location.hash = `#/local/id=${storage.fileId}`
-      break
+  if (oldStorage !== newStorage) {
+    switch (newStorage.mode) {
+      case 'GOOGLE_DRIVE':
+        if (newStorage.fileId) {
+          window.location.hash = `#/googledrive/ids=${newStorage.fileId}`
+        }
+        break
+      case 'DATABASE':
+        window.location.hash = `#/neo4j`
+        break
+      case 'LOCAL_STORAGE':
+        window.location.hash = `#/local/id=${newStorage.fileId}`
+        break
+    }
   }
 
   return result
