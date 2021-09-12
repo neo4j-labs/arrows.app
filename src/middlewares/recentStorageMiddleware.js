@@ -9,11 +9,7 @@ export const recentStorageMiddleware = store => next => action => {
   const newState = store.getState()
   const newStorage = newState.storage
 
-  if (!(
-    oldStorage.mode === newStorage.mode &&
-    oldStorage.fileId === newStorage.fileId &&
-    oldState.diagramName === newState.diagramName
-  )) {
+  if (oldStorage !== newStorage && newStorage.status === 'READY') {
     store.dispatch(updateRecentStorage(newStorage.mode, newStorage.fileId, newState.diagramName))
   }
 

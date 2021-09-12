@@ -128,6 +128,12 @@ export function putGraph() {
   }
 }
 
+export function postingGraph() {
+  return {
+    type: 'POSTING_GRAPH'
+  }
+}
+
 export function puttingGraph() {
   return {
     type: 'PUTTING_GRAPH'

@@ -4,7 +4,7 @@ import { getPresentGraph } from "../selectors"
 import { ActionCreators as UndoActionCreators } from "redux-undo"
 import {loadGraphFromLocalStorage, saveGraphToLocalStorage} from "../actions/localStorage"
 import {
-  postedFileOnGoogleDrive, postedFileToLocalStorage, putGraph,
+  postedFileOnGoogleDrive, postedFileToLocalStorage, postingGraph, putGraph,
   puttingGraph,
   puttingGraphSucceeded
 } from "../actions/storage";
@@ -57,6 +57,7 @@ export const storageMiddleware = store => next => action => {
       }
 
       case 'POST': {
+        store.dispatch(postingGraph())
         const onFileSaved = (fileId) => {
           store.dispatch(postedFileOnGoogleDrive(fileId))
         }

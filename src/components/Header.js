@@ -16,6 +16,7 @@ const storageStatusMessage = (props) => {
       READY: `Saved to ${storageName}`,
       GET: `Loading from ${storageName}`,
       GETTING: `Loading from ${storageName}`,
+      POSTING: `Saving to ${storageName}...`,
       PUT: `Unsaved changes`,
       PUTTING: `Saving to ${storageName}...`,
       FAILED: `Failed to save to ${storageName}, see Javascript console for details.`

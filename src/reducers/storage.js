@@ -97,6 +97,11 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
         ...state,
         status: 'PUT'
       }
+    case 'POSTING_GRAPH':
+      return {
+        ...state,
+        status: 'POSTING'
+      }
     case 'PUTTING_GRAPH':
       return {
         ...state,

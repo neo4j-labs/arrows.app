@@ -8,7 +8,7 @@ export const windowLocationHashMiddleware = store => next => action => {
   const result = next(action)
   const newStorage = store.getState().storage
 
-  if (oldStorage !== newStorage) {
+  if (oldStorage !== newStorage && newStorage.status === 'READY') {
     switch (newStorage.mode) {
       case 'GOOGLE_DRIVE':
         if (newStorage.fileId) {
