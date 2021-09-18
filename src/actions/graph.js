@@ -14,6 +14,7 @@ import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constant
 import BoundingBox from "../graphics/utils/BoundingBox";
 import {translate} from "../model/Node";
 import {lockHandleDragType} from "./mouse";
+import {CircleGuide} from "../model/guides/CircleGuide";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)
@@ -191,13 +192,26 @@ export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMo
       }
     })
 
-    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides()))
+    const guidelines = []
+    dimensions.forEach(dimension => {
+      if (corner[dimension] !== 'mid') {
+        const range = ranges[dimension]
+        const guideline = {}
+        guideline.type = dimension === 'x' ? 'VERTICAL' : 'HORIZONTAL'
+        guideline[dimension] = corner[dimension] === 'min' ? range.max : range.min
+        guidelines.push(guideline)
+      }
+    })
+
+    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides(guidelines)))
   }
 
   function applyRotation(viewTransformation, dispatch, mouse) {
 
     const center = average(initialNodePositions.map(entry => entry.position))
-    const initialAngle = viewTransformation.inverse(initialMousePosition).vectorFrom(center).angle()
+    const initialOffset = viewTransformation.inverse(initialMousePosition).vectorFrom(center)
+    const radius = initialOffset.distance()
+    const initialAngle = initialOffset.angle()
     const newAngle = viewTransformation.inverse(newMousePosition).vectorFrom(center).angle()
     const rotationAngle = newAngle - initialAngle
 
@@ -208,7 +222,9 @@ export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMo
       }
     })
 
-    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides()))
+    const guides = new Guides([new CircleGuide(center, radius, newMousePosition)])
+
+    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, guides))
   }
 
   return function (dispatch, getState) {
