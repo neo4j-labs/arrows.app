@@ -1,4 +1,4 @@
-import {snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
+import {angleTolerance, snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {average, Point} from "../model/Point";
@@ -15,6 +15,7 @@ import BoundingBox from "../graphics/utils/BoundingBox";
 import {translate} from "../model/Node";
 import {lockHandleDragType} from "./mouse";
 import {CircleGuide} from "../model/guides/CircleGuide";
+import {LineGuide} from "../model/guides/LineGuide";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)
@@ -211,9 +212,20 @@ export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMo
     const center = average(initialNodePositions.map(entry => entry.position))
     const initialOffset = viewTransformation.inverse(initialMousePosition).vectorFrom(center)
     const radius = initialOffset.distance()
+    const guidelines = []
+    guidelines.push(new CircleGuide(center, radius, newMousePosition))
+
     const initialAngle = initialOffset.angle()
-    const newAngle = viewTransformation.inverse(newMousePosition).vectorFrom(center).angle()
-    const rotationAngle = newAngle - initialAngle
+    let newAngle = viewTransformation.inverse(newMousePosition).vectorFrom(center).angle()
+    let rotationAngle = newAngle - initialAngle
+    const snappedAngle = Math.round(rotationAngle / angleTolerance) * angleTolerance
+    const snapError = Math.abs(rotationAngle - snappedAngle)
+    if (snapError < Math.PI / 20) {
+      rotationAngle = snappedAngle
+      newAngle = initialAngle + rotationAngle
+      guidelines.push(new LineGuide(center, initialAngle, newMousePosition))
+      guidelines.push(new LineGuide(center, newAngle, newMousePosition))
+    }
 
     const nodePositions = initialNodePositions.map(entry => {
       return {
@@ -222,7 +234,7 @@ export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMo
       }
     })
 
-    const guides = new Guides([new CircleGuide(center, radius, newMousePosition)])
+    const guides = new Guides(guidelines)
 
     dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, guides))
   }
