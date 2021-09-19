@@ -36,38 +36,6 @@ export default class Gestures {
       const bBoxScreen = getBbox(marqueeScreen.from, marqueeScreen.to)
 
       drawPolygon(ctx, bBoxScreen, null, 'black')
-
-      const points = visualGraph.graph.nodes.map(node => node.position)
-        .filter(point => boundingBox.contains(point))
-      const voronoi = getVoronoi(points,
-        selectionMarquee ? {
-          xl: Math.min(selectionMarquee.from.x, selectionMarquee.to.x),
-          xr: Math.max(selectionMarquee.from.x, selectionMarquee.to.x),
-          yt: Math.min(selectionMarquee.from.y, selectionMarquee.to.y),
-          yb: Math.max(selectionMarquee.from.y, selectionMarquee.to.y),
-        } : { xl: 0, xr: 0, yt: 0, yb: 0}
-      )
-
-      if (voronoi) {
-        if (voronoi.cells.length === 1) {
-          drawPolygon(ctx, bBoxScreen, 'aliceblue', 'black')
-        } else {
-          voronoi.cells.forEach(cell => {
-            let points = []
-            cell.halfedges.forEach(halfedge => {
-              const doesPointExist = point => points.indexOf(p => p.x === point.x && p.y === point.y) >= 0
-              if (!doesPointExist(halfedge.edge.va)) {
-                points.push(halfedge.edge.va)
-              }
-              if (!doesPointExist(halfedge.edge.vb)) {
-                points.push(halfedge.edge.vb)
-              }
-            })
-            points = sortPoints(points)
-            drawPolygon(ctx, points.map(point => transform(new Point(point.x, point.y))), 'aliceblue', 'black')
-          })
-        }
-      }
     }
 
     const drawNewNodeAndRelationship = (sourceNodeId, targetNodeId, newNodeNaturalPosition) => {

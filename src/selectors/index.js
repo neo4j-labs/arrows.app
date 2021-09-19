@@ -11,6 +11,7 @@ import {nodeEditing, nodeSelected, relationshipSelected, selectedNodeIds} from "
 import {computeRelationshipAttachments} from "../graphics/relationshipAttachment";
 
 const getSelection = (state) => state.selection
+const getMouse = (state) => state.mouse
 const getViewTransformation = (state) => state.viewTransformation
 
 export const getPresentGraph = state => state.graph.present || state.graph
@@ -78,9 +79,9 @@ export const getVisualGraph = createSelector(
 )
 
 export const getTransformationHandles = createSelector(
-  [getVisualGraph, getSelection, getViewTransformation],
-  (visualGraph, selection, viewTransformation) => {
-    return new TransformationHandles(visualGraph, selection, viewTransformation)
+  [getVisualGraph, getSelection, getMouse, getViewTransformation],
+  (visualGraph, selection, mouse, viewTransformation) => {
+    return new TransformationHandles(visualGraph, selection, mouse, viewTransformation)
   }
 )
 

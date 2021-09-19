@@ -5,7 +5,7 @@ import {selectionHandle} from "../model/colors";
 import {selectedNodeIds} from "../model/selection";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
-const handleSize = 20
+export const handleSize = 20
 const handlePadding = 2
 
 const choose = (mode, min, max) => {
@@ -24,9 +24,9 @@ const inRange = (value, min, max) => {
 }
 
 export default class TransformationHandles {
-  constructor(visualGraph, selection, viewTransformation) {
+  constructor(visualGraph, selection, mouse, viewTransformation) {
     const nodeIds = selectedNodeIds(selection)
-    if (nodeIds.length > 1) {
+    if (mouse.dragType === 'NONE' && nodeIds.length > 1) {
       const box = combineBoundingBoxes(nodeIds.map(nodeId => visualGraph.nodes[nodeId].boundingBox()))
       const dimensions = ['x', 'y']
       const modes = {}

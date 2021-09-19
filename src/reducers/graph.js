@@ -4,7 +4,7 @@ import { reverse, setType } from "../model/Relationship";
 import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
 import { idsMatch } from "../model/Id";
 import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
-import undoable from 'redux-undo'
+import undoable, { groupByActionTypes } from 'redux-undo';
 import {nodeSelected, relationshipSelected} from "../model/selection";
 
 const graph = (state = emptyGraph(), action) => {
@@ -337,5 +337,6 @@ const graph = (state = emptyGraph(), action) => {
 }
 
 export default undoable(graph, {
-  filter: action => action.category === 'GRAPH' && action.type !== 'MOVE_NODES'
+  filter: action => action.category === 'GRAPH',
+  groupBy: groupByActionTypes('MOVE_NODES')
 })

@@ -137,6 +137,11 @@ const mouseDownOnHandle = (corner, canvasPosition, nodePositions) => ({
   nodePositions
 })
 
+export const lockHandleDragType = (dragType) => ({
+  type: 'LOCK_HANDLE_DRAG_MODE',
+  dragType
+})
+
 const mouseDownOnNode = (node, canvasPosition, graphPosition) => ({
   type: 'MOUSE_DOWN_ON_NODE',
   node,
@@ -192,8 +197,11 @@ export const mouseMove = (canvasPosition) => {
           break
 
         case 'HANDLE':
+        case 'HANDLE_ROTATE':
+        case 'HANDLE_SCALE':
           if (mouse.dragged || furtherThanDragThreshold(previousPosition, canvasPosition)) {
             dispatch(tryMoveHandle({
+              dragType: mouse.dragType,
               corner: mouse.corner,
               initialNodePositions: mouse.initialNodePositions,
               initialMousePosition: mouse.initialMousePosition,

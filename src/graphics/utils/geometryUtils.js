@@ -1,4 +1,3 @@
-import Voronoi from "./voronoi";
 import {getStyleSelector} from "../../selectors/style";
 
 export const calculateBoundingBox = (nodes, graph, scale = 1) => {
@@ -41,15 +40,6 @@ export const getDistanceToLine = (x1, y1, x2, y2, x3, y3) => {
   // # (i.e. remove the sqrt) to gain a little performance
 
   return Math.sqrt(dx * dx + dy * dy)
-}
-
-export const getVoronoi = (nodes, bbox = {xl: 0, xr: 1000, yt: 0, yb: 800}) => {
-  const voronoi = new Voronoi();
-  if (nodes.length > 0) {
-    return voronoi.compute(nodes, bbox);
-  } else {
-    return null
-  }
 }
 
 export const sortPoints = (points) => {

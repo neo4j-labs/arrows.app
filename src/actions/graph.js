@@ -1,4 +1,4 @@
-import {snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
+import {angleTolerance, snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
 import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {average, Point} from "../model/Point";
@@ -13,6 +13,10 @@ import {
 import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constants";
 import BoundingBox from "../graphics/utils/BoundingBox";
 import {translate} from "../model/Node";
+import {lockHandleDragType} from "./mouse";
+import {CircleGuide} from "../model/guides/CircleGuide";
+import {LineGuide} from "../model/guides/LineGuide";
+import {HandleGuide} from "../model/guides/HandleGuide";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)
@@ -95,11 +99,8 @@ export const connectNodes = (sourceNodeIds, targetNodeIds) => (dispatch, getStat
   })
 }
 
-export const tryMoveHandle = ({corner, initialNodePositions, initialMousePosition, newMousePosition}) => {
-  return function (dispatch, getState) {
-    const { viewTransformation, mouse } = getState()
-
-    const vector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
+export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMousePosition, newMousePosition}) => {
+  function applyScale(vector, viewTransformation, dispatch, mouse) {
     const maxDiameter = Math.max(...initialNodePositions.map(entry => entry.radius)) * 2
 
     const dimensions = ['x', 'y']
@@ -193,7 +194,84 @@ export const tryMoveHandle = ({corner, initialNodePositions, initialMousePositio
       }
     })
 
-    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides()))
+    const guidelines = []
+    guidelines.push(new HandleGuide(viewTransformation.inverse(newMousePosition)))
+    dimensions.forEach(dimension => {
+      if (corner[dimension] !== 'mid') {
+        const range = ranges[dimension]
+        const guideline = {}
+        guideline.type = dimension === 'x' ? 'VERTICAL' : 'HORIZONTAL'
+        guideline[dimension] = corner[dimension] === 'min' ? range.max : range.min
+        guidelines.push(guideline)
+      }
+    })
+
+    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, new Guides(guidelines)))
+  }
+
+  function applyRotation(viewTransformation, dispatch, mouse) {
+
+    const center = average(initialNodePositions.map(entry => entry.position))
+    const initialOffset = viewTransformation.inverse(initialMousePosition).vectorFrom(center)
+    const radius = initialOffset.distance()
+    const guidelines = []
+    guidelines.push(new CircleGuide(center, radius, newMousePosition))
+
+    const initialAngle = initialOffset.angle()
+    let newAngle = viewTransformation.inverse(newMousePosition).vectorFrom(center).angle()
+    let rotationAngle = newAngle - initialAngle
+    const snappedAngle = Math.round(rotationAngle / angleTolerance) * angleTolerance
+    const snapError = Math.abs(rotationAngle - snappedAngle)
+    if (snapError < Math.PI / 20) {
+      rotationAngle = snappedAngle
+      newAngle = initialAngle + rotationAngle
+      guidelines.push(new LineGuide(center, initialAngle, newMousePosition))
+      guidelines.push(new LineGuide(center, newAngle, newMousePosition))
+    }
+    guidelines.push(new HandleGuide(center.translate(initialOffset.rotate(rotationAngle))))
+
+    const nodePositions = initialNodePositions.map(entry => {
+      return {
+        nodeId: entry.nodeId,
+        position: center.translate(entry.position.vectorFrom(center).rotate(rotationAngle))
+      }
+    })
+
+    const guides = new Guides(guidelines)
+
+    dispatch(moveNodes(initialMousePosition, newMousePosition || mouse.mousePosition, nodePositions, guides))
+  }
+
+  return function (dispatch, getState) {
+    const { viewTransformation, mouse } = getState()
+
+    const mouseVector = newMousePosition.vectorFrom(initialMousePosition).scale(1 / viewTransformation.scale)
+
+    let mode = dragType
+    if (mode === 'HANDLE') {
+      const center = average(initialNodePositions.map(entry => entry.position))
+      const centerVector = viewTransformation.inverse(initialMousePosition).vectorFrom(center)
+
+      if (Math.abs(centerVector.unit().dot(mouseVector.unit())) < 0.5) {
+        mode = 'HANDLE_ROTATE'
+      } else {
+        mode = 'HANDLE_SCALE'
+      }
+
+      if (mouseVector.distance() > 20) {
+        dispatch(lockHandleDragType(mode))
+      }
+    }
+
+    switch (mode) {
+      case 'HANDLE_ROTATE':
+        applyRotation(viewTransformation, dispatch, mouse)
+        break
+
+      case 'HANDLE_SCALE':
+        applyScale(mouseVector, viewTransformation, dispatch, mouse)
+        break
+    }
   }
 }
 
