@@ -13,9 +13,9 @@ export const snapToNeighbourDistancesAndAngles = (graph, snappingNodeId, natural
 
   const neighbours = [];
   graph.relationships.forEach((relationship) => {
-    if (idsMatch(relationship.fromId, snappingNodeId)) {
+    if (idsMatch(relationship.fromId, snappingNodeId) && !otherSelectedNodes.includes(relationship.toId)) {
       neighbours.push(graph.nodes.find((node) => idsMatch(node.id, relationship.toId)))
-    } else if (idsMatch(relationship.toId, snappingNodeId)) {
+    } else if (idsMatch(relationship.toId, snappingNodeId) && !otherSelectedNodes.includes(relationship.fromId)) {
       neighbours.push(graph.nodes.find((node) => idsMatch(node.id, relationship.fromId)))
     }
   })
