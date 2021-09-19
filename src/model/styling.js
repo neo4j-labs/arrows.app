@@ -137,6 +137,7 @@ export const styleAttributeGroups = [
   {
     name: 'Properties', entityTypes: ['node', 'relationship'], attributes: [
       {key: 'property-position', appliesTo: 'NodeOrRelationshipWithProperty', type: 'inside-outside', defaultValue: 'outside'},
+      {key: 'property-alignment', appliesTo: 'NodeOrRelationshipWithProperty', type: 'property-alignment', defaultValue: 'colon'},
       {key: 'property-color', appliesTo: 'NodeOrRelationshipWithProperty', type: 'color', defaultValue: black},
       {key: 'property-font-size', appliesTo: 'NodeOrRelationshipWithProperty', type: 'font-size', defaultValue: 16},
       {key: 'property-font-weight', appliesTo: 'NodeOrRelationshipWithProperty', type: 'font-weight', defaultValue: 'normal'},
@@ -170,6 +171,7 @@ export const styleTypes = {
   'inside-outside': { editor: 'dropdown', options: ['inside', 'outside'] },
   'detail-position': { editor: 'dropdown', options: ['inline', 'above', 'below'] },
   'orientation': { editor: 'dropdown', options: ['parallel', 'perpendicular', 'horizontal'] },
+  'property-alignment': { editor: 'dropdown', options: ['colon', 'center'] },
   'attachment': { editor: 'dropdown', options: ['normal', 'top', 'right', 'bottom', 'left'] }
 }
 

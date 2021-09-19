@@ -14,6 +14,7 @@ export class PropertiesBox {
     textMeasurement.font = this.font
     this.fontColor = style('property-color')
     this.lineHeight = this.font.fontSize * 1.2
+    this.alignment = style('property-alignment')
     this.properties = Object.keys(properties).map(key => ({
       key,
       value: properties[key]
@@ -26,9 +27,18 @@ export class PropertiesBox {
         return textMeasurement.measureText(selector(property)).width
       }))
     }
-    this.keysWidth = maxWidth(property => property.key) + this.spaceWidth
-    this.valuesWidth = maxWidth(property => property.value) + this.spaceWidth
-    this.boxWidth = this.keysWidth + this.colonWidth + this.spaceWidth + this.valuesWidth
+
+    switch (this.editing ? 'colon' : this.alignment) {
+      case 'colon':
+        this.keysWidth = maxWidth(property => property.key) + this.spaceWidth
+        this.valuesWidth = maxWidth(property => property.value) + this.spaceWidth
+        this.boxWidth = this.keysWidth + this.colonWidth + this.spaceWidth + this.valuesWidth
+        break
+
+      case 'center':
+        this.boxWidth = maxWidth(property => property.key + ': ' + property.value)
+        break
+    }
     this.boxHeight = this.lineHeight * this.properties.length
   }
 
@@ -48,8 +58,16 @@ export class PropertiesBox {
       if (this.editing) {
         drawTextLine(ctx, ':', new Point(this.keysWidth + this.colonWidth, yPosition), 'end')
       } else {
-        drawTextLine(ctx, property.key + ':', new Point(this.keysWidth + this.colonWidth, yPosition), 'end')
-        drawTextLine(ctx, property.value, new Point(this.keysWidth + this.colonWidth + this.spaceWidth, yPosition), 'start')
+        switch (this.alignment) {
+          case 'colon':
+            drawTextLine(ctx, property.key + ':', new Point(this.keysWidth + this.colonWidth, yPosition), 'end')
+            drawTextLine(ctx, property.value, new Point(this.keysWidth + this.colonWidth + this.spaceWidth, yPosition), 'start')
+            break
+
+          case 'center':
+            drawTextLine(ctx, property.key + ': ' + property.value, new Point(this.boxWidth / 2, yPosition), 'center')
+            break
+        }
       }
     })
 
