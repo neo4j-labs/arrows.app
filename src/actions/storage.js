@@ -1,15 +1,22 @@
 import {fetchGraphFromDatabase} from "../storage/neo4jStorage";
 import {fetchGraphFromDrive} from "../storage/googleDriveStorage";
+import { ActionCreators as UndoActionCreators } from 'redux-undo'
 
 export function newGoogleDriveDiagram() {
-  return {
-    type: 'NEW_GOOGLE_DRIVE_DIAGRAM'
+  return function (dispatch) {
+    dispatch({
+      type: 'NEW_GOOGLE_DRIVE_DIAGRAM'
+    })
+    dispatch(UndoActionCreators.clearHistory())
   }
 }
 
 export function newLocalStorageDiagram() {
-  return {
-    type: 'NEW_LOCAL_STORAGE_DIAGRAM'
+  return function (dispatch) {
+    dispatch({
+      type: 'NEW_LOCAL_STORAGE_DIAGRAM'
+    })
+    dispatch(UndoActionCreators.clearHistory())
   }
 }
 
@@ -116,9 +123,12 @@ export function gettingGraphFailed() {
 }
 
 export function gettingGraphSucceeded(storedGraph) {
-  return {
-    type: 'GETTING_GRAPH_SUCCEEDED',
-    storedGraph
+  return function (dispatch) {
+    dispatch({
+      type: 'GETTING_GRAPH_SUCCEEDED',
+      storedGraph
+    })
+    dispatch(UndoActionCreators.clearHistory())
   }
 }
 
