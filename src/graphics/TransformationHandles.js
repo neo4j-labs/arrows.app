@@ -5,7 +5,7 @@ import {selectionHandle} from "../model/colors";
 import {selectedNodeIds} from "../model/selection";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
-const handleSize = 20
+export const handleSize = 20
 const handlePadding = 2
 
 const choose = (mode, min, max) => {

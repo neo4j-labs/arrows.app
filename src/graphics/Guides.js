@@ -1,9 +1,11 @@
 /*
  * Collection of graph-embellishments that help the user to understanding snapping behaviour
  */
-import { drawCircle, drawSolidCircle, drawStraightLine } from "./canvasRenderer";
+import {drawCircle, drawSolidCircle, drawSolidRectangle, drawStraightLine} from "./canvasRenderer";
 import { Point } from "../model/Point";
 import {Vector} from "../model/Vector";
+import {selectionHandle} from "../model/colors";
+import {handleSize} from "./TransformationHandles";
 
 export class Guides {
   constructor(guidelines = [], naturalPosition, naturalRadius) {
@@ -37,6 +39,12 @@ export class Guides {
 
         case 'CIRCLE':
           drawCircle(ctx, transform(guideline.center), guideline.radius * scale, true, {dashed: true})
+          break
+
+        case 'HANDLE':
+          const centeringVector = new Vector(-handleSize / 2, -handleSize / 2);
+          const topLeft = transform(guideline.handlePosition).translate(centeringVector)
+          drawSolidRectangle(ctx, topLeft, handleSize, handleSize, 3, selectionHandle)
           break
 
         default:

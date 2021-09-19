@@ -16,6 +16,7 @@ import {translate} from "../model/Node";
 import {lockHandleDragType} from "./mouse";
 import {CircleGuide} from "../model/guides/CircleGuide";
 import {LineGuide} from "../model/guides/LineGuide";
+import {HandleGuide} from "../model/guides/HandleGuide";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)
@@ -99,7 +100,7 @@ export const connectNodes = (sourceNodeIds, targetNodeIds) => (dispatch, getStat
 }
 
 export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMousePosition, newMousePosition}) => {
-  function applyScale(vector, dispatch, mouse) {
+  function applyScale(vector, viewTransformation, dispatch, mouse) {
     const maxDiameter = Math.max(...initialNodePositions.map(entry => entry.radius)) * 2
 
     const dimensions = ['x', 'y']
@@ -194,6 +195,7 @@ export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMo
     })
 
     const guidelines = []
+    guidelines.push(new HandleGuide(viewTransformation.inverse(newMousePosition)))
     dimensions.forEach(dimension => {
       if (corner[dimension] !== 'mid') {
         const range = ranges[dimension]
@@ -226,6 +228,7 @@ export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMo
       guidelines.push(new LineGuide(center, initialAngle, newMousePosition))
       guidelines.push(new LineGuide(center, newAngle, newMousePosition))
     }
+    guidelines.push(new HandleGuide(center.translate(initialOffset.rotate(rotationAngle))))
 
     const nodePositions = initialNodePositions.map(entry => {
       return {
@@ -266,7 +269,7 @@ export const tryMoveHandle = ({dragType, corner, initialNodePositions, initialMo
         break
 
       case 'HANDLE_SCALE':
-        applyScale(mouseVector, dispatch, mouse)
+        applyScale(mouseVector, viewTransformation, dispatch, mouse)
         break
     }
   }
