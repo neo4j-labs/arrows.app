@@ -27,7 +27,7 @@ export class LabelsEditor extends Component {
             position: 'absolute',
             padding: 0,
             left: position.dx + pill.radius,
-            top: position.dy + pill.radius - lineHeight / 2,
+            top: position.dy + (pill.height - lineHeight) / 2,
             width: pill.width + padding,
             height: lineHeight,
             resize: 'none',

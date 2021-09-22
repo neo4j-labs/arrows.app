@@ -10,6 +10,8 @@ export default class Pill {
     this.strokeColor = style('label-border-color')
     this.fontColor = style('label-color')
     this.borderWidth = style('label-border-width')
+    this.display = style('label-display')
+
     const padding = style('label-padding')
 
     this.font = {
@@ -21,7 +23,7 @@ export default class Pill {
     this.textWidth = textMeasurement.measureText(text).width
 
     this.height = this.font.fontSize + padding * 2 + this.borderWidth
-    this.radius = this.height / 2
+    this.radius = this.display === 'pill' ? this.height / 2 : 0
     this.width = this.textWidth + this.radius * 2
 
     this.editing = editing
@@ -32,12 +34,15 @@ export default class Pill {
     ctx.fillStyle = this.backgroundColor
     ctx.strokeStyle = this.strokeColor
     ctx.lineWidth = this.borderWidth
-    ctx.rect(0, 0, this.width, this.height, this.radius, true, this.borderWidth > 0)
+    if (this.display === 'pill') {
+      ctx.rect(0, 0, this.width, this.height, this.radius, true, this.borderWidth > 0)
+    }
+
     if (!this.editing) {
       ctx.font = this.font
       ctx.textBaseline = 'middle'
       ctx.fillStyle = this.fontColor
-      ctx.fillText(this.text, this.radius, this.radius)
+      ctx.fillText(this.text, this.radius, this.height / 2)
     }
     ctx.restore()
   }

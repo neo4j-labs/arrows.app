@@ -101,6 +101,7 @@ export const styleAttributeGroups = [
   {
     name: 'Node Labels', entityTypes: ['node'], attributes: [
       {key: 'label-position', appliesTo: 'NodeWithLabel', type: 'inside-outside', defaultValue: 'inside'},
+      {key: 'label-display', appliesTo: 'NodeWithLabel', type: 'label-display', defaultValue: 'pill'},
       {key: 'label-color', appliesTo: 'NodeWithLabel', type: 'color', defaultValue: black},
       {key: 'label-background-color', appliesTo: 'NodeWithLabel', type: 'color', defaultValue: white},
       {key: 'label-border-color', appliesTo: 'NodeWithLabel', type: 'color', defaultValue: black},
@@ -172,6 +173,7 @@ export const styleTypes = {
   'detail-position': { editor: 'dropdown', options: ['inline', 'above', 'below'] },
   'orientation': { editor: 'dropdown', options: ['parallel', 'perpendicular', 'horizontal'] },
   'property-alignment': { editor: 'dropdown', options: ['colon', 'center'] },
+  'label-display': { editor: 'dropdown', options: ['pill', 'bare'] },
   'attachment': { editor: 'dropdown', options: ['normal', 'top', 'right', 'bottom', 'left'] }
 }
 
