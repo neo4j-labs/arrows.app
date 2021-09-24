@@ -59,6 +59,16 @@ export default class VisualNode {
         this.outsideOrientation = orientationFromName(outsidePosition)
     }
 
+    if (hasIcon) {
+      switch (iconPosition) {
+        case 'inside':
+          this.insideComponents.push(this.icon = new NodeIconInside('node-icon-image', editing, style, imageCache))
+          break;
+        default:
+          this.outsideComponents.push(this.icon = new IconOutside('node-icon-image', this.outsideOrientation, editing, style, imageCache))
+      }
+    }
+
     const caption = node.caption || ''
     if (hasCaption) {
       switch (captionPosition) {
@@ -106,16 +116,6 @@ export default class VisualNode {
         default:
           this.outsideComponents.push(this.properties = new PropertiesOutside(
             node.properties, this.outsideOrientation, editing, style, measureTextContext))
-      }
-    }
-
-    if (hasIcon) {
-      switch (iconPosition) {
-        case 'inside':
-          this.insideComponents.push(this.icon = new NodeIconInside('node-icon-image', editing, style, imageCache))
-          break;
-        default:
-          this.outsideComponents.push(this.icon = new IconOutside('node-icon-image', this.outsideOrientation, editing, style, imageCache))
       }
     }
 

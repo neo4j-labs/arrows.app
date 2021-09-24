@@ -26,6 +26,9 @@ export class VisualRelationship {
     const hasType = !!resolvedRelationship.type
     const hasProperties = Object.keys(resolvedRelationship.relationship.properties).length > 0
 
+    if (hasIcon) {
+      this.components.push(this.icon = new IconOutside('relationship-icon-image', alignment, editing, style, imageCache))
+    }
     if (hasType) {
       this.components.push(this.type = new RelationshipType(
         resolvedRelationship.type, alignment, editing, style, measureTextContext))
@@ -33,9 +36,6 @@ export class VisualRelationship {
     if (hasProperties) {
       this.components.push(this.properties = new PropertiesOutside(
         resolvedRelationship.relationship.properties, alignment, editing, style, measureTextContext))
-    }
-    if (hasIcon) {
-      this.components.push(this.icon = new IconOutside('relationship-icon-image', alignment, editing, style, imageCache))
     }
 
     const width = this.components.maxWidth()
