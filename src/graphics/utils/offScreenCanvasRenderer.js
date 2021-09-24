@@ -40,6 +40,7 @@ export const renderPngAtScaleFactor = (graph, cachedImages, scaleFactor, transpa
 export const renderPngForThumbnail = (graph, cachedImages) => {
   const renderState = {
     graph,
+    cachedImages,
     selection: {
       entities: []
     }
