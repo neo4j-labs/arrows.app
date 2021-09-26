@@ -14,12 +14,14 @@ import {windowLocationHashMiddleware} from "./middlewares/windowLocationHashMidd
 import {initGoogleDriveApi} from "./actions/googleDrive";
 import {windowResized} from "./actions/applicationLayout";
 import {initRecentStorage, recentStorageMiddleware} from "./middlewares/recentStorageMiddleware";
+import {imageCacheMiddleware} from "./middlewares/imageCacheMiddleware";
 
 const middleware = [
   recentStorageMiddleware,
   storageMiddleware,
   windowLocationHashMiddleware,
-  viewportMiddleware
+  viewportMiddleware,
+  imageCacheMiddleware
 ]
 
 let store = createStore(

@@ -45,6 +45,7 @@ export default class StyleTable extends Component {
             specialised={specialised}
             styleValue={styleValue}
             styleValuePlaceholder={styleValuePlaceholder}
+            cachedImages={this.props.cachedImages}
             onValueChange={value => onSaveStyle(styleKey, value)}
             onDeleteStyle={() => onDeleteStyle(styleKey)}
             setFocusHandler={action => this.focusHandlers[index] = action}

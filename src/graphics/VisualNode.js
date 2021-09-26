@@ -10,13 +10,15 @@ import {NodePropertiesInside} from "./NodePropertiesInside";
 import {bisect} from "./bisect";
 import {NodeLabelsInsideNode} from "./NodeLabelsInsideNode";
 import {NodeCaptionFillNode} from "./NodeCaptionFillNode";
+import {NodeIconInside} from "./NodeIconInside";
+import {IconOutside} from "./IconOutside";
 import {distribute} from "./circumferentialDistribution";
 import {orientationAngles, orientationFromAngle, orientationFromName} from "./circumferentialTextAlignment";
 import {Vector} from "../model/Vector";
 import {ComponentStack} from "./ComponentStack";
 
 export default class VisualNode {
-  constructor(node, graph, selected, editing, measureTextContext) {
+  constructor(node, graph, selected, editing, measureTextContext, imageCache) {
     this.node = node
     this.selected = selected
     this.editing = editing
@@ -40,6 +42,9 @@ export default class VisualNode {
     const captionPosition = style('caption-position')
     const labelPosition = style('label-position')
     const propertyPosition = style('property-position')
+    const iconImage = style('node-icon-image')
+    const iconPosition = style('icon-position')
+    const hasIcon = !!iconImage
     const hasCaption = !!node.caption
     const hasLabels = node.labels.length > 0
     const hasProperties = Object.keys(node.properties).length > 0
@@ -54,12 +59,23 @@ export default class VisualNode {
         this.outsideOrientation = orientationFromName(outsidePosition)
     }
 
+    if (hasIcon) {
+      switch (iconPosition) {
+        case 'inside':
+          this.insideComponents.push(this.icon = new NodeIconInside('node-icon-image', editing, style, imageCache))
+          break;
+        default:
+          this.outsideComponents.push(this.icon = new IconOutside('node-icon-image', this.outsideOrientation, editing, style, imageCache))
+      }
+    }
+
     const caption = node.caption || ''
     if (hasCaption) {
       switch (captionPosition) {
         case 'inside':
           if ((hasLabels && labelPosition === 'inside') ||
-            (hasProperties && propertyPosition === 'inside')) {
+            (hasProperties && propertyPosition === 'inside') ||
+            (hasIcon && iconPosition === 'inside')) {
             this.insideComponents.push(this.caption =
               new NodeCaptionInsideNode(caption, editing, style, measureTextContext))
           } else {

@@ -5,7 +5,7 @@ import {renderSvg} from "../graphics/utils/offScreenSvgRenderer";
 class SvgExport extends Component {
 
   render() {
-    const {width, height, dataUrl} = renderSvg(this.props.graph)
+    const {width, height, dataUrl} = renderSvg(this.props.graph, this.props.cachedImages)
 
     return (
       <Segment style={{

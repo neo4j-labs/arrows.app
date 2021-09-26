@@ -12,7 +12,7 @@ import {relationshipArrowDimensions} from "./arrowDimensions";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class RoutedRelationshipBundle {
-  constructor(relationships, graph, selection, measureTextContext) {
+  constructor(relationships, graph, selection, measureTextContext, imageCache) {
     const arrows = []
 
     const leftNode = relationships[0].from
@@ -153,7 +153,7 @@ export class RoutedRelationshipBundle {
       const relationship = relationships[i]
 
       this.routedRelationships.push(new VisualRelationship(
-        relationship, graph, arrows[i], relationshipEditing(selection, relationship.id), measureTextContext
+        relationship, graph, arrows[i], relationshipEditing(selection, relationship.id), measureTextContext, imageCache
       ))
     }
   }

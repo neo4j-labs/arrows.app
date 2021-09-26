@@ -5,9 +5,10 @@ import {Vector} from "../../model/Vector";
 import SvgAdaptor from "./SvgAdaptor";
 import { Base64 } from 'js-base64';
 
-export const renderSvg = (graph) => {
+export const renderSvg = (graph, cachedImages) => {
   const renderState = {
     graph,
+    cachedImages,
     selection: {
       entities: []
     }

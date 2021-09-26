@@ -84,7 +84,7 @@ export default class SvgAdaptor {
       r,
       fill: fill ? this.current().fillStyle : 'none',
       stroke: stroke ? this.current().strokeStyle : 'none',
-      strokeWidth: this.current().lineWidth
+      'stroke-width': this.current().lineWidth
     }))
   }
 
@@ -99,6 +99,17 @@ export default class SvgAdaptor {
       ry: r,
       fill: fill ? this.current().fillStyle : 'none',
       stroke: stroke ? this.current().strokeStyle : 'none'
+    }))
+  }
+
+  image(imageInfo, x, y, width, height) {
+    this.children.push(this.e('image', {
+      transform: this.current().transforms.join(' '),
+      href: imageInfo.dataUrl,
+      x,
+      y,
+      width,
+      height
     }))
   }
 

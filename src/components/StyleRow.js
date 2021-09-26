@@ -24,7 +24,7 @@ export class StyleRow extends Component {
   }
 
   render = () => {
-    const { styleKey, styleValue, styleValuePlaceholder, specialised, onValueChange, onDeleteStyle, onNext, setFocusHandler} = this.props
+    const { styleKey, styleValue, styleValuePlaceholder, specialised, cachedImages, onValueChange, onDeleteStyle, onNext, setFocusHandler} = this.props
 
     const handleKeyPress = (evt) => {
       if (evt.key === 'Enter') {
@@ -42,7 +42,7 @@ export class StyleRow extends Component {
           >{styleKey}:</div>
         </Table.Cell>
         <Table.Cell width={3}>
-          {getStyleEditorComponent(styleKey, styleValue, styleValuePlaceholder, onValueChange, handleKeyPress, setFocusHandler)}
+          {getStyleEditorComponent(styleKey, styleValue, styleValuePlaceholder, cachedImages, onValueChange, handleKeyPress, setFocusHandler)}
         </Table.Cell>
         <Table.Cell width={1}>
           <Icon

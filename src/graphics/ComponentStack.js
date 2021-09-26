@@ -17,8 +17,8 @@ export class ComponentStack {
     this.offsetComponents.push({component, top})
   }
 
-  isEmpty() {
-    return this.offsetComponents.length === 0
+  isEmpty(filter) {
+    return (filter ? this.offsetComponents.filter(filter) : this.offsetComponents).length === 0
   }
 
   bottomComponent() {

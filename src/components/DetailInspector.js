@@ -21,7 +21,8 @@ export default class DetailInspector extends Component {
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return nextProps.inspectorVisible && (
       graphsDifferInMoreThanPositions(this.props.graph, nextProps.graph) ||
-      this.props.selection !== nextProps.selection
+      this.props.selection !== nextProps.selection ||
+      this.props.cachedImages !== nextProps.cachedImages
     )
   }
 
@@ -135,6 +136,7 @@ export default class DetailInspector extends Component {
                       style={combineStyle(entities)}
                       graphStyle={graph.style}
                       possibleStyleAttributes={relevantKeys}
+                      cachedImages={this.props.cachedImages}
                       onSaveStyle={(styleKey, styleValue) => onSaveArrowsPropertyValue(selection, styleKey, styleValue)}
                       onDeleteStyle={(styleKey) => onDeleteArrowsProperty(selection, styleKey)}
           />

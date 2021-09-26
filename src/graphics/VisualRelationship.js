@@ -1,13 +1,14 @@
 import {getStyleSelector} from "../selectors/style";
 import {RelationshipType} from "./RelationshipType";
 import {PropertiesOutside} from "./PropertiesOutside";
+import {IconOutside} from "./IconOutside";
 import {Vector} from "../model/Vector";
 import {alignmentForShaftAngle, readableAngle} from "./relationshipTextAlignment";
 import {boundingBoxOfPoints} from "./utils/BoundingBox";
 import {ComponentStack} from "./ComponentStack";
 
 export class VisualRelationship {
-  constructor(resolvedRelationship, graph, arrow, editing, measureTextContext) {
+  constructor(resolvedRelationship, graph, arrow, editing, measureTextContext, imageCache) {
     this.resolvedRelationship = resolvedRelationship
     this.arrow = arrow
     this.editing = editing
@@ -20,9 +21,14 @@ export class VisualRelationship {
     const alignment = alignmentForShaftAngle(orientationName, positionName, arrow.shaftAngle())
 
     this.components = new ComponentStack()
+    const iconImage = style('relationship-icon-image')
+    const hasIcon = !!iconImage
     const hasType = !!resolvedRelationship.type
     const hasProperties = Object.keys(resolvedRelationship.relationship.properties).length > 0
 
+    if (hasIcon) {
+      this.components.push(this.icon = new IconOutside('relationship-icon-image', alignment, editing, style, imageCache))
+    }
     if (hasType) {
       this.components.push(this.type = new RelationshipType(
         resolvedRelationship.type, alignment, editing, style, measureTextContext))

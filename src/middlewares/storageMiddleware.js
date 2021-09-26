@@ -34,6 +34,7 @@ export const storageMiddleware = store => next => action => {
   const newState = hideGraphHistory(store.getState())
   const storage = newState.storage
   const graph = newState.graph
+  const cachedImages = newState.cachedImages
   const diagramName = newState.diagramName
 
   if (action.type === 'RENAME_DIAGRAM') {
@@ -62,7 +63,7 @@ export const storageMiddleware = store => next => action => {
           store.dispatch(postedFileOnGoogleDrive(fileId))
         }
 
-        saveFile(graph, null, newState.diagramName, onFileSaved)
+        saveFile(graph, cachedImages, null, newState.diagramName, onFileSaved)
         break
       }
     }
@@ -109,18 +110,13 @@ export const storageMiddleware = store => next => action => {
           deBounce(() => {
             store.dispatch(puttingGraph())
 
-            saveFile(
-              graph,
-              storage.fileId,
-              newState.diagramName,
-              (fileId) => {
-                if (fileId !== storage.fileId) {
-                  console.warn("Unexpected change of fileId from %o to %o",
-                    storage.fileId, fileId)
-                }
-                store.dispatch(puttingGraphSucceeded())
+            saveFile(graph, cachedImages, storage.fileId, newState.diagramName, (fileId) => {
+              if (fileId !== storage.fileId) {
+                console.warn("Unexpected change of fileId from %o to %o",
+                  storage.fileId, fileId)
               }
-            )
+              store.dispatch(puttingGraphSucceeded())
+            })
           }, driveUpdateInterval)
         }
         break

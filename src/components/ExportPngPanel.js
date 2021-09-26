@@ -42,6 +42,7 @@ class ExportPngPanel extends Component {
             <PngExport
               key={pixelRatio}
               graph={this.props.graph}
+              cachedImages={this.props.cachedImages}
               diagramName={this.props.diagramName}
               pixelRatio={pixelRatio}
               transparentBackground={this.state.transparentBackground}
