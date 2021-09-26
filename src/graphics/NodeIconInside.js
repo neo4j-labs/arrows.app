@@ -17,7 +17,7 @@ export class NodeIconInside {
   draw(ctx) {
     if (this.editing) return
 
-    const x = -Math.floor(this.width / 2)
+    const x = -this.width / 2
     const y = 0
     this.icon.draw(ctx, x, y)
   }
