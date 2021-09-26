@@ -79,6 +79,29 @@ export default class CanvasAdaptor {
     }
   }
 
+  imageInCircle(imageInfo, cx, cy, radius) {
+    const ratio = imageInfo.width / imageInfo.height
+    const {width, height} =
+      (imageInfo.width > imageInfo.height) ? {
+        width: 2 * radius * ratio,
+        height: 2 * radius
+      } : {
+        width: 2 * radius,
+        height: 2 * radius / ratio
+      }
+    this.ctx.save()
+    try {
+      this.ctx.beginPath();
+      this.ctx.arc(cx, cy, radius, 0, Math.PI * 2)
+      this.ctx.clip()
+      this.ctx.drawImage(imageInfo.image, cx - width / 2, cy - height / 2, width, height)
+    } catch (e) {
+      console.error(e)
+    } finally {
+      this.ctx.restore()
+    }
+  }
+
   polyLine(points) {
     this.ctx.beginPath()
     if (points.length > 0) {
