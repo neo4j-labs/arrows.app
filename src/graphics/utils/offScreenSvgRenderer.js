@@ -1,4 +1,3 @@
-import crel from 'crel';
 import {ViewTransformation} from "../../state/ViewTransformation";
 import {getVisualGraph} from "../../selectors/index";
 import {Vector} from "../../model/Vector";
@@ -18,15 +17,14 @@ export const renderSvg = (graph, cachedImages) => {
       left: 0, top: 0, right: 100, bottom: 100
     }
 
-  const e = crel
-  const svgAdaptor = new SvgAdaptor(e);
+  const svgAdaptor = new SvgAdaptor()
   visualGraph.draw(svgAdaptor, {
     viewTransformation: new ViewTransformation(1,
       new Vector(-boundingBox.left, -boundingBox.top))
   })
   const width = Math.ceil(boundingBox.width)
   const height = Math.ceil(boundingBox.height)
-  const svgString = svgAdaptor.asSvg(width, height).outerHTML
+  const svgString = new XMLSerializer().serializeToString(svgAdaptor.asSvg(width, height))
 
   return {
     width,

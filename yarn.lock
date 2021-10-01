@@ -3098,11 +3098,6 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-crel@^4.2.1:
-  version "4.2.1"
-  resolved "https://registry.yarnpkg.com/crel/-/crel-4.2.1.tgz#5117dcad5cd07a963894517779e283a0843cee8b"
-  integrity sha512-OwBkgtd+opoS7vrpnYrUOBlWnR0ZzLOwM5Vh07ZbcBlbSboonYBzDGaKjjnal56Mqz4q7A2wjb1J9by8GYMC2A==
-
 cross-spawn@6.0.5, cross-spawn@^6.0.0, cross-spawn@^6.0.5:
   version "6.0.5"
   resolved "https://registry.yarnpkg.com/cross-spawn/-/cross-spawn-6.0.5.tgz#4a5ec7c64dfae22c3a14124dbacdee846d80cbc4"
