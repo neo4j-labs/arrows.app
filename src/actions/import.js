@@ -1,10 +1,11 @@
-import {importNodesAndRelationships} from "./graph";
+import {importNodesAndRelationships, setArrowsProperty} from "./graph";
 import {Point} from "../model/Point";
 import {getPresentGraph} from "../selectors";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
 import {translate} from "../model/Node";
 import {Vector} from "../model/Vector";
 import {hideImportDialog} from "./applicationDialogs";
+import {shrinkImageUrl} from "../graphics/utils/resizeImage";
 
 export const tryImport = (dispatch) => {
   return function (text, separation) {
@@ -49,7 +50,17 @@ export const handlePaste = (pasteEvent) => {
           console.error(e)
         }
       }
+    } else if (clipboardData.types.includes('Files')) {
+      const reader = new FileReader()
+      reader.readAsDataURL(clipboardData.files[0]);
+      reader.onloadend = function() {
+        const imageUrl = reader.result
+        shrinkImageUrl(imageUrl, 1024 * 10).then(shrunkenImageUrl => {
+          dispatch(setArrowsProperty(state.selection, 'node-background-image', shrunkenImageUrl))
+        })
+      }
     }
+
   }
 }
 
