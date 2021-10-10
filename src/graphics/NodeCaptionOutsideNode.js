@@ -12,7 +12,7 @@ export class NodeCaptionOutsideNode {
     this.font = {
       fontWeight: style('caption-font-weight'),
       fontSize: style('caption-font-size'),
-      fontFamily: 'sans-serif'
+      fontFamily: style('font-family')
     }
     textMeasurement.font = this.font
     this.fontColor = style('caption-color')

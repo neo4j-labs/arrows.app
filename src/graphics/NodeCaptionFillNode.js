@@ -11,7 +11,7 @@ export class NodeCaptionFillNode {
     this.font = {
       fontWeight: style('caption-font-weight'),
       fontSize: style('caption-font-size'),
-      fontFamily: 'Caveat'
+      fontFamily: style('font-family')
     }
     textMeasurement.font = this.font
     this.fontColor = style('caption-color')

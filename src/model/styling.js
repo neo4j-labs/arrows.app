@@ -89,6 +89,11 @@ export const categoriesPresent = (nodes, relationships, graph) => {
 
 export const styleAttributeGroups = [
   {
+    name: 'Diagram', entityTypes: ['node', 'relationship'], attributes: [
+      {key: 'font-family', appliesTo: 'Everything', type: 'font-family', defaultValue: 'sans-serif'},
+    ]
+  },
+  {
     name: 'Nodes', entityTypes: ['node'], attributes: [
       {key: 'node-color', appliesTo: 'Node', type: 'color', defaultValue: white},
       {key: 'border-width', appliesTo: 'Node', type: 'line-width', defaultValue: 4},
@@ -190,6 +195,7 @@ export const styleTypes = {
   'spacing': {  editor: 'slider', min: 0, max: 50, step: 1 },
   'font-size': {  editor: 'slider', min: 5, max: 100, step: 1 },
   'color': { editor: 'colorPicker' },
+  'font-family': { editor: 'dropdown', options: ['sans-serif', 'Caveat'] },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
   'directionality': { editor: 'dropdown', options: ['directed', 'undirected'] },
   'outside-position': { editor: 'dropdown', options: ['auto', 'top-left', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left'] },
