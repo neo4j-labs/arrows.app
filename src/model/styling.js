@@ -98,6 +98,7 @@ export const styleAttributeGroups = [
       {key: 'node-margin', appliesTo: 'NodeWithOutsideDetail', type: 'spacing', defaultValue: 2},
       {key: 'outside-position', appliesTo: 'NodeWithOutsideDetail', type: 'outside-position', defaultValue: 'auto'},
       {key: 'node-icon-image', appliesTo: 'Node', type: 'image', defaultValue: ''},
+      {key: 'node-background-image', appliesTo: 'Node', type: 'image', defaultValue: ''},
     ]
   },
   {

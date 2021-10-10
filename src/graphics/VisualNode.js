@@ -29,7 +29,7 @@ export default class VisualNode {
     this.radius = this.internalRadius + style('border-width')
     this.outsideComponentRadius = this.radius + style('node-margin')
     this.fitRadius = this.internalRadius - style('node-padding')
-    this.background = new NodeBackground(node.position, this.internalRadius, editing, style)
+    this.background = new NodeBackground(node.position, this.internalRadius, editing, style, imageCache)
     const neighbourObstacles = neighbourPositions(node, graph).map(position => {
       return { angle: position.vectorFrom(node.position).angle() }
     })

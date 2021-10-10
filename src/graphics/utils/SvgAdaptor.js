@@ -1,7 +1,16 @@
 import {Point} from "../../model/Point";
 export default class SvgAdaptor {
-  constructor(e) {
-    this.e = e
+  constructor() {
+    this.e = (tagName, attributes, ...children) => {
+      const element = document.createElementNS("http://www.w3.org/2000/svg", tagName)
+      for (const [key, value] of Object.entries(attributes)) {
+        element.setAttribute(key, value)
+      }
+      for (const child of children) {
+        element.appendChild(child)
+      }
+      return element
+    }
     this.stack = [
       {
         strokeColor: 'black',
@@ -113,6 +122,40 @@ export default class SvgAdaptor {
     }))
   }
 
+  imageInCircle(imageInfo, cx, cy, radius) {
+    // <clipPath id="myClip" clipPathUnits="objectBoundingBox">
+    //   <circle cx=".5" cy=".5" r=".5" />
+    // </clipPath>
+    const ratio = imageInfo.width / imageInfo.height
+    const {width, height} =
+      (imageInfo.width > imageInfo.height) ? {
+        width: 2 * radius * ratio,
+        height: 2 * radius
+      } : {
+        width: 2 * radius,
+        height: 2 * radius / ratio
+      }
+
+    const clipCircle = this.e('circle', {
+      cx: .5,
+      cy: .5,
+      r: .5
+    })
+    this.children.push(this.e('clipPath', {
+      id: 'myClip',
+      clipPathUnits: 'objectBoundingBox'
+    }, clipCircle))
+    this.children.push(this.e('image', {
+      transform: this.current().transforms.join(' '),
+      href: imageInfo.dataUrl,
+      x: cx - width / 2,
+      y: cy - height / 2,
+      width,
+      height,
+      'clip-path': 'url(#myClip)'
+    }))
+  }
+
   polyLine(points) {
     this.children.push(this.e('polyline', {
       transform: this.current().transforms.join(' '),
@@ -162,7 +205,7 @@ export default class SvgAdaptor {
       'font-weight': this.current().font.fontWeight,
       'text-anchor': ((a) => a === 'center' ? 'middle' : a )(this.current().textAlign),
       fill: this.current().fillStyle
-    }, text))
+    }, document.createTextNode(text)))
   }
 
   measureText(text) {
@@ -204,13 +247,11 @@ export default class SvgAdaptor {
 
   asSvg(width, height) {
     return this.e('svg', {
-        xmlns: 'http://www.w3.org/2000/svg',
-        'xmlns:xlink': 'http://www.w3.org/1999/xlink',
         width,
         height,
         viewBox: [0, 0, width, height].join(' ')
       },
-      this.children
+      ...this.children
     )
   }
 }
