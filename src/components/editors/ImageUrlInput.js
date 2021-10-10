@@ -57,9 +57,17 @@ export default class extends Component {
         onPaste={onPaste}
       />
     )
-    const message = (
+    const message = imageInfo ? (
       <p>
         Status: {(imageInfo || {}).status}
+      </p>
+    ) : (
+      <p>
+        Paste a bitmap image from the clipboard, or type in the URL of an image (PNG or SVG).
+        <br/>
+        <code>https:</code> or <code>data:</code> URL schemes are supported.
+        If the URL is hosted on the web, it needs to served with permissive CORS headers -
+        generally it's easier to paste an image instead!
       </p>
     )
     return (
