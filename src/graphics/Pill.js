@@ -17,7 +17,7 @@ export default class Pill {
     this.font = {
       fontWeight: 'normal',
       fontSize: style('label-font-size'),
-      fontFace: 'sans-serif'
+      fontFamily: 'sans-serif'
     }
     textMeasurement.font = this.font
     this.textWidth = textMeasurement.measureText(text).width

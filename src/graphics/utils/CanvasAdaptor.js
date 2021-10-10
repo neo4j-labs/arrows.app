@@ -155,7 +155,7 @@ export default class CanvasAdaptor {
   }
 
   set font(style) {
-    this.ctx.font = `${style.fontWeight} ${style.fontSize}px ${style.fontFace}`
+    this.ctx.font = `${style.fontWeight} ${style.fontSize}px ${style.fontFamily}`
   }
 
   set textBaseline(value) {

@@ -9,7 +9,7 @@ export class PropertiesBox {
     this.font = {
       fontWeight: style('property-font-weight'),
       fontSize: style('property-font-size'),
-      fontFace: 'sans-serif'
+      fontFamily: 'sans-serif'
     }
     textMeasurement.font = this.font
     this.fontColor = style('property-color')

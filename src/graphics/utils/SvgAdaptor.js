@@ -204,7 +204,7 @@ export default class SvgAdaptor {
       transform: this.current().transforms.join(' '),
       x,
       y: this.current().textBaseline === 'middle' ? y + middleHeight : y,
-      'font-family': this.current().font.fontFace,
+      'font-family': this.current().font.fontFamily,
       'font-size': this.current().font.fontSize,
       'font-weight': this.current().font.fontWeight,
       'text-anchor': ((a) => a === 'center' ? 'middle' : a )(this.current().textAlign),
@@ -226,7 +226,7 @@ export default class SvgAdaptor {
 
   set font(style) {
     this.current().font = style
-    this.measureTextContext.font = `${style.fontWeight} ${style.fontSize}px ${style.fontFace}`
+    this.measureTextContext.font = `${style.fontWeight} ${style.fontSize}px ${style.fontFamily}`
   }
 
   set textBaseline(value) {

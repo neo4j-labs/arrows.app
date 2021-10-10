@@ -9,7 +9,7 @@ export class NodeCaptionInsideNode {
     this.font = {
       fontWeight: style('caption-font-weight'),
       fontSize: style('caption-font-size'),
-      fontFace: 'sans-serif'
+      fontFamily: 'sans-serif'
     }
     textMeasurement.font = this.font
     this.fontColor = style('caption-color')
