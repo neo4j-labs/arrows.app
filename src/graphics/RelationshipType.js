@@ -14,7 +14,7 @@ export class RelationshipType {
     this.font = {
       fontWeight: 'normal',
       fontSize: style('type-font-size'),
-      fontFace: 'sans-serif'
+      fontFace: 'Caveat'
     }
     textMeasurement.font = this.font
     const textWidth = textMeasurement.measureText(text).width

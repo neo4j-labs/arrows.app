@@ -18,6 +18,10 @@ export default class SvgAdaptor {
       }
     ]
     this.children = []
+    const defs = this.e('defs', {}, this.e('style', {
+      type: 'text/css'
+    }, document.createTextNode("@import url(http://fonts.googleapis.com/css?family=Caveat);")))
+    this.children.push(defs)
     const canvas = window.document.createElement('canvas')
     this.measureTextContext = canvas.getContext('2d')
     this.beginPath()
