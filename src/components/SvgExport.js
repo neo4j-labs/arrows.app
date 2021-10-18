@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {Image, Segment, Label, Icon} from 'semantic-ui-react'
-import {renderSvg} from "../graphics/utils/offScreenSvgRenderer";
+import {renderSvgEncapsulated} from "../graphics/utils/offScreenSvgRenderer";
 
 class SvgExport extends Component {
 
@@ -14,10 +14,10 @@ class SvgExport extends Component {
   }
 
   componentDidMount() {
-    setTimeout(() => {
-      const renderResult = renderSvg(this.props.graph, this.props.cachedImages)
-      this.setState(renderResult)
-    }, 2000)
+    renderSvgEncapsulated(this.props.graph, this.props.cachedImages)
+      .then(renderResult => {
+        this.setState(renderResult)
+      })
   }
 
   render() {

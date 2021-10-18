@@ -1,5 +1,7 @@
 import {Point} from "../../model/Point";
 export default class SvgAdaptor {
+  globalStyle;
+
   constructor() {
     this.e = (tagName, attributes, ...children) => {
       const element = document.createElementNS("http://www.w3.org/2000/svg", tagName)
@@ -18,9 +20,10 @@ export default class SvgAdaptor {
       }
     ]
     this.children = []
-    const defs = this.e('defs', {}, this.e('style', {
+    this.globalStyle = this.e('style', {
       type: 'text/css'
-    }, document.createTextNode("@import url(http://fonts.googleapis.com/css?family=Caveat);")))
+    });
+    const defs = this.e('defs', {}, this.globalStyle)
     this.children.push(defs)
     const canvas = window.document.createElement('canvas')
     this.measureTextContext = canvas.getContext('2d')
@@ -218,6 +221,15 @@ export default class SvgAdaptor {
 
   setLineDash(dash) {
     // this.ctx.setLineDash(dash)
+  }
+
+  cssRule(selector, attributes) {
+    let cssText = selector + ' {\n'
+    for (const [key, value] of Object.entries(attributes)) {
+      cssText += `  ${key}: ${value};\n`
+    }
+    cssText += '}\n\n'
+    this.globalStyle.appendChild(document.createTextNode(cssText))
   }
 
   set fillStyle(color) {
