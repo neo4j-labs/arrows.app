@@ -195,7 +195,7 @@ export const styleTypes = {
   'spacing': {  editor: 'slider', min: 0, max: 50, step: 1 },
   'font-size': {  editor: 'slider', min: 5, max: 100, step: 1 },
   'color': { editor: 'colorPicker' },
-  'font-family': { editor: 'dropdown', options: ['sans-serif', 'Caveat'] },
+  'font-family': { editor: 'dropdown', options: ['sans-serif', 'Caveat', 'Nunito'] },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
   'directionality': { editor: 'dropdown', options: ['directed', 'undirected'] },
   'outside-position': { editor: 'dropdown', options: ['auto', 'top-left', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left'] },
