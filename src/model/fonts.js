@@ -1,17 +1,20 @@
 export const fonts = [
   {
-    fontFamily: 'Caveat',
+    fontFamily: 'Nunito Sans',
   },
   {
     fontFamily: 'Nunito',
-  },
-  {
-    fontFamily: 'Nunito Sans',
   },
   {
     fontFamily: 'Fira Code',
   },
   {
     fontFamily: 'Bentham',
-  }
+  },
+  {
+    fontFamily: 'Kalam',
+  },
+  {
+    fontFamily: 'Caveat',
+  },
 ]
