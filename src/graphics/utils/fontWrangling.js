@@ -1,7 +1,8 @@
 import { UnicodeRange } from '@japont/unicode-range'
+import {fonts} from "../../model/fonts";
 
 export const assembleGoogleFontFacesCssWithEmbeddedFontData = (fontFamily, graphCodePoints) => {
-  return fetch('https://fonts.googleapis.com/css2?family=' + encodeURIComponent(fontFamily) + '&display=swap')
+  return fetch(googleFontCss(fontFamily))
     .then(response => response.text())
     .then(text => {
       const cssDocument = document.implementation.createHTMLDocument()
@@ -42,3 +43,14 @@ export const fetchFontCssText = (cssRule) => {
     }
   })
 }
+
+export const linkToGoogleFontsCss = () => {
+  for (const font of fonts) {
+    const link = document.createElement('link')
+    link.rel = 'stylesheet'
+    link.href = googleFontCss(font.fontFamily)
+    document.head.appendChild(link)
+  }
+}
+
+const googleFontCss = (fontFamily) => 'https://fonts.googleapis.com/css2?family=' + encodeURIComponent(fontFamily) + '&display=swap'

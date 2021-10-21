@@ -4,5 +4,14 @@ export const fonts = [
   },
   {
     fontFamily: 'Nunito',
+  },
+  {
+    fontFamily: 'Nunito Sans',
+  },
+  {
+    fontFamily: 'Fira Code',
+  },
+  {
+    fontFamily: 'Bentham',
   }
 ]
