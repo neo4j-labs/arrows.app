@@ -223,13 +223,8 @@ export default class SvgAdaptor {
     // this.ctx.setLineDash(dash)
   }
 
-  cssRule(selector, attributes) {
-    let cssText = selector + ' {\n'
-    for (const [key, value] of Object.entries(attributes)) {
-      cssText += `  ${key}: ${value};\n`
-    }
-    cssText += '}\n\n'
-    this.globalStyle.appendChild(document.createTextNode(cssText))
+  appendCssText(cssText) {
+    this.globalStyle.appendChild(document.createTextNode(cssText + '\n\n'))
   }
 
   set fillStyle(color) {
