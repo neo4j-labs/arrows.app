@@ -1,4 +1,6 @@
 import {getStyleSelector} from "../selectors/style";
+import {adaptForBackground} from "./backgroundColorAdaption";
+import {selectionBorder} from "../model/colors";
 
 export const relationshipArrowDimensions = (resolvedRelationship, graph, leftNode) => {
   const style = styleKey => getStyleSelector(resolvedRelationship.relationship, styleKey)(graph)
@@ -6,6 +8,7 @@ export const relationshipArrowDimensions = (resolvedRelationship, graph, leftNod
   const endRadius = resolvedRelationship.to.radius + style('margin-end')
   const arrowWidth = style('arrow-width')
   const arrowColor = style('arrow-color')
+  const selectionColor = adaptForBackground(selectionBorder, style)
 
   let hasArrowHead = false
   let headWidth = 0
@@ -28,6 +31,7 @@ export const relationshipArrowDimensions = (resolvedRelationship, graph, leftNod
     endRadius,
     arrowWidth,
     arrowColor,
+    selectionColor,
     hasArrowHead,
     headWidth,
     headHeight,

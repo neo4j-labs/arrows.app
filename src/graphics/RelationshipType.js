@@ -1,6 +1,7 @@
-import {selectionBorder} from "../model/colors";
+import {selectionBorder, selectionHandle} from "../model/colors";
 import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
+import {adaptForBackground} from "./backgroundColorAdaption";
 
 export class RelationshipType {
   constructor(text, orientation, editing, style, textMeasurement) {
@@ -11,6 +12,7 @@ export class RelationshipType {
     this.fontColor = style('type-color')
     this.borderColor = style('type-border-color')
     this.backgroundColor = style('type-background-color')
+    this.selectionColor = adaptForBackground(this.editing ? selectionHandle : selectionBorder, style)
     this.font = {
       fontWeight: 'normal',
       fontSize: style('type-font-size'),
@@ -72,7 +74,7 @@ export class RelationshipType {
       const indicatorWidth = 10
       ctx.save()
       ctx.translate(...this.boxPosition.xy)
-      ctx.strokeStyle = selectionBorder
+      ctx.strokeStyle = this.selectionColor
       ctx.lineWidth = indicatorWidth
       ctx.rect(
         this.borderWidth / 2,

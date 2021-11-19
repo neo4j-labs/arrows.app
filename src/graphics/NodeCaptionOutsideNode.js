@@ -3,6 +3,7 @@ import {fitTextToRectangle} from "./utils/rectangleWordWrap";
 import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
 import {selectionBorder, selectionHandle} from "../model/colors";
+import {adaptForBackground} from "./backgroundColorAdaption";
 
 export class NodeCaptionOutsideNode {
   constructor(caption, orientation, editing, style, textMeasurement) {
@@ -16,6 +17,7 @@ export class NodeCaptionOutsideNode {
     }
     textMeasurement.font = this.font
     this.fontColor = style('caption-color')
+    this.selectionColor = adaptForBackground(this.editing ? selectionHandle : selectionBorder, style)
     this.lineHeight = this.font.fontSize * 1.2
     const measureWidth = (string) => textMeasurement.measureText(string).width;
     this.layout = fitTextToRectangle(caption, style('caption-max-width'), measureWidth)
@@ -62,7 +64,7 @@ export class NodeCaptionOutsideNode {
     const indicatorWidth = 10
     const boundingBox = this.boundingBox()
     ctx.save()
-    ctx.strokeStyle = this.editing ? selectionHandle : selectionBorder
+    ctx.strokeStyle = this.selectionColor
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
     ctx.rect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height, 0, false, true)

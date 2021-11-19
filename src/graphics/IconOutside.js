@@ -2,6 +2,7 @@ import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
 import {selectionBorder, selectionHandle} from "../model/colors";
 import {Icon} from "./Icon";
+import {adaptForBackground} from "./backgroundColorAdaption";
 
 export class IconOutside {
   constructor(imageKey, orientation, editing, style, imageCache) {
@@ -21,6 +22,7 @@ export class IconOutside {
       }
     })()
     this.boxPosition = new Point(horizontalPosition, 0)
+    this.selectionColor = adaptForBackground(this.editing ? selectionHandle : selectionBorder, style)
   }
 
   get type() {
@@ -37,7 +39,7 @@ export class IconOutside {
     const indicatorWidth = 10
     const boundingBox = this.boundingBox()
     ctx.save()
-    ctx.strokeStyle = this.editing ? selectionHandle : selectionBorder
+    ctx.strokeStyle = this.selectionColor
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
     ctx.rect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height, 0, false, true)

@@ -1,7 +1,6 @@
 import {Point} from "../model/Point";
 import {Vector} from "../model/Vector";
 import {getDistanceToLine} from "./utils/geometryUtils";
-import {selectionBorder} from "../model/colors";
 import arrowHead from "./arrowHead";
 
 export class ParallelArrow {
@@ -73,7 +72,7 @@ export class ParallelArrow {
     this.path(ctx)
     ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth
     ctx.lineCap = 'round'
-    ctx.strokeStyle = selectionBorder
+    ctx.strokeStyle = this.dimensions.selectionColor
     ctx.stroke()
     if (this.dimensions.hasArrowHead) {
       ctx.translate(this.centreDistance, 0)
