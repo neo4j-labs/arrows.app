@@ -23,7 +23,7 @@ export const renderPngAtScaleFactor = (graph, cachedImages, scaleFactor, transpa
   canvas.height = height
   const ctx = canvas.getContext('2d')
   if (!transparentBackground) {
-    ctx.fillStyle = 'white'
+    ctx.fillStyle = visualGraph.style['background-color']
     ctx.fillRect(0, 0, width, height)
   }
   visualGraph.draw(new CanvasAdaptor(ctx), {
