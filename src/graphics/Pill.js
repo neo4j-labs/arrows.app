@@ -1,6 +1,7 @@
 import BoundingBox from "./utils/BoundingBox";
 import {selectionBorder, selectionHandle} from "../model/colors";
 import {Point} from "../model/Point";
+import {adaptForBackground} from "./backgroundColorAdaption";
 
 export default class Pill {
   constructor(text, editing, style, textMeasurement) {
@@ -9,6 +10,7 @@ export default class Pill {
     this.backgroundColor = style('label-background-color')
     this.strokeColor = style('label-border-color')
     this.fontColor = style('label-color')
+    this.selectionColor = adaptForBackground(this.editing ? selectionHandle : selectionBorder, style)
     this.borderWidth = style('label-border-width')
     this.display = style('label-display')
 
@@ -17,7 +19,7 @@ export default class Pill {
     this.font = {
       fontWeight: 'normal',
       fontSize: style('label-font-size'),
-      fontFace: 'sans-serif'
+      fontFamily: style('font-family')
     }
     textMeasurement.font = this.font
     this.textWidth = textMeasurement.measureText(text).width
@@ -50,7 +52,7 @@ export default class Pill {
   drawSelectionIndicator(ctx) {
     const indicatorWidth = 10
     ctx.save()
-    ctx.strokeStyle = this.editing ? selectionHandle : selectionBorder
+    ctx.strokeStyle = this.selectionColor
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
     ctx.rect(

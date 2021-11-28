@@ -1,5 +1,4 @@
 import {angleTolerance, snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
-import {Guides} from "../graphics/Guides";
 import {idsMatch, nextAvailableId, nextId} from "../model/Id";
 import {average, Point} from "../model/Point";
 import {Vector} from "../model/Vector";
@@ -17,6 +16,7 @@ import {lockHandleDragType} from "./mouse";
 import {CircleGuide} from "../model/guides/CircleGuide";
 import {LineGuide} from "../model/guides/LineGuide";
 import {HandleGuide} from "../model/guides/HandleGuide";
+import {Guides} from "../model/guides/guides";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)

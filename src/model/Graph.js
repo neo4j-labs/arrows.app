@@ -40,6 +40,31 @@ export const indexableText = (graph) => {
   return text.substr(0, 128000)
 }
 
+const addUsedCodePoints = (set, string) => {
+  for (const char of string) {
+    set.add(char.codePointAt(0))
+  }
+}
+
+export const usedCodePoints = (graph) => {
+  const codePoints = new Set()
+  graph.nodes.forEach(node => {
+    addUsedCodePoints(codePoints, node.caption)
+    for (const [key, value] of Object.entries(node.properties)) {
+      addUsedCodePoints(codePoints, key)
+      addUsedCodePoints(codePoints, value)
+    }
+  })
+  graph.relationships.forEach(relationship => {
+    addUsedCodePoints(codePoints, relationship.type)
+    for (const [key, value] of Object.entries(relationship.properties)) {
+      addUsedCodePoints(codePoints, key)
+      addUsedCodePoints(codePoints, value)
+    }
+  })
+  return codePoints
+}
+
 export const neighbourPositions = (node, graph) => {
   return graph.relationships
     .filter(relationship => node.id === relationship.fromId || node.id === relationship.toId)

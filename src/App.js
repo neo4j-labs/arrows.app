@@ -19,10 +19,12 @@ import LocalStoragePickerContainer from "./containers/LocalStoragePickerContaine
 import ImportContainer from "./containers/ImportContainer";
 import {handlePaste} from "./actions/import";
 import {handleCopy} from "./actions/export";
+import {linkToGoogleFontsCss} from "./graphics/utils/fontWrangling";
 
 class App extends Component {
   constructor (props) {
     super(props)
+    linkToGoogleFontsCss()
     window.addEventListener('keydown', this.fireKeyboardShortcutAction.bind(this))
     window.addEventListener('copy', this.handleCopy.bind(this))
     window.addEventListener('paste', this.handlePaste.bind(this))

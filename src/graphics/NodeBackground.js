@@ -1,5 +1,6 @@
 import {selectionBorder, selectionHandle} from "../model/colors";
 import {getCachedImage} from "./utils/ImageCache";
+import {adaptForBackground} from "./backgroundColorAdaption";
 
 export class NodeBackground {
   constructor(position, internalRadius, editing, style, imageCache) {
@@ -9,6 +10,7 @@ export class NodeBackground {
     this.backgroundColor = style('node-color')
     this.borderWidth = style('border-width')
     this.borderColor = style('border-color')
+    this.selectionColor = adaptForBackground(this.editing ? selectionHandle : selectionBorder, style)
     const backgroundImageUrl = style('node-background-image')
     if (!!backgroundImageUrl) {
       this.imageInfo = getCachedImage(imageCache, backgroundImageUrl)
@@ -30,7 +32,7 @@ export class NodeBackground {
   drawSelectionIndicator(ctx) {
     ctx.save()
     const indicatorWidth = 10
-    ctx.strokeStyle = this.editing ? selectionHandle : selectionBorder
+    ctx.strokeStyle = this.selectionColor
     ctx.lineWidth = indicatorWidth
     ctx.circle(this.position.x, this.position.y, this.internalRadius + this.borderWidth, false, true)
     ctx.restore()

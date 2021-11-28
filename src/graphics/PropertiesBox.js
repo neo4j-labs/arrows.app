@@ -2,6 +2,7 @@ import {Point} from "../model/Point";
 import BoundingBox from "./utils/BoundingBox";
 import {drawTextLine} from "./canvasRenderer";
 import {selectionBorder, selectionHandle} from "../model/colors";
+import {adaptForBackground} from "./backgroundColorAdaption";
 
 export class PropertiesBox {
   constructor(properties, editing, style, textMeasurement) {
@@ -9,10 +10,11 @@ export class PropertiesBox {
     this.font = {
       fontWeight: style('property-font-weight'),
       fontSize: style('property-font-size'),
-      fontFace: 'sans-serif'
+      fontFamily: style('font-family')
     }
     textMeasurement.font = this.font
     this.fontColor = style('property-color')
+    this.selectionColor = adaptForBackground(this.editing ? selectionHandle : selectionBorder, style)
     this.lineHeight = this.font.fontSize * 1.2
     this.alignment = style('property-alignment')
     this.properties = Object.keys(properties).map(key => ({
@@ -86,7 +88,7 @@ export class PropertiesBox {
 
     ctx.save()
 
-    ctx.strokeStyle = this.editing ? selectionHandle : selectionBorder
+    ctx.strokeStyle = this.selectionColor
     ctx.lineWidth = indicatorWidth
     ctx.lineJoin = 'round'
     ctx.rect(boundingBox.left, boundingBox.top, boundingBox.width, boundingBox.height, 0, false, true)

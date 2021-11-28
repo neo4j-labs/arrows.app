@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Modal, Button, Card} from 'semantic-ui-react'
 import {themes} from "../model/themes";
-import {renderSvg} from "../graphics/utils/offScreenSvgRenderer";
+import {renderSvgDom} from "../graphics/utils/offScreenSvgRenderer";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
 
 class StyleModal extends Component {
@@ -14,7 +14,7 @@ class StyleModal extends Component {
 
     const cards = themes.map(theme => {
       const graph = constructGraphFromFile(theme.graph).graph
-      const {dataUrl} = renderSvg(graph)
+      const {dataUrl} = renderSvgDom(graph)
 
       return (
         <Card key={theme.name}>

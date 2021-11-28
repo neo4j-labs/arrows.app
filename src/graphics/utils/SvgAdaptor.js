@@ -1,5 +1,7 @@
 import {Point} from "../../model/Point";
 export default class SvgAdaptor {
+  globalStyle;
+
   constructor() {
     this.e = (tagName, attributes, ...children) => {
       const element = document.createElementNS("http://www.w3.org/2000/svg", tagName)
@@ -18,6 +20,11 @@ export default class SvgAdaptor {
       }
     ]
     this.children = []
+    this.globalStyle = this.e('style', {
+      type: 'text/css'
+    });
+    const defs = this.e('defs', {}, this.globalStyle)
+    this.children.push(defs)
     const canvas = window.document.createElement('canvas')
     this.measureTextContext = canvas.getContext('2d')
     this.beginPath()
@@ -200,7 +207,7 @@ export default class SvgAdaptor {
       transform: this.current().transforms.join(' '),
       x,
       y: this.current().textBaseline === 'middle' ? y + middleHeight : y,
-      'font-family': this.current().font.fontFace,
+      'font-family': this.current().font.fontFamily,
       'font-size': this.current().font.fontSize,
       'font-weight': this.current().font.fontWeight,
       'text-anchor': ((a) => a === 'center' ? 'middle' : a )(this.current().textAlign),
@@ -216,13 +223,17 @@ export default class SvgAdaptor {
     // this.ctx.setLineDash(dash)
   }
 
+  appendCssText(cssText) {
+    this.globalStyle.appendChild(document.createTextNode(cssText + '\n\n'))
+  }
+
   set fillStyle(color) {
     this.current().fillStyle = color
   }
 
   set font(style) {
     this.current().font = style
-    this.measureTextContext.font = `${style.fontWeight} ${style.fontSize}px ${style.fontFace}`
+    this.measureTextContext.font = `${style.fontWeight} ${style.fontSize}px ${style.fontFamily}`
   }
 
   set textBaseline(value) {

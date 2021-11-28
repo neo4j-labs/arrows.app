@@ -1,23 +1,4 @@
 import {Size} from "../model/Size";
-import gangsSelector, { getGangs, selectorForInspection } from '../selectors/gang'
-import { mouseMove, mouseUp } from "../actions/gang";
-import { writeQueriesForAction as clusterWriteQueryAction } from "../storage/clusterCypherQueries"
-
-const gangsLayer = {
-  name: 'gangs',
-  persist: true,
-  selector: gangsSelector,
-  selectorForInspection,
-  eventHandlers: {
-    mouseMove,
-    mouseUp
-  },
-  storageActionHandler: {
-    neo4j: clusterWriteQueryAction,
-    googleDrive: getGangs,
-    localStorage: getGangs
-  },
-}
 
 const applicationLayout = (state = {
   windowSize: new Size(window.innerWidth, window.innerHeight),
@@ -41,7 +22,7 @@ const applicationLayout = (state = {
     case 'SET_BETA_FEATURES_ENABLED':
       return {
         ...state,
-        layers: action.enabled ? [gangsLayer] : [],
+        layers: [],
         betaFeaturesEnabled: action.enabled
       }
     case 'SET_PERSIST_CLUSTERS':

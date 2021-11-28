@@ -89,7 +89,8 @@ class GraphDisplay extends Component {
         transform: 'translate(0, 0)'
       }}>
         <canvas style={{
-          display: 'block'
+          display: 'block',
+          backgroundColor: this.props.visualGraph.style['background-color']
         }} ref={(elm) => this.canvas = elm}/>
         <GraphTextContainer/>
       </div>

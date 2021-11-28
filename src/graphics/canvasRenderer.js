@@ -1,36 +1,15 @@
-import { red } from "../model/colors"
+export function drawDashedCircle(ctx, position, radius, color) {
+  ctx.save()
 
-const dashColor = red
+  ctx.setLineDash([5, 10])
+  ctx.strokeStyle = color
 
-export function drawRing(ctx, position, color, size) {
-  drawSolidCircle(ctx, position, color, size)
-}
-
-export function drawSolidCircle (ctx, position, color, size) {
   ctx.beginPath()
-  ctx.fillStyle = color
-  drawCircle(ctx, position, size)
-  ctx.fill()
+  ctx.arc(position.x, position.y, radius, 0, 2 * Math.PI, false)
   ctx.closePath()
-}
+  ctx.stroke()
 
-export function drawCircle (ctx, position, r, stroke = false, options = { dashed: false }) {
-  ctx.beginPath()
-
-  const strokeStyle = ctx.strokeStyle
-  if(options.dashed) {
-    ctx.setLineDash([5, 10])
-    ctx.strokeStyle = dashColor
-  }
-
-  ctx.arc(position.x, position.y, r, 0, 2 * Math.PI, false)
-  stroke && ctx.stroke()
-  ctx.closePath()
-
-  if(options.dashed) {
-    ctx.setLineDash([])
-    ctx.strokeStyle = strokeStyle
-  }
+  ctx.restore()
 }
 
 export function drawSolidRectangle(ctx, topLeft, width, height, radius, color) {
@@ -47,24 +26,19 @@ export function drawSolidRectangle(ctx, topLeft, width, height, radius, color) {
   ctx.closePath()
 }
 
-export function drawStraightLine(ctx, sourcePoint, targetPoint, options = { dashed: false }) {
-  ctx.beginPath()
+export function drawDashedLine(ctx, sourcePoint, targetPoint, color) {
+  ctx.save()
 
-  const strokeStyle = ctx.strokeStyle
-  if(options.dashed) {
-    ctx.setLineDash([5, 10])
-    ctx.strokeStyle = dashColor
-  }
+  ctx.beginPath()
+  ctx.setLineDash([5, 10])
+  ctx.strokeStyle = color
 
   ctx.moveTo(sourcePoint.x, sourcePoint.y)
   ctx.lineTo(targetPoint.x, targetPoint.y)
-  ctx.stroke()
   ctx.closePath()
+  ctx.stroke()
 
-  if(options.dashed) {
-    ctx.setLineDash([])
-    ctx.strokeStyle = strokeStyle
-  }
+  ctx.restore()
 }
 
 export const drawTextLine = (ctx, line, position, alignment) => {

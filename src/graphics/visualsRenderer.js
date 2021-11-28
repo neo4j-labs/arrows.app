@@ -1,5 +1,6 @@
 import Gestures from "./Gestures";
 import CanvasAdaptor from "./utils/CanvasAdaptor";
+import {VisualGuides} from "./VisualGuides";
 
 const layerManager = (() => {
   let layers = []
@@ -24,15 +25,16 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
 
   const visualGestures = new Gestures(visualGraph, gestures)
+  const visualGuides = new VisualGuides(visualGraph, guides)
 
   layerManager.clear()
 
-  layerManager.register('GUIDES ACTUAL POSITION', guides.drawActualPosition.bind(guides))
+  layerManager.register('GUIDES ACTUAL POSITION', visualGuides.drawActualPosition.bind(visualGuides))
   layerManager.register('GESTURES', visualGestures.draw.bind(visualGestures))
   layerManager.register('GRAPH', visualGraph.draw.bind(visualGraph))
   layerManager.register('HANDLES', handles.draw.bind(handles))
 
-  layerManager.register('GUIDES SNAP LINES', guides.drawSnaplines.bind(guides))
+  layerManager.register('GUIDES SNAP LINES', visualGuides.draw.bind(visualGuides))
 
   layerManager.renderAll(new CanvasAdaptor(ctx), displayOptions)
 }
