@@ -1,4 +1,4 @@
-export const fonts = [
+export const googleFonts = [
   {
     fontFamily: 'Nunito Sans',
   },

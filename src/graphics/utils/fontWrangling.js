@@ -1,25 +1,33 @@
 import { UnicodeRange } from '@japont/unicode-range'
-import {fonts} from "../../model/fonts";
+import {googleFonts} from "../../model/fonts";
 
 export const assembleGoogleFontFacesCssWithEmbeddedFontData = (fontFamily, graphCodePoints) => {
-  return fetch(googleFontCss(fontFamily))
-    .then(response => response.text())
-    .then(text => {
-      const cssDocument = document.implementation.createHTMLDocument()
-      const styleElement = document.createElement('style')
-      styleElement.textContent = text
-      cssDocument.body.appendChild(styleElement)
-      const neededFontFaces = []
-      for (const cssRule of styleElement.sheet.cssRules) {
-        const fontCodePoints = UnicodeRange.parse(cssRule.style['unicode-range'].split(', '))
-        let fontNeeded = Array.from(graphCodePoints)
-          .some(codePoint => fontCodePoints.includes(codePoint))
-        if (fontNeeded) {
-          neededFontFaces.push(cssRule)
+  if (googleFonts.some(font => font.fontFamily === fontFamily)) {
+    return fetch(googleFontCss(fontFamily))
+      .then(response => response.text())
+      .then(text => {
+        const cssDocument = document.implementation.createHTMLDocument()
+        const styleElement = document.createElement('style')
+        styleElement.textContent = text
+        cssDocument.body.appendChild(styleElement)
+        const neededFontFaces = []
+        for (const cssRule of styleElement.sheet.cssRules) {
+          const fontCodePoints = UnicodeRange.parse(cssRule.style['unicode-range'].split(', '))
+          let fontNeeded = Array.from(graphCodePoints)
+            .some(codePoint => fontCodePoints.includes(codePoint))
+          if (fontNeeded) {
+            neededFontFaces.push(cssRule)
+          }
         }
-      }
-      return Promise.all(neededFontFaces.map(cssRule => fetchFontCssText(cssRule)))
-    })
+        return Promise.all(neededFontFaces.map(cssRule => fetchFontCssText(cssRule)))
+      })
+      .catch(e => {
+        console.log(e)
+        return []
+      })
+  } else {
+    return Promise.resolve([])
+  }
 }
 
 export const fetchFontCssText = (cssRule) => {
@@ -45,7 +53,7 @@ export const fetchFontCssText = (cssRule) => {
 }
 
 export const linkToGoogleFontsCss = () => {
-  for (const font of fonts) {
+  for (const font of googleFonts) {
     const link = document.createElement('link')
     link.rel = 'stylesheet'
     link.href = googleFontCss(font.fontFamily)

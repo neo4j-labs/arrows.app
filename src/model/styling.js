@@ -1,7 +1,7 @@
 import {defaultFontSize, defaultNodeRadius} from "../graphics/constants";
 import {black, white} from "./colors";
 import {getStyleSelector} from "../selectors/style";
-import {fonts} from "./fonts";
+import {googleFonts} from "./fonts";
 
 const hasIcon = (node, style) => !!style('node-icon-image') || !!style('relationship-icon-image')
 const hasCaption = (node) => node.caption && node.caption.length > 0
@@ -197,7 +197,7 @@ export const styleTypes = {
   'spacing': {  editor: 'slider', min: 0, max: 50, step: 1 },
   'font-size': {  editor: 'slider', min: 5, max: 100, step: 1 },
   'color': { editor: 'colorPicker' },
-  'font-family': { editor: 'dropdown', options: ['sans-serif', ...fonts.map(font => font.fontFamily)] },
+  'font-family': { editor: 'dropdown', options: ['sans-serif', ...googleFonts.map(font => font.fontFamily)] },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
   'directionality': { editor: 'dropdown', options: ['directed', 'undirected'] },
   'outside-position': { editor: 'dropdown', options: ['auto', 'top-left', 'top', 'top-right', 'right', 'bottom-right', 'bottom', 'bottom-left', 'left'] },
