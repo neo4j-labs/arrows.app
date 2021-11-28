@@ -1,11 +1,9 @@
 import {drawPolygon, drawRing} from "./canvasRenderer";
 import {ringMargin} from "./constants";
-import {getVoronoi, sortPoints} from "./utils/geometryUtils";
-import {blueGreen, purple} from "../model/colors";
-import {Point} from "../model/Point";
-import {getBBoxFromCorners} from "../actions/selectionMarquee";
+import {black, blueGreen, purple} from "../model/colors";
 import {BalloonArrow} from "./BalloonArrow";
 import {normalStraightArrow} from "./StraightArrow";
+import {adaptForBackground} from "./backgroundColorAdaption";
 
 export default class Gestures {
   constructor(visualGraph, gestures) {
@@ -32,10 +30,13 @@ export default class Gestures {
 
     if (selectionMarquee && visualGraph.graph.nodes.length > 0) {
       const marqueeScreen = {from: transform(selectionMarquee.from), to: transform(selectionMarquee.to)}
-      const boundingBox = getBBoxFromCorners(selectionMarquee)
       const bBoxScreen = getBbox(marqueeScreen.from, marqueeScreen.to)
 
-      drawPolygon(ctx, bBoxScreen, null, 'black')
+      const marqueeColor = adaptForBackground(black, key => visualGraph.style[key])
+      ctx.save()
+      ctx.strokeStyle = marqueeColor
+      drawPolygon(ctx, bBoxScreen, false, true)
+      ctx.restore()
     }
 
     const drawNewNodeAndRelationship = (sourceNodeId, targetNodeId, newNodeNaturalPosition) => {

@@ -7,9 +7,16 @@ export const adaptForBackground = (color, style) => {
 }
 
 const adapt = (() => {
-  const factory = (color, backgroundColor) => {
-    const colorFromWhite = parse(color).minus(parse(white))
-    return parse(backgroundColor).plus(colorFromWhite).toString()
+  const factory = (colorString, backgroundColorString) => {
+    const color = parse(colorString)
+    const distanceFromWhite = color.distance(parse(white))
+    const vectorFromWhite = color.minus(parse(white))
+    const backgroundColor = parse(backgroundColorString)
+    const primary = backgroundColor.plus(vectorFromWhite).normalise()
+    const secondary = backgroundColor.plus(vectorFromWhite.scale(0.5)).normalise()
+    const bestColor = Math.abs(distanceFromWhite - primary.distance(backgroundColor)) <
+    Math.abs(distanceFromWhite - secondary.distance(backgroundColor)) ? primary : secondary
+    return bestColor.toString()
   }
   return memoize(factory, { max: 100 })
 })()
@@ -25,17 +32,34 @@ class ColorVector {
   }
 
   minus(that) {
-    return new ColorVector(this.components.map((component, i) => {
-      let value = component - that.components[i]
-      while (value < 0) {
-        value += 256
-      }
-      return value
-    }))
+    return new ColorVector(this.components.map((component, i) => component - that.components[i]))
   }
 
   plus(that) {
-    return new ColorVector(this.components.map((component, i) => (component + that.components[i]) % 256))
+    return new ColorVector(this.components.map((component, i) => component + that.components[i]))
+  }
+
+  distance(that) {
+    return this.components
+      .map((component, i) => Math.abs(component - that.components[i]))
+      .reduce((a, b) => a + b, 0)
+  }
+
+  scale(factor) {
+    return new ColorVector(this.components.map((component) => component * factor))
+  }
+
+  normalise() {
+    return new ColorVector(this.components.map((component) => {
+      let value = Math.floor(component)
+      while (value < 0) {
+        value += 256
+      }
+      while (value > 255) {
+        value -= 256
+      }
+      return value
+    }))
   }
 
   toString() {
