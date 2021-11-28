@@ -1,11 +1,3 @@
-export function drawSolidCircle (ctx, position, color, size) {
-  ctx.beginPath()
-  ctx.fillStyle = color
-  drawDashedCircle(ctx, position, size)
-  ctx.fill()
-  ctx.closePath()
-}
-
 export function drawDashedCircle(ctx, position, radius, color) {
   ctx.save()
 

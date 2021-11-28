@@ -2,10 +2,9 @@ import { getCommonCaption } from "../model/gang"
 import { idsMatch, nextAvailableId } from "../model/Id"
 import { moveNodes } from "./graph"
 import { clearSelection } from "./selection";
-import { Guides } from "../graphics/Guides";
-import { pan } from "./viewTransformation";
 import { getGraph, getPositionsOfSelectedNodes, getPresentGraph } from "../selectors";
 import {nodeSelected} from "../model/selection";
+import {Guides} from "../model/guides/guides";
 
 export const createClusterGang = (nodePositions, initialPositions) => (dispatch, getState) => {
   const state = getState()
