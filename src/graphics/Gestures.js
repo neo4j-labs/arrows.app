@@ -1,4 +1,4 @@
-import {drawPolygon, drawRing} from "./canvasRenderer";
+import {drawPolygon} from "./canvasRenderer";
 import {ringMargin} from "./constants";
 import {black, blueGreen, purple} from "../model/colors";
 import {BalloonArrow} from "./BalloonArrow";
@@ -9,6 +9,11 @@ export default class Gestures {
   constructor(visualGraph, gestures) {
     this.visualGraph = visualGraph
     this.gestures = gestures
+
+    const style = key => visualGraph.style[key]
+    this.marqueeColor = adaptForBackground(black, style)
+    this.newEntityColor = adaptForBackground(blueGreen, style)
+    this.ringReadyColor = adaptForBackground(purple, style)
   }
 
   draw (ctx, displayOptions) {
@@ -32,9 +37,8 @@ export default class Gestures {
       const marqueeScreen = {from: transform(selectionMarquee.from), to: transform(selectionMarquee.to)}
       const bBoxScreen = getBbox(marqueeScreen.from, marqueeScreen.to)
 
-      const marqueeColor = adaptForBackground(black, key => visualGraph.style[key])
       ctx.save()
-      ctx.strokeStyle = marqueeColor
+      ctx.strokeStyle = this.marqueeColor
       drawPolygon(ctx, bBoxScreen, false, true)
       ctx.restore()
     }
@@ -67,9 +71,10 @@ export default class Gestures {
             }
           }
 
-          drawRing(ctx, newNodePosition, blueGreen, newNodeRadius)
+          ctx.fillStyle = this.newEntityColor
+          ctx.circle(newNodePosition.x, newNodePosition.y, newNodeRadius, true, false)
 
-          const dimensions = { arrowWidth: 4, hasArrowHead: true, headWidth: 16, headHeight: 24, chinHeight:2.4, arrowColor: blueGreen }
+          const dimensions = { arrowWidth: 4, hasArrowHead: true, headWidth: 16, headHeight: 24, chinHeight:2.4, arrowColor: this.newEntityColor }
           if (targetNode && sourceNode === targetNode) {
             const arrow = new BalloonArrow(sourceNodePosition, newNodeRadius, 0,44, 256, 40, dimensions)
             arrow.draw(ctx)
@@ -78,8 +83,8 @@ export default class Gestures {
             arrow.draw(ctx)
           }
         } else {
-          const drawNodeRing = sourceNode.drawRing || drawRing
-          drawNodeRing(ctx, sourceNodePosition, purple, outerRadius)
+          ctx.fillStyle = this.ringReadyColor
+          ctx.circle(sourceNodePosition.x, sourceNodePosition.y, outerRadius, true, false)
         }
       }
     }
