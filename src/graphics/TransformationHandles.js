@@ -4,6 +4,7 @@ import {Vector} from "../model/Vector";
 import {selectionHandle} from "../model/colors";
 import {selectedNodeIds} from "../model/selection";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
+import {adaptForBackground} from "./backgroundColorAdaption";
 
 export const handleSize = 20
 const handlePadding = 2
@@ -66,6 +67,7 @@ export default class TransformationHandles {
           topLeft
         }
       })
+      this.color = adaptForBackground(selectionHandle, key => visualGraph.style[key])
     } else {
       this.handles = []
     }
@@ -73,7 +75,7 @@ export default class TransformationHandles {
 
   draw(ctx) {
     this.handles.forEach(handle => {
-      drawSolidRectangle(ctx, handle.topLeft, handleSize, handleSize, 3, selectionHandle)
+      drawSolidRectangle(ctx, handle.topLeft, handleSize, handleSize, 3, this.color)
       drawSolidRectangle(
         ctx, handle.topLeft.translate(new Vector(
           (handle.corner.x === 'min' ? (handleSize) / 2 : handlePadding),
