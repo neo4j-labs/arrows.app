@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {Form, Input, Popup} from 'semantic-ui-react'
 import {shrinkImageUrl} from "../../graphics/utils/resizeImage";
+import {interpretClipboardData} from "../../actions/import";
 
 export default class extends Component {
 
@@ -24,16 +25,13 @@ export default class extends Component {
 
     const onPaste = (event) => {
       const clipboardData = event.clipboardData
-      if (clipboardData.types.includes('Files')) {
-        const reader = new FileReader()
-        reader.readAsDataURL(clipboardData.files[0]);
-        reader.onloadend = function() {
-          const imageUrl = reader.result
+      interpretClipboardData(clipboardData, 0, {
+        onPngImageUrl: (imageUrl) => {
           shrinkImageUrl(imageUrl, 1024 * 10).then(shrunkenImageUrl => {
             onChange(shrunkenImageUrl)
           })
         }
-      }
+      })
     }
 
     const imageInfo = this.props.cachedImages[this.props.value]

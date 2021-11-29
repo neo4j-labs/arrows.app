@@ -32,35 +32,54 @@ export const tryImport = (dispatch) => {
   }
 }
 
+export const interpretClipboardData = (clipboardData, nodeSpacing, handlers) => {
+  const textPlainMimeType = 'text/plain'
+  if (clipboardData.types.includes(textPlainMimeType)) {
+    const text = clipboardData.getData(textPlainMimeType)
+    const format = formats.find(format => format.recognise(text))
+    if (format) {
+      try {
+        switch (format.outputType) {
+          case 'graph':
+            const importedGraph = format.parse(text, nodeSpacing)
+            handlers.onGraph && handlers.onGraph(importedGraph)
+            break
+
+          case 'svg':
+            const svgImageUrl = format.parse(text)
+            handlers.onSvgImageUrl && handlers.onSvgImageUrl(svgImageUrl)
+            break
+        }
+      } catch (e) {
+        console.error(e)
+      }
+    }
+  } else if (clipboardData.types.includes('Files')) {
+    const reader = new FileReader()
+    reader.readAsDataURL(clipboardData.files[0]);
+    reader.onloadend = function() {
+      const imageUrl = reader.result
+      handlers.onPngImageUrl && handlers.onPngImageUrl(imageUrl)
+    }
+  }
+}
+
 export const handlePaste = (pasteEvent) => {
   return function (dispatch, getState) {
     const state = getState()
     const separation = nodeSeparation(state)
 
     const clipboardData = pasteEvent.clipboardData
-    const textPlainMimeType = 'text/plain'
-    if (clipboardData.types.includes(textPlainMimeType)) {
-      const text = clipboardData.getData(textPlainMimeType)
-      const format = formats.find(format => format.recognise(text))
-      if (format) {
-        try {
-          const importedGraph = format.parse(text, separation)
-          dispatch(importNodesAndRelationships(importedGraph))
-        } catch (e) {
-          console.error(e)
-        }
-      }
-    } else if (clipboardData.types.includes('Files')) {
-      const reader = new FileReader()
-      reader.readAsDataURL(clipboardData.files[0]);
-      reader.onloadend = function() {
-        const imageUrl = reader.result
+    interpretClipboardData(clipboardData, separation, {
+      onGraph: (graph) => {
+        dispatch(importNodesAndRelationships(graph))
+      },
+      onPngImageUrl: (imageUrl) => {
         shrinkImageUrl(imageUrl, 1024 * 10).then(shrunkenImageUrl => {
           dispatch(setArrowsProperty(state.selection, 'node-background-image', shrunkenImageUrl))
         })
       }
-    }
-
+    })
   }
 }
 
@@ -68,6 +87,7 @@ const formats = [
   {
     // JSON
     recognise: (plainText) => new RegExp('^{.*\}$', 's').test(plainText.trim()),
+    outputType: 'graph',
     parse: (plainText) => {
       const object = JSON.parse(plainText)
       const graphData = constructGraphFromFile(object)
@@ -84,6 +104,7 @@ const formats = [
   {
     // plain text
     recognise: () => true,
+    outputType: 'graph',
     parse: (plainText, separation) => {
       const lines = plainText.split('\n').filter(line => line && line.trim().length > 0)
 
