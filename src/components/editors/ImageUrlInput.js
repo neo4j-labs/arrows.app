@@ -30,6 +30,10 @@ export default class extends Component {
           shrinkImageUrl(imageUrl, 1024 * 10).then(shrunkenImageUrl => {
             onChange(shrunkenImageUrl)
           })
+        },
+        onSvgImageUrl: (imageUrl) => {
+          onChange(imageUrl)
+          event.preventDefault()
         }
       })
     }

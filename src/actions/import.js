@@ -6,6 +6,7 @@ import {translate} from "../model/Node";
 import {Vector} from "../model/Vector";
 import {hideImportDialog} from "./applicationDialogs";
 import {shrinkImageUrl} from "../graphics/utils/resizeImage";
+import {Base64} from "js-base64";
 
 export const tryImport = (dispatch) => {
   return function (text, separation) {
@@ -78,6 +79,9 @@ export const handlePaste = (pasteEvent) => {
         shrinkImageUrl(imageUrl, 1024 * 10).then(shrunkenImageUrl => {
           dispatch(setArrowsProperty(state.selection, 'node-background-image', shrunkenImageUrl))
         })
+      },
+      onSvgImageUrl: (imageUrl) => {
+        dispatch(setArrowsProperty(state.selection, 'node-icon-image', imageUrl))
       }
     })
   }
@@ -99,6 +103,17 @@ const formats = [
       return {
         nodes: originNodes, relationships
       }
+    }
+  },
+  {
+    // SVG
+    recognise: (plainText) => {
+      const xmlDocument = new DOMParser().parseFromString(plainText, "image/svg+xml")
+      return xmlDocument.documentElement.tagName === 'svg'
+    },
+    outputType: 'svg',
+    parse: (plainText) => {
+      return 'data:image/svg+xml;base64,' + Base64.encode(plainText)
     }
   },
   {
