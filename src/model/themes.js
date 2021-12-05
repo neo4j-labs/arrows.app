@@ -273,7 +273,7 @@ export const themes = [
     graph: {
       "style": {
         "font-family": "sans-serif",
-        "background-color": "#ffffff",
+        "background-color": "#FAFCFF",
         "node-color": "#4C8EDA",
         "border-width": 2,
         "border-color": "#2870c2",
