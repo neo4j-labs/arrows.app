@@ -38,6 +38,8 @@ export const themes = [
         }
       ],
       "style": {
+        "font-family": "sans-serif",
+        "background-color": "#ffffff",
         "node-color": "#ffffff",
         "border-width": 4,
         "border-color": "#000000",
@@ -81,10 +83,112 @@ export const themes = [
     }
   },
   {
+    name: 'Dark Code',
+    description: 'Light-on-dark contrast similar to an IDE',
+    graph: {
+      "style": {
+        "font-family": "Fira Code",
+        "background-color": "#2B2B2B",
+        "node-color": "#2B2B2B",
+        "border-width": 2,
+        "border-color": "#A6B7C8",
+        "radius": 90,
+        "node-padding": 5,
+        "node-margin": 2,
+        "outside-position": "auto",
+        "node-icon-image": "",
+        "node-background-image": "",
+        "icon-position": "inside",
+        "icon-size": 64,
+        "caption-position": "inside",
+        "caption-max-width": 200,
+        "caption-color": "#A6B7C8",
+        "caption-font-size": 18,
+        "caption-font-weight": "normal",
+        "label-position": "inside",
+        "label-display": "bare",
+        "label-color": "#A6B7C8",
+        "label-background-color": "#ffffff",
+        "label-border-color": "#000000",
+        "label-border-width": 4,
+        "label-font-size": 18,
+        "label-padding": 5,
+        "label-margin": 4,
+        "directionality": "directed",
+        "detail-position": "inline",
+        "detail-orientation": "parallel",
+        "arrow-width": 2,
+        "arrow-color": "#A6B7C8",
+        "margin-start": 0,
+        "margin-end": 0,
+        "margin-peer": 20,
+        "attachment-start": "normal",
+        "attachment-end": "normal",
+        "relationship-icon-image": "",
+        "type-color": "#A6B7C8",
+        "type-background-color": "#2B2B2B",
+        "type-border-color": "#000000",
+        "type-border-width": 0,
+        "type-font-size": 18,
+        "type-padding": 5,
+        "property-position": "inside",
+        "property-alignment": "colon",
+        "property-color": "#A6B7C8",
+        "property-font-size": 18,
+        "property-font-weight": "normal"
+      },
+      "nodes": [
+        {
+          "id": "n0",
+          "position": {
+            "x": 11.499999999999986,
+            "y": -74.54584527220625
+          },
+          "caption": "",
+          "labels": [
+            "Product"
+          ],
+          "properties": {
+            "SKU": "750045",
+            "unit": "100"
+          },
+          "style": {}
+        },
+        {
+          "id": "n1",
+          "position": {
+            "x": 381.4169054441258,
+            "y": -74.54584527220625
+          },
+          "caption": "",
+          "labels": [
+            "Category"
+          ],
+          "properties": {
+            "stock": "true"
+          },
+          "style": {}
+        }
+      ],
+      "relationships": [
+        {
+          "id": "n0",
+          "type": "CATEGORY",
+          "style": {},
+          "properties": {},
+          "fromId": "n0",
+          "toId": "n1"
+        }
+      ]
+    }
+  },
+  {
     name: 'Bloom',
     description: 'Theme based on Neo4j Bloom.',
     graph: {
       "style": {
+        "font-family": "sans-serif",
+        "background-color": "#ffffff",
         "node-color": "#4C8EDA",
         "border-width": 0,
         "border-color": "#000000",
@@ -168,6 +272,8 @@ export const themes = [
     description: 'Theme based on Neo4j Browser',
     graph: {
       "style": {
+        "font-family": "sans-serif",
+        "background-color": "#ffffff",
         "node-color": "#4C8EDA",
         "border-width": 2,
         "border-color": "#2870c2",
@@ -258,6 +364,8 @@ export const themes = [
     description: 'Minimal undirected graphs suitable for very small pictures',
     graph: {
       "style": {
+        "font-family": "sans-serif",
+        "background-color": "#ffffff",
         "node-color": "#ffffff",
         "border-width": 2,
         "border-color": "#000000",
