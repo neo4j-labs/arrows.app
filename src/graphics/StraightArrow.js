@@ -36,8 +36,8 @@ export class StraightArrow {
     if (this.dimensions.hasArrowHead) {
       ctx.translate(this.endAttach.x, this.endAttach.y)
       ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle())
-      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
       ctx.fillStyle = this.dimensions.arrowColor
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
       ctx.fill()
     }
     ctx.restore()

@@ -57,8 +57,8 @@ export class ElbowArrow {
       ctx.translate(...this.path.end.xy)
       ctx.rotate(this.path.endDirection)
       ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0)
-      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
       ctx.fillStyle = this.dimensions.arrowColor
+      arrowHead(ctx, this.dimensions.headHeight, this.dimensions.chinHeight, this.dimensions.headWidth, true, false)
       ctx.fill()
     }
     ctx.restore()
