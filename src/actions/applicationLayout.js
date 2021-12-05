@@ -12,6 +12,18 @@ export const toggleInspector = () => {
   }
 }
 
+export const styleTheme = () => {
+  return {
+    type: 'STYLE_THEME'
+  }
+}
+
+export const styleCustomize = () => {
+  return {
+    type: 'STYLE_CUSTOMIZE'
+  }
+}
+
 export const setBetaFeaturesEnabled = enabled => ({
   type: 'SET_BETA_FEATURES_ENABLED',
   enabled

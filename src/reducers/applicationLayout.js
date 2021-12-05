@@ -3,6 +3,7 @@ import {Size} from "../model/Size";
 const applicationLayout = (state = {
   windowSize: new Size(window.innerWidth, window.innerHeight),
   inspectorVisible: true,
+  styleMode: 'theme',
   betaFeaturesEnabled: false,
   layers: []
 }, action) => {
@@ -17,6 +18,18 @@ const applicationLayout = (state = {
       return {
         ...state,
         inspectorVisible: !state.inspectorVisible
+      }
+
+    case 'STYLE_THEME':
+      return {
+        ...state,
+        styleMode: 'theme'
+      }
+
+    case 'STYLE_CUSTOMIZE':
+      return {
+        ...state,
+        styleMode: 'customize'
       }
 
     case 'SET_BETA_FEATURES_ENABLED':

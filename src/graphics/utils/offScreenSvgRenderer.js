@@ -16,7 +16,12 @@ export const renderSvgDom = (graph, cachedImages) => {
   })
   const width = Math.ceil(boundingBox.width)
   const height = Math.ceil(boundingBox.height)
-  return svgAdaptor.asSvg(width, height)
+  const svgString = new XMLSerializer().serializeToString(svgAdaptor.asSvg(width, height))
+  return {
+    width,
+    height,
+    dataUrl: 'data:image/svg+xml;base64,' + Base64.encode(svgString)
+  }
 }
 
 export const renderSvgEncapsulated = (graph, cachedImages) => {

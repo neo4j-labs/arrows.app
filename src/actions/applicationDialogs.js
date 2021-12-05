@@ -1,15 +1,3 @@
-export const showStyleDialog = () => {
-  return {
-    type: 'SHOW_STYLE_DIALOG'
-  }
-}
-
-export const hideStyleDialog = () => {
-  return {
-    type: 'HIDE_STYLE_DIALOG'
-  }
-}
-
 export const showExportDialog = () => {
   return {
     type: 'SHOW_EXPORT_DIALOG'

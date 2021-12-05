@@ -1,53 +1,45 @@
 import React, {Component} from 'react'
-import {Segment, Form, Divider, Button} from 'semantic-ui-react'
-import StyleTable from "./StyleTable"
-import {styleAttributeGroups} from "../model/styling";
+import {Segment, Form, Button, ButtonGroup} from 'semantic-ui-react'
 import {GeneralToolbox} from "./GeneralToolbox";
+import GeneralStyling from "./GeneralStyling";
+import ThemeCards from "./ThemeCards";
 
 export default class GeneralInspector extends Component {
   render() {
-    const {graph, onSaveGraphStyle} = this.props
-    const fields = []
+    const {graph, onSaveGraphStyle, cachedImages, onApplyTheme, styleMode} = this.props
 
-    fields.push(
-      <Form.Field key='theme'>
-        <label>Theme</label>
-        <Button
-          color='blue'
-          size='tiny'
-          content='Choose Theme'
-          onClick={this.props.onShowStyleDialog}/>
-      </Form.Field>
-    )
-
-    for (const group of styleAttributeGroups) {
-      fields.push(
-        <StyleTable key={group.name + 'Style'}
-                    title={group.name}
-                    style={{}}
-                    graphStyle={graph.style}
-                    possibleStyleAttributes={group.attributes.map(attribute => attribute.key)}
-                    cachedImages={this.props.cachedImages}
-                    onSaveStyle={(styleKey, styleValue) => onSaveGraphStyle(styleKey, styleValue)}
-        />
-      )
-    }
-
-    const disabledSubmitButtonToPreventImplicitSubmission = (
-      <button type="submit" disabled style={{display: 'none'}} aria-hidden="true"/>
-    )
+    const styleContent = styleMode === 'customize' ?
+      <GeneralStyling graph={graph} onSaveGraphStyle={onSaveGraphStyle} cachedImages={cachedImages}/> :
+      <ThemeCards onApplyTheme={onApplyTheme}/>
 
     return (
       <React.Fragment>
         <Segment basic style={{margin: 0}}>
           <Form style={{textAlign: 'left'}}>
-            {disabledSubmitButtonToPreventImplicitSubmission}
             <Form.Field key='_selected'>
               <label>No selection</label>
             </Form.Field>
             <GeneralToolbox onPlusNodeClick={this.props.onPlusNodeClick}/>
-            <Divider horizontal clearing style={{paddingTop: 50}}>Style</Divider>
-            {fields}
+            <div style={{
+              clear: 'both',
+              textAlign: 'center',
+              paddingTop: 50,
+              paddingBottom: 20
+            }}>
+              <ButtonGroup>
+                <Button
+                  onClick={this.props.onStyleTheme}
+                  active={styleMode === 'theme'}
+                  primary={styleMode === 'theme'}
+                >Theme</Button>
+                <Button
+                  onClick={this.props.onStyleCustomize}
+                  active={styleMode === 'customize'}
+                  primary={styleMode === 'customize'}
+                >Customize</Button>
+              </ButtonGroup>
+            </div>
+            {styleContent}
           </Form>
         </Segment>
       </React.Fragment>

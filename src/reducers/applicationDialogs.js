@@ -1,23 +1,10 @@
 import {retrieveHelpDismissed} from "../actions/localStorage";
 export default function applicationDialogs(state = {
-  showStyleDialog: false,
   showExportDialog: false,
   showImportDialog: false,
   showHelpDialog: !retrieveHelpDismissed()
 }, action) {
   switch (action.type) {
-    case 'SHOW_STYLE_DIALOG':
-      return {
-        ...state,
-        showStyleDialog: true
-      }
-
-    case 'HIDE_STYLE_DIALOG':
-      return {
-        ...state,
-        showStyleDialog: false
-      }
-
     case 'SHOW_EXPORT_DIALOG':
       return {
         ...state,
