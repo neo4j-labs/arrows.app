@@ -187,8 +187,8 @@ export const themes = [
     description: 'Theme based on Neo4j Bloom.',
     graph: {
       "style": {
-        "font-family": "sans-serif",
-        "background-color": "#ffffff",
+        "font-family": "Nunito Sans",
+        "background-color": "#F2F2F2",
         "node-color": "#4C8EDA",
         "border-width": 0,
         "border-color": "#000000",
@@ -201,7 +201,7 @@ export const themes = [
         "caption-font-size": 20,
         "caption-font-weight": "normal",
         "label-position": "inside",
-        "label-color": "#000000",
+        "label-color": "#ffffff",
         "label-background-color": "#ffffff",
         "label-border-color": "#848484",
         "label-border-width": 3,
@@ -219,7 +219,7 @@ export const themes = [
         "attachment-start": "normal",
         "attachment-end": "normal",
         "type-color": "#848484",
-        "type-background-color": "#ffffff",
+        "type-background-color": "#F2F2F2",
         "type-border-color": "#848484",
         "type-border-width": 0,
         "type-font-size": 21,

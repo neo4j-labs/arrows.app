@@ -22,7 +22,8 @@ export default class ThemeCards extends Component {
             border: '1px solid #1B1C1D',
             borderRadius: '4px',
             overflow: 'hidden',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            backgroundColor: theme.graph.style['background-color']
           }} onClick={() => this.props.onApplyTheme(theme.graph.style)}>
             <img src={dataUrl} alt={theme.description} style={{
               width: '100%',
