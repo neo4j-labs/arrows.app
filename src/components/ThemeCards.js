@@ -2,15 +2,18 @@ import React, {Component} from 'react';
 import {themes} from "../model/themes";
 import {renderSvgDom} from "../graphics/utils/offScreenSvgRenderer";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
+import convert from "react-from-dom";
 
 export default class ThemeCards extends Component {
 
   render() {
     const cards = themes.map(theme => {
       const graph = constructGraphFromFile(theme.graph).graph
-      const {dataUrl} = renderSvgDom(graph)
-
-      console.log('Doing stuff')
+      const svgDom = renderSvgDom(graph)
+      svgDom.style.width = '100%'
+      svgDom.style.position = 'relative'
+      svgDom.style.top = '50%'
+      svgDom.style.transform = 'translateY(-50%)'
 
       return (
         <div key={theme.name} style={{
@@ -25,12 +28,7 @@ export default class ThemeCards extends Component {
             cursor: 'pointer',
             backgroundColor: theme.graph.style['background-color']
           }} onClick={() => this.props.onApplyTheme(theme.graph.style)}>
-            <img src={dataUrl} alt={theme.description} style={{
-              width: '100%',
-              position: 'relative',
-              top: '50%',
-              transform: 'translateY(-50%)'
-            }}/>
+            {convert(svgDom)}
           </div>
           <div style={{
             fontSize: '13px',
