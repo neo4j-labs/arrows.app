@@ -83,7 +83,10 @@ export const saveFile = (graph, cachedImages, fileId, fileName, onFileSaved) => 
   const request = window.gapi.client.request({
     'path': `/upload/drive/v3/files${fileId ? '/' + fileId : ''}`,
     'method': fileId ? 'PATCH' : 'POST',
-    'params': {'uploadType': 'multipart'},
+    'params': {
+      'uploadType': 'multipart',
+      'supportsAllDrives': true
+    },
     'headers': {
       'Content-Type': 'multipart/related; boundary="' + boundary + '"'
     },

@@ -28,7 +28,7 @@ export function fetchGraphFromDrive(fileId) {
 
 const getFileInfo = (fileId, metaOnly = false) => {
   return new Promise((resolve, reject) => {
-    const downloadUrl = `https://www.googleapis.com/drive/v3/files/${fileId}${metaOnly ? '' : '?alt=media'}`
+    const downloadUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?supportsAllDrives=true${metaOnly ? '' : '&alt=media'}`
     const accessToken = window.gapi.auth.getToken().access_token
     const xhr = new XMLHttpRequest();
     xhr.open('GET', downloadUrl)
