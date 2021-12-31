@@ -9,14 +9,14 @@ import {usedCodePoints} from "../../model/Graph";
 export const renderSvgDom = (graph, cachedImages) => {
   const { visualGraph, boundingBox } = createVisualGraphAndBoundingBox(graph, cachedImages)
 
-  const svgAdaptor = new SvgAdaptor()
+  const width = Math.ceil(boundingBox.width)
+  const height = Math.ceil(boundingBox.height)
+  const svgAdaptor = new SvgAdaptor(width, height)
   visualGraph.draw(svgAdaptor, {
     viewTransformation: new ViewTransformation(1,
       new Vector(-boundingBox.left, -boundingBox.top))
   })
-  const width = Math.ceil(boundingBox.width)
-  const height = Math.ceil(boundingBox.height)
-  return svgAdaptor.asSvg(width, height)
+  return svgAdaptor.rootElement
 }
 
 export const renderSvgEncapsulated = (graph, cachedImages) => {
@@ -24,13 +24,13 @@ export const renderSvgEncapsulated = (graph, cachedImages) => {
 
     const { visualGraph, boundingBox } = createVisualGraphAndBoundingBox(graph, cachedImages)
 
-    const svgAdaptor = new SvgAdaptor()
+    const width = Math.ceil(boundingBox.width)
+    const height = Math.ceil(boundingBox.height)
+    const svgAdaptor = new SvgAdaptor(width, height)
     visualGraph.draw(svgAdaptor, {
       viewTransformation: new ViewTransformation(1,
         new Vector(-boundingBox.left, -boundingBox.top))
     })
-    const width = Math.ceil(boundingBox.width)
-    const height = Math.ceil(boundingBox.height)
 
     const codePoints = usedCodePoints(graph)
     const fontFamily = graph.style['font-family']
@@ -41,7 +41,7 @@ export const renderSvgEncapsulated = (graph, cachedImages) => {
           svgAdaptor.appendCssText(cssText)
         }
 
-        const svgString = new XMLSerializer().serializeToString(svgAdaptor.asSvg(width, height))
+        const svgString = new XMLSerializer().serializeToString(svgAdaptor.rootElement)
         resolve({
             width,
             height,

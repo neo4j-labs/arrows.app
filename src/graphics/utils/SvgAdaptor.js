@@ -1,30 +1,27 @@
 import {Point} from "../../model/Point";
 export default class SvgAdaptor {
-  globalStyle;
 
-  constructor() {
-    this.e = (tagName, attributes, ...children) => {
-      const element = document.createElementNS("http://www.w3.org/2000/svg", tagName)
-      for (const [key, value] of Object.entries(attributes)) {
-        element.setAttribute(key, value)
+  constructor(width, height) {
+    this.rootElement = newElement('svg', {
+        width,
+        height,
+        viewBox: [0, 0, width, height].join(' ')
       }
-      for (const child of children) {
-        element.appendChild(child)
-      }
-      return element
-    }
+    )
     this.stack = [
       {
+        container: this.rootElement,
         strokeColor: 'black',
         transforms: []
       }
     ]
-    this.children = []
-    this.globalStyle = this.e('style', {
+    const defs = newElement('defs', {}, this.globalStyle)
+    this.rootElement.appendChild(defs)
+    this.globalStyle = newElement('style', {
       type: 'text/css'
     });
-    const defs = this.e('defs', {}, this.globalStyle)
-    this.children.push(defs)
+    defs.appendChild(this.globalStyle)
+    this.pushChild(defs)
     const canvas = window.document.createElement('canvas')
     this.measureTextContext = canvas.getContext('2d')
     this.beginPath()
@@ -35,11 +32,34 @@ export default class SvgAdaptor {
   }
 
   save() {
-    this.stack.unshift({...this.current(), transforms: [...this.current().transforms]})
+    const frame = this.current()
+    if (frame.transforms.length > 0 && frame.container.childNodes.length === 0) {
+      frame.container.setAttribute('transform', frame.transforms.join(' '))
+      frame.transforms = []
+    }
+    const g = newElement('g')
+    frame.container.appendChild(g)
+    this.stack.unshift({
+      container: g,
+      strokeColor: frame.strokeColor, 
+      transforms: [...frame.transforms]
+    })
   }
 
   restore() {
     this.stack.shift()
+  }
+  
+  pushChild(child) {
+    const frame = this.current()
+    if (frame.transforms.length > 0 && frame.container.childNodes.length === 0) {
+      frame.container.setAttribute('transform', frame.transforms.join(' '))
+      frame.transforms = []
+    }
+    if (frame.transforms.length > 0) {
+      child.setAttribute('transform', frame.transforms.join(' '))
+    }
+    frame.container.appendChild(child)
   }
 
   translate(dx, dy) {
@@ -93,8 +113,7 @@ export default class SvgAdaptor {
   }
 
   circle(cx, cy, r, fill, stroke) {
-    this.children.push(this.e('circle', {
-      transform: this.current().transforms.join(' '),
+    this.pushChild(newElement('circle', {
       cx,
       cy,
       r,
@@ -105,8 +124,7 @@ export default class SvgAdaptor {
   }
 
   rect(x, y, width, height, r, fill, stroke) {
-    this.children.push(this.e('rect', {
-      transform: this.current().transforms.join(' '),
+    this.pushChild(newElement('rect', {
       x,
       y,
       width,
@@ -119,8 +137,7 @@ export default class SvgAdaptor {
   }
 
   image(imageInfo, x, y, width, height) {
-    this.children.push(this.e('image', {
-      transform: this.current().transforms.join(' '),
+    this.pushChild(newElement('image', {
       href: imageInfo.dataUrl,
       x,
       y,
@@ -143,17 +160,18 @@ export default class SvgAdaptor {
         height: 2 * radius / ratio
       }
 
-    const clipCircle = this.e('circle', {
+    const clipPath = newElement('clipPath', {
+      id: 'myClip',
+      clipPathUnits: 'objectBoundingBox'
+    })
+    const clipCircle = newElement('circle', {
       cx: .5,
       cy: .5,
       r: .5
     })
-    this.children.push(this.e('clipPath', {
-      id: 'myClip',
-      clipPathUnits: 'objectBoundingBox'
-    }, clipCircle))
-    this.children.push(this.e('image', {
-      transform: this.current().transforms.join(' '),
+    clipPath.appendChild(clipCircle)
+    this.pushChild(clipPath)
+    this.pushChild(newElement('image', {
       href: imageInfo.dataUrl,
       x: cx - width / 2,
       y: cy - height / 2,
@@ -164,8 +182,7 @@ export default class SvgAdaptor {
   }
 
   polyLine(points) {
-    this.children.push(this.e('polyline', {
-      transform: this.current().transforms.join(' '),
+    this.pushChild(newElement('polyline', {
       points: points.map(point => `${point.x},${point.y}`).join(' '),
       fill: 'none',
       stroke: this.current().strokeStyle,
@@ -174,8 +191,7 @@ export default class SvgAdaptor {
   }
 
   polygon(points, fill, stroke) {
-    this.children.push(this.e('polygon', {
-      transform: this.current().transforms.join(' '),
+    this.pushChild(newElement('polygon', {
       points: points.map(point => `${point.x},${point.y}`).join(' '),
       fill: fill ? this.current().fillStyle : 'none',
       stroke: stroke ? this.current().strokeStyle : 'none',
@@ -185,8 +201,7 @@ export default class SvgAdaptor {
 
   stroke() {
     if (this.currentPath) {
-      this.children.push(this.e('path', {
-        transform: this.current().transforms.join(' '),
+      this.pushChild(newElement('path', {
         d: this.currentPath.join(' '),
         fill: 'none',
         stroke: this.current().strokeStyle,
@@ -202,9 +217,8 @@ export default class SvgAdaptor {
   fillText(text, x, y) {
     const oMetrics = this.measureText('o')
     const middleHeight = (oMetrics.actualBoundingBoxAscent + oMetrics.actualBoundingBoxDescent) / 2
-    this.children.push(this.e('text', {
+    const textElement = newElement('text', {
       'xml:space': 'preserve',
-      transform: this.current().transforms.join(' '),
       x,
       y: this.current().textBaseline === 'middle' ? y + middleHeight : y,
       'font-family': this.current().font.fontFamily,
@@ -212,7 +226,9 @@ export default class SvgAdaptor {
       'font-weight': this.current().font.fontWeight,
       'text-anchor': ((a) => a === 'center' ? 'middle' : a )(this.current().textAlign),
       fill: this.current().fillStyle
-    }, document.createTextNode(text)))
+    })
+    textElement.appendChild(document.createTextNode(text))
+    this.pushChild(textElement)
   }
 
   measureText(text) {
@@ -255,14 +271,12 @@ export default class SvgAdaptor {
   set strokeStyle(value) {
     this.current().strokeStyle = value
   }
+}
 
-  asSvg(width, height) {
-    return this.e('svg', {
-        width,
-        height,
-        viewBox: [0, 0, width, height].join(' ')
-      },
-      ...this.children
-    )
+const newElement = (tagName, attributes = {}) => {
+  const element = document.createElementNS("http://www.w3.org/2000/svg", tagName)
+  for (const [key, value] of Object.entries(attributes)) {
+    element.setAttribute(key, value)
   }
+  return element
 }
