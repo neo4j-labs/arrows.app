@@ -11,7 +11,7 @@ export default class SvgAdaptor {
     this.stack = [
       {
         container: this.rootElement,
-        strokeColor: 'black',
+        attributes: {},
         transforms: []
       }
     ]
@@ -31,17 +31,30 @@ export default class SvgAdaptor {
     return this.stack[0]
   }
 
+  filteredAttributes(keys) {
+    const result = {}
+    const frame = this.current()
+    if (frame.container.childNodes.length === 0) {
+      return {}
+    }
+    for (const [key, value] of Object.entries(frame.attributes)) {
+      if (keys.includes(key)) {
+        result[key] = value
+      }
+    }
+    return result
+  }
+
   save() {
     const frame = this.current()
-    if (frame.transforms.length > 0 && frame.container.childNodes.length === 0) {
-      frame.container.setAttribute('transform', frame.transforms.join(' '))
-      frame.transforms = []
+    if (frame.container.childNodes.length === 0) {
+      pushStateToContainer(frame)
     }
     const g = newElement('g')
     frame.container.appendChild(g)
     this.stack.unshift({
       container: g,
-      strokeColor: frame.strokeColor, 
+      attributes: {...frame.attributes},
       transforms: [...frame.transforms]
     })
   }
@@ -52,9 +65,8 @@ export default class SvgAdaptor {
   
   pushChild(child) {
     const frame = this.current()
-    if (frame.transforms.length > 0 && frame.container.childNodes.length === 0) {
-      frame.container.setAttribute('transform', frame.transforms.join(' '))
-      frame.transforms = []
+    if (frame.container.childNodes.length === 0) {
+      pushStateToContainer(frame)
     }
     if (frame.transforms.length > 0) {
       child.setAttribute('transform', frame.transforms.join(' '))
@@ -113,27 +125,37 @@ export default class SvgAdaptor {
   }
 
   circle(cx, cy, r, fill, stroke) {
-    this.pushChild(newElement('circle', {
+    const circle = newElement('circle', {
       cx,
       cy,
       r,
-      fill: fill ? this.current().fillStyle : 'none',
-      stroke: stroke ? this.current().strokeStyle : 'none',
-      'stroke-width': this.current().lineWidth
-    }))
+      ...this.filteredAttributes([
+        'fill',
+        'stroke',
+        'stroke-width'
+      ])
+    })
+    if (!fill) circle.setAttribute('fill', 'none')
+    if (!stroke) circle.setAttribute('stroke', 'none')
+    this.pushChild(circle)
   }
 
   rect(x, y, width, height, r, fill, stroke) {
-    this.pushChild(newElement('rect', {
+    const rect = newElement('rect', {
       x,
       y,
       width,
       height,
       rx: r,
       ry: r,
-      fill: fill ? this.current().fillStyle : 'none',
-      stroke: stroke ? this.current().strokeStyle : 'none'
-    }))
+      ...this.filteredAttributes([
+        'fill',
+        'stroke'
+      ])
+    });
+    this.pushChild(rect)
+    if (!fill) rect.setAttribute('fill', 'none')
+    if (!stroke) rect.setAttribute('stroke', 'none')
   }
 
   image(imageInfo, x, y, width, height) {
@@ -185,27 +207,35 @@ export default class SvgAdaptor {
     this.pushChild(newElement('polyline', {
       points: points.map(point => `${point.x},${point.y}`).join(' '),
       fill: 'none',
-      stroke: this.current().strokeStyle,
-      'stroke-width': this.current().lineWidth
+      ...this.filteredAttributes([
+        'stroke',
+        'stroke-width'
+      ])
     }))
   }
 
   polygon(points, fill, stroke) {
-    this.pushChild(newElement('polygon', {
+    const polygon = newElement('polygon', {
       points: points.map(point => `${point.x},${point.y}`).join(' '),
-      fill: fill ? this.current().fillStyle : 'none',
-      stroke: stroke ? this.current().strokeStyle : 'none',
-      'stroke-width': this.current().lineWidth
-    }))
+      ...this.filteredAttributes([
+        'fill',
+        'stroke'
+      ])
+    });
+    this.pushChild(polygon)
+    if (!fill) polygon.setAttribute('fill', 'none')
+    if (!stroke) polygon.setAttribute('stroke', 'none')
   }
 
   stroke() {
     if (this.currentPath) {
       this.pushChild(newElement('path', {
         d: this.currentPath.join(' '),
-        fill: 'none',
-        stroke: this.current().strokeStyle,
-        'stroke-width': this.current().lineWidth
+        ...this.filteredAttributes([
+          'fill',
+          'stroke',
+          'stroke-width'
+        ])
       }))
     }
   }
@@ -221,11 +251,13 @@ export default class SvgAdaptor {
       'xml:space': 'preserve',
       x,
       y: this.current().textBaseline === 'middle' ? y + middleHeight : y,
-      'font-family': this.current().font.fontFamily,
-      'font-size': this.current().font.fontSize,
-      'font-weight': this.current().font.fontWeight,
-      'text-anchor': ((a) => a === 'center' ? 'middle' : a )(this.current().textAlign),
-      fill: this.current().fillStyle
+      ...this.filteredAttributes([
+        'font-family',
+        'font-size',
+        'font-weight',
+        'text-anchor',
+        'fill'
+      ])
     })
     textElement.appendChild(document.createTextNode(text))
     this.pushChild(textElement)
@@ -244,11 +276,24 @@ export default class SvgAdaptor {
   }
 
   set fillStyle(color) {
-    this.current().fillStyle = color
+    this.current().attributes['fill'] = color
+  }
+
+  set strokeStyle(color) {
+    this.current().attributes['stroke'] = color
+  }
+
+  set lineWidth(value) {
+    this.current().attributes['stroke-width'] = value
+  }
+
+  set lineJoin(value) {
   }
 
   set font(style) {
-    this.current().font = style
+    this.current().attributes['font-family'] = style.fontFamily
+    this.current().attributes['font-size'] = style.fontSize
+    this.current().attributes['font-weight'] = style.fontWeight
     this.measureTextContext.font = `${style.fontWeight} ${style.fontSize}px ${style.fontFamily}`
   }
 
@@ -257,19 +302,7 @@ export default class SvgAdaptor {
   }
 
   set textAlign(value) {
-    this.current().textAlign = value
-  }
-
-  set lineWidth(value) {
-    this.current().lineWidth = value
-  }
-
-  set lineJoin(value) {
-    this.current().lineJoin = value
-  }
-
-  set strokeStyle(value) {
-    this.current().strokeStyle = value
+    this.current().attributes['text-anchor'] = value === 'center' ? 'middle' : value
   }
 }
 
@@ -279,4 +312,17 @@ const newElement = (tagName, attributes = {}) => {
     element.setAttribute(key, value)
   }
   return element
+}
+
+const pushStateToContainer = (frame) => {
+  if (frame.transforms.length > 0) {
+    frame.container.setAttribute('transform', frame.transforms.join(' '))
+    frame.transforms = []
+  }
+  if (Object.keys(frame.attributes).length > 0) {
+    for (const [key, value] of Object.entries(frame.attributes)) {
+      frame.container.setAttribute(key, value)
+    }
+    frame.attributes = {}
+  }
 }
