@@ -6,6 +6,10 @@ import convert from "react-from-dom";
 
 export default class ThemeCards extends Component {
 
+  shouldComponentUpdate(nextProps, nextState, nextContext) {
+    return false
+  }
+
   render() {
     const cards = themes.map(theme => {
       const graph = constructGraphFromFile(theme.graph).graph
