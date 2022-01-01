@@ -60,7 +60,10 @@ export default class SvgAdaptor {
   }
 
   restore() {
-    this.stack.shift()
+    const frame = this.stack.shift()
+    if (frame.container.childNodes.length === 0) {
+      this.current().container.removeChild(frame.container)
+    }
   }
   
   pushChild(child) {
