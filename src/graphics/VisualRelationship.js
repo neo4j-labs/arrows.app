@@ -93,6 +93,8 @@ export class VisualRelationship {
       return
     }
 
+    ctx.save('relationship')
+
     if (this.resolvedRelationship.selected) {
       this.arrow.drawSelectionIndicator(ctx)
 
@@ -114,6 +116,7 @@ export class VisualRelationship {
 
     this.components.draw(ctx)
 
+    ctx.restore()
     ctx.restore()
   }
 }

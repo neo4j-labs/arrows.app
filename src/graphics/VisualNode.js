@@ -171,6 +171,8 @@ export default class VisualNode {
       return
     }
 
+    ctx.save('node')
+
     if (this.selected) {
       this.background.drawSelectionIndicator(ctx)
 
@@ -203,6 +205,7 @@ export default class VisualNode {
 
     ctx.restore()
 
+    ctx.restore()
     ctx.restore()
   }
 

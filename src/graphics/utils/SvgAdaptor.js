@@ -45,12 +45,15 @@ export default class SvgAdaptor {
     return result
   }
 
-  save() {
+  save(className) {
     const frame = this.current()
     if (frame.container.childNodes.length === 0) {
       pushStateToContainer(frame)
     }
     const g = newElement('g')
+    if (className) {
+      g.setAttribute('class', className)
+    }
     frame.container.appendChild(g)
     this.stack.unshift({
       container: g,
