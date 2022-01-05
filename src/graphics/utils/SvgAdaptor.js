@@ -251,7 +251,6 @@ export default class SvgAdaptor {
   }
 
   fillText(text, x, y) {
-    console.log(text, text.length)
     const oMetrics = this.measureText('o')
     const middleHeight = (oMetrics.actualBoundingBoxAscent + oMetrics.actualBoundingBoxDescent) / 2
     const textElement = newElement('text', {
