@@ -36,7 +36,15 @@ export const DetailToolbox = (props) => {
       onClick={() => props.onInlineRelationships(props.selection)}/>
   )
 
-  const selectionToolboxItems = (
+  const selectionToolboxItems = [
+    <Button
+      basic
+      color='black'
+      floated='right'
+      size='tiny'
+      icon="trash alternate outline"
+      content='Delete'
+      onClick={props.onDelete}/>,
     <Button
       basic
       color='black'
@@ -44,8 +52,8 @@ export const DetailToolbox = (props) => {
       size='tiny'
       icon="clone outline"
       content='Duplicate'
-      onClick={props.onDuplicate}/>
-  )
+      onClick={props.onDuplicate}/>,
+  ]
 
   const someRelationshipsSelected = selectedRelationshipIds(props.selection).length > 0
   const showMergeNodesButton = shouldShowMergeNodesButton(props.graph, props.selection)
@@ -53,10 +61,10 @@ export const DetailToolbox = (props) => {
 
   return (
     <Form.Field>
+      {selectionToolboxItems}
       {someRelationshipsSelected ? relationshipToolboxItems : null}
       {showMergeNodesButton ? mergeNodesButton : null}
       {showInlineRelationshipsButton ? inlineRelationshipButton : null}
-      {selectionToolboxItems}
     </Form.Field>
   )
 }

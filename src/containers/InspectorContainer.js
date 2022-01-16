@@ -12,7 +12,12 @@ import {
   renameLabel,
   removeLabel,
   duplicateSelection,
-  convertCaptionsToLabels, convertCaptionsToPropertyValues, inlineRelationships, mergeOnPropertyValues, mergeNodes
+  convertCaptionsToLabels,
+  convertCaptionsToPropertyValues,
+  inlineRelationships,
+  mergeOnPropertyValues,
+  mergeNodes,
+  deleteSelection
 } from "../actions/graph";
 import DetailInspector from "../components/DetailInspector"
 import { getSelectedNodes } from "../selectors/inspection";
@@ -73,6 +78,9 @@ const mapDispatchToProps = dispatch => {
     },
     onDuplicate: () => {
       dispatch(duplicateSelection())
+    },
+    onDelete: () => {
+      dispatch(deleteSelection())
     },
     reverseRelationships: selection => {
       dispatch(reverseRelationships(selection))

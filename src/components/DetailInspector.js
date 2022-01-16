@@ -40,7 +40,7 @@ export default class DetailInspector extends Component {
   }
 
   render() {
-    const {selection, graph, onSaveCaption, onSaveType, onDuplicate} = this.props
+    const {selection, graph, onSaveCaption, onSaveType, onDuplicate, onDelete} = this.props
     const {reverseRelationships, inlineRelationships, mergeNodes, selectedNodes, onSelect} = this.props
     const {onConvertCaptionsToLabels, onConvertCaptionsToPropertyValues} = this.props
     const {onAddLabel, onRenameLabel, onRemoveLabel} = this.props
@@ -171,6 +171,7 @@ export default class DetailInspector extends Component {
               }}
               onMergeNodes={mergeNodes}
               onDuplicate={onDuplicate}
+              onDelete={onDelete}
             />
             {fields}
           </Form>
