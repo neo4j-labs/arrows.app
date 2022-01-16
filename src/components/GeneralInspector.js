@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Form, Button, ButtonGroup} from 'semantic-ui-react'
+import {Segment, Form, Button, ButtonGroup, Divider} from 'semantic-ui-react'
 import {GeneralToolbox} from "./GeneralToolbox";
 import GeneralStyling from "./GeneralStyling";
 import ThemeCards from "./ThemeCards";
@@ -27,22 +27,27 @@ export default class GeneralInspector extends Component {
               )}
             </Form.Field>
             <GeneralToolbox onPlusNodeClick={this.props.onPlusNodeClick}/>
+            <Divider
+              key='StyleDivider'
+              horizontal
+              clearing
+              style={{paddingTop: 50}}
+            >Style</Divider>
             <div style={{
               clear: 'both',
               textAlign: 'center',
-              paddingTop: 50,
               paddingBottom: 20
             }}>
               <ButtonGroup>
                 <Button
                   onClick={this.props.onStyleTheme}
                   active={styleMode === 'theme'}
-                  primary={styleMode === 'theme'}
+                  secondary={styleMode === 'theme'}
                 >Theme</Button>
                 <Button
                   onClick={this.props.onStyleCustomize}
                   active={styleMode === 'customize'}
-                  primary={styleMode === 'customize'}
+                  secondary={styleMode === 'customize'}
                 >Customize</Button>
               </ButtonGroup>
             </div>

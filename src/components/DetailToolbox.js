@@ -5,10 +5,8 @@ import {selectedNodeIds, selectedRelationshipIds, selectedRelationships} from ".
 export const DetailToolbox = (props) => {
   const relationshipToolboxItems = (
     <Button
-      basic
-      color='black'
       floated='right'
-      size='tiny'
+      size='small'
       icon="exchange"
       content='Reverse'
       onClick={() => props.onReverseRelationships(props.selection)}/>
@@ -16,10 +14,8 @@ export const DetailToolbox = (props) => {
 
   const mergeNodesButton = (
     <Button
-      basic
-      color='black'
       floated='right'
-      size='tiny'
+      size='small'
       icon="crosshairs"
       content='Merge'
       onClick={() => props.onMergeNodes(props.selection)}/>
@@ -27,10 +23,8 @@ export const DetailToolbox = (props) => {
 
   const inlineRelationshipButton = (
     <Button
-      basic
-      color='black'
       floated='right'
-      size='tiny'
+      size='small'
       icon="columns"
       content='Inline as properties'
       onClick={() => props.onInlineRelationships(props.selection)}/>
@@ -38,18 +32,14 @@ export const DetailToolbox = (props) => {
 
   const selectionToolboxItems = [
     <Button
-      basic
-      color='black'
       floated='right'
-      size='tiny'
+      size='small'
       icon="trash alternate outline"
       content='Delete'
       onClick={props.onDelete}/>,
     <Button
-      basic
-      color='black'
       floated='right'
-      size='tiny'
+      size='small'
       icon="clone outline"
       content='Duplicate'
       onClick={props.onDuplicate}/>,

@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {Segment, Divider, Form, Input} from 'semantic-ui-react'
+import {Segment, Divider, Form, Input, ButtonGroup, Button} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
 import {selectedNodeIds, selectedRelationshipIds, selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle, summarizeProperties} from "../model/properties"
@@ -54,6 +54,15 @@ export default class DetailInspector extends Component {
       nodes: selectedNodes.length > 0,
       relationships: relationships.length > 0
     }
+
+    fields.push((
+      <Divider
+        key='DataDivider'
+        horizontal
+        clearing
+        style={{paddingTop: 50}}
+      >Data</Divider>
+    ))
 
     if (selectionIncludes.nodes && !selectionIncludes.relationships) {
       const value = commonValue(selectedNodes.map((node) => node.caption));
@@ -121,6 +130,19 @@ export default class DetailInspector extends Component {
         clearing
         style={{paddingTop: 50}}
       >Style</Divider>
+    ))
+
+    fields.push((
+      <div style={{
+        clear: 'both',
+        textAlign: 'center',
+      }}>
+        <ButtonGroup>
+          <Button
+            secondary
+          >Customize</Button>
+        </ButtonGroup>
+      </div>
     ))
 
     const relevantCategories = categoriesPresent(selectedNodes, relationships, graph)

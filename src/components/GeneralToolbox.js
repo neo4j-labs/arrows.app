@@ -10,10 +10,9 @@ export class GeneralToolbox extends Component {
   render () {
     const toolboxItems = (
       <Button
-        basic
-        color='black'
+        primary
         floated='right'
-        size='tiny'
+        size='small'
         icon="circle"
         content='Add Node'
         onClick={this.props.onPlusNodeClick}/>

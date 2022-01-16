@@ -133,15 +133,11 @@ class Header extends PureComponent {
           <ButtonGroup>
             <Button
               icon='undo'
-              basic
-              color='black'
               disabled={this.props.undoRedoDisabled.undo}
               onClick={this.props.undo}
             />
             <Button
               icon='redo'
-              basic
-              color='black'
               disabled={this.props.undoRedoDisabled.redo}
               onClick={this.props.redo}
             />
