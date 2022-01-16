@@ -1,5 +1,5 @@
 import React, {PureComponent} from 'react'
-import { Icon, Menu, Button } from 'semantic-ui-react'
+import { Icon, Menu, Button, ButtonGroup } from 'semantic-ui-react'
 import { DiagramNameEditor } from "./DiagramNameEditor"
 import arrows_logo from "../images/arrows_logo.svg"
 import GoogleDriveShare from "./GoogleDriveShareWrapper"
@@ -129,6 +129,24 @@ class Header extends PureComponent {
           diagramName={this.props.diagramName}
           setDiagramName={this.props.setDiagramName}
         />
+        <Menu.Item>
+          <ButtonGroup>
+            <Button
+              icon='undo'
+              basic
+              color='black'
+              disabled={this.props.undoRedoDisabled.undo}
+              onClick={this.props.undo}
+            />
+            <Button
+              icon='redo'
+              basic
+              color='black'
+              disabled={this.props.undoRedoDisabled.redo}
+              onClick={this.props.redo}
+            />
+          </ButtonGroup>
+        </Menu.Item>
         <Menu.Item style={{opacity: 0.6}}>
           <Icon name={storageIcon(this.props.storage.mode)}/>
           {storageStatusMessage(this.props)}

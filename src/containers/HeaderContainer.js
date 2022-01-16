@@ -10,11 +10,16 @@ import {
   pickDiagram,
   postCurrentDiagramAsNewFileOnGoogleDrive
 } from "../actions/storage";
+import {ActionCreators as UndoActionCreators} from "redux-undo";
 
 const mapStateToProps = state => {
   return {
     recentStorage: state.recentStorage,
     diagramName: state.diagramName,
+    undoRedoDisabled: {
+      undo: state.graph.past.length < 1,
+      redo: state.graph.future.length < 1
+    },
     storage: state.storage
   }
 }
@@ -40,6 +45,8 @@ const mapDispatchToProps = dispatch => {
     setDiagramName: (diagramName) => {
       dispatch(renameDiagram(diagramName))
     },
+    undo: () => dispatch(UndoActionCreators.undo()),
+    redo: () => dispatch(UndoActionCreators.redo()),
     showInspector: () => {
       dispatch(toggleInspector())
     },
