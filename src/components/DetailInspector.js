@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import {Segment, Divider, Form, Input} from 'semantic-ui-react'
 import {commonValue} from "../model/values"
-import {selectedRelationships} from "../model/selection"
+import {selectedNodeIds, selectedRelationshipIds, selectedRelationships} from "../model/selection"
 import {combineProperties, combineStyle, summarizeProperties} from "../model/properties"
-import {describeSelection} from "./SelectionCounters"
+import {renderCounters} from "./EntityCounters";
 import PropertyTable from "./PropertyTable"
 import StyleTable from "./StyleTable"
 import { DetailToolbox } from "./DetailToolbox"
@@ -154,8 +154,13 @@ export default class DetailInspector extends Component {
           <Form style={{textAlign: 'left'}}>
             {disabledSubmitButtonToPreventImplicitSubmission}
             <Form.Field key='_selected'>
-              <label>Selected</label>
-              {describeSelection(selection, onSelect)}
+              <label>Selection:</label>
+              {renderCounters(
+                selectedNodeIds(selection),
+                selectedRelationshipIds(selection),
+                onSelect,
+                'blue'
+              )}
             </Form.Field>
             <DetailToolbox
               graph={graph}

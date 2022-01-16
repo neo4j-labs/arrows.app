@@ -3,6 +3,7 @@ import {createNode, setGraphStyle, setGraphStyles} from "../actions/graph";
 import GeneralInspector from "../components/GeneralInspector";
 import { getPresentGraph } from "../selectors"
 import {styleCustomize, styleTheme} from "../actions/applicationLayout";
+import {toggleSelection} from "../actions/selection";
 
 const mapStateToProps = state => {
   return {
@@ -15,6 +16,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
+    onSelect: (entities) => {
+      dispatch(toggleSelection(entities, 'replace'))
+    },
     onSaveGraphStyle: (key, value) => {
       dispatch(setGraphStyle(key, value))
     },

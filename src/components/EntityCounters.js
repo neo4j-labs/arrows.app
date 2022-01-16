@@ -1,11 +1,10 @@
 import React from 'react'
 import {Label, Icon, Form} from 'semantic-ui-react'
-import {selectedNodeIds, selectedRelationshipIds} from "../model/selection";
 
-export const describeSelection = (selection, onSelect) => {
+export const renderCounters = (nodeIds, relationshipIds, onSelect, color) => {
   const parts = []
 
-  const pushSelectionPart = (ids, entityType, iconName) => {
+  const pushCounterPill = (ids, entityType, iconName) => {
     const length = ids.length
 
     const selectOneEntityType = () => {
@@ -23,7 +22,7 @@ export const describeSelection = (selection, onSelect) => {
             as='a'
             key={entityType}
             size='large'
-            color='blue'
+            color={color}
             onClick={selectOneEntityType}>
             <Icon name={iconName}/>
             {entityType + 's:'}
@@ -34,8 +33,8 @@ export const describeSelection = (selection, onSelect) => {
     }
   }
 
-  pushSelectionPart(selectedNodeIds(selection), "node", 'circle')
-  pushSelectionPart(selectedRelationshipIds(selection), "relationship", 'long arrow alternate right')
+  pushCounterPill(nodeIds, "node", 'circle')
+  pushCounterPill(relationshipIds, "relationship", 'long arrow alternate right')
 
   return (
     <Form.Field>
