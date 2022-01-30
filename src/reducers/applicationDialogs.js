@@ -1,6 +1,7 @@
 import {retrieveHelpDismissed} from "../actions/localStorage";
 export default function applicationDialogs(state = {
   showExportDialog: false,
+  showSaveAsDialog: false,
   showImportDialog: false,
   showHelpDialog: !retrieveHelpDismissed()
 }, action) {
@@ -15,6 +16,18 @@ export default function applicationDialogs(state = {
       return {
         ...state,
         showExportDialog: false
+      }
+
+    case 'SHOW_SAVE_AS_DIALOG':
+      return {
+        ...state,
+        showSaveAsDialog: true
+      }
+
+    case 'HIDE_SAVE_AS_DIALOG':
+      return {
+        ...state,
+        showSaveAsDialog: false
       }
 
     case 'SHOW_IMPORT_DIALOG':

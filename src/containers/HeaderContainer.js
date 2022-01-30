@@ -2,7 +2,7 @@ import {connect} from 'react-redux'
 import Header from '../components/Header'
 import {toggleInspector} from "../actions/applicationLayout";
 import {renameDiagram} from "../actions/diagramName";
-import {showExportDialog, showHelpDialog, showImportDialog} from "../actions/applicationDialogs";
+import {showExportDialog, showHelpDialog, showImportDialog, showSaveAsDialog} from "../actions/applicationDialogs";
 import {
   newGoogleDriveDiagram,
   newLocalStorageDiagram,
@@ -55,6 +55,9 @@ const mapDispatchToProps = dispatch => {
     },
     storeInGoogleDrive: () => {
       dispatch(postCurrentDiagramAsNewFileOnGoogleDrive())
+    },
+    onSaveAsClick: () => {
+      dispatch(showSaveAsDialog())
     },
     onImportClick: () => {
       dispatch(showImportDialog())

@@ -12,6 +12,8 @@ import { Base64 } from 'js-base64';
 
 export default function storage(state = initialiseStorageFromWindowLocationHash(), action) {
   switch (action.type) {
+    case 'POST_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE':
+    case 'SAVE_AS_GOOGLE_DRIVE_DIAGRAM':
     case 'NEW_GOOGLE_DRIVE_DIAGRAM': {
       return {
         mode: 'GOOGLE_DRIVE',
@@ -19,6 +21,7 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
         fileId: null,
       }
     }
+    case 'SAVE_AS_LOCAL_STORAGE_DIAGRAM':
     case 'NEW_LOCAL_STORAGE_DIAGRAM': {
       return {
         mode: 'LOCAL_STORAGE',
@@ -66,13 +69,6 @@ export default function storage(state = initialiseStorageFromWindowLocationHash(
       return {
         ...state,
         status: 'GETTING'
-      }
-    }
-    case 'POST_CURRENT_DIAGRAM_AS_NEW_FILE_ON_GOOGLE_DRIVE': {
-      return {
-        mode: 'GOOGLE_DRIVE',
-        status: 'POST',
-        fileId: null,
       }
     }
     case 'GETTING_GRAPH_SUCCEEDED': {

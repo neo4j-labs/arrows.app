@@ -20,6 +20,25 @@ export function newLocalStorageDiagram() {
   }
 }
 
+export const saveAsNewDiagram = (newDiagramName) => (dispatch, getState) => {
+  const state = getState()
+  switch (state.storage.mode) {
+    case 'GOOGLE_DRIVE':
+      dispatch({
+        type: 'SAVE_AS_GOOGLE_DRIVE_DIAGRAM',
+        diagramName: newDiagramName
+      })
+      break
+
+    case 'LOCAL_STORAGE':
+      dispatch({
+        type: 'SAVE_AS_LOCAL_STORAGE_DIAGRAM',
+        diagramName: newDiagramName
+      })
+      break
+  }
+}
+
 export function openRecentFile(entry) {
   switch (entry.mode) {
     case 'GOOGLE_DRIVE':

@@ -119,6 +119,7 @@ class Header extends PureComponent {
                 {browseDiagramOptions}
               </div>
             </div>
+            <div role="option" className="item" onClick={this.props.onSaveAsClick}>Save As…</div>
             <div className="divider"/>
             <div role="option" className="item" onClick={this.props.onImportClick}>Import</div>
             <div className="divider"/>

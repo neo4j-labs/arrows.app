@@ -10,6 +10,18 @@ export const hideExportDialog = () => {
   }
 }
 
+export const showSaveAsDialog = () => {
+  return {
+    type: 'SHOW_SAVE_AS_DIALOG'
+  }
+}
+
+export const hideSaveAsDialog = () => {
+  return {
+    type: 'HIDE_SAVE_AS_DIALOG'
+  }
+}
+
 export const showImportDialog = () => {
   return {
     type: 'SHOW_IMPORT_DIALOG'
