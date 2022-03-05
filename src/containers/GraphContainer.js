@@ -10,10 +10,12 @@ import {deleteSelection, duplicateSelection} from "../actions/graph"
 import {selectAll, jumpToNextNode, tryActivateEditing} from "../actions/selection";
 import {computeCanvasSize} from "../model/applicationLayout";
 import { ActionCreators as UndoActionCreators } from 'redux-undo'
+import {getBackgroundImage} from "../selectors";
 
 const mapStateToProps = state => {
   return {
     visualGraph: getVisualGraph(state),
+    backgroundImage: getBackgroundImage(state),
     selection: state.selection,
     gestures: state.gestures,
     guides: state.guides,

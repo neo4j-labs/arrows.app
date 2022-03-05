@@ -19,7 +19,7 @@ const layerManager = (() => {
 })()
 
 export const renderVisuals = ({visuals, canvas, displayOptions}) => {
-  const { visualGraph, gestures, guides, handles } = visuals
+  const { visualGraph, backgroundImage, gestures, guides, handles } = visuals
 
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, displayOptions.canvasSize.width, displayOptions.canvasSize.height);
@@ -29,6 +29,7 @@ export const renderVisuals = ({visuals, canvas, displayOptions}) => {
 
   layerManager.clear()
 
+  layerManager.register('BACKGROUND IMAGE', backgroundImage.draw.bind(backgroundImage))
   layerManager.register('GUIDES ACTUAL POSITION', visualGuides.drawActualPosition.bind(visualGuides))
   layerManager.register('GESTURES', visualGestures.draw.bind(visualGestures))
   layerManager.register('GRAPH', visualGraph.draw.bind(visualGraph))

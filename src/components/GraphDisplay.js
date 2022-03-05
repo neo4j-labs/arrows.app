@@ -130,9 +130,9 @@ class GraphDisplay extends Component {
   }
 
   drawVisuals() {
-    const { visualGraph, selection, gestures, guides, handles, toolboxes, viewTransformation, canvasSize } = this.props
+    const { visualGraph, backgroundImage, selection, gestures, guides, handles, toolboxes, viewTransformation, canvasSize } = this.props
     renderVisuals({
-      visuals: { visualGraph, selection, gestures, guides, handles, toolboxes },
+      visuals: { visualGraph, backgroundImage, selection, gestures, guides, handles, toolboxes },
       canvas: this.canvas,
       displayOptions: { canvasSize, viewTransformation }
     })

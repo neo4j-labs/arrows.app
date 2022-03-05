@@ -1,4 +1,4 @@
-import {importNodesAndRelationships, setArrowsProperty} from "./graph";
+import {importNodesAndRelationships, setArrowsProperty, setGraphStyle} from "./graph";
 import {Point} from "../model/Point";
 import {getPresentGraph} from "../selectors";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
@@ -69,6 +69,7 @@ export const handlePaste = (pasteEvent) => {
   return function (dispatch, getState) {
     const state = getState()
     const separation = nodeSeparation(state)
+    const selection = state.selection
 
     const clipboardData = pasteEvent.clipboardData
     interpretClipboardData(clipboardData, separation, {
@@ -76,12 +77,18 @@ export const handlePaste = (pasteEvent) => {
         dispatch(importNodesAndRelationships(graph))
       },
       onPngImageUrl: (imageUrl) => {
-        shrinkImageUrl(imageUrl, 1024 * 10).then(shrunkenImageUrl => {
-          dispatch(setArrowsProperty(state.selection, 'node-background-image', shrunkenImageUrl))
-        })
+        if (selection.entities.length > 0) {
+          shrinkImageUrl(imageUrl, 1024 * 10).then(shrunkenImageUrl => {
+            dispatch(setArrowsProperty(selection, 'node-background-image', shrunkenImageUrl))
+          })
+        } else {
+          shrinkImageUrl(imageUrl, 1024 * 100).then(shrunkenImageUrl => {
+            dispatch(setGraphStyle('background-image', shrunkenImageUrl))
+          })
+        }
       },
       onSvgImageUrl: (imageUrl) => {
-        dispatch(setArrowsProperty(state.selection, 'node-icon-image', imageUrl))
+        dispatch(setArrowsProperty(selection, 'node-icon-image', imageUrl))
       }
     })
   }

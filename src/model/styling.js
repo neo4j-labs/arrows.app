@@ -93,6 +93,7 @@ export const styleAttributeGroups = [
     name: 'General', entityTypes: ['node', 'relationship'], attributes: [
       {key: 'font-family', appliesTo: 'Everything', type: 'font-family', defaultValue: 'sans-serif'},
       {key: 'background-color', appliesTo: 'Everything', type: 'color', defaultValue: white},
+      {key: 'background-image', appliesTo: 'Everything', type: 'image', defaultValue: ''},
     ]
   },
   {
