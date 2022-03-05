@@ -1,5 +1,5 @@
 import {ViewTransformation} from "../../state/ViewTransformation";
-import {getVisualGraph} from "../../selectors/index";
+import {getBackgroundImage, getVisualGraph} from "../../selectors/index";
 import {Vector} from "../../model/Vector";
 import CanvasAdaptor from "./CanvasAdaptor";
 
@@ -12,6 +12,8 @@ export const renderPngAtScaleFactor = (graph, cachedImages, scaleFactor, transpa
     }
   }
   const visualGraph = getVisualGraph(renderState)
+  const backgroundImage = getBackgroundImage(renderState)
+
   const boundingBox = visualGraph.boundingBox() || {
       left: 0, top: 0, right: 100, bottom: 100
     }
@@ -19,16 +21,21 @@ export const renderPngAtScaleFactor = (graph, cachedImages, scaleFactor, transpa
   const canvas = window.document.createElement('canvas')
   const width = Math.ceil(scaleFactor * boundingBox.width);
   const height = Math.ceil(scaleFactor * boundingBox.height);
+  const viewTransformation = new ViewTransformation(scaleFactor,
+    new Vector(-scaleFactor * boundingBox.left, -scaleFactor * boundingBox.top))
   canvas.width = width
   canvas.height = height
   const ctx = canvas.getContext('2d')
+  const canvasAdaptor = new CanvasAdaptor(ctx);
   if (!transparentBackground) {
     ctx.fillStyle = visualGraph.style['background-color']
     ctx.fillRect(0, 0, width, height)
   }
-  visualGraph.draw(new CanvasAdaptor(ctx), {
-    viewTransformation: new ViewTransformation(scaleFactor,
-      new Vector(-scaleFactor * boundingBox.left, -scaleFactor * boundingBox.top))
+  backgroundImage.draw(canvasAdaptor, {
+    viewTransformation
+  })
+  visualGraph.draw(canvasAdaptor, {
+    viewTransformation
   })
   return {
     width,
