@@ -88,7 +88,11 @@ export const handlePaste = (pasteEvent) => {
         }
       },
       onSvgImageUrl: (imageUrl) => {
-        dispatch(setArrowsProperty(selection, 'node-icon-image', imageUrl))
+        if (selection.entities.length > 0) {
+          dispatch(setArrowsProperty(selection, 'node-icon-image', imageUrl))
+        } else {
+          dispatch(setGraphStyle('background-image', imageUrl))
+        }
       }
     })
   }
@@ -115,17 +119,17 @@ const formats = [
   {
     // SVG
     recognise: (plainText) => {
-      const xmlDocument = new DOMParser().parseFromString(plainText, "image/svg+xml")
+      const xmlDocument = new DOMParser().parseFromString(plainText.trim(), "image/svg+xml")
       return xmlDocument.documentElement.tagName === 'svg'
     },
     outputType: 'svg',
     parse: (plainText) => {
-      return 'data:image/svg+xml;base64,' + Base64.encode(plainText)
+      return 'data:image/svg+xml;base64,' + Base64.encode(plainText.trim())
     }
   },
   {
     // plain text
-    recognise: () => true,
+    recognise: (plainText) => plainText && plainText.length < 10000,
     outputType: 'graph',
     parse: (plainText, separation) => {
       const lines = plainText.split('\n').filter(line => line && line.trim().length > 0)
