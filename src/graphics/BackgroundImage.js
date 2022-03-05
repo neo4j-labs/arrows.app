@@ -4,9 +4,10 @@ export class BackgroundImage {
   constructor(style, imageCache) {
     const backgroundImageUrl = style['background-image']
     if (!!backgroundImageUrl) {
+      const backgroundSize = parseFloat(style['background-size']) / 100
       this.imageInfo = getCachedImage(imageCache, backgroundImageUrl)
-      this.width = this.imageInfo.width
-      this.height = this.imageInfo.height
+      this.width = this.imageInfo.width * backgroundSize
+      this.height = this.imageInfo.height * backgroundSize
     }
   }
 

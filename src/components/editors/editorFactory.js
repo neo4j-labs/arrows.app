@@ -5,6 +5,7 @@ import Slider from './Slider'
 import Dropdown from "./Dropdown";
 import {styleAttributes, styleTypes} from "../../model/styling";
 import ImageUrlInput from "./ImageUrlInput";
+import PercentageSlider from "./PercentageSlider";
 
 export const getStyleEditorComponent = (styleKey, value, placeholder, cachedImages, onChange, onKeyPress, setFocusHandler) => {
   const attribute = styleAttributes[styleKey]
@@ -14,6 +15,20 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, cachedImag
     case 'slider':
       return (
         <Slider
+          styleKey={styleKey}
+          value={value}
+          min={styleType.min}
+          max={styleType.max}
+          step={styleType.step}
+          placeholder={placeholder}
+          onChange={onChange}
+          onKeyPress={onKeyPress}
+          setFocusHandler={setFocusHandler}
+        />
+      )
+    case 'percentageSlider':
+      return (
+        <PercentageSlider
           styleKey={styleKey}
           value={value}
           min={styleType.min}
