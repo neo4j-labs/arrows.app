@@ -93,6 +93,8 @@ export const styleAttributeGroups = [
     name: 'General', entityTypes: ['node', 'relationship'], attributes: [
       {key: 'font-family', appliesTo: 'Everything', type: 'font-family', defaultValue: 'sans-serif'},
       {key: 'background-color', appliesTo: 'Everything', type: 'color', defaultValue: white},
+      {key: 'background-image', appliesTo: 'Everything', type: 'image', defaultValue: ''},
+      {key: 'background-size', appliesTo: 'Everything', type: 'percentage', defaultValue: '100%'},
     ]
   },
   {
@@ -207,7 +209,8 @@ export const styleTypes = {
   'property-alignment': { editor: 'dropdown', options: ['colon', 'center'] },
   'label-display': { editor: 'dropdown', options: ['pill', 'bare'] },
   'attachment': { editor: 'dropdown', options: ['normal', 'top', 'right', 'bottom', 'left'] },
-  'image': { editor: 'imageUrl' }
+  'image': { editor: 'imageUrl' },
+  'percentage': { editor: 'percentageSlider', min: 5, max: 1000, step: 5 },
 }
 
 export const completeWithDefaults = (style) => {
@@ -227,6 +230,7 @@ export const validate = (styleKey, value) => {
   const styleType = styleTypes[styleAttribute.type]
   switch (styleType.editor) {
     case 'slider':
+    case 'percentageSlider':
       if (!isNaN(value)) {
         if (value < styleType.min) {
           return styleType.min

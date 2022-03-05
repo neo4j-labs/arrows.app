@@ -9,6 +9,7 @@ import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 import CanvasAdaptor from "../graphics/utils/CanvasAdaptor";
 import {nodeEditing, nodeSelected, relationshipSelected, selectedNodeIds} from "../model/selection";
 import {computeRelationshipAttachments} from "../graphics/relationshipAttachment";
+import {BackgroundImage} from "../graphics/BackgroundImage";
 
 const getSelection = (state) => state.selection
 const getMouse = (state) => state.mouse
@@ -77,6 +78,13 @@ export const getVisualGraph = createSelector(
     })
 
     return new VisualGraph(graph, visualNodes, relationshipBundles, measureTextContext)
+  }
+)
+
+export const getBackgroundImage = createSelector(
+  [getGraph, getCachedImages],
+  (graph, cachedImages) => {
+    return new BackgroundImage(graph.style, cachedImages)
   }
 )
 
