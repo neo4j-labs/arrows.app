@@ -26,7 +26,7 @@ export const DetailToolbox = (props) => {
       floated='right'
       size='small'
       icon="columns"
-      content='Inline as properties'
+      content='Inline'
       onClick={() => props.onInlineRelationships(props.selection)}/>
   )
 
@@ -81,10 +81,10 @@ const shouldShowInlineRelationshipsButton = (graph, selection) => {
     return false
   }
 
-  // all target nodes have properties
+  // all target nodes have labels or properties
   for (const targetNodeId of targetNodeIds) {
     const targetNode = graph.nodes.find(node => node.id === targetNodeId)
-    if (Object.entries(targetNode.properties).length === 0) {
+    if (targetNode.labels.length === 0 && Object.entries(targetNode.properties).length === 0) {
       return false
     }
   }

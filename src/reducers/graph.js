@@ -315,11 +315,14 @@ const graph = (state = emptyGraph(), action) => {
           .map(node => {
             const spec = action.relationshipSpecs.find(spec => spec.addPropertiesNodeId === node.id)
             if (spec) {
-              let nodeWithProperties = node
-              for (const [key, value] of Object.entries(spec.properties)) {
-                nodeWithProperties = setProperty(nodeWithProperties, key, value)
+              let augmentedNode = node
+              for (const label of spec.labels) {
+                augmentedNode = addLabel(augmentedNode, label)
               }
-              return nodeWithProperties
+              for (const [key, value] of Object.entries(spec.properties)) {
+                augmentedNode = setProperty(augmentedNode, key, value)
+              }
+              return augmentedNode
             } else {
               return node
             }

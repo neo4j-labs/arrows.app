@@ -625,6 +625,7 @@ export const inlineRelationships = selection => {
       const targetNode = graph.nodes.find(node => node.id === relationship.toId)
       return {
         addPropertiesNodeId: relationship.fromId,
+        labels: targetNode.labels,
         properties: targetNode.properties,
         removeRelationshipId: relationship.id,
         removeNodeId: relationship.toId
