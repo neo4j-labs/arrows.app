@@ -328,7 +328,10 @@ const graph = (state = emptyGraph(), action) => {
             }
           }),
         relationships: state.relationships
-          .filter(relationship => !action.relationshipSpecs.some(spec => spec.removeRelationshipId === relationship.id))
+          .filter(relationship => !action.relationshipSpecs.some(spec =>
+            spec.removeNodeId === relationship.fromId ||
+            spec.removeNodeId === relationship.toId
+          ))
       }
 
     case 'GETTING_GRAPH_SUCCEEDED':

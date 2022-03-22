@@ -627,7 +627,6 @@ export const inlineRelationships = selection => {
         addPropertiesNodeId: relationship.fromId,
         labels: targetNode.labels,
         properties: targetNode.properties,
-        removeRelationshipId: relationship.id,
         removeNodeId: relationship.toId
       }
     })
