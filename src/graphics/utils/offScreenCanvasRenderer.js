@@ -3,7 +3,7 @@ import {getBackgroundImage, getVisualGraph} from "../../selectors/index";
 import {Vector} from "../../model/Vector";
 import CanvasAdaptor from "./CanvasAdaptor";
 
-export const renderPngAtScaleFactor = (graph, cachedImages, scaleFactor, transparentBackground) => {
+export const renderPngAtScaleFactor = (graph, cachedImages, scaleFactor, maxPixels, transparentBackground) => {
   const renderState = {
     graph,
     cachedImages,
@@ -21,6 +21,11 @@ export const renderPngAtScaleFactor = (graph, cachedImages, scaleFactor, transpa
   const canvas = window.document.createElement('canvas')
   const width = Math.ceil(scaleFactor * boundingBox.width);
   const height = Math.ceil(scaleFactor * boundingBox.height);
+
+  if (width * height > maxPixels) {
+    throw new Error('Too Big to render safely.')
+  }
+
   const viewTransformation = new ViewTransformation(scaleFactor,
     new Vector(-scaleFactor * boundingBox.left, -scaleFactor * boundingBox.top))
   canvas.width = width
@@ -64,5 +69,5 @@ export const renderPngForThumbnail = (graph, cachedImages) => {
   const maxPixels = targetWidth * targetWidth
   const naturalPixels = boundingBox.width * boundingBox.height
   const scaleFactor = Math.sqrt(maxPixels / naturalPixels)
-  return renderPngAtScaleFactor(graph, cachedImages, scaleFactor, false)
+  return renderPngAtScaleFactor(graph, cachedImages, scaleFactor, Infinity,false)
 }
