@@ -20,6 +20,7 @@ import ImportContainer from "./containers/ImportContainer";
 import {handlePaste} from "./actions/import";
 import {handleCopy} from "./actions/export";
 import {linkToGoogleFontsCss} from "./graphics/utils/fontWrangling";
+import {handleImportMessage} from "./reducers/storage";
 
 class App extends Component {
   constructor (props) {
@@ -28,6 +29,7 @@ class App extends Component {
     window.addEventListener('keydown', this.fireKeyboardShortcutAction.bind(this))
     window.addEventListener('copy', this.handleCopy.bind(this))
     window.addEventListener('paste', this.handlePaste.bind(this))
+    window.addEventListener('message', this.handleMessage.bind(this))
   }
 
   render() {
@@ -111,6 +113,10 @@ class App extends Component {
     this.props.handlePaste(ev)
   }
 
+  handleMessage(ev) {
+    this.props.handleImportMessage(ev)
+  }
+
   componentDidMount() {
     window.addEventListener('resize', this.props.onWindowResized)
   }
@@ -133,7 +139,8 @@ const mapDispatchToProps = dispatch => {
     onCancelPicker: () => dispatch(pickDiagramCancel()),
     loadFromGoogleDrive: fileId => dispatch(getFileFromGoogleDrive(fileId)),
     handleCopy: () => dispatch(handleCopy()),
-    handlePaste: clipboardEvent => dispatch(handlePaste(clipboardEvent))
+    handlePaste: clipboardEvent => dispatch(handlePaste(clipboardEvent)),
+    handleImportMessage: message => dispatch(handleImportMessage(message))
   }
 }
 

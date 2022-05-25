@@ -9,6 +9,7 @@ import {constructGraphFromFile} from "../storage/googleDriveStorage";
 import {loadLegacyAppData, loadRecentlyAccessedDiagrams, saveGraphToLocalStorage} from "../actions/localStorage";
 import {defaultName} from "./diagramName";
 import { Base64 } from 'js-base64';
+import {getFileFromLocalStorage} from "../actions/storage";
 
 export default function storage(state = initialiseStorageFromWindowLocationHash(), action) {
   switch (action.type) {
@@ -182,6 +183,20 @@ const newLocalFile = () => {
     status: 'POST',
     fileId,
   }
+}
+
+export const handleImportMessage = (message) => {
+  if (message.origin !== "http://localhost:8000") return {
+    type: 'IGNORE'
+  };
+  console.log("Message!", message.data)
+
+  const data = JSON.parse(message.data)
+  const graph = constructGraphFromFile(data).graph
+  const diagramName = data.diagramName || defaultName
+  const fileId = generateLocalFileId()
+  saveGraphToLocalStorage(fileId, {graph, diagramName})
+  return getFileFromLocalStorage(fileId)
 }
 
 const storeNewDiagramInLocalStorage = (data) => {
