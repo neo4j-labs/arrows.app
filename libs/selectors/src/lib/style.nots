@@ -1,0 +1,20 @@
+// ABK this was moved into model/src/lib/styling.ts to break a circular dependency
+import {createSelector} from "reselect";
+import {validate} from "../model/styling";
+
+import { Graph, Entity } from '@neo4j-arrows/model'
+
+const graphStyleSelector = (graph:Graph) => graph.style || {}
+
+const specificOrGeneral = (styleKey:string, entity:Entity, graphStyle:Record<string, unknown>) => {
+  if (entity.style && Object.hasOwn(entity.style, styleKey)) {
+    return entity.style[styleKey]
+  }
+  return graphStyle[styleKey]
+}
+
+export const getStyleSelector = (entity:Entity, styleKey:string) =>
+  createSelector(
+    graphStyleSelector,
+    graphStyle => validate(styleKey, specificOrGeneral(styleKey, entity, graphStyle))
+  )

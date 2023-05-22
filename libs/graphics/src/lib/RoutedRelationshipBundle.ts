@@ -1,0 +1,177 @@
+import {ParallelArrow} from "./ParallelArrow";
+import {normalStraightArrow, StraightArrow} from "./StraightArrow";
+import {VisualRelationship} from "./VisualRelationship";
+import {EntitySelection, Graph, Relationship, relationshipEditing} from "@neo4j-arrows/model";
+import {BalloonArrow} from "./BalloonArrow";
+import {neighbourPositions} from "@neo4j-arrows/model";
+import {clockwiseAngularSpace} from "./utils/clockwiseAngularSpace";
+import {normaliseAngle} from "./utils/angles";
+import {ElbowArrow} from "./ElbowArrow";
+import {RectilinearArrow} from "./RectilinearArrow";
+import {relationshipArrowDimensions} from "./arrowDimensions";
+import {combineBoundingBoxes} from "./utils/BoundingBox";
+import { ResolvedRelationship } from "./ResolvedRelationship";
+import { ImageInfo } from "./utils/ImageCache";
+import { TextMeasurementContext } from "./utils/TextMeasurementContext";
+import { CanvasAdaptor } from "./utils/CanvasAdaptor";
+import { DrawingContext } from "./utils/DrawingContext";
+
+export class RoutedRelationshipBundle {
+  routedRelationships: VisualRelationship[];
+  constructor(relationships:ResolvedRelationship[], graph:Graph, selection:EntitySelection, measureTextContext:TextMeasurementContext, imageCache:Record<string, ImageInfo>) {
+    const arrows = []
+
+    const leftNode = relationships[0].from
+    const rightNode = relationships[0].to
+
+    const arrowDimensions = relationships.map(relationship => relationshipArrowDimensions(relationship, graph, leftNode))
+
+    const leftRadius = Math.max(...arrowDimensions.map(arrow => (arrow.leftToRight ? arrow.startRadius : arrow.endRadius) || 0))
+    const rightRadius = Math.max(...arrowDimensions.map(arrow => (arrow.leftToRight ? arrow.endRadius : arrow.startRadius) || 0))
+    const maxLeftHeadHeight = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? 0 : arrow.headHeight))
+    const maxRightHeadHeight = Math.max(...arrowDimensions.map(arrow => arrow.leftToRight ? arrow.headHeight : 0))
+    const relationshipSeparation = Math.max(...arrowDimensions.map(arrow => arrow.separation))
+
+    if (relationships[0].startAttachment || relationships[0].endAttachment) {
+      if (relationships[0].startAttachment && relationships[0].endAttachment) {
+        console.log('recti')
+        for (let i = 0; i < relationships.length; i++) {
+          const dimensions = arrowDimensions[i]
+          const relationship = relationships[i]
+
+          arrows[i] = new RectilinearArrow(
+            relationship.from.position,
+            relationship.to.position,
+            dimensions.startRadius ||0,
+            dimensions.endRadius || 0,
+            relationship.startAttachment,
+            relationship.endAttachment,
+            dimensions
+          )
+        }
+      } else {
+        console.log('elbow', relationships)
+        for (let i = 0; i < relationships.length; i++) {
+          const dimensions = arrowDimensions[i]
+          const relationship = relationships[i]
+
+          arrows[i] = new ElbowArrow(
+            relationship.from.position,
+            relationship.to.position,
+            dimensions.startRadius || 0,
+            dimensions.endRadius || 0,
+            relationship.startAttachment,
+            relationship.endAttachment,
+            dimensions
+          )
+        }
+      }
+    } else if (leftNode === rightNode) {
+      const selfNode = leftNode
+      const neighbourAngles = neighbourPositions(selfNode.node, graph).map(position => position.vectorFrom(selfNode.position).angle())
+      const biggestAngularSpace = clockwiseAngularSpace(neighbourAngles)
+      const angularSeparation = biggestAngularSpace.gap / (relationships.length + Math.sign(neighbourAngles.length))
+
+      for (let i = 0; i < relationships.length; i++) {
+        const dimensions = arrowDimensions[i]
+
+        arrows[i] = new BalloonArrow(
+          selfNode.position,
+          dimensions.startRadius || 0,
+          normaliseAngle(biggestAngularSpace.start + (i + 1) * angularSeparation),
+          relationshipSeparation,
+          (dimensions.startRadius || 0) * 4,
+          40,
+          dimensions
+        )
+      }
+    } else {
+      const firstDisplacement = -(relationships.length - 1) * relationshipSeparation / 2
+      const middleRelationshipIndex = (relationships.length - 1) / 2;
+
+      const maxDeflection = Math.PI / 2
+      let leftTightening = 0.6
+      if (relationshipSeparation * (relationships.length - 1) * leftTightening / leftRadius > maxDeflection) {
+        leftTightening = maxDeflection * leftRadius / (relationshipSeparation * (relationships.length - 1))
+      }
+      if ((leftRadius + maxLeftHeadHeight) * Math.sin(leftTightening * -firstDisplacement / leftRadius) > -firstDisplacement) {
+        leftTightening = Math.asin(firstDisplacement / (leftRadius + maxLeftHeadHeight)) * leftRadius / firstDisplacement
+      }
+
+      let rightTightening = 0.6
+      if (relationshipSeparation * (relationships.length - 1) * rightTightening / rightRadius > maxDeflection) {
+        rightTightening = maxDeflection * rightRadius / (relationshipSeparation * (relationships.length - 1))
+      }
+      if ((rightRadius + maxRightHeadHeight) * Math.sin(rightTightening * -firstDisplacement / rightRadius) > -firstDisplacement) {
+        rightTightening = Math.asin(firstDisplacement / (rightRadius + maxRightHeadHeight)) * rightRadius / firstDisplacement
+      }
+
+      let possibleToDrawParallelArrows = true
+
+      for (let i = 0; i < relationships.length; i++) {
+        const relationship = relationships[i]
+        const dimensions = arrowDimensions[i]
+
+        if (i === middleRelationshipIndex) {
+          arrows[i] = normalStraightArrow(
+            relationship.from.position,
+            relationship.to.position,
+            dimensions.startRadius || 0,
+            dimensions.endRadius || 0,
+            dimensions
+          )
+        } else {
+          const displacement = (firstDisplacement + i * relationshipSeparation) * (dimensions.leftToRight ? 1 : -1)
+          const arrow = new ParallelArrow(
+            relationship.from.position,
+            relationship.to.position,
+            dimensions.startRadius || 0,
+            dimensions.endRadius || 0,
+            displacement * (dimensions.leftToRight ? leftTightening / leftRadius : rightTightening / rightRadius),
+            displacement * (dimensions.leftToRight ? rightTightening / rightRadius : leftTightening / leftRadius),
+            displacement,
+            40,
+            dimensions
+          )
+          possibleToDrawParallelArrows &&= arrow.drawArcs
+          arrows[i] = arrow
+        }
+      }
+
+      if (!possibleToDrawParallelArrows) {
+        for (let i = 0; i < arrows.length; i++) {
+          if (i !== middleRelationshipIndex) {
+            const parallelArrow:StraightArrow | ParallelArrow = arrows[i]
+            arrows[i] = new StraightArrow(
+              parallelArrow.startCentre,
+              parallelArrow.endCentre,
+              parallelArrow.startAttach,
+              parallelArrow.endAttach,
+              arrowDimensions[i]
+            )
+          }
+        }
+      }
+    }
+
+    this.routedRelationships = []
+    for (let i = 0; i < relationships.length; i++) {
+      const relationship = relationships[i]
+
+      this.routedRelationships.push(new VisualRelationship(
+        relationship, graph, arrows[i], relationshipEditing(selection, relationship.id), measureTextContext, imageCache
+      ))
+    }
+  }
+
+  boundingBox() {
+    return combineBoundingBoxes(this.routedRelationships
+      .map(routedRelationship => routedRelationship.boundingBox()))
+  }
+
+  draw(ctx:DrawingContext) {
+    this.routedRelationships.forEach(routedRelationship => {
+      routedRelationship.draw(ctx)
+    })
+  }
+}

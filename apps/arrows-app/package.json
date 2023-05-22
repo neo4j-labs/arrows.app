@@ -1,0 +1,49 @@
+{
+  "name": "arrows-app",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@japont/unicode-range": "^1.0.0",
+    "date-fns": "^2.29.3",
+    "graphql": "^16.6.0",
+    "js-base64": "^3.7.5",
+    "lodash.find": "^4.6.0",
+    "lodash.get": "^4.4.2",
+    "memoizee": "^0.4.15",
+    "neo4j-driver": "^5.7.0",
+    "react": "^18.2.0",
+    "react-color": "^2.19.3",
+    "react-document-title": "^2.0.3",
+    "react-dom": "^18.2.0",
+    "react-from-dom": "^0.6.2",
+    "react-redux": "^8.0.5",
+    "react-scripts": "=5.0.1",
+    "react-youtube": "^10.1.0",
+    "recompose": "^0.30.0",
+    "redux": "^4.2.1",
+    "redux-thunk": "^2.4.2",
+    "redux-undo": "^1.0.1",
+    "reselect": "^4.1.8",
+    "semantic-ui-css": "^2.5.0",
+    "semantic-ui-react": "^2.1.4"
+  },
+  "scripts": {
+    "start": "nx exec -- vite",
+    "build": "nx exec -- vite build",
+    "test": "nx exec -- vitest",
+    "eject": "react-scripts eject",
+    "serve": "nx exec -- vite"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
