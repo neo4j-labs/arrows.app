@@ -18,9 +18,13 @@ and [Graph Visualization](https://neo4j.com/developer/tools-graph-visualization/
 
 Arrows.app powered by [Neo4j Labs](https://neo4j.com/labs/).
 
-## Feedback and Suggestions
+## Issues and Feedback
 
-To provide feedback, please create an [issue](https://github.com/neo4j-labs/arrows.app/issues) in this GitHub repo.
+To report a problem that needs fixing, please create an [issue](https://github.com/neo4j-labs/arrows.app/issues).
+
+For suggestions and feedback, please start a [discussion](https://github.com/neo4j-labs/arrows.app/discussions).
+
+To chat directly with the developers about contributing code, join us over on [Neo4j Discord #neo4j-arrows](https://discord.gg/neo4j).
 
 ---
 
