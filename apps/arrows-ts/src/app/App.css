@@ -1,0 +1,13 @@
+html, body {
+  overflow: hidden;
+}
+
+.App-header {
+  background-color: #222;
+  padding: 20px;
+  color: white;
+}
+
+.ui.input.property-key input {
+  text-align: right;
+}

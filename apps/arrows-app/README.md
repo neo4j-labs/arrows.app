@@ -1,3 +1,6 @@
+**This is an archival snapshot of the arrows codebase, kept for reference as we port to** 
+**Typescript and extract modules.**
+
 # neo4j-arrows-app
 
 Web-based tool for drawing pictures of graphs.
