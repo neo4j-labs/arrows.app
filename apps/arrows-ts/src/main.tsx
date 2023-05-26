@@ -4,7 +4,7 @@ import thunkMiddleware from 'redux-thunk'
 import {render} from 'react-dom';
 import {Provider} from 'react-redux'
 import {createStore, applyMiddleware} from 'redux'
-import './index.css'
+
 import reducer from './reducers'
 
 import registerServiceWorker from './registerServiceWorker'
@@ -17,6 +17,7 @@ import {windowResized} from "./actions/applicationLayout";
 import {initRecentStorage, recentStorageMiddleware} from "./middlewares/recentStorageMiddleware";
 import {imageCacheMiddleware} from "./middlewares/imageCacheMiddleware";
 
+import './styles.css'
 
 import App from './app/app';
 
@@ -43,9 +44,10 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <StrictMode>
-    <App />
+    <Provider store={store}>
+          <App />
+        </Provider>,
   </StrictMode>
 );
-
 
 registerServiceWorker()

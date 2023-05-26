@@ -3,11 +3,11 @@ import { writeQueriesForAction } from "./cypherWriteQueries";
 import { getPresentGraph } from "../selectors"
 import {gettingGraph} from "../actions/storage";
 
-const neo4j = require("neo4j-driver/lib/browser/neo4j-web.min.js").v1;
+import neo4j, {Driver as Neo4jDriver, SessionMode} from "neo4j-driver";
 
-let driver = null
+let driver:Neo4jDriver | null = null
 
-export const updateDriver = (newDriver) => {
+export const updateDriver = (newDriver:Neo4jDriver) => {
   if (driver) {
     driver.close()
   }
@@ -15,25 +15,25 @@ export const updateDriver = (newDriver) => {
 }
 
 export function fetchGraphFromDatabase() {
-  return function (dispatch) {
+  return function (dispatch:( args:{type:string} ) => void) {
     if (driver) {
       dispatch(gettingGraph())
 
-      let session = driver.session(neo4j.READ)
+      const session = driver.session({defaultAccessMode:"READ"})
 
       readGraph(session, dispatch)
     }
   }
 }
 
-export const updateStore = (action, state) => {
+export const updateStore = (action:any, state:any) => {
   const graph = getPresentGraph(state)
   const workList = [writeQueriesForAction(action, graph)]
 
   const layers = state.applicationLayout.layers
 
   if (layers && layers.length > 0) {
-    layers.forEach(layer => {
+    layers.forEach( (layer:any) => {
       if (layer.persist && layer.storageActionHandler && layer.storageActionHandler['neo4j']) {
         workList.push(layer.storageActionHandler['neo4j'](action))
       }

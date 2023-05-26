@@ -1,26 +1,27 @@
 import React, {Component} from 'react'
-import GraphContainer from "./containers/GraphContainer"
+import GraphContainer from "../containers/GraphContainer"
 import {connect} from 'react-redux'
+import withKeybindings, { ignoreTarget } from '../interactions/Keybindings'
+import {windowResized} from "../actions/applicationLayout"
+import { compose } from 'react-recompose'
+import HeaderContainer from '../containers/HeaderContainer'
+import InspectorChooser from "../containers/InspectorChooser"
+import {computeCanvasSize, inspectorWidth} from "../model/applicationLayout";
+import ExportContainer from "../containers/ExportContainer";
+import GoogleSignInModal from "../components/editors/GoogleSignInModal";
+import HelpModal from "../components/HelpModal";
+import GoogleDrivePicker from '../components/GoogleDrivePickerWrapper'
+import {getFileFromGoogleDrive, pickDiagramCancel} from "../actions/storage"
+import FooterContainer from "../containers/FooterContainer";
+import LocalStoragePickerContainer from "../containers/LocalStoragePickerContainer";
+import SaveAsContainer from "../containers/SaveAsContainer";
+import ImportContainer from "../containers/ImportContainer";
+import {handlePaste} from "../actions/import";
+import {handleCopy} from "../actions/export";
+import {linkToGoogleFontsCss} from "../graphics/utils/fontWrangling";
+import {handleImportMessage} from "../reducers/storage";
+
 import './App.css'
-import withKeybindings, { ignoreTarget } from './interactions/Keybindings'
-import {windowResized} from "./actions/applicationLayout"
-import { compose } from 'recompose'
-import HeaderContainer from './containers/HeaderContainer'
-import InspectorChooser from "./containers/InspectorChooser"
-import {computeCanvasSize, inspectorWidth} from "./model/applicationLayout";
-import ExportContainer from "./containers/ExportContainer";
-import GoogleSignInModal from "./components/editors/GoogleSignInModal";
-import HelpModal from "./components/HelpModal";
-import GoogleDrivePicker from './components/GoogleDrivePickerWrapper'
-import {getFileFromGoogleDrive, pickDiagramCancel} from "./actions/storage"
-import FooterContainer from "./containers/FooterContainer";
-import LocalStoragePickerContainer from "./containers/LocalStoragePickerContainer";
-import SaveAsContainer from "./containers/SaveAsContainer";
-import ImportContainer from "./containers/ImportContainer";
-import {handlePaste} from "./actions/import";
-import {handleCopy} from "./actions/export";
-import {linkToGoogleFontsCss} from "./graphics/utils/fontWrangling";
-import {handleImportMessage} from "./reducers/storage";
 
 class App extends Component {
   constructor (props) {
