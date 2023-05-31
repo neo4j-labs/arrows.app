@@ -1,6 +1,6 @@
 import {ViewTransformation} from "../../state/ViewTransformation";
 import {getBackgroundImage, getVisualGraph} from "../../selectors/index";
-import {Vector} from "../../model/Vector";
+import {Vector} from "../../model-old/Vector";
 import CanvasAdaptor from "./CanvasAdaptor";
 
 export const renderPngAtScaleFactor = (graph, cachedImages, scaleFactor, maxPixels, transparentBackground) => {

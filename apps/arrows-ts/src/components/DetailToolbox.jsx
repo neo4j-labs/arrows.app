@@ -1,6 +1,6 @@
 import React from 'react'
 import {Button, Form} from 'semantic-ui-react'
-import {selectedNodeIds, selectedRelationshipIds, selectedRelationships} from "../model/selection";
+import {selectedNodeIds, selectedRelationshipIds, selectedRelationships} from "../model-old/selection";
 
 export const DetailToolbox = (props) => {
   const relationshipToolboxItems = (

@@ -5,8 +5,8 @@ import {adjustViewport} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {selectItemsInMarquee, setMarquee} from "./selectionMarquee"
 import {getEventHandlers} from "../selectors/layers";
-import {canvasPadding, computeCanvasSize, subtractPadding} from "../model/applicationLayout";
-import {Vector} from "../model/Vector";
+import {canvasPadding, computeCanvasSize, subtractPadding} from "../model-old/applicationLayout";
+import {Vector} from "../model-old/Vector";
 
 const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inverse(canvasPosition)
 

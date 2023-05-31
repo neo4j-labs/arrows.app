@@ -1,9 +1,9 @@
 import snapToTargetNode from "./snapToTargetNode"
 import {snapToDistancesAndAngles} from "./geometricSnapping"
-import {idsMatch} from "../model/Id"
+import {idsMatch} from "../model-old/Id"
 import {getVisualGraph} from "../selectors"
-import {selectedNodeIds} from "../model/selection";
-import {Guides} from "../model/guides/guides";
+import {selectedNodeIds} from "../model-old/selection";
+import {Guides} from "../model-old/guides/guides";
 
 export const activateRing = (sourceNodeId, nodeType) => {
   return {

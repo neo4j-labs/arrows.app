@@ -1,6 +1,6 @@
 import {getStyleSelector} from "../selectors/style";
 import {adaptForBackground} from "./backgroundColorAdaption";
-import {selectionBorder} from "../model/colors";
+import {selectionBorder} from "../model-old/colors";
 
 export const relationshipArrowDimensions = (resolvedRelationship, graph, leftNode) => {
   const style = styleKey => getStyleSelector(resolvedRelationship.relationship, styleKey)(graph)

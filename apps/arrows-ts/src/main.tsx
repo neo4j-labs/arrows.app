@@ -19,7 +19,7 @@ import {imageCacheMiddleware} from "./middlewares/imageCacheMiddleware";
 
 import './styles.css'
 
-import App from './app/app';
+import App from './app/App';
 
 const middleware = [
   recentStorageMiddleware,
@@ -45,8 +45,8 @@ const root = ReactDOM.createRoot(
 root.render(
   <StrictMode>
     <Provider store={store}>
-          <App />
-        </Provider>,
+      <App />
+    </Provider>,
   </StrictMode>
 );
 

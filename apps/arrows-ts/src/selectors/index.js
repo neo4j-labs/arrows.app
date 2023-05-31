@@ -4,10 +4,10 @@ import VisualNode from "../graphics/VisualNode";
 import ResolvedRelationship from "../graphics/ResolvedRelationship";
 import VisualGraph from "../graphics/VisualGraph";
 import TransformationHandles from "../graphics/TransformationHandles";
-import {bundle} from "../model/graph/relationshipBundling";
+import {bundle} from "../model-old/graph/relationshipBundling";
 import {RoutedRelationshipBundle} from "../graphics/RoutedRelationshipBundle";
 import CanvasAdaptor from "../graphics/utils/CanvasAdaptor";
-import {nodeEditing, nodeSelected, relationshipSelected, selectedNodeIds} from "../model/selection";
+import {nodeEditing, nodeSelected, relationshipSelected, selectedNodeIds} from "../model-old/selection";
 import {computeRelationshipAttachments} from "../graphics/relationshipAttachment";
 import {BackgroundImage} from "../graphics/BackgroundImage";
 

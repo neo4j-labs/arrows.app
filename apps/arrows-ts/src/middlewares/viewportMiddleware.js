@@ -1,9 +1,9 @@
 import {adjustViewport} from "../actions/viewTransformation"
-import {Point} from "../model/Point"
+import {Point} from "../model-old/Point"
 import {ViewTransformation} from "../state/ViewTransformation";
-import {Vector} from "../model/Vector";
+import {Vector} from "../model-old/Vector";
 import {tryMoveNode} from "../actions/graph";
-import {canvasPadding, computeCanvasSize} from "../model/applicationLayout";
+import {canvasPadding, computeCanvasSize} from "../model-old/applicationLayout";
 import {getVisualGraph} from "../selectors/index";
 import BoundingBox from "../graphics/utils/BoundingBox";
 

@@ -1,6 +1,6 @@
 import BoundingBox from "./utils/BoundingBox";
-import {selectionBorder, selectionHandle} from "../model/colors";
-import {Point} from "../model/Point";
+import {selectionBorder, selectionHandle} from "../model-old/colors";
+import {Point} from "../model-old/Point";
 import {adaptForBackground} from "./backgroundColorAdaption";
 
 export default class Pill {

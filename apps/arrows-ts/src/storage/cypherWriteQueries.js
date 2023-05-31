@@ -1,8 +1,8 @@
-import {stringTypeToDatabaseType} from "../model/Relationship";
-import {propertyKeyToDatabaseKey, styleKeyToDatabaseKey} from "../model/properties";
-import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
-import {labelToDatabaseLabel} from "../model/labels";
-import {selectedNodeIds, selectedRelationshipIds} from "../model/selection";
+import {stringTypeToDatabaseType} from "../model-old/Relationship";
+import {propertyKeyToDatabaseKey, styleKeyToDatabaseKey} from "../model-old/properties";
+import { nodeStyleAttributes, relationshipStyleAttributes } from "../model-old/styling";
+import {labelToDatabaseLabel} from "../model-old/labels";
+import {selectedNodeIds, selectedRelationshipIds} from "../model-old/selection";
 
 export const writeQueriesForAction = (action, graph) => {
 

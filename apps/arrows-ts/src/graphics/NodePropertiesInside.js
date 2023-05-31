@@ -1,4 +1,4 @@
-import {Point} from "../model/Point";
+import {Point} from "../model-old/Point";
 import {PropertiesBox} from "./PropertiesBox";
 
 export class NodePropertiesInside {

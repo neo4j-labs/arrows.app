@@ -1,6 +1,6 @@
 import {drawTextLine} from "./canvasRenderer";
 import {fitTextToCircle} from "./utils/circleWordWrap";
-import {Point} from "../model/Point";
+import {Point} from "../model-old/Point";
 import BoundingBox from "./utils/BoundingBox";
 
 export class NodeCaptionFillNode {

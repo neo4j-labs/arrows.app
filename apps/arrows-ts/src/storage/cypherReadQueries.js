@@ -1,9 +1,9 @@
-import { Point } from "../model/Point";
-import { databaseTypeToStringType } from "../model/Relationship";
-import { propertiesFromDatabaseEntity, styleFromDatabaseEntity } from "../model/properties";
-import { emptyGraph } from "../model/Graph";
+import { Point } from "../model-old/Point";
+import { databaseTypeToStringType } from "../model-old/Relationship";
+import { propertiesFromDatabaseEntity, styleFromDatabaseEntity } from "../model-old/properties";
+import { emptyGraph } from "../model-old/Graph";
 import { loadClusters } from "../actions/gang"
-import {labelsFromDatabaseEntity} from "../model/labels";
+import {labelsFromDatabaseEntity} from "../model-old/labels";
 import {gettingGraphFailed, gettingGraphSucceeded} from "../actions/storage";
 
 function toNumber(prop) {

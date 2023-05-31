@@ -1,5 +1,5 @@
 import { UnicodeRange } from '@japont/unicode-range'
-import {googleFonts} from "../../model/fonts";
+import {googleFonts} from "../../model-old/fonts";
 
 export const assembleGoogleFontFacesCssWithEmbeddedFontData = (fontFamily, graphCodePoints) => {
   if (googleFonts.some(font => font.fontFamily === fontFamily)) {

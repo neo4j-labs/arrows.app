@@ -1,4 +1,4 @@
-import {Vector} from "../model/Vector";
+import {Vector} from "../model-old/Vector";
 
 export class ViewTransformation {
   constructor(scale = 1, offset = new Vector(0, 0)) {

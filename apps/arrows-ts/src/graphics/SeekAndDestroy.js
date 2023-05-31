@@ -1,5 +1,5 @@
 import {normaliseAngle} from "./utils/angles";
-import {Vector} from "../model/Vector";
+import {Vector} from "../model-old/Vector";
 import {getDistanceToLine} from "./utils/geometryUtils";
 
 export class SeekAndDestroy {

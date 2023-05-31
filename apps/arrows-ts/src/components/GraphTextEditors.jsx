@@ -9,7 +9,7 @@ import {NodeCaptionOutsideNode} from "../graphics/NodeCaptionOutsideNode";
 import {measureTextContext} from "../selectors";
 import {RelationshipType} from "../graphics/RelationshipType";
 import {ComponentStack} from "../graphics/ComponentStack";
-import {Vector} from "../model/Vector";
+import {Vector} from "../model-old/Vector";
 
 const EditableComponentTypes = ['CAPTION', 'LABELS', 'TYPE', 'PROPERTIES']
 

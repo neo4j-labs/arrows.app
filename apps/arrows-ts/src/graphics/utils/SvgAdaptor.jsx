@@ -1,4 +1,4 @@
-import {Point} from "../../model/Point";
+import {Point} from "../../model-old/Point";
 export default class SvgAdaptor {
 
   constructor(width, height) {

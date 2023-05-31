@@ -1,6 +1,6 @@
 import arrowHead from "./arrowHead";
-import {Point} from "../model/Point";
-import {Vector} from "../model/Vector";
+import {Point} from "../model-old/Point";
+import {Vector} from "../model-old/Vector";
 import {SeekAndDestroy} from "./SeekAndDestroy";
 import {normaliseAngle} from "./utils/angles";
 

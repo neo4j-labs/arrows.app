@@ -1,4 +1,4 @@
-import {Size} from "../model/Size";
+import {Size} from "../model-old/Size";
 
 const applicationLayout = (state = {
   windowSize: new Size(window.innerWidth, window.innerHeight),

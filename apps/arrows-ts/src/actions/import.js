@@ -1,9 +1,9 @@
 import {importNodesAndRelationships, setArrowsProperty, setGraphStyle} from "./graph";
-import {Point} from "../model/Point";
+import {Point} from "../model-old/Point";
 import {getPresentGraph} from "../selectors";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
-import {translate} from "../model/Node";
-import {Vector} from "../model/Vector";
+import {translate} from "../model-old/Node";
+import {Vector} from "../model-old/Vector";
 import {hideImportDialog} from "./applicationDialogs";
 import {shrinkImageUrl} from "../graphics/utils/resizeImage";
 import {Base64} from "js-base64";

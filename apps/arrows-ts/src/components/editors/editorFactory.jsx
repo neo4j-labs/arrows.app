@@ -3,7 +3,7 @@ import {Input} from 'semantic-ui-react'
 import ColorPicker from './ColorPicker'
 import Slider from './Slider'
 import Dropdown from "./Dropdown";
-import {styleAttributes, styleTypes} from "../../model/styling";
+import {styleAttributes, styleTypes} from "../../model-old/styling";
 import ImageUrlInput from "./ImageUrlInput";
 import PercentageSlider from "./PercentageSlider";
 

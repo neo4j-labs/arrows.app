@@ -1,17 +1,17 @@
 import React, {Component} from 'react'
 import {Segment, Divider, Form, Input, ButtonGroup, Button} from 'semantic-ui-react'
-import {commonValue} from "../model/values"
-import {selectedNodeIds, selectedRelationshipIds, selectedRelationships} from "../model/selection"
-import {combineProperties, combineStyle, summarizeProperties} from "../model/properties"
+import {commonValue} from "../model-old/values"
+import {selectedNodeIds, selectedRelationshipIds, selectedRelationships} from "../model-old/selection"
+import {combineProperties, combineStyle, summarizeProperties} from "../model-old/properties"
 import {renderCounters} from "./EntityCounters";
 import PropertyTable from "./PropertyTable"
 import StyleTable from "./StyleTable"
 import { DetailToolbox } from "./DetailToolbox"
-import {categoriesPresent, styleAttributeGroups} from "../model/styling";
-import {combineLabels, summarizeLabels} from "../model/labels";
+import {categoriesPresent, styleAttributeGroups} from "../model-old/styling";
+import {combineLabels, summarizeLabels} from "../model-old/labels";
 import LabelTable from "./LabelTable";
 import {CaptionInspector} from "./CaptionInspector";
-import {graphsDifferInMoreThanPositions} from "../model/Graph";
+import {graphsDifferInMoreThanPositions} from "../model-old/Graph";
 
 export default class DetailInspector extends Component {
   constructor(props) {

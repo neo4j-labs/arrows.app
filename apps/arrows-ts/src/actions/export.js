@@ -1,5 +1,5 @@
 import {getPresentGraph} from "../selectors";
-import {selectedNodes, selectedRelationships} from "../model/selection";
+import {selectedNodes, selectedRelationships} from "../model-old/selection";
 
 export const handleCopy = () => {
   return function (dispatch, getState) {

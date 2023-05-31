@@ -1,4 +1,4 @@
-import {selectionBorder, selectionHandle} from "../model/colors";
+import {selectionBorder, selectionHandle} from "../model-old/colors";
 import {getCachedImage} from "./utils/ImageCache";
 import {adaptForBackground} from "./backgroundColorAdaption";
 

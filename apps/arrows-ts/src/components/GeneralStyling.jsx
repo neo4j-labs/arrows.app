@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import StyleTable from "./StyleTable"
-import {styleAttributeGroups} from "../model/styling";
+import {styleAttributeGroups} from "../model-old/styling";
 
 export default class GeneralStyling extends Component {
   render() {

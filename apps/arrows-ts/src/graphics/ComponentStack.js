@@ -1,4 +1,4 @@
-import {Vector} from "../model/Vector";
+import {Vector} from "../model-old/Vector";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 
 export class ComponentStack {
