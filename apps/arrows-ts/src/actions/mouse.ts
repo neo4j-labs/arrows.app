@@ -1,18 +1,20 @@
-import {getPositionsOfSelectedNodes, getPresentGraph, getTransformationHandles, getVisualGraph} from "../selectors/"
+import {getPositionsOfSelectedNodes, getPresentGraph, getTransformationHandles, getVisualGraph} from "../selectors"
 import {activateEditing, clearSelection, toggleSelection} from "./selection"
 import {connectNodes, createNodesAndRelationships, moveNodesEndDrag, tryMoveHandle, tryMoveNode} from "./graph"
 import {adjustViewport} from "./viewTransformation"
 import {activateRing, deactivateRing, tryDragRing} from "./dragToCreate"
 import {selectItemsInMarquee, setMarquee} from "./selectionMarquee"
 import {getEventHandlers} from "../selectors/layers";
-import {canvasPadding, computeCanvasSize, subtractPadding} from "../model-old/applicationLayout";
-import {Vector} from "../model-old/Vector";
+import {Point, canvasPadding, computeCanvasSize, subtractPadding} from "@neo4j-arrows/model";
+import {Vector} from "@neo4j-arrows/model";
+import { DispatchFunction, FixThisType, ImpureFunction } from "../type-patches"
+import {BoundingBox, BoxSize} from "@neo4j-arrows/graphics";
 
-const toGraphPosition = (state, canvasPosition) => state.viewTransformation.inverse(canvasPosition)
+const toGraphPosition = (state:FixThisType, canvasPosition:Point) => state.viewTransformation.inverse(canvasPosition)
 
-export const wheel = (canvasPosition, vector, ctrlKey) => {
-  return function (dispatch, getState) {
-    const state = getState()
+export const wheel = (canvasPosition:Point, vector:Vector, ctrlKey:boolean) => {
+  return function (dispatch:DispatchFunction, getState: ImpureFunction) {
+    const state = getState() 
     const boundingBox = getVisualGraph(state).boundingBox()
     const currentScale = state.viewTransformation.scale
     const canvasSize = subtractPadding(computeCanvasSize(state.applicationLayout))
@@ -36,10 +38,10 @@ export const wheel = (canvasPosition, vector, ctrlKey) => {
   }
 }
 
-const moveTowardCenter = (minScale, offset, boundingBox, canvasSize) => {
+const moveTowardCenter = (minScale:number, offset:Vector, boundingBox:BoundingBox, canvasSize:BoxSize) => {
   const dimensions = [
-    {component: 'dx', min: 'left', max: 'right', extent: 'width'},
-    {component: 'dy', min: 'top', max: 'bottom', extent: 'height'}
+    {component: 'dx' as const, min: 'left' as const, max: 'right' as const, extent: 'width' as const},
+    {component: 'dy' as const, min: 'top' as const, max: 'bottom' as const, extent: 'height' as const}
   ]
 
   const [dx, dy] = dimensions.map(d => {
@@ -54,15 +56,15 @@ const moveTowardCenter = (minScale, offset, boundingBox, canvasSize) => {
   return new Vector(dx, dy)
 }
 
-const constrainScroll = (boundingBox, scale, effectiveOffset, canvasSize) => {
+const constrainScroll = (boundingBox:BoundingBox, scale:number, effectiveOffset:Vector, canvasSize:BoxSize) => {
   const constrainedOffset = new Vector(effectiveOffset.dx, effectiveOffset.dy)
 
   const dimensions = [
-    {component: 'dx', min: 'left', max: 'right', extent: 'width'},
-    {component: 'dy', min: 'top', max: 'bottom', extent: 'height'}
+    {component: 'dx' as const, min: 'left' as const, max: 'right' as const, extent: 'width' as const},
+    {component: 'dy' as const, min: 'top' as const, max: 'bottom' as const, extent: 'height' as const}
   ]
 
-  const flip = (tooLarge, boundary) => {
+  const flip = (tooLarge:boolean, boundary:boolean) => {
     return tooLarge ? !boundary : boundary
   }
 
@@ -81,8 +83,8 @@ const constrainScroll = (boundingBox, scale, effectiveOffset, canvasSize) => {
   return constrainedOffset
 }
 
-export const doubleClick = (canvasPosition) => {
-  return function (dispatch, getState) {
+export const doubleClick = (canvasPosition:Point) => {
+  return function (dispatch:DispatchFunction, getState: ImpureFunction) {
     const state = getState()
     const visualGraph = getVisualGraph(state)
     const graphPosition = toGraphPosition(state, canvasPosition)
@@ -93,8 +95,8 @@ export const doubleClick = (canvasPosition) => {
   }
 }
 
-export const mouseDown = (canvasPosition, multiSelectModifierKey) => {
-  return function (dispatch, getState) {
+export const mouseDown = (canvasPosition:Point, multiSelectModifierKey:boolean) => {
+  return function (dispatch:DispatchFunction, getState: ImpureFunction) {
     const state = getState();
     const visualGraph = getVisualGraph(state)
     const transformationHandles = getTransformationHandles(state)
@@ -130,44 +132,44 @@ export const mouseDown = (canvasPosition, multiSelectModifierKey) => {
   }
 }
 
-const mouseDownOnHandle = (corner, canvasPosition, nodePositions) => ({
+const mouseDownOnHandle = (corner:Point, canvasPosition:Point, nodePositions:Point[]) => ({
   type: 'MOUSE_DOWN_ON_HANDLE',
   corner,
   canvasPosition,
   nodePositions
 })
 
-export const lockHandleDragType = (dragType) => ({
+export const lockHandleDragType = (dragType:string) => ({
   type: 'LOCK_HANDLE_DRAG_MODE',
   dragType
 })
 
-const mouseDownOnNode = (node, canvasPosition, graphPosition) => ({
+const mouseDownOnNode = (node:FixThisType, canvasPosition:Point, graphPosition:Point) => ({
   type: 'MOUSE_DOWN_ON_NODE',
   node,
   position: canvasPosition,
   graphPosition
 })
 
-const mouseDownOnNodeRing = (node, canvasPosition) => ({
+const mouseDownOnNodeRing = (node:FixThisType, canvasPosition:Point) => ({
   type: 'MOUSE_DOWN_ON_NODE_RING',
   node,
   position: canvasPosition
 })
 
-const mouseDownOnCanvas = (canvasPosition, graphPosition) => ({
+const mouseDownOnCanvas = (canvasPosition:Point, graphPosition:Point) => ({
   type: 'MOUSE_DOWN_ON_CANVAS',
   canvasPosition,
   graphPosition
 })
 
-const furtherThanDragThreshold = (previousPosition, newPosition) => {
+const furtherThanDragThreshold = (previousPosition:Point, newPosition:Point) => {
   const movementDelta = newPosition.vectorFrom(previousPosition)
   return movementDelta.distance() >= 3
 }
 
-export const mouseMove = (canvasPosition) => {
-  return function (dispatch, getState) {
+export const mouseMove = (canvasPosition:Point) => {
+  return function (dispatch:DispatchFunction, getState:ImpureFunction) {
     const state = getState();
     const visualGraph = getVisualGraph(state)
     const graphPosition = toGraphPosition(state, canvasPosition)

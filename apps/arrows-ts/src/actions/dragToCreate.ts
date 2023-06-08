@@ -1,9 +1,9 @@
 import snapToTargetNode from "./snapToTargetNode"
 import {snapToDistancesAndAngles} from "./geometricSnapping"
-import {idsMatch} from "../model-old/Id"
+import {idsMatch} from "@neo4j-arrows/model"
 import {getVisualGraph} from "../selectors"
-import {selectedNodeIds} from "../model-old/selection";
-import {Guides} from "../model-old/guides/guides";
+import {selectedNodeIds} from "@neo4j-arrows/model";
+import {Guides} from "@neo4j-arrows/model";
 
 export const activateRing = (sourceNodeId, nodeType) => {
   return {

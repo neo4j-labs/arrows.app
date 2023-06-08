@@ -1,5 +1,11 @@
 export class Vector {
-  constructor(readonly dx:number, readonly dy:number) {  }
+  dx: number;
+  dy: number;
+  
+  constructor(dx:number, dy:number) { 
+    this.dx = dx;
+    this.dy = dy;
+   }
 
   plus(otherVector:Vector) {
     return new Vector(this.dx + otherVector.dx, this.dy + otherVector.dy)
