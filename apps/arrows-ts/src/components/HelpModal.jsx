@@ -50,8 +50,13 @@ class HelpModal extends Component {
             {keyBindings}
           </Card.Group>
           <Header size='small'>Feedback</Header>
-          <p>If you find a bug or want to give feedback about arrows.app, please head over to our <a
+          <p>To share great ideas about improving arrows.app or report problems, please let us know on our <a
+            href='https://feedback.neo4j.com/arrows' target='_blank'>feedback board</a>.</p>
+
+          <Header size='small'>Contribute</Header>
+          <p>Willing to add features or fix problems yourself? Join us at our <a
             href='https://github.com/neo4j-labs/arrows.app' target='_blank'>GitHub repository</a>.</p>
+
         </Modal.Content>
         <Modal.Actions>
           <Button
