@@ -1,17 +1,17 @@
-runtime: python27
+runtime: python311
 api_version: 1
 threadsafe: true
 
 handlers:
 - url: /
-  static_files: build/index.html
-  upload: build/index.html
+  static_files: dist/apps/arrows-ts/index.html
+  upload: dist/apps/arrows-ts/index.html
   secure: always
   redirect_http_response_code: 301
 
 - url: /(.*)
-  static_files: build/\1
-  upload: build/(.*)
+  static_files: dist/apps/arrows-ts/\1
+  upload: dist/apps/arrows-ts/(.*)
   secure: always
   redirect_http_response_code: 301
 

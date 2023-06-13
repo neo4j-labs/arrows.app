@@ -1,9 +1,11 @@
 steps:
-- name: 'gcr.io/cloud-builders/yarn:node-10.10.0'
+- name: node:18
+  entrypoint: npm
   args: ['install']
 
-- name: 'gcr.io/cloud-builders/yarn:node-10.10.0'
-  args: ['build']
+- name: node:18
+  entrypoint: npm
+  args: ['run', 'build']
 
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['app', 'deploy']
