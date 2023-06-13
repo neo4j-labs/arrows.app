@@ -1,8 +1,10 @@
 {
   "name": "arrows-workspace",
   "version": "0.0.0",
-  "license": "MIT",
-  "scripts": {},
+  "license": "Apache2",
+  "scripts": {
+    "build": "nx run arrows-ts:build"
+  },
   "private": true,
   "dependencies": {
     "@japont/unicode-range": "^1.0.0",

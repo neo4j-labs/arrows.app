@@ -1,0 +1,6 @@
+.gcloudignore
+.git
+.gitignore
+#!include:.gitignore
+
+!/dist/**

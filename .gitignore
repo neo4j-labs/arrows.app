@@ -40,3 +40,6 @@ migrations.json
 Thumbs.db
 node_modules
 dist
+
+# Ignore all .env files
+.env*
