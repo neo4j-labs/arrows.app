@@ -13,16 +13,3 @@ handlers:
   upload: dist/apps/arrows-ts/(.*)
   secure: always
   redirect_http_response_code: 301
-
-skip_files:
-- README.md
-- node_modules
-- package.json
-- public
-- src
-- yarn.lock
-- ^(.*/)?#.*#$
-- ^(.*/)?.*~$
-- ^(.*/)?.*\.py[co]$
-- ^(.*/)?.*/RCS/.*$
-- ^(.*/)?\..*$
