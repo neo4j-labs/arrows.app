@@ -9,3 +9,8 @@ steps:
 
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['app', 'deploy']
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/arrows-app-295615/secrets/google-api-key/versions/1
+    env: 'VITE_GOOGLE_API_KEY'
