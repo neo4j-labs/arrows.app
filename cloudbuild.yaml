@@ -6,6 +6,7 @@ steps:
 - name: node:18
   entrypoint: npm
   args: ['run', 'build']
+  secretEnv: ['VITE_GOOGLE_API_KEY']
 
 - name: 'gcr.io/cloud-builders/gcloud'
   args: ['app', 'deploy']
