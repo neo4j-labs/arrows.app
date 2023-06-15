@@ -19,7 +19,7 @@ import {imageCacheMiddleware} from "./middlewares/imageCacheMiddleware";
 
 import './styles.css'
 
-import App from './app/app';
+import App from './app/App';
 
 const middleware = [
   recentStorageMiddleware,
