@@ -1,6 +1,6 @@
 import React from "react";
 import neo4j_logo_white from "../images/Neo4j-logo-white.svg";
-import {footerHeight} from "../model/applicationLayout";
+import {footerHeight} from "../model-old/applicationLayout";
 import {informationLinks} from "./informationLinks";
 
 const Footer = (props) => {

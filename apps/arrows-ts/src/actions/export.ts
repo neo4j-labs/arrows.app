@@ -1,8 +1,9 @@
 import {getPresentGraph} from "../selectors";
-import {selectedNodes, selectedRelationships} from "../model/selection";
+import {selectedNodes, selectedRelationships} from "@neo4j-arrows/model";
+import { DispatchFunction, ImpureFunction } from "../type-patches";
 
 export const handleCopy = () => {
-  return function (dispatch, getState) {
+  return function (dispatch:DispatchFunction, getState:ImpureFunction) {
     const state = getState()
     const graph = getPresentGraph(state)
     const nodes = selectedNodes(graph, state.selection)

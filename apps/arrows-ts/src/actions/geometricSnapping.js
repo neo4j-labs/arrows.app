@@ -1,9 +1,9 @@
-import {Point} from "../model/Point";
-import {idsMatch} from "../model/Id";
-import {LineGuide} from "../model/guides/LineGuide";
-import {CircleGuide} from "../model/guides/CircleGuide";
-import {areParallel} from "../model/guides/intersections";
-import {byAscendingError} from "../model/guides/guides";
+import {Point} from "../model-old/Point";
+import {idsMatch} from "../model-old/Id";
+import {LineGuide} from "../model-old/guides/LineGuide";
+import {CircleGuide} from "../model-old/guides/CircleGuide";
+import {areParallel} from "../model-old/guides/intersections";
+import {byAscendingError} from "../model-old/guides/guides";
 
 export const snapTolerance = 20
 const grossTolerance = snapTolerance * 2

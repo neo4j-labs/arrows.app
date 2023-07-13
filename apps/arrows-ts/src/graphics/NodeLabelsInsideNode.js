@@ -1,4 +1,4 @@
-import { Vector } from "../model/Vector";
+import { Vector } from "../model-old/Vector";
 import Pill from "./Pill";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 

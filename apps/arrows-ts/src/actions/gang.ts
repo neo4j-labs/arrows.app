@@ -1,12 +1,13 @@
-import { getCommonCaption } from "../model/gang"
-import { idsMatch, nextAvailableId } from "../model/Id"
+import { getCommonCaption } from "@neo4j-arrows/model"
+import { idsMatch, nextAvailableId } from "@neo4j-arrows/model"
 import { moveNodes } from "./graph"
 import { clearSelection } from "./selection";
 import { getGraph, getPositionsOfSelectedNodes, getPresentGraph } from "../selectors";
-import {nodeSelected} from "../model/selection";
-import {Guides} from "../model/guides/guides";
+import {nodeSelected} from "@neo4j-arrows/model";
+import {Guides} from "@neo4j-arrows/model";
+import { DispatchFunction, ImpureFunction } from "../type-patches";
 
-export const createClusterGang = (nodePositions, initialPositions) => (dispatch, getState) => {
+export const createClusterGang = (nodePositions, initialPositions) => (dispatch:DispatchFunction, getState:ImpureFunction) => {
   const state = getState()
   const graph = getPresentGraph(state)
   const combinedNodeIds = nodePositions.map(nodePos => nodePos.nodeId)

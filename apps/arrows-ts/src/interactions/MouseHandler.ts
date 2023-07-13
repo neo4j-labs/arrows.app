@@ -1,6 +1,6 @@
-import {Point} from "../model/Point";
+import {Point} from "../model-old/Point";
 import {doubleClick, endDrag, mouseDown, mouseMove, mouseUp, wheel} from "../actions/mouse";
-import {Vector} from "../model/Vector";
+import {Vector} from "../model-old/Vector";
 import {isMac} from "./Keybindings";
 
 export default class MouseHandler {

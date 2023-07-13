@@ -13,10 +13,42 @@ import {
 } from "../interactions/Keybindings";
 import MouseHandler from "../interactions/MouseHandler";
 import GraphTextContainer from "../containers/GraphTextContainer";
+import { VisualGraph } from '@neo4j-arrows/graphics';
+import { DispatchFunction, FixThisType } from '../type-patches';
 
-class GraphDisplay extends Component {
-  constructor(props) {
+export interface GraphDisplayProps {
+  storage: FixThisType;
+  canvasSize: {
+    width: number;
+    height: number;
+  }
+  registerAction: (actionName:string, action:(args?:FixThisType) => void) => void;
+  duplicateSelection: () => void;
+  deleteSelection: () => void;
+  selectAll: () => void;
+  jumpToNextNode: (direction:string, extraKeys?:string[]) => void;
+  tryActivateEditing: () => void;
+  undo: () => void;
+  redo: () => void;
+  visualGraph: VisualGraph;
+  backgroundImage: FixThisType;
+  selection:FixThisType;
+  gestures: FixThisType;
+  guides:FixThisType;
+  handles:FixThisType;
+  toolboxes:FixThisType;
+  viewTransformation: FixThisType;
+  dispatch: DispatchFunction;
+}
+
+class GraphDisplay extends Component<GraphDisplayProps> {
+  touchHandler: MouseHandler | undefined;
+  canvas: HTMLCanvasElement | null;
+  constructor(props:GraphDisplayProps) {
     super(props)
+
+    this.canvas = null;
+
     props.registerAction(
       DUPLICATE_SELECTION,
       () => props.duplicateSelection()
@@ -53,7 +85,7 @@ class GraphDisplay extends Component {
     this.registerOptionalActions(props)
   }
 
-  registerOptionalActions (props) {
+  registerOptionalActions (props:GraphDisplayProps) {
     const supportsUndo = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].includes(props.storage.mode)
 
     props.registerAction(
@@ -66,21 +98,25 @@ class GraphDisplay extends Component {
     )
   }
 
-  componentWillReceiveProps(nextProps, nextContext) {
+  componentWillReceiveProps(nextProps:GraphDisplayProps, nextContext:any) {
     if(nextProps.storage.mode !== this.props.storage.mode) {
       this.registerOptionalActions(nextProps)
     }
   }
 
   componentDidMount() {
-    this.touchHandler = new MouseHandler(this.canvas)
-    this.fitCanvasSize(this.canvas, this.props.canvasSize.width, this.props.canvasSize.height)
-    this.drawVisuals()
+    if (this.canvas !== null) {
+      this.touchHandler = new MouseHandler(this.canvas)
+      this.fitCanvasSize(this.canvas, this.props.canvasSize.width, this.props.canvasSize.height)
+      this.drawVisuals()
+    }
   }
 
   componentDidUpdate() {
-    this.fitCanvasSize(this.canvas, this.props.canvasSize.width, this.props.canvasSize.height)
-    this.drawVisuals()
+    if (this.canvas !== null) {
+      this.fitCanvasSize(this.canvas, this.props.canvasSize.width, this.props.canvasSize.height)
+      this.drawVisuals()
+    }
   }
 
   render() {
@@ -97,7 +133,7 @@ class GraphDisplay extends Component {
     )
   }
 
-  fitCanvasSize(canvas, width, height) {
+  fitCanvasSize(canvas:HTMLCanvasElement, width:number, height:number) {
     canvas.width = width
     canvas.height = height
     canvas.style.width = width + 'px'
@@ -106,14 +142,16 @@ class GraphDisplay extends Component {
     const context = canvas.getContext('2d');
 
     const devicePixelRatio = window.devicePixelRatio || 1;
-    const backingStoreRatio = context.webkitBackingStorePixelRatio ||
-      context.mozBackingStorePixelRatio ||
-      context.msBackingStorePixelRatio ||
-      context.oBackingStorePixelRatio ||
-      context.backingStorePixelRatio || 1
+    const backingStoreRatio = (context !== null) ? 
+      (context as any).webkitBackingStorePixelRatio ||
+      (context as any).mozBackingStorePixelRatio ||
+      (context as any).msBackingStorePixelRatio ||
+      (context as any).oBackingStorePixelRatio ||
+      (context as any).backingStorePixelRatio || 1
+      : 1;
     const ratio = devicePixelRatio / backingStoreRatio
 
-    if (devicePixelRatio !== backingStoreRatio) {
+    if (context !== null && devicePixelRatio !== backingStoreRatio) {
       canvas.width = width * ratio
       canvas.height = height * ratio
 
@@ -137,7 +175,7 @@ class GraphDisplay extends Component {
       displayOptions: { canvasSize, viewTransformation }
     })
 
-    this.touchHandler.setDispatch(this.props.dispatch)
+    if (this.touchHandler) this.touchHandler.setDispatch(this.props.dispatch)
   }
 }
 

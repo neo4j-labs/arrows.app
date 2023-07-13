@@ -1,10 +1,10 @@
 import {ViewTransformation} from "../../state/ViewTransformation";
 import {getVisualGraph} from "../../selectors/index";
-import {Vector} from "../../model/Vector";
+import {Vector} from "../../model-old/Vector";
 import SvgAdaptor from "./SvgAdaptor";
 import {Base64} from 'js-base64';
 import {assembleGoogleFontFacesCssWithEmbeddedFontData} from "./fontWrangling";
-import {usedCodePoints} from "../../model/Graph";
+import {usedCodePoints} from "../../model-old/Graph";
 
 export const renderSvgDom = (graph, cachedImages) => {
   const { visualGraph, boundingBox } = createVisualGraphAndBoundingBox(graph, cachedImages)

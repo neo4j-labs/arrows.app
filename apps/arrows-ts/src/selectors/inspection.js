@@ -1,4 +1,4 @@
-import { selectedNodes } from "../model/selection";
+import { selectedNodes } from "../model-old/selection";
 
 export const getSelectedNodes = ({graph, gangs, selection, applicationLayout}) => {
   const regularNodes = selectedNodes(graph, selection)

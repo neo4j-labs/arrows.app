@@ -1,9 +1,9 @@
 import {ParallelArrow} from "./ParallelArrow";
 import {normalStraightArrow, StraightArrow} from "./StraightArrow";
 import {VisualRelationship} from "./VisualRelationship";
-import {relationshipEditing} from "../model/selection";
+import {relationshipEditing} from "../model-old/selection";
 import {BalloonArrow} from "./BalloonArrow";
-import {neighbourPositions} from "../model/Graph";
+import {neighbourPositions} from "../model-old/Graph";
 import {clockwiseAngularSpace} from "./utils/clockwiseAngularSpace";
 import {normaliseAngle} from "./utils/angles";
 import {ElbowArrow} from "./ElbowArrow";

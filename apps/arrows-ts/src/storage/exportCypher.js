@@ -1,5 +1,5 @@
-import {styleKeyToDatabaseKey} from "../model/properties";
-import {getNodeIdMap} from "../model/Graph";
+import {styleKeyToDatabaseKey} from "../model-old/properties";
+import {getNodeIdMap} from "../model-old/Graph";
 const plainIdentifier = new RegExp('^[A-Za-z][A-Za-z_]*$')
 
 const escape = name => {

@@ -1,8 +1,8 @@
 import {drawTextLine} from "./canvasRenderer";
 import {fitTextToRectangle} from "./utils/rectangleWordWrap";
-import {Point} from "../model/Point";
+import {Point} from "../model-old/Point";
 import BoundingBox from "./utils/BoundingBox";
-import {selectionBorder, selectionHandle} from "../model/colors";
+import {selectionBorder, selectionHandle} from "../model-old/colors";
 import {adaptForBackground} from "./backgroundColorAdaption";
 
 export class NodeCaptionOutsideNode {

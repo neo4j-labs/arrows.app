@@ -2,7 +2,7 @@ import {getStyleSelector} from "../selectors/style";
 import {RelationshipType} from "./RelationshipType";
 import {PropertiesOutside} from "./PropertiesOutside";
 import {IconOutside} from "./IconOutside";
-import {Vector} from "../model/Vector";
+import {Vector} from "../model-old/Vector";
 import {alignmentForShaftAngle, readableAngle} from "./relationshipTextAlignment";
 import {boundingBoxOfPoints} from "./utils/BoundingBox";
 import {ComponentStack} from "./ComponentStack";

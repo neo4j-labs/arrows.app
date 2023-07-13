@@ -1,4 +1,4 @@
-import {white} from "../model/colors";
+import {white} from "../model-old/colors";
 import memoize from "memoizee";
 
 export const adaptForBackground = (color, style) => {

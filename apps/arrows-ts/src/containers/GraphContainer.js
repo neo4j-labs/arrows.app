@@ -8,7 +8,7 @@ import {
 } from "../selectors/index"
 import {deleteSelection, duplicateSelection} from "../actions/graph"
 import {selectAll, jumpToNextNode, tryActivateEditing} from "../actions/selection";
-import {computeCanvasSize} from "../model/applicationLayout";
+import {computeCanvasSize} from "../model-old/applicationLayout";
 import { ActionCreators as UndoActionCreators } from 'redux-undo'
 import {getBackgroundImage} from "../selectors";
 

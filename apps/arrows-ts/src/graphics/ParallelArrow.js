@@ -1,5 +1,5 @@
-import {Point} from "../model/Point";
-import {Vector} from "../model/Vector";
+import {Point} from "../model-old/Point";
+import {Vector} from "../model-old/Vector";
 import {getDistanceToLine} from "./utils/geometryUtils";
 import arrowHead from "./arrowHead";
 

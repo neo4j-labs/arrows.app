@@ -1,4 +1,4 @@
-import {idsMatch} from "../model/Id";
+import {idsMatch} from "../model-old/Id";
 
 const snapToTargetNode = (visualGraph, excludedNodeId, naturalPosition) => {
   const targetNode = visualGraph.closestNode(naturalPosition, (visualNode, distance) => {

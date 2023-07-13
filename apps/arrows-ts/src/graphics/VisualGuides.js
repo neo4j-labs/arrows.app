@@ -2,9 +2,9 @@
  * Collection of graph-embellishments that help the user to understanding snapping behaviour
  */
 import {drawDashedCircle, drawSolidRectangle, drawDashedLine} from "./canvasRenderer";
-import { Point } from "../model/Point";
-import {Vector} from "../model/Vector";
-import {grey, red, selectionHandle} from "../model/colors";
+import { Point } from "../model-old/Point";
+import {Vector} from "../model-old/Vector";
+import {grey, red, selectionHandle} from "../model-old/colors";
 import {handleSize} from "./TransformationHandles";
 import {adaptForBackground} from "./backgroundColorAdaption";
 

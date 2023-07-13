@@ -1,5 +1,5 @@
 import {drawTextLine} from "./canvasRenderer";
-import {Point} from "../model/Point";
+import {Point} from "../model-old/Point";
 import BoundingBox from "./utils/BoundingBox";
 import {fitTextToRectangle} from "./utils/rectangleWordWrap";
 

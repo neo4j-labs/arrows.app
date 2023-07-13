@@ -1,6 +1,8 @@
 import {Point} from "@neo4j-arrows/model";
 import { Vector } from "@neo4j-arrows/model";
 
+export type BoxSize = {width:number, height:number}
+
 export class BoundingBox {
   constructor(readonly left:number, readonly right:number, readonly top:number, readonly bottom:number) {  }
 

@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
 import {Form, Input, Popup} from 'semantic-ui-react'
-import {validate} from "../../model/styling";
+import {validate} from "../../model-old/styling";
 
 export default class extends Component {
 

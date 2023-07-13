@@ -1,4 +1,4 @@
-import { moveTo } from "../model/Node";
+import { moveTo } from "../model-old/Node";
 
 const initialState = []
 

@@ -3,7 +3,7 @@ import {NodeLabelsOutsideNode} from "./NodeLabelsOutsideNode";
 import {NodeCaptionInsideNode} from "./NodeCaptionInsideNode";
 import {NodeBackground} from "./NodeBackground";
 import {PropertiesOutside} from "./PropertiesOutside";
-import {neighbourPositions} from "../model/Graph";
+import {neighbourPositions} from "../model-old/Graph";
 import BoundingBox from "./utils/BoundingBox";
 import {NodeCaptionOutsideNode} from "./NodeCaptionOutsideNode";
 import {NodePropertiesInside} from "./NodePropertiesInside";
@@ -14,7 +14,7 @@ import {NodeIconInside} from "./NodeIconInside";
 import {IconOutside} from "./IconOutside";
 import {distribute} from "./circumferentialDistribution";
 import {orientationAngles, orientationFromAngle, orientationFromName} from "./circumferentialTextAlignment";
-import {Vector} from "../model/Vector";
+import {Vector} from "../model-old/Vector";
 import {ComponentStack} from "./ComponentStack";
 
 export default class VisualNode {

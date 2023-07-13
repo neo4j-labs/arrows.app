@@ -1,4 +1,4 @@
-import {Point} from "../model/Point";
+import {Point} from "../model-old/Point";
 import arrowHead from "./arrowHead";
 import BoundingBox from "./utils/BoundingBox";
 import {perpendicular} from "./utils/angles";

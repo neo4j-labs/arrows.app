@@ -1,8 +1,8 @@
-import {Point} from "../model/Point";
+import {Point} from "../model-old/Point";
 import {drawSolidRectangle} from "./canvasRenderer";
-import {Vector} from "../model/Vector";
-import {selectionHandle} from "../model/colors";
-import {selectedNodeIds} from "../model/selection";
+import {Vector} from "../model-old/Vector";
+import {selectionHandle} from "../model-old/colors";
+import {selectedNodeIds} from "../model-old/selection";
 import {combineBoundingBoxes} from "./utils/BoundingBox";
 import {adaptForBackground} from "./backgroundColorAdaption";
 

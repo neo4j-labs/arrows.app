@@ -1,7 +1,7 @@
-import { Point } from "../model/Point";
+import { Point } from "../model-old/Point";
 import { gettingDiagramNameSucceeded } from "../actions/diagramName";
-import {completeWithDefaults} from "../model/styling";
-import {emptyGraph} from "../model/Graph";
+import {completeWithDefaults} from "../model-old/styling";
+import {emptyGraph} from "../model-old/Graph";
 import {gettingGraph, gettingGraphSucceeded} from "../actions/storage";
 
 export function fetchGraphFromDrive(fileId) {

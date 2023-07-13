@@ -1,11 +1,11 @@
-import {emptyGraph} from "../model/Graph";
-import {addLabel, renameLabel, removeLabel, moveTo, setCaption} from "../model/Node";
-import { reverse, setType } from "../model/Relationship";
-import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model/properties";
-import { idsMatch } from "../model/Id";
-import { nodeStyleAttributes, relationshipStyleAttributes } from "../model/styling";
+import {emptyGraph} from "../model-old/Graph";
+import {addLabel, renameLabel, removeLabel, moveTo, setCaption} from "../model-old/Node";
+import { reverse, setType } from "../model-old/Relationship";
+import { removeProperty, renameProperty, setArrowsProperty, setProperty, removeArrowsProperty } from "../model-old/properties";
+import { idsMatch } from "../model-old/Id";
+import { nodeStyleAttributes, relationshipStyleAttributes } from "../model-old/styling";
 import undoable, { groupByActionTypes } from 'redux-undo';
-import {nodeSelected, relationshipSelected} from "../model/selection";
+import {nodeSelected, relationshipSelected} from "../model-old/selection";
 
 const graph = (state = emptyGraph(), action) => {
   switch (action.type) {

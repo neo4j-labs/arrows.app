@@ -17,7 +17,16 @@ export const TOGGLE_FOCUS = 'TOGGLE_FOCUS'
 export const UNDO = 'UNDO'
 export const REDO = 'REDO'
 
-const KeyBindings = {
+export interface KeyState {
+  metaKey: boolean | 'optional';
+  shiftKey?: boolean | 'optional';
+  altKey?: boolean | 'optional';
+  ctrlKey?: 'optional' | boolean;
+  code: number;
+  codeRange?: {min: number, max: number}
+}
+
+const KeyBindings:Record<string, KeyState[]> = {
   [SELECT_ALL]: [{ metaKey: true, code: 65 }],
   [DESELECT_ALL_NODES]: [{ metaKey: true, shiftKey: true, code: 65 }],
   [INVERT_SELECTION]: [{ metaKey: true, altKey: true, code: 65 }],
@@ -35,24 +44,29 @@ const KeyBindings = {
   [REDO]: [{metaKey: true, shiftKey: true, code: 90}]
 }
 
-const actions = {}
+export interface KeyboardAction {
+  bindings:KeyState[];
+  handler:any;
+} 
+
+const actions:Record<string, KeyboardAction> = {}
 
 export const isMac = navigator.appVersion.indexOf('Mac') !== -1
 
-const findAction = ({ altKey, ctrlKey, metaKey, shiftKey, keyCode }) =>
-  find(actions, ({bindings}) =>
-    find(bindings, (binding) =>
+const findAction = ({ altKey, ctrlKey, metaKey, shiftKey, keyCode }:KeyboardEvent) =>
+  find(actions, ({bindings}) => 
+    find(bindings, (binding) => 
       (keyCode === binding.code || (binding.codeRange && keyCode >= binding.codeRange.min && keyCode <= binding.codeRange.max)) &&
       (binding.altKey === 'optional' || altKey === !!binding.altKey) &&
       (binding.ctrlKey === 'optional' || ctrlKey === !!binding.ctrlKey || (!isMac && ctrlKey === !!binding.metaKey)) &&
       (binding.metaKey === 'optional' || metaKey === !!binding.metaKey || (!isMac && ctrlKey === !!binding.metaKey)) &&
       (binding.shiftKey === 'optional' || shiftKey === !!binding.shiftKey)
-    )
+    ) !== undefined
   )
 
 const hocProps = {
-  registerAction: (name, handler) => (actions[name] = { bindings: KeyBindings[name], handler }),
-  fireAction: (event, ...args) => {
+  registerAction: (name:string, handler:any) => (actions[name] = { bindings: KeyBindings[name], handler }),
+  fireAction: (event:KeyboardEvent, ...args:any[]) => {
     const action = findAction(event)
     if (action) {
       action.handler({
@@ -67,10 +81,10 @@ const hocProps = {
   }
 }
 
-export const getKeybindingString = name => {
+export const getKeybindingString = (name:string) => {
   const binding = KeyBindings[name][0]
   let result = ''
-  const addSymbol = symbol => (result += result.length > 0 ? ' ' + symbol : symbol)
+  const addSymbol = (symbol:string) => (result += result.length > 0 ? ' ' + symbol : symbol)
 
   if (binding.shiftKey) addSymbol('⇧')
   if (binding.metaKey) addSymbol(isMac ? '⌘' : 'Ctrl')
@@ -82,8 +96,13 @@ export const getKeybindingString = name => {
   return result
 }
 
-export const registerKeybindings = actions => Component => props => {
-  const processAction = action => {
+export interface RegisterHandler {
+  handler: any;
+  name: string;
+}
+
+export const registerKeybindings = (actions:RegisterHandler[]) => (Component:any) => (props:any) => {
+  const processAction = (action:RegisterHandler) => {
     if (!action) throw new Error('Action not specified for Keybinding')
     const handler = typeof action.handler === 'function' ? action.handler(props) : action.handler
     hocProps.registerAction(action.name, handler)
@@ -93,6 +112,7 @@ export const registerKeybindings = actions => Component => props => {
   return Component(props)
 }
 
-export const ignoreTarget = ({target: { tagName }}) => tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT'
+// ABK: ignoreTarget() === true by default, if arg is malformed?
+export const ignoreTarget = ({target}:any) => ((target !== null) && (target.tagName !== undefined)) ? (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.tagName === 'SELECT') : true;
 
 export default withProps(hocProps)

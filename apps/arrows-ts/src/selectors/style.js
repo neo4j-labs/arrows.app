@@ -1,5 +1,5 @@
 import {createSelector} from "reselect";
-import {validate} from "../model/styling";
+import {validate} from "../model-old/styling";
 
 const graphStyleSelector = graph => graph.style || {}
 

@@ -1,22 +1,22 @@
 import {angleTolerance, snapTolerance, snapToNeighbourDistancesAndAngles} from "./geometricSnapping";
-import {idsMatch, nextAvailableId, nextId} from "../model/Id";
-import {average, Point} from "../model/Point";
-import {Vector} from "../model/Vector";
+import {idsMatch, nextAvailableId, nextId} from "../model-old/Id";
+import {average, Point} from "../model-old/Point";
+import {Vector} from "../model-old/Vector";
 import {calculateBoundingBox} from "../graphics/utils/geometryUtils";
 import {getPresentGraph, getVisualGraph} from "../selectors";
 import {
   nodeSelected,
   selectedNodeIdMap, selectedNodeIds, selectedNodes,
   selectedRelationshipIdMap, selectedRelationshipIds, selectedRelationships
-} from "../model/selection";
+} from "../model-old/selection";
 import {defaultNodeRadius, defaultRelationshipLength} from "../graphics/constants";
 import BoundingBox from "../graphics/utils/BoundingBox";
-import {translate} from "../model/Node";
+import {translate} from "../model-old/Node";
 import {lockHandleDragType} from "./mouse";
-import {CircleGuide} from "../model/guides/CircleGuide";
-import {LineGuide} from "../model/guides/LineGuide";
-import {HandleGuide} from "../model/guides/HandleGuide";
-import {Guides} from "../model/guides/guides";
+import {CircleGuide} from "../model-old/guides/CircleGuide";
+import {LineGuide} from "../model-old/guides/LineGuide";
+import {HandleGuide} from "../model-old/guides/HandleGuide";
+import {Guides} from "../model-old/guides/guides";
 
 export const createNode = () => (dispatch, getState) => {
   let newNodePosition = new Point(0, 0)

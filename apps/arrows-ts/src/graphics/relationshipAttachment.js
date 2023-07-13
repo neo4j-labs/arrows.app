@@ -1,4 +1,4 @@
-import {attachmentOptions} from "../model/attachments";
+import {attachmentOptions} from "../model-old/attachments";
 import {getStyleSelector} from "../selectors/style";
 import {relationshipArrowDimensions} from "./arrowDimensions";
 import ResolvedRelationship from "./ResolvedRelationship";

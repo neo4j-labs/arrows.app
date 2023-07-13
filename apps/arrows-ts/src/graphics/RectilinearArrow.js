@@ -1,5 +1,5 @@
 import arrowHead from "./arrowHead";
-import {Vector} from "../model/Vector";
+import {Vector} from "../model-old/Vector";
 import {SeekAndDestroy} from "./SeekAndDestroy";
 import {normaliseAngle} from "./utils/angles";
 

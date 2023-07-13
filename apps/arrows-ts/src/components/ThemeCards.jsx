@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {themes} from "../model/themes";
+import {themes} from "../model-old/themes";
 import {renderSvgDom} from "../graphics/utils/offScreenSvgRenderer";
 import {constructGraphFromFile} from "../storage/googleDriveStorage";
 import convert from "react-from-dom";

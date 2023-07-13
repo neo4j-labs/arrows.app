@@ -1,6 +1,6 @@
 import {getDistanceToLine} from "./utils/geometryUtils";
 import arrowHead from "./arrowHead";
-import {Point} from "../model/Point";
+import {Point} from "../model-old/Point";
 import {normaliseAngle} from "./utils/angles";
 
 export class StraightArrow {
