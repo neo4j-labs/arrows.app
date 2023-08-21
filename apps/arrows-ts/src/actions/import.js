@@ -42,11 +42,13 @@ export const interpretClipboardData = (clipboardData, nodeSpacing, handlers) => 
       try {
         switch (format.outputType) {
           case 'graph':
+            // eslint-disable-next-line no-case-declarations
             const importedGraph = format.parse(text, nodeSpacing)
             handlers.onGraph && handlers.onGraph(importedGraph)
             break
 
           case 'svg':
+            // eslint-disable-next-line no-case-declarations
             const svgImageUrl = format.parse(text)
             handlers.onSvgImageUrl && handlers.onSvgImageUrl(svgImageUrl)
             break
@@ -101,7 +103,7 @@ export const handlePaste = (pasteEvent) => {
 const formats = [
   {
     // JSON
-    recognise: (plainText) => new RegExp('^{.*\}$', 's').test(plainText.trim()),
+    recognise: (plainText) => new RegExp('^{.*}$', 's').test(plainText.trim()),
     outputType: 'graph',
     parse: (plainText) => {
       const object = JSON.parse(plainText)

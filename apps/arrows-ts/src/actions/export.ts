@@ -2,7 +2,7 @@ import {getPresentGraph} from "../selectors";
 import {selectedNodes, selectedRelationships} from "../model/selection";
 
 export const handleCopy = () => {
-  return function (dispatch, getState) {
+  return function (dispatch:any, getState: () => any) {
     const state = getState()
     const graph = getPresentGraph(state)
     const nodes = selectedNodes(graph, state.selection)
@@ -14,9 +14,9 @@ export const handleCopy = () => {
     }
     const jsonString = JSON.stringify(selectedGraph, null, 2)
     navigator.clipboard.writeText(jsonString).then(function() {
-      console.log("Copied to clipboard successfully!");
+      console.log("Copied to clipboard successfully! --ABK");
     }, function() {
-      console.error("Unable to write to clipboard. :-(");
+      console.error("Unable to write to clipboard. :-( --abk");
     });
   }
 }

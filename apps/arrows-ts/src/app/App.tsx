@@ -3,10 +3,9 @@ import GraphContainer from "../containers/GraphContainer"
 import {connect} from 'react-redux'
 import withKeybindings, { ignoreTarget } from '../interactions/Keybindings'
 import {windowResized} from "../actions/applicationLayout"
-import { compose } from 'react-recompose'
 import HeaderContainer from '../containers/HeaderContainer'
 import InspectorChooser from "../containers/InspectorChooser"
-import {computeCanvasSize, inspectorWidth} from "../model/applicationLayout";
+import {computeCanvasSize, inspectorWidth} from "@neo4j-arrows/model";
 import ExportContainer from "../containers/ExportContainer";
 import GoogleSignInModal from "../components/editors/GoogleSignInModal";
 import HelpModal from "../components/HelpModal";
@@ -23,8 +22,25 @@ import {handleImportMessage} from "../reducers/storage";
 
 import './App.css'
 
-class App extends Component {
-  constructor (props) {
+export interface AppProps {
+  inspectorVisible:boolean;
+  showSaveAsDialog:boolean;
+  showExportDialog:boolean;
+  showImportDialog:boolean;
+  pickingFromGoogleDrive:boolean;
+  pickingFromLocalStorage:boolean;
+  onCancelPicker:any;
+  loadFromGoogleDrive:any;
+  canvasHeight:number;
+  fireAction:any;
+  handleCopy: (ev:ClipboardEvent) => void;
+  handlePaste: (ev:ClipboardEvent) => void;
+  handleImportMessage: (ev:MessageEvent<any>) => void;
+  onWindowResized: (this: Window, ev: UIEvent) => any
+}
+
+class App extends Component<AppProps> {
+  constructor (props:AppProps) {
     super(props)
     linkToGoogleFontsCss()
     window.addEventListener('keydown', this.fireKeyboardShortcutAction.bind(this))
@@ -94,7 +110,7 @@ class App extends Component {
     );
   }
 
-  fireKeyboardShortcutAction(ev) {
+  fireKeyboardShortcutAction(ev:KeyboardEvent) {
     if (ignoreTarget(ev)) return
 
     const handled = this.props.fireAction(ev)
@@ -104,17 +120,18 @@ class App extends Component {
     }
   }
 
-  handleCopy(ev) {
+  handleCopy(ev:ClipboardEvent) {
     if (ignoreTarget(ev)) return
+    console.log('copying')
     this.props.handleCopy(ev)
   }
 
-  handlePaste(ev) {
+  handlePaste(ev:ClipboardEvent) {
     if (ignoreTarget(ev)) return
     this.props.handlePaste(ev)
   }
 
-  handleMessage(ev) {
+  handleMessage(ev:MessageEvent<any>) {
     this.props.handleImportMessage(ev)
   }
 
@@ -123,7 +140,7 @@ class App extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = (state:any) => ({
   inspectorVisible: state.applicationLayout.inspectorVisible,
   canvasHeight: computeCanvasSize(state.applicationLayout).height,
   pickingFromGoogleDrive: state.storage.status === 'PICKING_FROM_GOOGLE_DRIVE',
@@ -134,18 +151,20 @@ const mapStateToProps = (state) => ({
 })
 
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch:any) => {
   return {
     onWindowResized: () => dispatch(windowResized(window.innerWidth, window.innerHeight)),
     onCancelPicker: () => dispatch(pickDiagramCancel()),
-    loadFromGoogleDrive: fileId => dispatch(getFileFromGoogleDrive(fileId)),
+    loadFromGoogleDrive: (fileId:any) => dispatch(getFileFromGoogleDrive(fileId)),
     handleCopy: () => dispatch(handleCopy()),
-    handlePaste: clipboardEvent => dispatch(handlePaste(clipboardEvent)),
-    handleImportMessage: message => dispatch(handleImportMessage(message))
+    handlePaste: (clipboardEvent:any) => dispatch(handlePaste(clipboardEvent)),
+    handleImportMessage: (message:any) => dispatch(handleImportMessage(message))
   }
 }
 
-export default compose(
-  connect(mapStateToProps, mapDispatchToProps),
-  withKeybindings
-)(App)
+// NOTE: compose(a,b,c)(X) ==[BECOMES]=> a(b(c(X)))
+// export default compose(
+//   connect(mapStateToProps, mapDispatchToProps),
+//   withKeybindings
+// )(App)
+export default connect(mapStateToProps, mapDispatchToProps)(withKeybindings(App))
