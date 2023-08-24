@@ -17,7 +17,9 @@
     "paths": {
       "@neo4j-arrows/graphics": ["libs/graphics/src/index.ts"],
       "@neo4j-arrows/model": ["libs/model/src/index.ts"],
-      "@neo4j-arrows/selectors": ["libs/selectors/src/index.ts"]
+      "@neo4j-arrows/selectors": ["libs/selectors/src/index.ts"],
+      "@temp-workspace/shape": ["libs/shape/src/index.ts"],
+      "@temp-workspace/stories": ["libs/stories/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]
