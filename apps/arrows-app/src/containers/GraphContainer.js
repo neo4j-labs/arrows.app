@@ -1,6 +1,6 @@
 import {connect} from "react-redux"
 import GraphDisplay from "../components/GraphDisplay"
-import {compose} from "recompose"
+import {compose} from "react-recompose"
 import withKeyBindings from "../interactions/Keybindings"
 import {
   getVisualGraph,

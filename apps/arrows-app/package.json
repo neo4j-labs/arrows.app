@@ -19,7 +19,6 @@
     "react-redux": "^8.0.5",
     "react-scripts": "=5.0.1",
     "react-youtube": "^10.1.0",
-    "recompose": "^0.30.0",
     "redux": "^4.2.1",
     "redux-thunk": "^2.4.2",
     "redux-undo": "^1.0.1",

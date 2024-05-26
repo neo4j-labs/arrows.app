@@ -1,5 +1,5 @@
 import find from 'lodash.find'
-import { withProps } from 'recompose'
+import { withProps } from 'react-recompose'
 
 export const SELECT_ALL = 'SELECT_ALL'
 export const DESELECT_ALL_NODES = 'DESELECT_ALL_NODES'

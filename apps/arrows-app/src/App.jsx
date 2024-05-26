@@ -4,7 +4,7 @@ import {connect} from 'react-redux'
 import './App.css'
 import withKeybindings, { ignoreTarget } from './interactions/Keybindings'
 import {windowResized} from "./actions/applicationLayout"
-import { compose } from 'recompose'
+import { compose } from 'react-recompose'
 import HeaderContainer from './containers/HeaderContainer'
 import InspectorChooser from "./containers/InspectorChooser"
 import {computeCanvasSize, inspectorWidth} from "./model/applicationLayout";
