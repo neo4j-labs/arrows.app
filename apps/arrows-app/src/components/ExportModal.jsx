@@ -5,6 +5,7 @@ import ExportCypherPanel from "./ExportCypherPanel";
 import ExportSvgPanel from "./ExportSvgPanel";
 import ExportJsonPanel from "./ExportJsonPanel";
 import ExportGraphQLPanel from "./ExportGraphQLPanel";
+import ExportSpiresPanel from "./ExportSpiresPanel";
 import {loadFavoriteExportTab, saveFavoriteExportTab} from "../actions/localStorage";
 import ExportUrlPanel from "./ExportUrlPanel";
 
@@ -89,6 +90,17 @@ class ExportModal extends Component {
         render: () => (
           <Tab.Pane attached={false}>
             <ExportGraphQLPanel
+              graph={this.props.graph}
+              diagramName={this.props.diagramName}
+            />
+          </Tab.Pane>
+        ),
+      },
+      {
+        menuItem: 'SPIRES',
+        render: () => (
+          <Tab.Pane attached={false}>
+            <ExportSpiresPanel
               graph={this.props.graph}
               diagramName={this.props.diagramName}
             />
