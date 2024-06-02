@@ -6,14 +6,21 @@ import { Graph } from '../../../../libs/model/src/lib/Graph';
 import { Node } from '../../../../libs/model/src/lib/Node';
 import { Relationship } from '../../../../libs/model/src/lib/Relationship';
 import { plural } from 'pluralize';
-import { snakeCase } from 'lodash';
+import { camelCase, snakeCase, upperFirst } from 'lodash';
 
 type Attribute = {
   range: string;
+  multivalued?: boolean;
 };
+
+enum SpiresCoreClasses {
+  NamedEntity = 'NamedEntity',
+}
 
 type SpiresClass = {
   attributes: Record<string, Attribute>;
+  is_a?: SpiresCoreClasses;
+  tree_root?: boolean;
 };
 
 type Spires = {
@@ -21,18 +28,40 @@ type Spires = {
   name: string;
   title: string;
   classes: Record<string, SpiresClass>;
+  imports?: string[];
 };
 
 const graphToSpires = (
   name: string,
   { nodes, relationships }: Graph
 ): Spires => {
+  const toClassName = (str: string): string => upperFirst(camelCase(str));
+  const toAttributeName = (str: string): string => snakeCase(str);
+
+  const getAnnotations = (): SpiresClass => {
+    return {
+      tree_root: true,
+      attributes: nodes.reduce(
+        (attributes: Record<string, Attribute>, node) => ({
+          ...attributes,
+          [toAttributeName(plural(node.caption))]: {
+            range: toClassName(node.caption),
+            multivalued: true,
+          },
+        }),
+        {}
+      ),
+    };
+  };
+
   const relationshipsByNode = (node: Node): Record<string, Attribute> => {
     const getSourceNodeName = (relationship: Relationship): string =>
-      nodes.find((node) => node.id === relationship.fromId)?.caption;
+      toClassName(
+        nodes.find((node) => node.id === relationship.fromId)?.caption
+      );
 
     const getRelationshipName = (relationship: Relationship): string =>
-      plural(getSourceNodeName(relationship).toLocaleLowerCase());
+      toAttributeName(plural(getSourceNodeName(relationship)));
 
     return relationships
       .filter((relationship) => relationship.toId === node.id)
@@ -48,6 +77,7 @@ const graphToSpires = (
   };
 
   const nodeToClass = (node: Node): SpiresClass => ({
+    is_a: SpiresCoreClasses.NamedEntity,
     attributes: relationshipsByNode(node),
   });
 
@@ -57,13 +87,17 @@ const graphToSpires = (
     id: `https://example.com/${snakeCasedName}`,
     name: snakeCasedName,
     title: name,
-    classes: nodes.reduce(
-      (classes: Record<string, SpiresClass>, node) => ({
-        ...classes,
-        [node.caption]: nodeToClass(node),
-      }),
-      {}
-    ),
+    imports: ['core'],
+    classes: {
+      ...{ [`${toClassName(name)}Annotations`]: getAnnotations() },
+      ...nodes.reduce(
+        (classes: Record<string, SpiresClass>, node) => ({
+          ...classes,
+          [toClassName(node.caption)]: nodeToClass(node),
+        }),
+        {}
+      ),
+    },
   };
 };
 
