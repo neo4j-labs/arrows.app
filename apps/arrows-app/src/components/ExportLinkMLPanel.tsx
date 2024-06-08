@@ -9,7 +9,8 @@ import { plural } from 'pluralize';
 import { camelCase, snakeCase, upperFirst } from 'lodash';
 
 type Attribute = {
-  range: string;
+  range?: string;
+  description?: string;
   multivalued?: boolean;
 };
 
@@ -76,10 +77,27 @@ const graphToLinkML = (
       );
   };
 
-  const nodeToClass = (node: Node): LinkMLClass => ({
-    is_a: SpiresCoreClasses.NamedEntity,
-    attributes: relationshipsByNode(node),
-  });
+  const nodeToClass = (node: Node): LinkMLClass => {
+    const propertiesToAttributes = (): Record<string, Attribute> => {
+      return Object.entries(node.properties).reduce(
+        (attributes: Record<string, Attribute>, [key, value]) => ({
+          ...attributes,
+          [toAttributeName(key)]: {
+            description: value,
+          },
+        }),
+        {}
+      );
+    };
+
+    return {
+      is_a: SpiresCoreClasses.NamedEntity,
+      attributes: {
+        ...relationshipsByNode(node),
+        ...propertiesToAttributes(),
+      },
+    };
+  };
 
   const snakeCasedName = snakeCase(name);
 
