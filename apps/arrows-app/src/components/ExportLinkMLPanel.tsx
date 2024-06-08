@@ -16,11 +16,14 @@ type Attribute = {
 
 enum SpiresCoreClasses {
   NamedEntity = 'NamedEntity',
+  Triple = 'Triple',
 }
 
 type LinkMLClass = {
-  attributes: Record<string, Attribute>;
+  attributes?: Record<string, Attribute>;
+  description?: string;
   is_a?: SpiresCoreClasses;
+  slot_usage?: Record<string, Attribute>;
   tree_root?: boolean;
 };
 
@@ -38,6 +41,14 @@ const graphToLinkML = (
 ): LinkML => {
   const toClassName = (str: string): string => upperFirst(camelCase(str));
   const toAttributeName = (str: string): string => snakeCase(str);
+  const nodeIdToNodeCaption = (id: string): string => {
+    return nodes.find((node) => node.id === id).caption;
+  };
+  const toRelationshipClassName = ({ fromId, toId }: Relationship): string => {
+    return `${toClassName(nodeIdToNodeCaption(fromId))}To${toClassName(
+      nodeIdToNodeCaption(toId)
+    )}`;
+  };
 
   const getAnnotations = (): LinkMLClass => {
     return {
@@ -55,28 +66,6 @@ const graphToLinkML = (
     };
   };
 
-  const relationshipsByNode = (node: Node): Record<string, Attribute> => {
-    const getSourceNodeName = (relationship: Relationship): string =>
-      toClassName(
-        nodes.find((node) => node.id === relationship.fromId)?.caption
-      );
-
-    const getRelationshipName = (relationship: Relationship): string =>
-      toAttributeName(plural(getSourceNodeName(relationship)));
-
-    return relationships
-      .filter((relationship) => relationship.toId === node.id)
-      .reduce(
-        (attributes: Record<string, Attribute>, relationship) => ({
-          ...attributes,
-          [getRelationshipName(relationship)]: {
-            range: getSourceNodeName(relationship),
-          },
-        }),
-        {}
-      );
-  };
-
   const nodeToClass = (node: Node): LinkMLClass => {
     const propertiesToAttributes = (): Record<string, Attribute> => {
       return Object.entries(node.properties).reduce(
@@ -92,10 +81,40 @@ const graphToLinkML = (
 
     return {
       is_a: SpiresCoreClasses.NamedEntity,
-      attributes: {
-        ...relationshipsByNode(node),
-        ...propertiesToAttributes(),
+      attributes: propertiesToAttributes(),
+    };
+  };
+
+  const relationshipToRelationshipClass = (
+    relationship: Relationship
+  ): LinkMLClass => {
+    return {
+      is_a: SpiresCoreClasses.Triple,
+      description: `A triple where the subject is a ${nodeIdToNodeCaption(
+        relationship.fromId
+      )} and the object is a ${nodeIdToNodeCaption(relationship.toId)}.`,
+      slot_usage: {
+        subject: {
+          range: toClassName(nodeIdToNodeCaption(relationship.fromId)),
+        },
+        object: {
+          range: toClassName(nodeIdToNodeCaption(relationship.toId)),
+        },
+        predicate: {
+          range: `${toRelationshipClassName(relationship)}Predicate`,
+        },
       },
+    };
+  };
+
+  const relationshipToPredicateClass = (
+    relationship: Relationship
+  ): LinkMLClass => {
+    return {
+      is_a: SpiresCoreClasses.NamedEntity,
+      description: `The predicate for the ${nodeIdToNodeCaption(
+        relationship.fromId
+      )} to ${nodeIdToNodeCaption(relationship.toId)} relationships.`,
     };
   };
 
@@ -112,6 +131,16 @@ const graphToLinkML = (
         (classes: Record<string, LinkMLClass>, node) => ({
           ...classes,
           [toClassName(node.caption)]: nodeToClass(node),
+        }),
+        {}
+      ),
+      ...relationships.reduce(
+        (classes: Record<string, LinkMLClass>, relationship) => ({
+          ...classes,
+          [`${toRelationshipClassName(relationship)}Relationship`]:
+            relationshipToRelationshipClass(relationship),
+          [`${toRelationshipClassName(relationship)}Predicate`]:
+            relationshipToPredicateClass(relationship),
         }),
         {}
       ),
