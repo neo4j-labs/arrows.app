@@ -12,6 +12,7 @@ export enum SpiresCoreClasses {
 export type LinkMLClass = {
   attributes?: Record<string, Attribute>;
   description?: string;
+  id_prefixes?: string[];
   is_a?: SpiresCoreClasses;
   slot_usage?: Record<string, Attribute>;
   tree_root?: boolean;

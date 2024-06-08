@@ -33,7 +33,7 @@ const getAnnotations = (nodes: Node[]): LinkMLClass => {
 
 export const exportLinkML = (
   name: string,
-  { nodes, relationships }: Graph
+  { nodes, relationships, ontology }: Graph
 ): LinkML => {
   const idToCaption = nodeIdToNodeCaptionFactory(nodes);
   const toRelationshipClassName = toRelationshipClassNameFactory(nodes);
@@ -45,14 +45,17 @@ export const exportLinkML = (
     default_range: 'string',
     name: snakeCasedName,
     title: name,
-    prefixes: { linkml: 'https://w3id.org/linkml/' },
+    prefixes: {
+      linkml: 'https://w3id.org/linkml/',
+      ...(ontology ? { [ontology.id]: ontology.namespace } : {}),
+    },
     imports: ['core', 'linkml:types'],
     classes: {
       ...{ [`${toClassName(name)}Annotations`]: getAnnotations(nodes) },
       ...nodes.reduce(
         (classes: Record<string, LinkMLClass>, node) => ({
           ...classes,
-          [toClassName(node.caption)]: nodeToClass(node),
+          [toClassName(node.caption)]: nodeToClass(node, ontology),
         }),
         {}
       ),
