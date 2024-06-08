@@ -42,9 +42,11 @@ export const exportLinkML = (
 
   return {
     id: `https://example.com/${snakeCasedName}`,
+    default_range: 'string',
     name: snakeCasedName,
     title: name,
-    imports: ['core'],
+    prefixes: { linkml: 'https://w3id.org/linkml/' },
+    imports: ['core', 'linkml:types'],
     classes: {
       ...{ [`${toClassName(name)}Annotations`]: getAnnotations(nodes) },
       ...nodes.reduce(

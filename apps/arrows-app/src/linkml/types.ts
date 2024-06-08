@@ -19,7 +19,9 @@ export type LinkMLClass = {
 
 export type LinkML = {
   id: string;
+  default_range?: string;
   name: string;
+  prefixes: Record<string, string>;
   title: string;
   classes: Record<string, LinkMLClass>;
   imports?: string[];
