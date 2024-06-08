@@ -17,28 +17,28 @@ enum SpiresCoreClasses {
   NamedEntity = 'NamedEntity',
 }
 
-type SpiresClass = {
+type LinkMLClass = {
   attributes: Record<string, Attribute>;
   is_a?: SpiresCoreClasses;
   tree_root?: boolean;
 };
 
-type Spires = {
+type LinkML = {
   id: string;
   name: string;
   title: string;
-  classes: Record<string, SpiresClass>;
+  classes: Record<string, LinkMLClass>;
   imports?: string[];
 };
 
-const graphToSpires = (
+const graphToLinkML = (
   name: string,
   { nodes, relationships }: Graph
-): Spires => {
+): LinkML => {
   const toClassName = (str: string): string => upperFirst(camelCase(str));
   const toAttributeName = (str: string): string => snakeCase(str);
 
-  const getAnnotations = (): SpiresClass => {
+  const getAnnotations = (): LinkMLClass => {
     return {
       tree_root: true,
       attributes: nodes.reduce(
@@ -76,7 +76,7 @@ const graphToSpires = (
       );
   };
 
-  const nodeToClass = (node: Node): SpiresClass => ({
+  const nodeToClass = (node: Node): LinkMLClass => ({
     is_a: SpiresCoreClasses.NamedEntity,
     attributes: relationshipsByNode(node),
   });
@@ -91,7 +91,7 @@ const graphToSpires = (
     classes: {
       ...{ [`${toClassName(name)}Annotations`]: getAnnotations() },
       ...nodes.reduce(
-        (classes: Record<string, SpiresClass>, node) => ({
+        (classes: Record<string, LinkMLClass>, node) => ({
           ...classes,
           [toClassName(node.caption)]: nodeToClass(node),
         }),
@@ -101,17 +101,17 @@ const graphToSpires = (
   };
 };
 
-class ExportSpiresPanel extends Component {
+class ExportLinkMLPanel extends Component {
   constructor(props) {
     super(props);
   }
 
   render() {
-    const spiresString = yaml.dump(
-      graphToSpires(this.props.diagramName, this.props.graph)
+    const linkMLString = yaml.dump(
+      graphToLinkML(this.props.diagramName, this.props.graph)
     );
     const dataUrl =
-      'data:application/yaml;base64,' + Base64.encode(spiresString);
+      'data:application/yaml;base64,' + Base64.encode(linkMLString);
 
     return (
       <Form>
@@ -130,11 +130,11 @@ class ExportSpiresPanel extends Component {
             height: 500,
             fontFamily: 'monospace',
           }}
-          value={spiresString}
+          value={linkMLString}
         />
       </Form>
     );
   }
 }
 
-export default ExportSpiresPanel;
+export default ExportLinkMLPanel;
