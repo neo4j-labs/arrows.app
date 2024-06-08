@@ -505,6 +505,12 @@ export const deleteNodesAndRelationships = (nodeIdMap, relationshipIdMap) => ({
   relationshipIdMap
 })
 
+export const changeOntology = (ontology) => ({
+  category: 'GRAPH',
+  type: 'CHANGE_ONTOLOGY',
+  ontology
+})
+
 export const deleteSelection = () => {
   return function (dispatch, getState) {
     const selection = getState().selection

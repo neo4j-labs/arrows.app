@@ -337,6 +337,14 @@ const graph = (state = emptyGraph(), action) => {
     case 'GETTING_GRAPH_SUCCEEDED':
       return action.storedGraph
 
+    case 'CHANGE_ONTOLOGY':
+      return {
+        style: state.style,
+        nodes: state.nodes,
+        relationships: state.relationships,
+        ontology: action.ontology
+      }
+
     default:
       return state
   }
