@@ -4,6 +4,8 @@ import { GeneralToolbox } from './GeneralToolbox';
 import GeneralStyling from './GeneralStyling';
 import ThemeCards from './ThemeCards';
 import { renderCounters } from './EntityCounters';
+import Dropdown from './editors/Dropdown';
+import { ontologies } from '../../../../libs/model/src/lib/Ontology';
 
 export default class GeneralInspector extends Component {
   render() {
@@ -12,6 +14,7 @@ export default class GeneralInspector extends Component {
       onSaveGraphStyle,
       cachedImages,
       onApplyTheme,
+      onOntologyChange,
       styleMode,
       onSelect,
     } = this.props;
@@ -45,6 +48,23 @@ export default class GeneralInspector extends Component {
               )}
             </Form.Field>
             <GeneralToolbox onPlusNodeClick={this.props.onPlusNodeClick} />
+            <Divider
+              key="OntologyDivider"
+              horizontal
+              clearing
+              style={{ paddingTop: 50 }}
+            >
+              Ontology
+            </Divider>
+            <Dropdown
+              placeholder={'Select an ontology for your graph'}
+              options={ontologies.map((ontology) => ontology.id)}
+              onChange={(value) =>
+                onOntologyChange(
+                  ontologies.find((ontology) => ontology.id === value)
+                )
+              }
+            />
             <Divider
               key="StyleDivider"
               horizontal
