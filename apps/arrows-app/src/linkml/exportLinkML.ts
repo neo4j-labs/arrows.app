@@ -47,9 +47,10 @@ export const exportLinkML = (
     title: name,
     prefixes: {
       linkml: 'https://w3id.org/linkml/',
+      ontogpt: 'http://w3id.org/ontogpt/',
       ...(ontology ? { [ontology.id]: ontology.namespace } : {}),
     },
-    imports: ['core', 'linkml:types'],
+    imports: ['ontogpt:core', 'linkml:types'],
     classes: {
       ...{ [`${toClassName(name)}Annotations`]: getAnnotations(nodes) },
       ...nodes.reduce(
