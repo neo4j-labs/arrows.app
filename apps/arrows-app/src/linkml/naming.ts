@@ -5,29 +5,23 @@ import { camelCase, snakeCase, upperFirst } from 'lodash';
 export const toClassName = (str: string): string => upperFirst(camelCase(str));
 export const toAttributeName = (str: string): string => snakeCase(str);
 
-export const nodeIdToNodeCaptionFactory = (
-  nodes: Node[]
-): ((id: string) => string) => {
-  return (id: string): string => nodeIdToNodeCaption(id, nodes);
-};
-
-const nodeIdToNodeCaption = (id: string, nodes: Node[]): string => {
-  return nodes.find((node) => node.id === id).caption;
+export const findNodeFactory = (nodes: Node[]): ((id: string) => Node) => {
+  return (id: string): Node => nodes.find((node) => node.id === id);
 };
 
 export const toRelationshipClassNameFactory = (
   nodes: Node[]
 ): ((relationship: Relationship) => string) => {
-  const idToCaption = nodeIdToNodeCaptionFactory(nodes);
+  const findNode = findNodeFactory(nodes);
   return (relationship: Relationship): string =>
-    toRelationshipClassName(relationship, idToCaption);
+    toRelationshipClassName(relationship, findNode);
 };
 
 const toRelationshipClassName = (
   { fromId, toId }: Relationship,
-  idToCaption: (id: string) => string
+  findNode: (id: string) => Node
 ): string => {
-  return `${toClassName(idToCaption(fromId))}To${toClassName(
-    idToCaption(toId)
+  return `${toClassName(findNode(fromId).caption)}To${toClassName(
+    findNode(toId).caption
   )}`;
 };

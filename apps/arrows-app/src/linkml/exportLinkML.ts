@@ -3,7 +3,7 @@ import { Node } from '../../../../libs/model/src/lib/Node';
 import { plural } from 'pluralize';
 import { LinkMLClass, Attribute, LinkML } from './types';
 import {
-  nodeIdToNodeCaptionFactory,
+  findNodeFactory,
   toAttributeName,
   toClassName,
   toRelationshipClassNameFactory,
@@ -36,7 +36,7 @@ export const exportLinkML = (
   name: string,
   { nodes, relationships }: Graph
 ): LinkML => {
-  const idToCaption = nodeIdToNodeCaptionFactory(nodes);
+  const findNode = findNodeFactory(nodes);
   const toRelationshipClassName = toRelationshipClassNameFactory(nodes);
 
   const snakeCasedName = snakeCase(name);
@@ -70,11 +70,11 @@ export const exportLinkML = (
           [`${toRelationshipClassName(relationship)}Relationship`]:
             relationshipToRelationshipClass(
               relationship,
-              idToCaption,
+              findNode,
               toRelationshipClassName
             ),
           [`${toRelationshipClassName(relationship)}Predicate`]:
-            relationshipToPredicateClass(relationship, idToCaption),
+            relationshipToPredicateClass(relationship, findNode),
         }),
         {}
       ),
