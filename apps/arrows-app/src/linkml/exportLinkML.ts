@@ -46,6 +46,7 @@ export const exportLinkML = (
     default_range: 'string',
     name: snakeCasedName,
     title: name,
+    license: 'https://creativecommons.org/publicdomain/zero/1.0/',
     prefixes: {
       linkml: 'https://w3id.org/linkml/',
       ontogpt: 'http://w3id.org/ontogpt/',

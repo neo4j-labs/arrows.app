@@ -27,4 +27,5 @@ export type LinkML = {
   title: string;
   classes: Record<string, LinkMLClass>;
   imports?: string[];
+  license?: string;
 };
