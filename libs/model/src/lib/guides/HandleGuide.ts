@@ -1,13 +1,13 @@
-import { Point } from "../Point"
+import { Point } from '../Point';
 
 export class HandleGuide {
-  handlePosition: Point
+  handlePosition: Point;
 
-  constructor(handlePosition:Point) {
-    this.handlePosition = handlePosition
+  constructor(handlePosition: Point) {
+    this.handlePosition = handlePosition;
   }
 
   get type() {
-    return 'HANDLE'
+    return 'HANDLE';
   }
 }

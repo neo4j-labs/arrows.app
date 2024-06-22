@@ -1,69 +1,64 @@
-import React, {Component} from 'react'
-import {Modal, Button, Input, Menu} from 'semantic-ui-react'
-import DocumentTitle from 'react-document-title'
+import React, { Component } from 'react';
+import { Modal, Button, Input, Menu } from 'semantic-ui-react';
+import DocumentTitle from 'react-document-title';
 
 export class DiagramNameEditor extends Component {
-
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       editable: false,
-      diagramName: props.diagramName
-    }
+      diagramName: props.diagramName,
+    };
   }
 
-  componentWillReceiveProps(nextProps){
+  componentWillReceiveProps(nextProps) {
     if (nextProps.diagramName !== this.props.diagramName) {
       this.setState({
-        diagramName: nextProps.diagramName
-      })
+        diagramName: nextProps.diagramName,
+      });
     }
   }
 
   onClick = () => {
     this.setState({
-      editable: true
-    })
-  }
+      editable: true,
+    });
+  };
 
   onChange = (event) => {
     this.setState({
-      diagramName: event.target.value
-    })
-  }
+      diagramName: event.target.value,
+    });
+  };
 
   onCancel = () => {
     this.setState({
-      editable: false
-    })
-  }
+      editable: false,
+    });
+  };
 
   onKeyPress = (e) => {
     if (e.key === 'Enter') {
-      this.commit()
+      this.commit();
     }
-  }
+  };
 
   commit = () => {
     this.setState({
-      editable: false
-    })
-    this.props.setDiagramName(this.state.diagramName)
-  }
+      editable: false,
+    });
+    this.props.setDiagramName(this.state.diagramName);
+  };
 
   render() {
     return (
       <React.Fragment>
         <Menu.Item onClick={this.onClick}>
           <DocumentTitle title={this.props.diagramName + ' - Arrows'}>
-            <span style={{fontWeight: 'bold'}}>{this.props.diagramName}</span>
+            <span style={{ fontWeight: 'bold' }}>{this.props.diagramName}</span>
           </DocumentTitle>
         </Menu.Item>
-        <Modal
-          open={this.state.editable}
-          size='mini'
-          onClose={this.onCancel}
-        >
+        <Modal open={this.state.editable} size="mini" onClose={this.onCancel}>
           <Modal.Header>Diagram Name</Modal.Header>
           <Modal.Content>
             <Input
@@ -74,10 +69,7 @@ export class DiagramNameEditor extends Component {
             />
           </Modal.Content>
           <Modal.Actions>
-            <Button
-              onClick={this.onCancel}
-              content="Cancel"
-            />
+            <Button onClick={this.onCancel} content="Cancel" />
             <Button
               type="submit"
               onClick={this.commit}
@@ -87,6 +79,6 @@ export class DiagramNameEditor extends Component {
           </Modal.Actions>
         </Modal>
       </React.Fragment>
-    )
+    );
   }
 }

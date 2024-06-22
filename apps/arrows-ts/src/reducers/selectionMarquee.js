@@ -1,10 +1,10 @@
 export default function selectionMarquee(state = null, action) {
   switch (action.type) {
     case 'SET_MARQUEE':
-      return action.marquee
+      return action.marquee;
     case 'END_DRAG':
-      return null
+      return null;
     default:
-      return state
+      return state;
   }
 }

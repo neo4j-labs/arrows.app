@@ -1,27 +1,26 @@
-import React, {PureComponent} from 'react';
+import React, { PureComponent } from 'react';
 
 export class RelationshipTypeEditor extends PureComponent {
-
   constructor(props) {
-    super(props)
-    this.input = React.createRef()
+    super(props);
+    this.input = React.createRef();
   }
 
   componentDidMount() {
-    const input = this.input.current
-    input.select()
+    const input = this.input.current;
+    input.select();
   }
 
   handleChange = (e) => {
-    const type = e.target.value
-    this.props.onSetRelationshipType(type)
-  }
+    const type = e.target.value;
+    this.props.onSetRelationshipType(type);
+  };
 
   render() {
-    const type = this.props.component
-    const text = type.text
-    const padding = 10
-    const textWidth = type.width
+    const type = this.props.component;
+    const text = type.text;
+    const padding = 10;
+    const textWidth = type.width;
     return (
       <input
         ref={this.input}
@@ -41,10 +40,9 @@ export class RelationshipTypeEditor extends PureComponent {
           background: 'transparent',
           textAlign: 'left',
           ...type.font,
-          lineHeight: 1.2
+          lineHeight: 1.2,
         }}
-      >
-      </input>
-    )
+      ></input>
+    );
   }
 }

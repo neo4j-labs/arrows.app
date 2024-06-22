@@ -1,15 +1,15 @@
-import {Guides} from "../model/guides/guides";
+import { Guides } from '../model/guides/guides';
 
 export default function guides(state = new Guides(), action) {
   switch (action.type) {
     case 'MOVE_NODES':
     case 'RING_DRAGGED':
-      return action.guides
+      return action.guides;
 
     case 'END_DRAG':
-      return new Guides()
+      return new Guides();
 
     default:
-      return state
+      return state;
   }
 }

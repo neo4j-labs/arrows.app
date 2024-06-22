@@ -1,25 +1,22 @@
-import {connect} from "react-redux"
-import ExportModal from "../components/ExportModal";
-import {hideExportDialog} from "../actions/applicationDialogs";
-import { getPresentGraph } from "../selectors"
+import { connect } from 'react-redux';
+import ExportModal from '../components/ExportModal';
+import { hideExportDialog } from '../actions/applicationDialogs';
+import { getPresentGraph } from '../selectors';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     graph: getPresentGraph(state),
     cachedImages: state.cachedImages,
-    diagramName: state.diagramName
-  }
-}
+    diagramName: state.diagramName,
+  };
+};
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    onCancel: () =>{
-      dispatch(hideExportDialog())
-    }
-  }
-}
+    onCancel: () => {
+      dispatch(hideExportDialog());
+    },
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ExportModal)
+export default connect(mapStateToProps, mapDispatchToProps)(ExportModal);

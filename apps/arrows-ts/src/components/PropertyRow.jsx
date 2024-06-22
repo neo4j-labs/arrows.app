@@ -1,33 +1,42 @@
-import React, {Component} from 'react'
-import {Table, Input, Form, Icon, Popup, Button, Label} from 'semantic-ui-react'
+import React, { Component } from 'react';
+import {
+  Table,
+  Input,
+  Form,
+  Icon,
+  Popup,
+  Button,
+  Label,
+} from 'semantic-ui-react';
 
 export class PropertyRow extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      mouseOver: false
-    }
+      mouseOver: false,
+    };
   }
 
   onMouseEnter = () => {
     this.setState({
-      mouseOver: true
-    })
-  }
+      mouseOver: true,
+    });
+  };
 
   onMouseLeave = () => {
     this.setState({
-      mouseOver: false
-    })
-  }
+      mouseOver: false,
+    });
+  };
 
-  componentDidMount () {
+  componentDidMount() {
     if (!this.props.propertyKey || this.props.propertyKey.length === 0) {
-      this.keyInput && this.keyInput.focus()
+      this.keyInput && this.keyInput.focus();
     }
 
-    this.props.setFocusHandler(() => this.valueInput && this.valueInput.focus())
+    this.props.setFocusHandler(
+      () => this.valueInput && this.valueInput.focus()
+    );
   }
 
   render = () => {
@@ -42,76 +51,74 @@ export class PropertyRow extends Component {
       onDeleteProperty,
       onNext,
       keyDisabled,
-      valueDisabled
-    } = this.props
+      valueDisabled,
+    } = this.props;
     const handleKeyPress = (source, evt) => {
       if (evt.key === 'Enter') {
-        evt.preventDefault()
+        evt.preventDefault();
         if (source === 'key') {
-          this.valueInput && this.valueInput.focus()
+          this.valueInput && this.valueInput.focus();
         } else {
-          onNext()
+          onNext();
         }
       }
-    }
+    };
 
     const handleKeyDown = (evt) => {
       if (evt.key === 'Enter' && evt.metaKey) {
-        evt.target.blur()
+        evt.target.blur();
       }
-    }
+    };
 
-    const propertyKeyButtons = propertySummary.keys
-      .map(entry => (
-        <Table.Row
-          key={'suggest_' + entry.key}
-          textAlign='right'
-        >
-          <Table.Cell>
-            <Label>{entry.nodeCount}</Label>
-          </Table.Cell>
-          <Table.Cell>
-            <Button
-              basic
-              color='black'
-              size='tiny'
-              onClick={() => onKeyChange(entry.key)}
-            >
-              {entry.key}
-            </Button>
-          </Table.Cell>
-        </Table.Row>
-      ))
+    const propertyKeyButtons = propertySummary.keys.map((entry) => (
+      <Table.Row key={'suggest_' + entry.key} textAlign="right">
+        <Table.Cell>
+          <Label>{entry.nodeCount}</Label>
+        </Table.Cell>
+        <Table.Cell>
+          <Button
+            basic
+            color="black"
+            size="tiny"
+            onClick={() => onKeyChange(entry.key)}
+          >
+            {entry.key}
+          </Button>
+        </Table.Cell>
+      </Table.Row>
+    ));
 
     const keyPopupContent = (
       <Form>
         <Form.Field>
           <label>other property keys</label>
-          <Table basic='very' compact='very'>
-            <Table.Body>
-              {propertyKeyButtons}
-            </Table.Body>
+          <Table basic="very" compact="very">
+            <Table.Body>{propertyKeyButtons}</Table.Body>
           </Table>
         </Form.Field>
       </Form>
-    )
+    );
 
-    const suggestedValues = propertySummary.values.get(propertyKey)
-      .filter(entry => entry.value !== valueFieldValue)
-    const possibleToMergeByValue = suggestedValues.some(entry => entry.nodeCount > 1)
-    const suggestedValuesInSelection = suggestedValues.filter(entry => entry.inSelection)
-    const suggestedValuesInRestOfGraph = suggestedValues.filter(entry => !entry.inSelection)
+    const suggestedValues = propertySummary.values
+      .get(propertyKey)
+      .filter((entry) => entry.value !== valueFieldValue);
+    const possibleToMergeByValue = suggestedValues.some(
+      (entry) => entry.nodeCount > 1
+    );
+    const suggestedValuesInSelection = suggestedValues.filter(
+      (entry) => entry.inSelection
+    );
+    const suggestedValuesInRestOfGraph = suggestedValues.filter(
+      (entry) => !entry.inSelection
+    );
 
-    const entryToSuggestion = entry => (
-      <Table.Row
-        key={'suggest_' + entry.value}
-        textAlign='left'
-      >
+    const entryToSuggestion = (entry) => (
+      <Table.Row key={'suggest_' + entry.value} textAlign="left">
         <Table.Cell>
           <Button
             basic
-            color='black'
-            size='tiny'
+            color="black"
+            size="tiny"
             onClick={() => onValueChange(entry.value)}
           >
             {entry.value}
@@ -121,28 +128,28 @@ export class PropertyRow extends Component {
           <Label>{entry.nodeCount}</Label>
         </Table.Cell>
       </Table.Row>
-    )
+    );
 
     const valuePopupContent = (
       <Form>
         {possibleToMergeByValue ? (
           <Form.Field>
             <Button
-              key='mergeOnValues'
+              key="mergeOnValues"
               onClick={onMergeOnValues}
               basic
-              color='black'
+              color="black"
               size="tiny"
               icon="crosshairs"
-              content='Merge on values'
-              type='button'
+              content="Merge on values"
+              type="button"
             />
           </Form.Field>
         ) : null}
         {suggestedValuesInSelection.length > 0 ? (
           <Form.Field>
             <label>in selection</label>
-            <Table basic='very' compact='very'>
+            <Table basic="very" compact="very">
               <Table.Body>
                 {suggestedValuesInSelection.map(entryToSuggestion)}
               </Table.Body>
@@ -152,7 +159,7 @@ export class PropertyRow extends Component {
         {suggestedValuesInRestOfGraph.length > 0 ? (
           <Form.Field>
             <label>other values</label>
-            <Table basic='very' compact='very'>
+            <Table basic="very" compact="very">
               <Table.Body>
                 {suggestedValuesInRestOfGraph.map(entryToSuggestion)}
               </Table.Body>
@@ -160,7 +167,7 @@ export class PropertyRow extends Component {
           </Form.Field>
         ) : null}
       </Form>
-    )
+    );
 
     const keyField = (
       <Input
@@ -168,36 +175,40 @@ export class PropertyRow extends Component {
         onChange={(event) => onKeyChange(event.target.value)}
         transparent
         className={'property-key'}
-        ref={elm => this.keyInput = elm}
+        ref={(elm) => (this.keyInput = elm)}
         onKeyPress={(evt) => handleKeyPress('key', evt)}
         onKeyDown={handleKeyDown}
         disabled={keyDisabled}
       />
-    )
+    );
     const valueField = (
       <Input
         value={valueFieldValue}
         placeholder={valueFieldPlaceHolder}
         onChange={(event) => onValueChange(event.target.value)}
-        ref={elm => this.valueInput = elm}
+        ref={(elm) => (this.valueInput = elm)}
         onKeyPress={(evt) => handleKeyPress('value', evt)}
         onKeyDown={handleKeyDown}
         transparent
         disabled={valueDisabled}
       />
-    )
+    );
     return (
-      <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+      <Table.Row
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+      >
         <Table.Cell width={3} collapsing>
           <Form.Field>
             <Popup
               trigger={keyField}
               content={keyPopupContent}
-              on='focus'
-              {...(propertySummary.keys.length > 0 ? {} : {open: false})}
-              position='bottom right'
+              on="focus"
+              {...(propertySummary.keys.length > 0 ? {} : { open: false })}
+              position="bottom right"
               flowing
-            />:
+            />
+            :
           </Form.Field>
         </Table.Cell>
         <Table.Cell width={3}>
@@ -205,21 +216,24 @@ export class PropertyRow extends Component {
             <Popup
               trigger={valueField}
               content={valuePopupContent}
-              on='focus'
-              {...(suggestedValues.length > 0 ? {} : {open: false})}
-              position='bottom left'
+              on="focus"
+              {...(suggestedValues.length > 0 ? {} : { open: false })}
+              position="bottom left"
               flowing
             />
           </Form.Field>
         </Table.Cell>
         <Table.Cell width={1}>
           <Icon
-            style={{visibility: this.state.mouseOver && !valueDisabled ? 'visible' : 'hidden'}}
+            style={{
+              visibility:
+                this.state.mouseOver && !valueDisabled ? 'visible' : 'hidden',
+            }}
             name="trash alternate outline"
             onClick={onDeleteProperty}
           />
         </Table.Cell>
       </Table.Row>
-    )
-  }
+    );
+  };
 }

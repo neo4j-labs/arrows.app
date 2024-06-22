@@ -1,6 +1,5 @@
-export const construct = (visualElement:any) => {
-
+export const construct = (visualElement: any) => {
   return {
-    element: visualElement
-  }
-}
+    element: visualElement,
+  };
+};

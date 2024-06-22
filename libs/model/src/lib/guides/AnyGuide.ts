@@ -1,4 +1,4 @@
-import { CircleGuide } from "./CircleGuide";
-import { LineGuide } from "./LineGuide";
+import { CircleGuide } from './CircleGuide';
+import { LineGuide } from './LineGuide';
 
-export type AnyGuide = LineGuide | CircleGuide
+export type AnyGuide = LineGuide | CircleGuide;

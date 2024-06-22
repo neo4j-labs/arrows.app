@@ -1,24 +1,27 @@
-import React from "react";
-import neo4j_logo_white from "../images/Neo4j-logo-white.svg";
-import {footerHeight} from "../model/applicationLayout";
-import {informationLinks} from "./informationLinks";
+import React from 'react';
+import neo4j_logo_white from '../images/Neo4j-logo-white.svg';
+import { footerHeight } from '../model/applicationLayout';
+import { informationLinks } from './informationLinks';
 
 const Footer = (props) => {
-  const links = informationLinks.map(link => {
-    const [linkText, href] = link
+  const links = informationLinks.map((link) => {
+    const [linkText, href] = link;
     return (
-      <p key={href} style={{
-        color: '#BCC0C9',
-        fontSize: '11px',
-        lineHeight: '26px',
-        marginLeft: '20px',
-      }}>
-        <a href={href} target='_blank'>
+      <p
+        key={href}
+        style={{
+          color: '#BCC0C9',
+          fontSize: '11px',
+          lineHeight: '26px',
+          marginLeft: '20px',
+        }}
+      >
+        <a href={href} target="_blank">
           {linkText}
         </a>
       </p>
-    )
-  })
+    );
+  });
 
   return (
     <footer
@@ -31,36 +34,49 @@ const Footer = (props) => {
         flexDirection: 'row',
       }}
     >
-      <p style={{
-        color: '#BCC0C9',
-        fontSize: '11px',
-        lineHeight: '26px',
-      }}>
-        Arrows.app powered by <a href="https://neo4j.com/labs/arrows" target='_blank'>Neo4j Labs</a>
-      </p>
-      <p style={{
-        color: '#BCC0C9',
-        fontSize: '11px',
-        lineHeight: '26px',
-        marginLeft: '20px',
-      }}>
-        <a onClick={props.onHelpClick}>
-          Help
+      <p
+        style={{
+          color: '#BCC0C9',
+          fontSize: '11px',
+          lineHeight: '26px',
+        }}
+      >
+        Arrows.app powered by{' '}
+        <a href="https://neo4j.com/labs/arrows" target="_blank">
+          Neo4j Labs
         </a>
       </p>
+      <p
+        style={{
+          color: '#BCC0C9',
+          fontSize: '11px',
+          lineHeight: '26px',
+          marginLeft: '20px',
+        }}
+      >
+        <a onClick={props.onHelpClick}>Help</a>
+      </p>
       {links}
-      <p style={{
-        flex: 2,
-      }}/>
-      <p style={{
-        lineHeight: '26px'
-      }}>
-        <a href='https://neo4j.com?ref=arrows.app' target='_blank'>
-          <img src={neo4j_logo_white} style={{ height: '20px', marginTop: '2px' }} alt='Neo4j logo'/>
+      <p
+        style={{
+          flex: 2,
+        }}
+      />
+      <p
+        style={{
+          lineHeight: '26px',
+        }}
+      >
+        <a href="https://neo4j.com?ref=arrows.app" target="_blank">
+          <img
+            src={neo4j_logo_white}
+            style={{ height: '20px', marginTop: '2px' }}
+            alt="Neo4j logo"
+          />
         </a>
       </p>
     </footer>
-  )
-}
+  );
+};
 
-export default Footer
+export default Footer;

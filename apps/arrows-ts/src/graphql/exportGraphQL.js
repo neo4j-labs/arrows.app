@@ -1,22 +1,22 @@
-import { print } from "graphql";
-import extractNameFromTypeNode from "./extractNameFromTypeNode";
-import makeStringUnique from "./makeStringUnique";
-import snakeToCamelCase from "./snakeToCamelCase";
-import snakeToPascalCase from "./snakeToPascalCase";
-import typeStringToTypeNode from "./typeStringToTypeNode";
+import { print } from 'graphql';
+import extractNameFromTypeNode from './extractNameFromTypeNode';
+import makeStringUnique from './makeStringUnique';
+import snakeToCamelCase from './snakeToCamelCase';
+import snakeToPascalCase from './snakeToPascalCase';
+import typeStringToTypeNode from './typeStringToTypeNode';
 
 function appendRelationField({ rel, toNode, definition, direction }) {
   const relTypeNode = typeStringToTypeNode(rel.type);
   const relTypeName = extractNameFromTypeNode(relTypeNode);
 
-  if (relTypeNode.kind === "ListType") {
-    if (relTypeNode.type.kind === "NonNullType") {
+  if (relTypeNode.kind === 'ListType') {
+    if (relTypeNode.type.kind === 'NonNullType') {
       relTypeNode.type.type.name.value = toNode.label;
     } else {
       relTypeNode.type.name.value = toNode.label;
     }
-  } else if (relTypeNode.kind === "NonNullType") {
-    if (relTypeNode.type.kind === "ListType") {
+  } else if (relTypeNode.kind === 'NonNullType') {
+    if (relTypeNode.type.kind === 'ListType') {
       relTypeNode.type.type.name.value = toNode.label;
     } else {
       relTypeNode.type.name.value = toNode.label;
@@ -25,17 +25,17 @@ function appendRelationField({ rel, toNode, definition, direction }) {
     relTypeNode.name.value = toNode.label;
   }
 
-  let relFieldName = snakeToCamelCase(relTypeName + "_" + toNode.label);
-  if (direction === "IN") {
-    relFieldName = snakeToCamelCase(toNode.label + "_" + relTypeName);
+  let relFieldName = snakeToCamelCase(relTypeName + '_' + toNode.label);
+  if (direction === 'IN') {
+    relFieldName = snakeToCamelCase(toNode.label + '_' + relTypeName);
   }
 
   /**
    * @type {import("graphql").FieldDefinitionNode}
    */
   const field = {
-    kind: "FieldDefinition",
-    name: { kind: "Name", value: relFieldName },
+    kind: 'FieldDefinition',
+    name: { kind: 'Name', value: relFieldName },
     type: relTypeNode,
     directives: [],
   };
@@ -44,29 +44,29 @@ function appendRelationField({ rel, toNode, definition, direction }) {
    * @type {import("graphql").DirectiveNode}
    */
   const relationshipDirective = {
-    kind: "Directive",
-    name: { kind: "Name", value: "relationship" },
+    kind: 'Directive',
+    name: { kind: 'Name', value: 'relationship' },
     arguments: [
       {
-        kind: "Argument",
-        name: { kind: "Name", value: "type" },
+        kind: 'Argument',
+        name: { kind: 'Name', value: 'type' },
         value: {
-          kind: "StringValue",
+          kind: 'StringValue',
           value: relTypeName,
         },
       },
       {
-        kind: "Argument",
-        name: { kind: "Name", value: "direction" },
-        value: { kind: "EnumValue", value: direction },
+        kind: 'Argument',
+        name: { kind: 'Name', value: 'direction' },
+        value: { kind: 'EnumValue', value: direction },
       },
     ],
   };
   if (rel.propertiesReference) {
     relationshipDirective.arguments.push({
-      kind: "Argument",
-      name: { kind: "Name", value: "properties" },
-      value: { kind: "StringValue", value: rel.propertiesReference },
+      kind: 'Argument',
+      name: { kind: 'Name', value: 'properties' },
+      value: { kind: 'StringValue', value: rel.propertiesReference },
     });
   }
 
@@ -79,7 +79,7 @@ function exportGraphQL(graph) {
    * @type {import("graphql").DocumentNode}
    */
   let graphQLAST = {
-    kind: "Document",
+    kind: 'Document',
     definitions: [],
   };
 
@@ -87,12 +87,12 @@ function exportGraphQL(graph) {
   const nodes = graph.nodes.map((n) => {
     const label = (n.labels || [])[0];
     if (!label) {
-      throw new Error("Nodes require a single label for GraphQL export.");
+      throw new Error('Nodes require a single label for GraphQL export.');
     }
 
     if (!Object.keys(n.properties || {}).length) {
       throw new Error(
-        "Nodes require at least one property for GraphQL export."
+        'Nodes require at least one property for GraphQL export.'
       );
     }
 
@@ -105,15 +105,15 @@ function exportGraphQL(graph) {
   });
 
   graph.relationships.forEach((rel) => {
-    if (rel.style && rel.style.directionality === "undirected") {
+    if (rel.style && rel.style.directionality === 'undirected') {
       throw new Error(
-        "Undirected relationships not supported with GraphQL export."
+        'Undirected relationships not supported with GraphQL export.'
       );
     }
 
     if (!rel.type) {
       throw new Error(
-        "Relationships without a type are not supported with GraphQL export."
+        'Relationships without a type are not supported with GraphQL export.'
       );
     }
 
@@ -151,17 +151,17 @@ function exportGraphQL(graph) {
        * @type {import("graphql").DefinitionNode}
        */
       const definition = {
-        kind: "ObjectTypeDefinition",
+        kind: 'ObjectTypeDefinition',
         name: {
-          kind: "Name",
+          kind: 'Name',
           value: node.label,
         },
         fields: Object.entries({
           ...node.properties,
           __internalID__: node.graphID,
         }).map(([key, value]) => ({
-          kind: "FieldDefinition",
-          name: { kind: "Name", value: key },
+          kind: 'FieldDefinition',
+          name: { kind: 'Name', value: key },
           type: typeStringToTypeNode(value),
         })),
       };
@@ -171,16 +171,16 @@ function exportGraphQL(graph) {
     .concat(
       interfaces.map((iFace) => {
         const definition = {
-          kind: "InterfaceTypeDefinition",
+          kind: 'InterfaceTypeDefinition',
           name: {
-            kind: "Name",
+            kind: 'Name',
             value: iFace.name,
           },
           fields: Object.entries({
             ...iFace.properties,
           }).map(([key, value]) => ({
-            kind: "FieldDefinition",
-            name: { kind: "Name", value: key },
+            kind: 'FieldDefinition',
+            name: { kind: 'Name', value: key },
             type: typeStringToTypeNode(value),
           })),
         };
@@ -194,7 +194,7 @@ function exportGraphQL(graph) {
     const definition = graphQLAST.definitions.find((def) =>
       def.fields.find((field) => {
         return (
-          field.name.value === "__internalID__" &&
+          field.name.value === '__internalID__' &&
           field.type.name.value === node.graphID
         );
       })
@@ -205,7 +205,7 @@ function exportGraphQL(graph) {
       const toDefinition = graphQLAST.definitions.find((def) =>
         def.fields.find((field) => {
           return (
-            field.name.value === "__internalID__" &&
+            field.name.value === '__internalID__' &&
             field.type.name.value === rel.toGraphID
           );
         })
@@ -215,14 +215,14 @@ function exportGraphQL(graph) {
         rel,
         toNode,
         definition,
-        direction: "OUT",
+        direction: 'OUT',
       });
 
       appendRelationField({
         rel,
         toNode: node,
         definition: toDefinition,
-        direction: "IN",
+        direction: 'IN',
       });
     });
   });
@@ -230,7 +230,7 @@ function exportGraphQL(graph) {
   // Delete internal ids once applied relationships.
   graphQLAST.definitions.forEach((definition) => {
     definition.fields = definition.fields.filter(
-      (field) => !Boolean(field.name.value === "__internalID__")
+      (field) => !Boolean(field.name.value === '__internalID__')
     );
   });
 

@@ -1,6 +1,6 @@
-import snakeToPascalCase from "./snakeToPascalCase";
+import snakeToPascalCase from './snakeToPascalCase';
 
-export default function snakeToCamelCase(str = "") {
+export default function snakeToCamelCase(str = '') {
   const pascalCased = snakeToPascalCase(str);
   if (!pascalCased) {
     return pascalCased;

@@ -3,6 +3,6 @@ export const adjustViewport = (scale, panX, panY) => {
     type: 'ADJUST_VIEWPORT',
     scale,
     panX,
-    panY
-  }
-}
+    panY,
+  };
+};

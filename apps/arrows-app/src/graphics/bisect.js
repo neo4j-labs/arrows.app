@@ -1,20 +1,20 @@
 export const bisect = (f, start, minimum) => {
-  if (f(start)) return start
+  if (f(start)) return start;
 
-  let above = start
-  let below = minimum
-  let result = false
+  let above = start;
+  let below = minimum;
+  let result = false;
   while ((above - below) / below > 1e-2) {
-    const x = below + (above - below) / 2
-    result = f(x)
+    const x = below + (above - below) / 2;
+    result = f(x);
     if (result) {
-      below = x
+      below = x;
     } else {
-      above = x
+      above = x;
     }
   }
   if (!result) {
-    f(below)
+    f(below);
   }
-  return below
-}
+  return below;
+};

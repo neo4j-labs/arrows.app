@@ -1,18 +1,18 @@
 import React from 'react';
-import { connect } from "react-redux"
+import { connect } from 'react-redux';
 
 const FeatureToggle = ({ children, features, name, renderIf }) => {
-  const toggleEnabled = features[name]
+  const toggleEnabled = features[name];
 
   if (renderIf === toggleEnabled) {
     return children;
   } else {
     return [];
   }
-}
+};
 
-const mapStateToProps = state => ({
-  features: state.features
-})
+const mapStateToProps = (state) => ({
+  features: state.features,
+});
 
-export default connect(mapStateToProps)(FeatureToggle)
+export default connect(mapStateToProps)(FeatureToggle);

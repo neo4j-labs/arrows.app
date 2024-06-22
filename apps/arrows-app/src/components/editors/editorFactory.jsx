@@ -1,15 +1,23 @@
-import React from 'react'
-import {Input} from 'semantic-ui-react'
-import ColorPicker from './ColorPicker'
-import Slider from './Slider'
-import Dropdown from "./Dropdown";
-import {styleAttributes, styleTypes} from "../../model/styling";
-import ImageUrlInput from "./ImageUrlInput";
-import PercentageSlider from "./PercentageSlider";
+import React from 'react';
+import { Input } from 'semantic-ui-react';
+import ColorPicker from './ColorPicker';
+import Slider from './Slider';
+import Dropdown from './Dropdown';
+import { styleAttributes, styleTypes } from '../../model/styling';
+import ImageUrlInput from './ImageUrlInput';
+import PercentageSlider from './PercentageSlider';
 
-export const getStyleEditorComponent = (styleKey, value, placeholder, cachedImages, onChange, onKeyPress, setFocusHandler) => {
-  const attribute = styleAttributes[styleKey]
-  const styleType = styleTypes[attribute.type]
+export const getStyleEditorComponent = (
+  styleKey,
+  value,
+  placeholder,
+  cachedImages,
+  onChange,
+  onKeyPress,
+  setFocusHandler
+) => {
+  const attribute = styleAttributes[styleKey];
+  const styleType = styleTypes[attribute.type];
 
   switch (styleType.editor) {
     case 'slider':
@@ -25,7 +33,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, cachedImag
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}
         />
-      )
+      );
     case 'percentageSlider':
       return (
         <PercentageSlider
@@ -39,7 +47,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, cachedImag
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}
         />
-      )
+      );
     case 'colorPicker':
       return (
         <ColorPicker
@@ -49,7 +57,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, cachedImag
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}
         />
-      )
+      );
     case 'dropdown':
       return (
         <Dropdown
@@ -58,7 +66,7 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, cachedImag
           options={styleType.options}
           onChange={onChange}
         />
-      )
+      );
     case 'imageUrl':
       return (
         <ImageUrlInput
@@ -69,16 +77,16 @@ export const getStyleEditorComponent = (styleKey, value, placeholder, cachedImag
           onKeyPress={onKeyPress}
           setFocusHandler={setFocusHandler}
         />
-      )
+      );
     default:
       return (
         <Input
           fluid
           value={value}
           placeholder={placeholder}
-          onChange={evt => onChange(evt.target.value)}
+          onChange={(evt) => onChange(evt.target.value)}
           onKeyPress={onKeyPress}
         />
-      )
+      );
   }
-}
+};

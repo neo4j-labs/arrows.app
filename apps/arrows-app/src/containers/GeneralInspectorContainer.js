@@ -1,47 +1,44 @@
-import {connect} from "react-redux";
-import {createNode, setGraphStyle, setGraphStyles} from "../actions/graph";
-import GeneralInspector from "../components/GeneralInspector";
-import { getPresentGraph } from "../selectors"
-import {styleCustomize, styleTheme} from "../actions/applicationLayout";
-import {toggleSelection} from "../actions/selection";
+import { connect } from 'react-redux';
+import { createNode, setGraphStyle, setGraphStyles } from '../actions/graph';
+import GeneralInspector from '../components/GeneralInspector';
+import { getPresentGraph } from '../selectors';
+import { styleCustomize, styleTheme } from '../actions/applicationLayout';
+import { toggleSelection } from '../actions/selection';
 import { changeOntology } from '../../../arrows-ts/src/actions/graph';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     graph: getPresentGraph(state),
     cachedImages: state.cachedImages,
     selection: state.selection,
-    styleMode: state.applicationLayout.styleMode
-  }
-}
+    styleMode: state.applicationLayout.styleMode,
+  };
+};
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onSelect: (entities) => {
-      dispatch(toggleSelection(entities, 'replace'))
+      dispatch(toggleSelection(entities, 'replace'));
     },
     onSaveGraphStyle: (key, value) => {
-      dispatch(setGraphStyle(key, value))
+      dispatch(setGraphStyle(key, value));
     },
     onPlusNodeClick: () => {
-      dispatch(createNode())
+      dispatch(createNode());
     },
     onStyleTheme: () => {
-      dispatch(styleTheme())
+      dispatch(styleTheme());
     },
     onStyleCustomize: () => {
-      dispatch(styleCustomize())
+      dispatch(styleCustomize());
     },
     onApplyTheme: (style) => {
-      dispatch(setGraphStyles(style))
+      dispatch(setGraphStyles(style));
     },
     onOntologyChange: (ontology) => {
-      dispatch(changeOntology(ontology))
-    }
-  }
-}
+      dispatch(changeOntology(ontology));
+    },
+  };
+};
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GeneralInspector)
+export default connect(mapStateToProps, mapDispatchToProps)(GeneralInspector);

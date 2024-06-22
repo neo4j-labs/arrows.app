@@ -3,56 +3,56 @@ function typeStringToTypeNode(typeString) {
    * @type {import("graphql").TypeNode}
    */
   let typeNode = {
-    kind: "NamedType",
-    name: { kind: "Name", value: typeString },
+    kind: 'NamedType',
+    name: { kind: 'Name', value: typeString },
   };
 
-  const splitted = typeString.split("");
+  const splitted = typeString.split('');
   const first = splitted[0];
   const last = splitted[splitted.length - 1];
 
-  if (first === "[" && last === "]") {
+  if (first === '[' && last === ']') {
     splitted.shift();
     splitted.pop();
 
     typeNode = {
-      kind: "ListType",
+      kind: 'ListType',
       type: {
-        kind: "NamedType",
+        kind: 'NamedType',
         name: {
-          kind: "Name",
-          value: splitted.join(""),
+          kind: 'Name',
+          value: splitted.join(''),
         },
       },
     };
   }
 
-  if (last === "!") {
+  if (last === '!') {
     const secondLast = splitted[splitted.length - 2];
     splitted.pop();
 
-    if (first === "[" && secondLast === "]") {
+    if (first === '[' && secondLast === ']') {
       splitted.shift();
       splitted.pop();
 
       typeNode = {
-        kind: "NonNullType",
+        kind: 'NonNullType',
         type: {
-          kind: "ListType",
+          kind: 'ListType',
           type: {
-            kind: "NamedType",
-            name: { kind: "Name", value: splitted.join("") },
+            kind: 'NamedType',
+            name: { kind: 'Name', value: splitted.join('') },
           },
         },
       };
     } else {
       typeNode = {
-        kind: "NonNullType",
+        kind: 'NonNullType',
         type: {
-          kind: "NamedType",
+          kind: 'NamedType',
           name: {
-            kind: "Name",
-            value: splitted.join(""),
+            kind: 'Name',
+            value: splitted.join(''),
           },
         },
       };

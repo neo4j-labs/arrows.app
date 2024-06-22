@@ -1,23 +1,19 @@
-import {connect} from 'react-redux'
-import {showHelpDialog} from "../actions/applicationDialogs";
-import Footer from "../components/Footer";
+import { connect } from 'react-redux';
+import { showHelpDialog } from '../actions/applicationDialogs';
+import Footer from '../components/Footer';
 
 const mapStateToProps = () => {
-  return {
-  }
-}
+  return {};
+};
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onHelpClick: () => {
-      dispatch(showHelpDialog())
-    }
-  }
-}
+      dispatch(showHelpDialog());
+    },
+  };
+};
 
-const FooterContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Footer)
+const FooterContainer = connect(mapStateToProps, mapDispatchToProps)(Footer);
 
-export default FooterContainer
+export default FooterContainer;

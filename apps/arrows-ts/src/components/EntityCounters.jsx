@@ -1,44 +1,45 @@
-import React from 'react'
-import {Label, Icon, Form} from 'semantic-ui-react'
+import React from 'react';
+import { Label, Icon, Form } from 'semantic-ui-react';
 
 export const renderCounters = (nodeIds, relationshipIds, onSelect, color) => {
-  const parts = []
+  const parts = [];
 
   const pushCounterPill = (ids, entityType, iconName) => {
-    const length = ids.length
+    const length = ids.length;
 
     const selectOneEntityType = () => {
-      const entities = ids.map(id => ({id, entityType}))
-      onSelect(entities)
-    }
+      const entities = ids.map((id) => ({ id, entityType }));
+      onSelect(entities);
+    };
 
     switch (length) {
       case 0:
-        break
+        break;
 
       default:
         parts.push(
           <Label
-            as='a'
+            as="a"
             key={entityType}
-            size='large'
+            size="large"
             color={color}
-            onClick={selectOneEntityType}>
-            <Icon name={iconName}/>
+            onClick={selectOneEntityType}
+          >
+            <Icon name={iconName} />
             {entityType + 's:'}
             <Label.Detail>{length}</Label.Detail>
           </Label>
-        )
-        break
+        );
+        break;
     }
-  }
+  };
 
-  pushCounterPill(nodeIds, "node", 'circle')
-  pushCounterPill(relationshipIds, "relationship", 'long arrow alternate right')
+  pushCounterPill(nodeIds, 'node', 'circle');
+  pushCounterPill(
+    relationshipIds,
+    'relationship',
+    'long arrow alternate right'
+  );
 
-  return (
-    <Form.Field>
-      {parts}
-    </Form.Field>
-  )
-}
+  return <Form.Field>{parts}</Form.Field>;
+};

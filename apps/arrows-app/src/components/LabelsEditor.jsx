@@ -1,22 +1,21 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 export class LabelsEditor extends Component {
-
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   shouldComponentUpdate(nextProps, nextState, nextContext) {
-    return nextProps.visualNode !== this.props.visualNode
+    return nextProps.visualNode !== this.props.visualNode;
   }
 
   render() {
-    const nodeLabels = this.props.visualNode.labels
-    const {selection, onRenameLabel} = this.props
-    const padding = 10
+    const nodeLabels = this.props.visualNode.labels;
+    const { selection, onRenameLabel } = this.props;
+    const padding = 10;
     return nodeLabels.pills.map((pill, index) => {
-      const position = nodeLabels.pillPositions[index]
-      const lineHeight = pill.font.fontSize * 1.2
+      const position = nodeLabels.pillPositions[index];
+      const lineHeight = pill.font.fontSize * 1.2;
       return (
         <input
           key={'pill-' + index}
@@ -36,10 +35,10 @@ export class LabelsEditor extends Component {
             background: 'transparent',
             textAlign: 'left',
             ...pill.font,
-            lineHeight: 1.2
+            lineHeight: 1.2,
           }}
         />
-      )
-    })
+      );
+    });
   }
 }

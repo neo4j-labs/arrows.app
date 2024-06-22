@@ -3,9 +3,9 @@ export default (state = {}, action) => {
     case 'GOOGLE_DRIVE_SIGN_IN_STATUS':
       return {
         apiInitialized: true,
-        signedIn: action.signedIn
-      }
+        signedIn: action.signedIn,
+      };
     default:
-      return state
+      return state;
   }
-}
+};

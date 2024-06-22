@@ -1,8 +1,8 @@
-import { FontStyle } from "../FontStyle"
+import { FontStyle } from '../FontStyle';
 
-export type MeasureTextFn = (s:string) => TextMetrics
+export type MeasureTextFn = (s: string) => TextMetrics;
 
 export interface TextMeasurementContext {
-  measureText: MeasureTextFn
-  font: FontStyle
+  measureText: MeasureTextFn;
+  font: FontStyle;
 }

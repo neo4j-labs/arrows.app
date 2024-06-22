@@ -3,10 +3,10 @@ export default function actionMemos(state = {}, action) {
     case 'DUPLICATE_NODES_AND_RELATIONSHIPS':
       return {
         ...state,
-        lastDuplicateAction: action
-      }
+        lastDuplicateAction: action,
+      };
 
     default:
-      return state
+      return state;
   }
 }

@@ -17,4 +17,3 @@ Run the application locally:
 ```
 nx serve arrows-ts
 ```
-

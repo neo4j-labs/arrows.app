@@ -2,48 +2,118 @@
 <html lang="en">
   <head>
     <!-- Cookiebot connected to main neo4j.com cookies -->
-    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="0c2ea320-7217-4e6b-91f2-77765fc83255"
-            type="text/javascript" async></script>
-    <link rel="stylesheet" href="/css/cookiebot.external.min.css">
+    <script
+      id="Cookiebot"
+      src="https://consent.cookiebot.com/uc.js"
+      data-cbid="0c2ea320-7217-4e6b-91f2-77765fc83255"
+      type="text/javascript"
+      async
+    ></script>
+    <link rel="stylesheet" href="/css/cookiebot.external.min.css" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1192232-34"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-1192232-34"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() {
+        dataLayer.push(arguments);
+      }
       gtag('js', new Date());
 
       gtag('config', 'UA-1192232-34');
     </script>
 
     <script>
-      !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware"];analytics.factory=function(e){return function(){var t=Array.prototype.slice.call(arguments);t.unshift(e);analytics.push(t);return analytics}};for(var e=0;e<analytics.methods.length;e++){var key=analytics.methods[e];analytics[key]=analytics.factory(key)}analytics.load=function(key,e){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(t,n);analytics._loadOptions=e};analytics._writeKey="xEYCEAHSiI0eDV3qC3i13U4Uku8MC3wM";;analytics.SNIPPET_VERSION="4.15.3";
-      analytics.load("xEYCEAHSiI0eDV3qC3i13U4Uku8MC3wM");
-      analytics.page();
-      }}();
+      !(function () {
+        var analytics = (window.analytics = window.analytics || []);
+        if (!analytics.initialize)
+          if (analytics.invoked)
+            window.console &&
+              console.error &&
+              console.error('Segment snippet included twice.');
+          else {
+            analytics.invoked = !0;
+            analytics.methods = [
+              'trackSubmit',
+              'trackClick',
+              'trackLink',
+              'trackForm',
+              'pageview',
+              'identify',
+              'reset',
+              'group',
+              'track',
+              'ready',
+              'alias',
+              'debug',
+              'page',
+              'once',
+              'off',
+              'on',
+              'addSourceMiddleware',
+              'addIntegrationMiddleware',
+              'setAnonymousId',
+              'addDestinationMiddleware',
+            ];
+            analytics.factory = function (e) {
+              return function () {
+                var t = Array.prototype.slice.call(arguments);
+                t.unshift(e);
+                analytics.push(t);
+                return analytics;
+              };
+            };
+            for (var e = 0; e < analytics.methods.length; e++) {
+              var key = analytics.methods[e];
+              analytics[key] = analytics.factory(key);
+            }
+            analytics.load = function (key, e) {
+              var t = document.createElement('script');
+              t.type = 'text/javascript';
+              t.async = !0;
+              t.src =
+                'https://cdn.segment.com/analytics.js/v1/' +
+                key +
+                '/analytics.min.js';
+              var n = document.getElementsByTagName('script')[0];
+              n.parentNode.insertBefore(t, n);
+              analytics._loadOptions = e;
+            };
+            analytics._writeKey = 'xEYCEAHSiI0eDV3qC3i13U4Uku8MC3wM';
+            analytics.SNIPPET_VERSION = '4.15.3';
+            analytics.load('xEYCEAHSiI0eDV3qC3i13U4Uku8MC3wM');
+            analytics.page();
+          }
+      })();
     </script>
-    
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#000000">
+
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
     <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-    <link rel="manifest" href="/manifest.json">
-    <link rel="shortcut icon" href="/arrows_logo.svg">
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="shortcut icon" href="/arrows_logo.svg" />
 
     <title>Arrows.app</title>
-    <meta name="description"
-          content="Web-based tool for drawing pictures of graphs, for use in documents or presentations.">
+    <meta
+      name="description"
+      content="Web-based tool for drawing pictures of graphs, for use in documents or presentations."
+    />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
   <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
     <div id="root" style="height: 100%"></div>
     <script type="module" src="/src/main.tsx"></script>
     <script src="https://apis.google.com/js/api.js"></script>

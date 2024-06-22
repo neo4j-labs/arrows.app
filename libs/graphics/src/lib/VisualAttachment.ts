@@ -1,8 +1,8 @@
 export interface VisualAttachment {
   attachment: {
-      name: string;
-      angle: number;
-  }
+    name: string;
+    angle: number;
+  };
   ordinal: number;
   radiusOrdinal: number;
   minNormalDistance: number;

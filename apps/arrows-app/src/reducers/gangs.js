@@ -1,22 +1,24 @@
-import { moveTo } from "../model/Node";
+import { moveTo } from '../model/Node';
 
-const initialState = []
+const initialState = [];
 
 export default (state = initialState, action) => {
   switch (action.type) {
     case 'CREATE_CLUSTER':
-      return state.concat([{
-        id: action.nodeId,
-        position: action.position,
-        caption: action.caption,
-        style: action.style,
-        properties: {},
-        type: action.nodeType,
-        members: action.members,
-        initialPosition: action.initialPosition
-      }])
+      return state.concat([
+        {
+          id: action.nodeId,
+          position: action.position,
+          caption: action.caption,
+          style: action.style,
+          properties: {},
+          type: action.nodeType,
+          members: action.members,
+          initialPosition: action.initialPosition,
+        },
+      ]);
     case 'LOAD_CLUSTERS':
-      return action.clusters.map(cluster => ({
+      return action.clusters.map((cluster) => ({
         id: cluster.id,
         position: cluster.position,
         caption: cluster.caption,
@@ -25,29 +27,32 @@ export default (state = initialState, action) => {
         members: cluster.members,
         initialPosition: cluster.initialPosition,
         style: cluster.style || {
-          'radius': 50,
+          radius: 50,
           'node-color': '#FFF',
           'border-width': '2',
-          'caption-color': '#000'
-        }
-      }))
+          'caption-color': '#000',
+        },
+      }));
     case 'REMOVE_CLUSTER':
-      return state.filter(gang => gang.id !== action.nodeId)
+      return state.filter((gang) => gang.id !== action.nodeId);
 
     case 'MOVE_NODES':
-      const nodeIdToNode = {}
+      const nodeIdToNode = {};
       state.forEach((node) => {
-        nodeIdToNode[node.id] = node
-      })
+        nodeIdToNode[node.id] = node;
+      });
 
       action.nodePositions.forEach((nodePosition) => {
-        if(nodeIdToNode[nodePosition.nodeId]) {
-          nodeIdToNode[nodePosition.nodeId] = moveTo(nodeIdToNode[nodePosition.nodeId], nodePosition.position)
+        if (nodeIdToNode[nodePosition.nodeId]) {
+          nodeIdToNode[nodePosition.nodeId] = moveTo(
+            nodeIdToNode[nodePosition.nodeId],
+            nodePosition.position
+          );
         }
-      })
+      });
 
-      return [...Object.values(nodeIdToNode)]
+      return [...Object.values(nodeIdToNode)];
     default:
-      return state
+      return state;
   }
-}
+};

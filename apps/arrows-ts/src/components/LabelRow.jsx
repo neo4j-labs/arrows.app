@@ -1,55 +1,66 @@
-import React, {Component} from 'react'
-import {Table, Form, Input, Icon, Button, Popup, Label} from 'semantic-ui-react'
+import React, { Component } from 'react';
+import {
+  Table,
+  Form,
+  Input,
+  Icon,
+  Button,
+  Popup,
+  Label,
+} from 'semantic-ui-react';
 
 export class LabelRow extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      mouseOver: false
-    }
+      mouseOver: false,
+    };
   }
 
   onMouseEnter = () => {
     this.setState({
-      mouseOver: true
-    })
-  }
+      mouseOver: true,
+    });
+  };
 
   onMouseLeave = () => {
     this.setState({
-      mouseOver: false
-    })
-  }
+      mouseOver: false,
+    });
+  };
 
   render = () => {
-    const { label, labelSummary, status, onAddLabel, onRenameLabel, onRemoveLabel } = this.props
+    const {
+      label,
+      labelSummary,
+      status,
+      onAddLabel,
+      onRenameLabel,
+      onRemoveLabel,
+    } = this.props;
 
-    let valueCell = null
+    let valueCell = null;
 
     if (status === 'PARTIAL') {
       valueCell = (
         <Form.Field>
           <Input
-            size='small'
-            value=''
-            placeholder='<partially present>'
+            size="small"
+            value=""
+            placeholder="<partially present>"
             transparent
           />
         </Form.Field>
-      )
+      );
     }
 
-    const entryToSuggestion = entry => (
-      <Table.Row
-        key={'suggest_' + entry.value}
-        textAlign='left'
-      >
+    const entryToSuggestion = (entry) => (
+      <Table.Row key={'suggest_' + entry.value} textAlign="left">
         <Table.Cell>
           <Button
             basic
-            color='black'
-            size='tiny'
+            color="black"
+            size="tiny"
             onClick={() => onRenameLabel(entry.label)}
           >
             {entry.label}
@@ -59,35 +70,33 @@ export class LabelRow extends Component {
           <Label>{entry.nodeCount}</Label>
         </Table.Cell>
       </Table.Row>
-    )
+    );
 
     const popupContent = (
       <Form>
         {status === 'PARTIAL' ? (
           <Form.Field>
             <Button
-              key='addLabel'
+              key="addLabel"
               onClick={onAddLabel}
               basic
-              color='black'
+              color="black"
               size="tiny"
-              content='Add to all selected nodes'
-              type='button'
+              content="Add to all selected nodes"
+              type="button"
             />
           </Form.Field>
         ) : null}
         {labelSummary.length > 0 ? (
           <Form.Field>
             <label>other labels</label>
-            <Table basic='very' compact='very'>
-              <Table.Body>
-                {labelSummary.map(entryToSuggestion)}
-              </Table.Body>
+            <Table basic="very" compact="very">
+              <Table.Body>{labelSummary.map(entryToSuggestion)}</Table.Body>
             </Table>
           </Form.Field>
         ) : null}
       </Form>
-    )
+    );
 
     const labelField = (
       <Input
@@ -95,33 +104,36 @@ export class LabelRow extends Component {
         onChange={(event) => onRenameLabel(event.target.value)}
         transparent
       />
-    )
+    );
 
     return (
-      <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave}>
+      <Table.Row
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+      >
         <Table.Cell width={3} collapsing>
           <Form.Field>
             <Popup
               trigger={labelField}
               content={popupContent}
-              on='focus'
-              {...(labelSummary.length > 0 || status === 'PARTIAL' ? {} : {open: false})}
-              position='bottom left'
+              on="focus"
+              {...(labelSummary.length > 0 || status === 'PARTIAL'
+                ? {}
+                : { open: false })}
+              position="bottom left"
               flowing
             />
           </Form.Field>
         </Table.Cell>
-        <Table.Cell width={3}>
-          {valueCell}
-        </Table.Cell>
+        <Table.Cell width={3}>{valueCell}</Table.Cell>
         <Table.Cell width={1}>
           <Icon
-            style={{visibility: this.state.mouseOver ? 'visible' : 'hidden'}}
+            style={{ visibility: this.state.mouseOver ? 'visible' : 'hidden' }}
             name="trash alternate outline"
             onClick={onRemoveLabel}
           />
         </Table.Cell>
       </Table.Row>
-    )
-  }
+    );
+  };
 }

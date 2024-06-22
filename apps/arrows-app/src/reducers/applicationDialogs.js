@@ -1,61 +1,63 @@
-import {retrieveHelpDismissed} from "../actions/localStorage";
-export default function applicationDialogs(state = {
-  showExportDialog: false,
-  showSaveAsDialog: false,
-  showImportDialog: false,
-  showHelpDialog: !retrieveHelpDismissed()
-}, action) {
+import { retrieveHelpDismissed } from '../actions/localStorage';
+export default function applicationDialogs(
+  state = {
+    showExportDialog: false,
+    showSaveAsDialog: false,
+    showImportDialog: false,
+    showHelpDialog: !retrieveHelpDismissed(),
+  },
+  action
+) {
   switch (action.type) {
     case 'SHOW_EXPORT_DIALOG':
       return {
         ...state,
-        showExportDialog: true
-      }
+        showExportDialog: true,
+      };
 
     case 'HIDE_EXPORT_DIALOG':
       return {
         ...state,
-        showExportDialog: false
-      }
+        showExportDialog: false,
+      };
 
     case 'SHOW_SAVE_AS_DIALOG':
       return {
         ...state,
-        showSaveAsDialog: true
-      }
+        showSaveAsDialog: true,
+      };
 
     case 'HIDE_SAVE_AS_DIALOG':
       return {
         ...state,
-        showSaveAsDialog: false
-      }
+        showSaveAsDialog: false,
+      };
 
     case 'SHOW_IMPORT_DIALOG':
       return {
         ...state,
-        showImportDialog: true
-      }
+        showImportDialog: true,
+      };
 
     case 'HIDE_IMPORT_DIALOG':
       return {
         ...state,
-        showImportDialog: false
-      }
+        showImportDialog: false,
+      };
 
     case 'SHOW_HELP_DIALOG':
       return {
         ...state,
-        showHelpDialog: true
-      }
+        showHelpDialog: true,
+      };
 
     case 'HIDE_HELP_DIALOG':
       return {
         ...state,
-        showHelpDialog: false
-      }
+        showHelpDialog: false,
+      };
 
     default:
-      return state
+      return state;
   }
-
 }

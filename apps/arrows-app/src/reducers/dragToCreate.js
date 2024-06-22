@@ -1,9 +1,12 @@
-export default function dragging(state = {
-  sourceNodeId: null,
-  secondarySourceNodeIds: [],
-  targetNodeIds: [],
-  newNodePosition: null
-}, action) {
+export default function dragging(
+  state = {
+    sourceNodeId: null,
+    secondarySourceNodeIds: [],
+    targetNodeIds: [],
+    newNodePosition: null,
+  },
+  action
+) {
   switch (action.type) {
     case 'ACTIVATE_RING':
       return {
@@ -11,24 +14,24 @@ export default function dragging(state = {
         secondarySourceNodeIds: [],
         nodeType: action.nodeType,
         targetNodeIds: [],
-        newNodePosition: null
-      }
+        newNodePosition: null,
+      };
     case 'RING_DRAGGED':
       return {
         sourceNodeId: action.sourceNodeId,
         secondarySourceNodeIds: action.secondarySourceNodeIds,
         targetNodeIds: action.targetNodeIds,
-        newNodePosition: action.position
-      }
+        newNodePosition: action.position,
+      };
     case 'DEACTIVATE_RING':
     case 'END_DRAG':
       return {
         sourceNodeId: null,
         secondarySourceNodeIds: [],
         targetNodeIds: [],
-        newNodePosition: null
-      }
+        newNodePosition: null,
+      };
     default:
-      return state
+      return state;
   }
 }

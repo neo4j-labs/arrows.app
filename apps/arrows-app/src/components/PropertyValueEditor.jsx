@@ -1,13 +1,12 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 export class PropertyValueEditor extends Component {
-
   handleChange = (e) => {
-    this.props.onSetPropertyValue(e.target.value)
-  }
+    this.props.onSetPropertyValue(e.target.value);
+  };
 
   render() {
-    const padding = 10
+    const padding = 10;
     return (
       <input
         value={this.props.text}
@@ -25,10 +24,9 @@ export class PropertyValueEditor extends Component {
           background: 'transparent',
           textAlign: 'left',
           ...this.props.font,
-          lineHeight: 1.2
+          lineHeight: 1.2,
         }}
-      >
-      </input>
-    )
+      ></input>
+    );
   }
 }

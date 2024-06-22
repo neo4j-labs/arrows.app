@@ -1,66 +1,70 @@
-import React, {Component} from 'react';
-import { Button, Form, Checkbox, Modal, Message } from 'semantic-ui-react'
+import React, { Component } from 'react';
+import { Button, Form, Checkbox, Modal, Message } from 'semantic-ui-react';
 
-export const defaultConnectionUri = "bolt://localhost";
+export const defaultConnectionUri = 'bolt://localhost';
 
 class DatabaseConnectionForm extends Component {
-
   constructor(props) {
     super(props);
-    this.state = { ...props.connectionParameters }
+    this.state = { ...props.connectionParameters };
   }
 
   inputUpdated = (_, { name, value }) => {
-    this.setState({ [name]: value })
-  }
+    this.setState({ [name]: value });
+  };
 
   checkboxUpdated = (_, { name, checked }) => {
-    this.setState({ [name]: checked })
+    this.setState({ [name]: checked });
     if (name === 'rememberCredentials' && !checked) {
-      this.props.forgetConnectionParameters()
+      this.props.forgetConnectionParameters();
     }
-  }
+  };
 
   onSave = () => {
-    const { connectionUri, username, password, rememberCredentials } = this.state;
+    const { connectionUri, username, password, rememberCredentials } =
+      this.state;
     this.props.onConnectionParametersUpdated({
       connectionUri,
       username,
       password,
-      rememberCredentials
-    })
-  }
+      rememberCredentials,
+    });
+  };
 
   onKeyUp = (e) => {
-    if (e.key === "Enter") {
-      this.onSave()
+    if (e.key === 'Enter') {
+      this.onSave();
     }
-  }
+  };
 
   onCancel = () => {
-    this.props.onCancel()
-  }
+    this.props.onCancel();
+  };
 
   render() {
     const { errorMsg } = this.props;
-    const { connectionUri, username, password, rememberCredentials } = this.state;
-    const messages = errorMsg ? [(
-      <Message key="errorMsg" error header="Database connection error" content={errorMsg} />
-    )] : []
+    const { connectionUri, username, password, rememberCredentials } =
+      this.state;
+    const messages = errorMsg
+      ? [
+          <Message
+            key="errorMsg"
+            error
+            header="Database connection error"
+            content={errorMsg}
+          />,
+        ]
+      : [];
     return (
-      <Modal
-        size="tiny"
-        open={true}
-        onClose={this.onCancel}
-      >
+      <Modal size="tiny" open={true} onClose={this.onCancel}>
         <Modal.Header>Database Connection</Modal.Header>
         <Modal.Content>
           <Form error={messages.length > 0} onKeyUp={this.onKeyUp}>
             <Form.Field>
               <label>Bolt Connection URI</label>
               <Form.Input
-                iconPosition='left'
-                icon='lightning'
+                iconPosition="left"
+                icon="lightning"
                 value={connectionUri}
                 name="connectionUri"
                 onChange={this.inputUpdated}
@@ -70,8 +74,8 @@ class DatabaseConnectionForm extends Component {
             <Form.Field>
               <label>Username</label>
               <Form.Input
-                iconPosition='left'
-                icon='user'
+                iconPosition="left"
+                icon="user"
                 value={username}
                 name="username"
                 autoComplete="username"
@@ -82,8 +86,8 @@ class DatabaseConnectionForm extends Component {
             <Form.Field>
               <label>Password</label>
               <Form.Input
-                iconPosition='left'
-                icon='lock'
+                iconPosition="left"
+                icon="lock"
                 value={password}
                 name="password"
                 autoComplete="current-password"
@@ -95,29 +99,21 @@ class DatabaseConnectionForm extends Component {
             <Form.Field>
               <Checkbox
                 checked={rememberCredentials}
-                name='rememberCredentials'
+                name="rememberCredentials"
                 onChange={this.checkboxUpdated}
-                label='Remember credentials'
+                label="Remember credentials"
               />
             </Form.Field>
           </Form>
           {messages}
         </Modal.Content>
         <Modal.Actions>
-          <Button
-            onClick={this.onCancel}
-            content="Cancel"
-          />
-          <Button
-            type="submit"
-            onClick={this.onSave}
-            positive
-            content="Save"
-          />
+          <Button onClick={this.onCancel} content="Cancel" />
+          <Button type="submit" onClick={this.onSave} positive content="Save" />
         </Modal.Actions>
       </Modal>
-    )
+    );
   }
 }
 
-export default DatabaseConnectionForm
+export default DatabaseConnectionForm;

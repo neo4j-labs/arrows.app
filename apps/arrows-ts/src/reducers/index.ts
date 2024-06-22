@@ -1,20 +1,20 @@
-import { combineReducers } from 'redux'
-import recentStorage from "./recentStorage";
-import storage from "./storage";
-import diagramName from "./diagramName";
-import graph from "./graph";
-import selection from "./selection";
-import mouse from "./mouse";
-import guides from "./guides";
-import applicationLayout from "./applicationLayout";
-import viewTransformation from "./viewTransformation";
-import gestures from "./gestures";
-import actionMemos from "./actionMemos";
-import applicationDialogs from "./applicationDialogs";
-import gangs from './gangs'
-import features from './features'
-import googleDrive from "./googleDrive"
-import cachedImages from "./cachedImages";
+import { combineReducers } from 'redux';
+import recentStorage from './recentStorage';
+import storage from './storage';
+import diagramName from './diagramName';
+import graph from './graph';
+import selection from './selection';
+import mouse from './mouse';
+import guides from './guides';
+import applicationLayout from './applicationLayout';
+import viewTransformation from './viewTransformation';
+import gestures from './gestures';
+import actionMemos from './actionMemos';
+import applicationDialogs from './applicationDialogs';
+import gangs from './gangs';
+import features from './features';
+import googleDrive from './googleDrive';
+import cachedImages from './cachedImages';
 
 const arrowsApp = combineReducers({
   recentStorage,
@@ -32,7 +32,7 @@ const arrowsApp = combineReducers({
   gangs,
   features,
   googleDrive,
-  cachedImages
-})
+  cachedImages,
+});
 
-export default arrowsApp
+export default arrowsApp;

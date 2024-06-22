@@ -1,11 +1,11 @@
-export const commonValue = (array:any[]) => {
+export const commonValue = (array: any[]) => {
   return array.reduce((values, value) => {
     if (values.length === 0) {
-      return [value]
+      return [value];
     } else if (values[0] === value) {
-      return values
+      return values;
     } else {
-      return [undefined]
+      return [undefined];
     }
-  }, [])[0]
-}
+  }, [])[0];
+};

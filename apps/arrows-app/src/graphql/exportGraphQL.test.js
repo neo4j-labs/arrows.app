@@ -1,5 +1,5 @@
-import exportGraphQL from "./exportGraphQL";
-import { parse, print } from "graphql";
+import exportGraphQL from './exportGraphQL';
+import { parse, print } from 'graphql';
 
 function compare(expected, received) {
   expect(print(parse(received, { noLocation: true }))).toEqual(
@@ -7,17 +7,17 @@ function compare(expected, received) {
   );
 }
 
-describe("graphql", () => {
-  describe("exportGraphQL", () => {
-    it("should throw Nodes requires a single label", () => {
+describe('graphql', () => {
+  describe('exportGraphQL', () => {
+    it('should throw Nodes requires a single label', () => {
       const graph = {
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: [""],
+            id: 'n0',
+            caption: '',
+            labels: [''],
             properties: {
-              name: "String",
+              name: 'String',
             },
             style: {},
           },
@@ -27,21 +27,21 @@ describe("graphql", () => {
 
       try {
         exportGraphQL(graph);
-        throw new Error("asserting this test throws");
+        throw new Error('asserting this test throws');
       } catch (error) {
         expect(error.message).toEqual(
-          "Nodes require a single label for GraphQL export."
+          'Nodes require a single label for GraphQL export.'
         );
       }
     });
 
-    it("should throw Nodes require at least one property", () => {
+    it('should throw Nodes require at least one property', () => {
       const graph = {
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: ["Movie"],
+            id: 'n0',
+            caption: '',
+            labels: ['Movie'],
             properties: {},
             style: {},
           },
@@ -51,45 +51,45 @@ describe("graphql", () => {
 
       try {
         exportGraphQL(graph);
-        throw new Error("asserting this test throws");
+        throw new Error('asserting this test throws');
       } catch (error) {
         expect(error.message).toEqual(
-          "Nodes require at least one property for GraphQL export."
+          'Nodes require at least one property for GraphQL export.'
         );
       }
     });
 
-    it("should throw undirected relationships not supported", () => {
+    it('should throw undirected relationships not supported', () => {
       const graph = {
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: ["Actor"],
+            id: 'n0',
+            caption: '',
+            labels: ['Actor'],
             properties: {
-              name: "String",
+              name: 'String',
             },
             style: {},
           },
           {
-            id: "n1",
-            caption: "",
-            labels: ["Movie"],
+            id: 'n1',
+            caption: '',
+            labels: ['Movie'],
             properties: {
-              title: "String",
+              title: 'String',
             },
             style: {},
           },
         ],
         relationships: [
           {
-            id: "n0",
-            fromId: "n0",
-            toId: "n1",
-            type: "ACTED_IN",
+            id: 'n0',
+            fromId: 'n0',
+            toId: 'n1',
+            type: 'ACTED_IN',
             properties: {},
             style: {
-              directionality: "undirected",
+              directionality: 'undirected',
             },
           },
         ],
@@ -97,41 +97,41 @@ describe("graphql", () => {
 
       try {
         exportGraphQL(graph);
-        throw new Error("asserting this test throws");
+        throw new Error('asserting this test throws');
       } catch (error) {
         expect(error.message).toEqual(
-          "Undirected relationships not supported with GraphQL export."
+          'Undirected relationships not supported with GraphQL export.'
         );
       }
     });
 
-    it("should throw relationships without a type are not supported", () => {
+    it('should throw relationships without a type are not supported', () => {
       const graph = {
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: ["Actor"],
+            id: 'n0',
+            caption: '',
+            labels: ['Actor'],
             properties: {
-              name: "String",
+              name: 'String',
             },
             style: {},
           },
           {
-            id: "n1",
-            caption: "",
-            labels: ["Movie"],
+            id: 'n1',
+            caption: '',
+            labels: ['Movie'],
             properties: {
-              title: "String",
+              title: 'String',
             },
             style: {},
           },
         ],
         relationships: [
           {
-            id: "n0",
-            fromId: "n0",
-            toId: "n1",
+            id: 'n0',
+            fromId: 'n0',
+            toId: 'n1',
             properties: {},
           },
         ],
@@ -139,32 +139,32 @@ describe("graphql", () => {
 
       try {
         exportGraphQL(graph);
-        throw new Error("asserting this test throws");
+        throw new Error('asserting this test throws');
       } catch (error) {
         expect(error.message).toEqual(
-          "Relationships without a type are not supported with GraphQL export."
+          'Relationships without a type are not supported with GraphQL export.'
         );
       }
     });
 
-    it("should create simple graphql schema with properties", () => {
+    it('should create simple graphql schema with properties', () => {
       const graph = {
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: ["Actor"],
+            id: 'n0',
+            caption: '',
+            labels: ['Actor'],
             properties: {
-              name: "String",
+              name: 'String',
             },
             style: {},
           },
           {
-            id: "n1",
-            caption: "",
-            labels: ["Movie"],
+            id: 'n1',
+            caption: '',
+            labels: ['Movie'],
             properties: {
-              title: "String",
+              title: 'String',
             },
             style: {},
           },
@@ -187,36 +187,36 @@ describe("graphql", () => {
       compare(expected, received);
     });
 
-    it("should create simple graphql schema with a single relationship", () => {
+    it('should create simple graphql schema with a single relationship', () => {
       const graph = {
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: ["Actor"],
+            id: 'n0',
+            caption: '',
+            labels: ['Actor'],
             properties: {
-              name: "String",
+              name: 'String',
             },
             style: {},
           },
           {
-            id: "n1",
-            caption: "",
-            labels: ["Movie"],
+            id: 'n1',
+            caption: '',
+            labels: ['Movie'],
             properties: {
-              title: "String",
+              title: 'String',
             },
             style: {},
           },
         ],
         relationships: [
           {
-            id: "n0",
-            type: "ACTED_IN",
+            id: 'n0',
+            type: 'ACTED_IN',
             style: {},
             properties: {},
-            fromId: "n0",
-            toId: "n1",
+            fromId: 'n0',
+            toId: 'n1',
           },
         ],
       };
@@ -238,15 +238,15 @@ describe("graphql", () => {
       compare(expected, received);
     });
 
-    it("should create node with array properties", () => {
+    it('should create node with array properties', () => {
       const graph = {
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: ["Product"],
+            id: 'n0',
+            caption: '',
+            labels: ['Product'],
             properties: {
-              barcodes: "[String]!",
+              barcodes: '[String]!',
             },
             style: {},
           },
@@ -265,36 +265,36 @@ describe("graphql", () => {
       compare(expected, received);
     });
 
-    it("should create graphql schema with single array relationship", () => {
+    it('should create graphql schema with single array relationship', () => {
       const graph = {
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: ["Actor"],
+            id: 'n0',
+            caption: '',
+            labels: ['Actor'],
             properties: {
-              name: "String",
+              name: 'String',
             },
             style: {},
           },
           {
-            id: "n1",
-            caption: "",
-            labels: ["Movie"],
+            id: 'n1',
+            caption: '',
+            labels: ['Movie'],
             properties: {
-              title: "String",
+              title: 'String',
             },
             style: {},
           },
         ],
         relationships: [
           {
-            id: "n0",
-            type: "[ACTED_IN]",
+            id: 'n0',
+            type: '[ACTED_IN]',
             style: {},
             properties: {},
-            fromId: "n0",
-            toId: "n1",
+            fromId: 'n0',
+            toId: 'n1',
           },
         ],
       };
@@ -316,36 +316,36 @@ describe("graphql", () => {
       compare(expected, received);
     });
 
-    it("should create graphql schema with single non null array relationship", () => {
+    it('should create graphql schema with single non null array relationship', () => {
       const graph = {
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: ["Actor"],
+            id: 'n0',
+            caption: '',
+            labels: ['Actor'],
             properties: {
-              name: "String!",
+              name: 'String!',
             },
             style: {},
           },
           {
-            id: "n1",
-            caption: "",
-            labels: ["Movie"],
+            id: 'n1',
+            caption: '',
+            labels: ['Movie'],
             properties: {
-              title: "String!",
+              title: 'String!',
             },
             style: {},
           },
         ],
         relationships: [
           {
-            id: "n0",
-            type: "[ACTED_IN]!",
+            id: 'n0',
+            type: '[ACTED_IN]!',
             style: {},
             properties: {},
-            fromId: "n0",
-            toId: "n1",
+            fromId: 'n0',
+            toId: 'n1',
           },
         ],
       };
@@ -367,87 +367,87 @@ describe("graphql", () => {
       compare(expected, received);
     });
 
-    it("should return larger blog schema with many nodes and relationships", () => {
+    it('should return larger blog schema with many nodes and relationships', () => {
       const graph = {
         style: {},
         nodes: [
           {
-            id: "n0",
-            caption: "",
+            id: 'n0',
+            caption: '',
             style: {},
-            labels: ["Post"],
+            labels: ['Post'],
             properties: {
-              title: "String",
+              title: 'String',
             },
           },
           {
-            id: "n1",
-            caption: "",
+            id: 'n1',
+            caption: '',
             style: {},
-            labels: ["User"],
+            labels: ['User'],
             properties: {
-              name: "String",
+              name: 'String',
             },
           },
           {
-            id: "n2",
-            caption: "",
+            id: 'n2',
+            caption: '',
             style: {},
-            labels: ["Comment"],
+            labels: ['Comment'],
             properties: {
-              content: "String",
+              content: 'String',
             },
           },
           {
-            id: "n3",
-            caption: "",
+            id: 'n3',
+            caption: '',
             style: {},
-            labels: ["Blog"],
+            labels: ['Blog'],
             properties: {
-              name: "String",
+              name: 'String',
             },
           },
         ],
         relationships: [
           {
-            id: "n0",
-            type: "[POSTED]",
+            id: 'n0',
+            type: '[POSTED]',
             style: {},
             properties: {},
-            fromId: "n1",
-            toId: "n0",
+            fromId: 'n1',
+            toId: 'n0',
           },
           {
-            id: "n1",
-            type: "[HAS_COMMENT]",
+            id: 'n1',
+            type: '[HAS_COMMENT]',
             style: {},
             properties: {},
-            fromId: "n0",
-            toId: "n2",
+            fromId: 'n0',
+            toId: 'n2',
           },
           {
-            id: "n2",
-            type: "[COMMENTED]",
+            id: 'n2',
+            type: '[COMMENTED]',
             style: {},
             properties: {},
-            fromId: "n1",
-            toId: "n2",
+            fromId: 'n1',
+            toId: 'n2',
           },
           {
-            id: "n3",
-            type: "[HAS_POST]",
+            id: 'n3',
+            type: '[HAS_POST]',
             style: {},
             properties: {},
-            fromId: "n3",
-            toId: "n0",
+            fromId: 'n3',
+            toId: 'n0',
           },
           {
-            id: "n4",
-            type: "[HAS_BLOG]",
+            id: 'n4',
+            type: '[HAS_BLOG]',
             style: {},
             properties: {},
-            fromId: "n1",
-            toId: "n3",
+            fromId: 'n1',
+            toId: 'n3',
           },
         ],
       };
@@ -484,50 +484,50 @@ describe("graphql", () => {
 
       compare(expected, received);
     });
-    it("should return relationship properties", () => {
+    it('should return relationship properties', () => {
       const graph = {
         style: {},
         nodes: [
           {
-            id: "n0",
-            caption: "",
+            id: 'n0',
+            caption: '',
             style: {},
-            labels: ["Human"],
+            labels: ['Human'],
             properties: {
-              name: "String!",
+              name: 'String!',
             },
           },
           {
-            id: "n1",
-            caption: "",
+            id: 'n1',
+            caption: '',
             style: {},
-            labels: ["Dog"],
+            labels: ['Dog'],
             properties: {
-              name: "String!",
+              name: 'String!',
             },
           },
         ],
         relationships: [
           {
-            id: "n0",
-            type: "[LOVES]",
+            id: 'n0',
+            type: '[LOVES]',
             style: {},
             properties: {
-              since: "DateTime!",
+              since: 'DateTime!',
             },
-            fromId: "n0",
-            toId: "n1",
+            fromId: 'n0',
+            toId: 'n1',
           },
           {
-            id: "n1",
-            type: "OWNED_BY",
+            id: 'n1',
+            type: 'OWNED_BY',
             style: {},
             properties: {
-              boughtAt: "DateTime!",
-              price: "Float",
+              boughtAt: 'DateTime!',
+              price: 'Float',
             },
-            fromId: "n1",
-            toId: "n0",
+            fromId: 'n1',
+            toId: 'n0',
           },
         ],
       };
@@ -559,58 +559,58 @@ describe("graphql", () => {
 
       compare(expected, received);
     });
-    it("should create unique interface names per relationship", () => {
+    it('should create unique interface names per relationship', () => {
       const graph = {
         style: {},
         nodes: [
           {
-            id: "n0",
-            caption: "",
-            labels: ["Movie"],
+            id: 'n0',
+            caption: '',
+            labels: ['Movie'],
             properties: {
-              title: "String",
+              title: 'String',
             },
             style: {},
           },
           {
-            id: "n1",
-            caption: "",
-            labels: ["Actor"],
+            id: 'n1',
+            caption: '',
+            labels: ['Actor'],
             properties: {
-              name: "String",
+              name: 'String',
             },
             style: {},
           },
           {
-            id: "n2",
-            caption: "",
+            id: 'n2',
+            caption: '',
             style: {},
-            labels: ["Animal"],
+            labels: ['Animal'],
             properties: {
-              name: "String",
+              name: 'String',
             },
           },
         ],
         relationships: [
           {
-            id: "n0",
-            fromId: "n1",
-            toId: "n0",
-            type: "[ACTED_IN]",
+            id: 'n0',
+            fromId: 'n1',
+            toId: 'n0',
+            type: '[ACTED_IN]',
             properties: {
-              screenTime: "Int",
+              screenTime: 'Int',
             },
             style: {},
           },
           {
-            id: "n1",
-            type: "[ACTED_IN]",
+            id: 'n1',
+            type: '[ACTED_IN]',
             style: {},
             properties: {
-              screenTime: "Int",
+              screenTime: 'Int',
             },
-            fromId: "n2",
-            toId: "n0",
+            fromId: 'n2',
+            toId: 'n0',
           },
         ],
       };

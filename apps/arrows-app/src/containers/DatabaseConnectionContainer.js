@@ -1,28 +1,31 @@
-import {connect} from "react-redux"
-import DatabaseConnectionForm from "../components/DatabaseConnectionForm";
-import {cancelEditing, updateConnectionParameters} from "../actions/databaseConnection";
-import {forgetConnectionParameters} from "../actions/localStorage";
+import { connect } from 'react-redux';
+import DatabaseConnectionForm from '../components/DatabaseConnectionForm';
+import {
+  cancelEditing,
+  updateConnectionParameters,
+} from '../actions/databaseConnection';
+import { forgetConnectionParameters } from '../actions/localStorage';
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     connectionParameters: state.storage.database.connectionParameters,
-    errorMsg: state.storage.database.errorMsg
-  }
-}
+    errorMsg: state.storage.database.errorMsg,
+  };
+};
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     onConnectionParametersUpdated: (connectionParameters) => {
-      dispatch(updateConnectionParameters(connectionParameters))
+      dispatch(updateConnectionParameters(connectionParameters));
     },
-    onCancel: () =>{
-      dispatch(cancelEditing())
+    onCancel: () => {
+      dispatch(cancelEditing());
     },
-    forgetConnectionParameters: forgetConnectionParameters
-  }
-}
+    forgetConnectionParameters: forgetConnectionParameters,
+  };
+};
 
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(DatabaseConnectionForm)
+)(DatabaseConnectionForm);

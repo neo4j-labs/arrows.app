@@ -1,16 +1,16 @@
-import extractNameFromTypeNode from "./extractNameFromTypeNode";
+import extractNameFromTypeNode from './extractNameFromTypeNode';
 
-describe("graphql", () => {
-  describe("extractNameFromTypeNode", () => {
-    test("should return NamedNode name", () => {
-      const expected = "Movie";
+describe('graphql', () => {
+  describe('extractNameFromTypeNode', () => {
+    test('should return NamedNode name', () => {
+      const expected = 'Movie';
 
       /**
        * @type {import("graphql").TypeNode}
        */
       const typeNode = {
-        kind: "NamedType",
-        name: { kind: "Name", value: expected },
+        kind: 'NamedType',
+        name: { kind: 'Name', value: expected },
       };
 
       const received = extractNameFromTypeNode(typeNode);
@@ -18,17 +18,17 @@ describe("graphql", () => {
       expect(received).toEqual(expected);
     });
 
-    test("should return ListType name", () => {
-      const expected = "Movie";
+    test('should return ListType name', () => {
+      const expected = 'Movie';
 
       /**
        * @type {import("graphql").TypeNode}
        */
       const typeNode = {
-        kind: "ListType",
+        kind: 'ListType',
         type: {
-          kind: "NamedType",
-          name: { kind: "Name", value: expected },
+          kind: 'NamedType',
+          name: { kind: 'Name', value: expected },
         },
       };
 
@@ -37,17 +37,17 @@ describe("graphql", () => {
       expect(received).toEqual(expected);
     });
 
-    test("should return NonNullType name", () => {
-      const expected = "Movie";
+    test('should return NonNullType name', () => {
+      const expected = 'Movie';
 
       /**
        * @type {import("graphql").TypeNode}
        */
       const typeNode = {
-        kind: "NonNullType",
+        kind: 'NonNullType',
         type: {
-          kind: "NamedType",
-          name: { kind: "Name", value: expected },
+          kind: 'NamedType',
+          name: { kind: 'Name', value: expected },
         },
       };
 

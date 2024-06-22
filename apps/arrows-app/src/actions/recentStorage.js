@@ -4,6 +4,6 @@ export const updateRecentStorage = (mode, fileId, diagramName) => {
     mode,
     fileId,
     diagramName,
-    timestamp: Date.now()
-  }
-}
+    timestamp: Date.now(),
+  };
+};

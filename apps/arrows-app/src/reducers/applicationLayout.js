@@ -1,60 +1,67 @@
-import {Size} from "../model/Size";
+import { Size } from '../model/Size';
 
-const applicationLayout = (state = {
-  windowSize: new Size(window.innerWidth, window.innerHeight),
-  inspectorVisible: true,
-  styleMode: 'theme',
-  betaFeaturesEnabled: false,
-  layers: []
-}, action) => {
+const applicationLayout = (
+  state = {
+    windowSize: new Size(window.innerWidth, window.innerHeight),
+    inspectorVisible: true,
+    styleMode: 'theme',
+    betaFeaturesEnabled: false,
+    layers: [],
+  },
+  action
+) => {
   switch (action.type) {
     case 'WINDOW_RESIZED':
       return {
         ...state,
-        windowSize: new Size(action.width, action.height)
-      }
+        windowSize: new Size(action.width, action.height),
+      };
 
     case 'TOGGLE_INSPECTOR':
       return {
         ...state,
-        inspectorVisible: !state.inspectorVisible
-      }
+        inspectorVisible: !state.inspectorVisible,
+      };
 
     case 'STYLE_THEME':
       return {
         ...state,
-        styleMode: 'theme'
-      }
+        styleMode: 'theme',
+      };
 
     case 'STYLE_CUSTOMIZE':
       return {
         ...state,
-        styleMode: 'customize'
-      }
+        styleMode: 'customize',
+      };
 
     case 'SET_BETA_FEATURES_ENABLED':
       return {
         ...state,
         layers: [],
-        betaFeaturesEnabled: action.enabled
-      }
+        betaFeaturesEnabled: action.enabled,
+      };
     case 'SET_PERSIST_CLUSTERS':
-      const clusterLayer = state.layers.find(layer => layer.name === 'gangs')
+      const clusterLayer = state.layers.find((layer) => layer.name === 'gangs');
       if (clusterLayer && clusterLayer.persist !== action.enabled) {
-        const otherLayers = state.layers.filter(layer => layer.name !== 'gangs')
+        const otherLayers = state.layers.filter(
+          (layer) => layer.name !== 'gangs'
+        );
         return {
           ...state,
-          layers: otherLayers.concat([{
-            ...clusterLayer,
-            persist: action.enabled
-          }])
-        }
+          layers: otherLayers.concat([
+            {
+              ...clusterLayer,
+              persist: action.enabled,
+            },
+          ]),
+        };
       } else {
-        return state
+        return state;
       }
     default:
-      return state
+      return state;
   }
-}
+};
 
-export default applicationLayout
+export default applicationLayout;

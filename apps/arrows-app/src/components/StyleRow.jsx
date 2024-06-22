@@ -1,57 +1,80 @@
-import React, {Component} from 'react'
-import {Table, Icon} from 'semantic-ui-react'
-import {getStyleEditorComponent} from "./editors/editorFactory";
+import React, { Component } from 'react';
+import { Table, Icon } from 'semantic-ui-react';
+import { getStyleEditorComponent } from './editors/editorFactory';
 
 export class StyleRow extends Component {
-
   constructor(props) {
     super(props);
     this.state = {
-      mouseOver: false
-    }
+      mouseOver: false,
+    };
   }
 
   onMouseEnter = () => {
     this.setState({
-      mouseOver: true
-    })
-  }
+      mouseOver: true,
+    });
+  };
 
   onMouseLeave = () => {
     this.setState({
-      mouseOver: false
-    })
-  }
+      mouseOver: false,
+    });
+  };
 
   render = () => {
-    const { styleKey, styleValue, styleValuePlaceholder, specialised, cachedImages, onValueChange, onDeleteStyle, onNext, setFocusHandler} = this.props
+    const {
+      styleKey,
+      styleValue,
+      styleValuePlaceholder,
+      specialised,
+      cachedImages,
+      onValueChange,
+      onDeleteStyle,
+      onNext,
+      setFocusHandler,
+    } = this.props;
 
     const handleKeyPress = (evt) => {
       if (evt.key === 'Enter') {
-        onNext()
+        onNext();
       }
-    }
+    };
 
     return (
-      <Table.Row onMouseEnter={this.onMouseEnter} onMouseLeave={this.onMouseLeave} positive={specialised}>
-        <Table.Cell width={3} collapsing style={{padding: 0}}>
+      <Table.Row
+        onMouseEnter={this.onMouseEnter}
+        onMouseLeave={this.onMouseLeave}
+        positive={specialised}
+      >
+        <Table.Cell width={3} collapsing style={{ padding: 0 }}>
           <div
             style={{
-              textAlign: 'right'
+              textAlign: 'right',
             }}
-          >{styleKey}:</div>
+          >
+            {styleKey}:
+          </div>
         </Table.Cell>
         <Table.Cell width={3}>
-          {getStyleEditorComponent(styleKey, styleValue, styleValuePlaceholder, cachedImages, onValueChange, handleKeyPress, setFocusHandler)}
+          {getStyleEditorComponent(
+            styleKey,
+            styleValue,
+            styleValuePlaceholder,
+            cachedImages,
+            onValueChange,
+            handleKeyPress,
+            setFocusHandler
+          )}
         </Table.Cell>
         <Table.Cell width={1}>
           <Icon
-            style={{visibility: specialised ? 'visible' : 'hidden'}}
+            style={{ visibility: specialised ? 'visible' : 'hidden' }}
             name="undo"
             onClick={onDeleteStyle}
           />
         </Table.Cell>
       </Table.Row>
-    )
-  }
+    );
+  };
 }

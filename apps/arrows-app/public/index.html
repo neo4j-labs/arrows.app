@@ -2,28 +2,41 @@
 <html lang="en">
   <head>
     <!-- Cookiebot connected to main neo4j.com cookies -->
-    <script id="Cookiebot" src="https://consent.cookiebot.com/uc.js" data-cbid="0c2ea320-7217-4e6b-91f2-77765fc83255"
-            type="text/javascript" async></script>
-    <link rel="stylesheet" href="css/cookiebot.external.min.css">
+    <script
+      id="Cookiebot"
+      src="https://consent.cookiebot.com/uc.js"
+      data-cbid="0c2ea320-7217-4e6b-91f2-77765fc83255"
+      type="text/javascript"
+      async
+    ></script>
+    <link rel="stylesheet" href="css/cookiebot.external.min.css" />
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-1192232-34"></script>
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-1192232-34"
+    ></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
+      function gtag() {
+        dataLayer.push(arguments);
+      }
       gtag('js', new Date());
 
       gtag('config', 'UA-1192232-34');
     </script>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="theme-color" content="#000000">
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="theme-color" content="#000000" />
     <!--
       manifest.json provides metadata used when your web app is added to the
       homescreen on Android. See https://developers.google.com/web/fundamentals/engage-and-retain/web-app-manifest/
     -->
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json">
-    <link rel="shortcut icon" href="%PUBLIC_URL%/arrows_logo.svg">
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <link rel="shortcut icon" href="%PUBLIC_URL%/arrows_logo.svg" />
     <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
@@ -34,16 +47,16 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Arrows.app</title>
-    <meta name="description"
-          content="Web-based tool for drawing pictures of graphs, for use in documents or presentations.">
+    <meta
+      name="description"
+      content="Web-based tool for drawing pictures of graphs, for use in documents or presentations."
+    />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
   <body>
-    <noscript>
-      You need to enable JavaScript to run this app.
-    </noscript>
+    <noscript> You need to enable JavaScript to run this app. </noscript>
     <div id="root" style="height: 100%"></div>
     <script src="https://apis.google.com/js/api.js"></script>
   </body>
