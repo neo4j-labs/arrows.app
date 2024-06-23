@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Segment,
   Divider,
+  Dropdown,
   Form,
   Input,
   ButtonGroup,
@@ -27,7 +28,6 @@ import { combineLabels, summarizeLabels } from '../model/labels';
 import LabelTable from './LabelTable';
 import { CaptionInspector } from './CaptionInspector';
 import { graphsDifferInMoreThanPositions } from '../model/Graph';
-import Dropdown from './editors/Dropdown';
 import { ontologies } from '../../../../libs/model/src/lib/Ontology';
 
 export default class DetailInspector extends Component {
@@ -151,6 +151,11 @@ export default class DetailInspector extends Component {
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
       const properties = combineProperties(entities);
       const propertySummary = summarizeProperties(entities, graph);
+      const ontology = commonValue(
+        entities
+          .filter((entity) => entity.ontology)
+          .map((entity) => entity.ontology.id)
+      );
 
       fields.push(
         <PropertyTable
@@ -176,9 +181,18 @@ export default class DetailInspector extends Component {
         <Form.Field key="_ontology">
           <label>Ontology</label>
           <Dropdown
+            selection
+            clearable
+            value={ontology ?? null}
             placeholder={'Select an ontology'}
-            options={ontologies.map((ontology) => ontology.id)}
-            onChange={(value) =>
+            options={ontologies.map((ontology) => {
+              return {
+                key: ontology.id,
+                text: ontology.id,
+                value: ontology.id,
+              };
+            })}
+            onChange={(e, { value }) =>
               onSaveOntology(
                 selection,
                 ontologies.find((ontology) => ontology.id === value)
