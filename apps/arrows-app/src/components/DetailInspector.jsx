@@ -152,11 +152,6 @@ export default class DetailInspector extends Component {
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
       const properties = combineProperties(entities);
       const propertySummary = summarizeProperties(entities, graph);
-      const ontology = commonValue(
-        entities
-          .filter((entity) => entity.ontology)
-          .map((entity) => entity.ontology.id)
-      );
       const examples = commonValue(entities.map((entity) => entity.examples));
 
       fields.push(
@@ -179,30 +174,32 @@ export default class DetailInspector extends Component {
         />
       );
 
-      fields.push(
-        <Form.Field key="_ontology">
-          <label>Ontology</label>
-          <Dropdown
-            selection
-            clearable
-            value={ontology ?? null}
-            placeholder={'Select an ontology'}
-            options={ontologies.map((ontology) => {
-              return {
-                key: ontology.id,
-                text: ontology.id,
-                value: ontology.id,
-              };
-            })}
-            onChange={(e, { value }) =>
-              onSaveOntology(
-                selection,
-                ontologies.find((ontology) => ontology.id === value)
-              )
-            }
-          />
-        </Form.Field>
-      );
+      if (entities.length < 2) {
+        fields.push(
+          <Form.Field key="_ontology">
+            <label>Ontology</label>
+            <Dropdown
+              selection
+              clearable
+              value={entities[0].ontology ? entities[0].ontology.id : null}
+              placeholder={'Select an ontology'}
+              options={ontologies.map((ontology) => {
+                return {
+                  key: ontology.id,
+                  text: ontology.id,
+                  value: ontology.id,
+                };
+              })}
+              onChange={(e, { value }) =>
+                onSaveOntology(
+                  selection,
+                  ontologies.find((ontology) => ontology.id === value)
+                )
+              }
+            />
+          </Form.Field>
+        );
+      }
 
       fields.push(
         <Form.Field key="_examples">
