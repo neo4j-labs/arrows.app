@@ -1,7 +1,7 @@
 import { Relationship } from '../../../../libs/model/src/lib/Relationship';
 import { toAnnotators } from '../../../arrows-ts/src/model/ontologies';
 import { Node } from '../../../../libs/model/src/lib/Node';
-import { LinkMLClass, SpiresCoreClasses } from './types';
+import { Attribute, LinkMLClass, SpiresCoreClasses } from './types';
 import { toClassName } from './naming';
 
 export const relationshipToRelationshipClass = (
@@ -9,20 +9,29 @@ export const relationshipToRelationshipClass = (
   nodeIdToNode: (id: string) => Node,
   toRelationshipClassName: (relationship: Relationship) => string
 ): LinkMLClass => {
+  const nodeToTripleSlot = (node: Node): Attribute => {
+    return {
+      range: toClassName(node.caption),
+      annotations: {
+        'prompt.examples': node.examples,
+      },
+    };
+  };
+
+  const fromNode = nodeIdToNode(relationship.fromId);
+  const toNode = nodeIdToNode(relationship.toId);
+
   return {
     is_a: SpiresCoreClasses.Triple,
-    description: `A triple where the subject is a ${
-      nodeIdToNode(relationship.fromId).caption
-    } and the object is a ${nodeIdToNode(relationship.toId).caption}.`,
+    description: `A triple where the subject is a ${fromNode.caption} and the object is a ${toNode.caption}.`,
     slot_usage: {
-      subject: {
-        range: toClassName(nodeIdToNode(relationship.fromId).caption),
-      },
-      object: {
-        range: toClassName(nodeIdToNode(relationship.toId).caption),
-      },
+      subject: nodeToTripleSlot(fromNode),
+      object: nodeToTripleSlot(toNode),
       predicate: {
         range: `${toRelationshipClassName(relationship)}Predicate`,
+        annotations: {
+          'prompt.examples': relationship.examples,
+        },
       },
     },
   };

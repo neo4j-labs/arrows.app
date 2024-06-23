@@ -2,6 +2,7 @@ export type Attribute = {
   range?: string;
   description?: string;
   multivalued?: boolean;
+  annotations?: Record<string, string>;
 };
 
 export enum SpiresCoreClasses {
