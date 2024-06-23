@@ -152,7 +152,6 @@ export default class DetailInspector extends Component {
     if (selectionIncludes.relationships || selectionIncludes.nodes) {
       const properties = combineProperties(entities);
       const propertySummary = summarizeProperties(entities, graph);
-      const examples = commonValue(entities.map((entity) => entity.examples));
 
       fields.push(
         <PropertyTable
@@ -175,13 +174,19 @@ export default class DetailInspector extends Component {
       );
 
       if (entities.length < 2) {
+        const { ontologies: entityOntologies, examples } = entities[0];
+
         fields.push(
           <Form.Field key="_ontology">
             <label>Ontology</label>
             <Dropdown
               selection
               clearable
-              value={entities[0].ontologies.map((ontology) => ontology.id)}
+              value={
+                entityOntologies
+                  ? entityOntologies.map((ontology) => ontology.id)
+                  : null
+              }
               multiple
               placeholder={'Select an ontology'}
               options={ontologies.map((ontology) => {
@@ -200,18 +205,20 @@ export default class DetailInspector extends Component {
             />
           </Form.Field>
         );
-      }
 
-      fields.push(
-        <Form.Field key="_examples">
-          <label>Examples</label>
-          <Input
-            value={examples || ''}
-            onChange={(event) => onSaveExamples(selection, event.target.value)}
-            placeholder={examples === undefined ? '<multiple examples>' : null}
-          />
-        </Form.Field>
-      );
+        fields.push(
+          <Form.Field key="_examples">
+            <label>Examples</label>
+            <Input
+              value={examples}
+              onChange={(event) =>
+                onSaveExamples(selection, event.target.value)
+              }
+              placeholder={'Provide examples for this entity'}
+            />
+          </Form.Field>
+        );
+      }
     }
 
     fields.push(
