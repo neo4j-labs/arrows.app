@@ -11,7 +11,7 @@ export interface Node extends Entity {
   caption: string;
   labels: string[];
   status?: string;
-  ontology?: Ontology;
+  ontologies?: Ontology[];
   examples?: string;
 }
 

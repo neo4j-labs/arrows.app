@@ -1,4 +1,5 @@
 import { Relationship } from '../../../../libs/model/src/lib/Relationship';
+import { toAnnotators } from '../../../arrows-ts/src/model/ontologies';
 import { LinkMLClass, SpiresCoreClasses } from './types';
 import { toClassName } from './naming';
 
@@ -35,10 +36,10 @@ export const relationshipToPredicateClass = (
     description: `The predicate for the ${idToCaption(
       relationship.fromId
     )} to ${idToCaption(relationship.toId)} relationships.`,
-    id_prefixes: relationship.ontology ? [relationship.ontology.id] : [],
-    annotations: relationship.ontology
+    id_prefixes: relationship.ontologies.map((ontology) => ontology.id),
+    annotations: relationship.ontologies.length
       ? {
-          annotators: `sqlite:obo:${relationship.ontology.id}`,
+          annotators: toAnnotators(relationship.ontologies),
         }
       : {},
   };

@@ -181,7 +181,8 @@ export default class DetailInspector extends Component {
             <Dropdown
               selection
               clearable
-              value={entities[0].ontology ? entities[0].ontology.id : null}
+              value={entities[0].ontologies.map((ontology) => ontology.id)}
+              multiple
               placeholder={'Select an ontology'}
               options={ontologies.map((ontology) => {
                 return {
@@ -193,7 +194,7 @@ export default class DetailInspector extends Component {
               onChange={(e, { value }) =>
                 onSaveOntology(
                   selection,
-                  ontologies.find((ontology) => ontology.id === value)
+                  ontologies.filter((ontology) => value.includes(ontology.id))
                 )
               }
             />

@@ -5,7 +5,7 @@ export interface Relationship extends Entity {
   type: string;
   fromId: Id;
   toId: Id;
-  ontology?: Ontology;
+  ontologies?: Ontology[];
   examples?: string;
 }
 

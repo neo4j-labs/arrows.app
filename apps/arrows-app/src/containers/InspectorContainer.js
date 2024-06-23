@@ -99,8 +99,8 @@ const mapDispatchToProps = (dispatch) => {
     onSelect: (entities) => {
       dispatch(toggleSelection(entities, 'replace'));
     },
-    onSaveOntology: (selection, ontology) => {
-      dispatch(setOntology(selection, ontology));
+    onSaveOntology: (selection, ontologies) => {
+      dispatch(setOntology(selection, ontologies));
     },
   };
 };

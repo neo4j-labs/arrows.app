@@ -120,7 +120,7 @@ const graph = (state = emptyGraph(), action) => {
           nodeSelected(action.selection, node.id)
             ? {
                 ...node,
-                ontology: action.ontology,
+                ontologies: action.ontologies,
               }
             : node
         ),
@@ -128,7 +128,7 @@ const graph = (state = emptyGraph(), action) => {
           relationshipSelected(action.selection, relationship.id)
             ? {
                 ...relationship,
-                ontology: action.ontology,
+                ontologies: action.ontologies,
               }
             : relationship
         ),

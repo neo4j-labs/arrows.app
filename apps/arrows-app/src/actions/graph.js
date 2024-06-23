@@ -478,11 +478,11 @@ export const removeLabel = (selection, label) => ({
   label,
 });
 
-export const setOntology = (selection, ontology) => ({
+export const setOntology = (selection, ontologies) => ({
   category: 'GRAPH',
   type: 'SET_ONTOLOGY',
   selection,
-  ontology,
+  ontologies: ontologies,
 });
 
 export const mergeOnPropertyValues = (selection, propertyKey) => {

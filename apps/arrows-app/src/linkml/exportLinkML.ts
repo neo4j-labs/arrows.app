@@ -14,6 +14,7 @@ import {
   relationshipToPredicateClass,
 } from './relationships';
 import { nodeToClass } from './nodes';
+import { toPrefixes } from '../../../arrows-ts/src/model/ontologies';
 
 const getAnnotations = (nodes: Node[]): LinkMLClass => {
   return {
@@ -48,25 +49,10 @@ export const exportLinkML = (
     prefixes: {
       linkml: 'https://w3id.org/linkml/',
       ontogpt: 'http://w3id.org/ontogpt/',
-      ...nodes
-        .filter((node) => node.ontology)
-        .reduce(
-          (prefixes: Record<string, string>, node) => ({
-            ...prefixes,
-            [toClassName(node.ontology.id)]: node.ontology.namespace,
-          }),
-          {}
-        ),
-      ...relationships
-        .filter((relationship) => relationship.ontology)
-        .reduce(
-          (prefixes: Record<string, string>, relationship) => ({
-            ...prefixes,
-            [toClassName(relationship.ontology.id)]:
-              relationship.ontology.namespace,
-          }),
-          {}
-        ),
+      ...toPrefixes([
+        ...nodes.flatMap((node) => node.ontologies),
+        ...relationships.flatMap((relationship) => relationship.ontologies),
+      ]),
     },
     imports: ['ontogpt:core', 'linkml:types'],
     classes: {
