@@ -1,12 +1,8 @@
 import { Node } from '../../../../libs/model/src/lib/Node';
 import { LinkMLClass, Attribute, SpiresCoreClasses } from './types';
 import { toAttributeName } from './naming';
-import { Ontology } from '../../../../libs/model/src/lib/Ontology';
 
-export const nodeToClass = (
-  node: Node,
-  ontology: Ontology | undefined
-): LinkMLClass => {
+export const nodeToClass = (node: Node): LinkMLClass => {
   const propertiesToAttributes = (): Record<string, Attribute> => {
     return Object.entries(node.properties).reduce(
       (attributes: Record<string, Attribute>, [key, value]) => ({
@@ -22,6 +18,11 @@ export const nodeToClass = (
   return {
     is_a: SpiresCoreClasses.NamedEntity,
     attributes: propertiesToAttributes(),
-    id_prefixes: ontology ? [ontology.id] : [],
+    id_prefixes: node.ontology ? [node.ontology.id] : [],
+    annotations: node.ontology
+      ? {
+          annotators: `sqlite:obo:${node.ontology.id}`,
+        }
+      : {},
   };
 };

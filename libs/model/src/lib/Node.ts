@@ -1,6 +1,7 @@
 import { Id, Entity } from './Id';
 import { Vector } from './Vector';
 import { Point } from './Point';
+import { Ontology } from './Ontology';
 
 export interface Node extends Entity {
   superNodeId?: any;
@@ -10,6 +11,7 @@ export interface Node extends Entity {
   caption: string;
   labels: string[];
   status?: string;
+  ontology?: Ontology;
 }
 
 export const moveTo = (node: Node, newPosition: Point) => {

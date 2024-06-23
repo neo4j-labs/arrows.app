@@ -5,12 +5,10 @@ import { nextAvailableId } from './Id';
 import { Point } from './Point';
 import { Node } from './Node';
 import { Relationship } from './Relationship';
-import { Ontology } from './Ontology';
 
 export interface Graph {
   nodes: Node[];
   relationships: Relationship[];
-  ontology?: Ontology;
   style: any;
 }
 export const emptyGraph = (): Graph => {

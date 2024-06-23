@@ -4,7 +4,6 @@ import GeneralInspector from '../components/GeneralInspector';
 import { getPresentGraph } from '../selectors';
 import { styleCustomize, styleTheme } from '../actions/applicationLayout';
 import { toggleSelection } from '../actions/selection';
-import { changeOntology } from '../../../arrows-ts/src/actions/graph';
 
 const mapStateToProps = (state) => {
   return {
@@ -34,9 +33,6 @@ const mapDispatchToProps = (dispatch) => {
     },
     onApplyTheme: (style) => {
       dispatch(setGraphStyles(style));
-    },
-    onOntologyChange: (ontology) => {
-      dispatch(changeOntology(ontology));
     },
   };
 };

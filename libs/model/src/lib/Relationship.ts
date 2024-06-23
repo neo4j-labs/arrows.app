@@ -1,9 +1,11 @@
 import { Entity, Id } from './Id';
+import { Ontology } from './Ontology';
 
 export interface Relationship extends Entity {
   type: string;
   fromId: Id;
   toId: Id;
+  ontology?: Ontology;
 }
 
 export const setType = (relationship: Relationship, type: string) => {

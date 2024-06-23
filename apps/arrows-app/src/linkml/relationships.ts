@@ -35,5 +35,11 @@ export const relationshipToPredicateClass = (
     description: `The predicate for the ${idToCaption(
       relationship.fromId
     )} to ${idToCaption(relationship.toId)} relationships.`,
+    id_prefixes: relationship.ontology ? [relationship.ontology.id] : [],
+    annotations: relationship.ontology
+      ? {
+          annotators: `sqlite:obo:${relationship.ontology.id}`,
+        }
+      : {},
   };
 };

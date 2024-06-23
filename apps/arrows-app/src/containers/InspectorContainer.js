@@ -18,6 +18,7 @@ import {
   mergeOnPropertyValues,
   mergeNodes,
   deleteSelection,
+  changeOntology,
 } from '../actions/graph';
 import DetailInspector from '../components/DetailInspector';
 import { getSelectedNodes } from '../selectors/inspection';
@@ -93,6 +94,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onSelect: (entities) => {
       dispatch(toggleSelection(entities, 'replace'));
+    },
+    onSaveOntology: (selection, ontology) => {
+      dispatch(changeOntology(selection, ontology));
     },
   };
 };

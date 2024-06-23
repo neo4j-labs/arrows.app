@@ -27,6 +27,8 @@ import { combineLabels, summarizeLabels } from '../model/labels';
 import LabelTable from './LabelTable';
 import { CaptionInspector } from './CaptionInspector';
 import { graphsDifferInMoreThanPositions } from '../model/Graph';
+import Dropdown from './editors/Dropdown';
+import { ontologies } from '../../../../libs/model/src/lib/Ontology';
 
 export default class DetailInspector extends Component {
   constructor(props) {
@@ -80,6 +82,7 @@ export default class DetailInspector extends Component {
       onSavePropertyKey,
       onSavePropertyValue,
       onDeleteProperty,
+      onSaveOntology,
     } = this.props;
     const fields = [];
 
@@ -167,6 +170,22 @@ export default class DetailInspector extends Component {
             onDeleteProperty(selection, propertyKey)
           }
         />
+      );
+
+      fields.push(
+        <Form.Field key="_ontology">
+          <label>Ontology</label>
+          <Dropdown
+            placeholder={'Select an ontology'}
+            options={ontologies.map((ontology) => ontology.id)}
+            onChange={(value) =>
+              onSaveOntology(
+                selection,
+                ontologies.find((ontology) => ontology.id === value)
+              )
+            }
+          />
+        </Form.Field>
       );
     }
 

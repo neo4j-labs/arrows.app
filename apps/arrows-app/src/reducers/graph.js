@@ -113,6 +113,28 @@ const graph = (state = emptyGraph(), action) => {
       };
     }
 
+    case 'CHANGE_ONTOLOGY': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) =>
+          nodeSelected(action.selection, node.id)
+            ? {
+                ...node,
+                ontology: action.ontology,
+              }
+            : node
+        ),
+        relationships: state.relationships.map((relationship) =>
+          relationshipSelected(action.selection, relationship.id)
+            ? {
+                ...relationship,
+                ontology: action.ontology,
+              }
+            : relationship
+        ),
+      };
+    }
+
     case 'ADD_LABEL': {
       return {
         style: state.style,
@@ -481,14 +503,6 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'GETTING_GRAPH_SUCCEEDED':
       return action.storedGraph;
-
-    case 'CHANGE_ONTOLOGY':
-      return {
-        style: state.style,
-        nodes: state.nodes,
-        relationships: state.relationships,
-        ontology: action.ontology,
-      };
 
     default:
       return state;

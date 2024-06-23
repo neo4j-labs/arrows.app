@@ -16,6 +16,7 @@ export type LinkMLClass = {
   is_a?: SpiresCoreClasses;
   slot_usage?: Record<string, Attribute>;
   tree_root?: boolean;
+  annotations?: Record<string, string>;
 };
 
 export type LinkML = {
