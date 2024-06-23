@@ -606,6 +606,13 @@ export const setRelationshipType = (selection, relationshipType) => ({
   relationshipType,
 });
 
+export const setExamples = (selection, examples) => ({
+  category: 'GRAPH',
+  type: 'SET_EXAMPLES',
+  selection,
+  examples,
+});
+
 export const duplicateNodesAndRelationships = (
   nodeIdMap,
   relationshipIdMap

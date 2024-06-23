@@ -62,6 +62,7 @@ export default class DetailInspector extends Component {
       selection,
       graph,
       onSaveCaption,
+      onSaveExamples,
       onSaveType,
       onDuplicate,
       onDelete,
@@ -156,6 +157,7 @@ export default class DetailInspector extends Component {
           .filter((entity) => entity.ontology)
           .map((entity) => entity.ontology.id)
       );
+      const examples = commonValue(entities.map((entity) => entity.examples));
 
       fields.push(
         <PropertyTable
@@ -198,6 +200,17 @@ export default class DetailInspector extends Component {
                 ontologies.find((ontology) => ontology.id === value)
               )
             }
+          />
+        </Form.Field>
+      );
+
+      fields.push(
+        <Form.Field key="_examples">
+          <label>Examples</label>
+          <Input
+            value={examples || ''}
+            onChange={(event) => onSaveExamples(selection, event.target.value)}
+            placeholder={examples === undefined ? '<multiple examples>' : null}
           />
         </Form.Field>
       );

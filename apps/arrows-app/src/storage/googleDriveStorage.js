@@ -61,6 +61,7 @@ export const constructGraphFromFile = (data) => {
     caption: node.caption,
     labels: node.labels || [],
     ontology: node.ontology,
+    examples: node.examples || '',
     properties: node.properties || {},
     style: node.style || {},
   }));
@@ -77,6 +78,7 @@ export const constructGraphFromFile = (data) => {
       toId: relationship.toId,
       type: relationship.type || '',
       ontology: relationship.ontology,
+      examples: relationship.examples || '',
       properties: relationship.properties || {},
       style: relationship.style || {},
     }));

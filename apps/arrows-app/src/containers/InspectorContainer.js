@@ -19,6 +19,7 @@ import {
   mergeNodes,
   deleteSelection,
   changeOntology,
+  setExamples,
 } from '../actions/graph';
 import DetailInspector from '../components/DetailInspector';
 import { getSelectedNodes } from '../selectors/inspection';
@@ -55,6 +56,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onConvertCaptionsToPropertyValues: () => {
       dispatch(convertCaptionsToPropertyValues());
+    },
+    onSaveExamples: (selection, examples) => {
+      dispatch(setExamples(selection, examples));
     },
     onSaveType: (selection, type) => {
       dispatch(setRelationshipType(selection, type));

@@ -135,6 +135,28 @@ const graph = (state = emptyGraph(), action) => {
       };
     }
 
+    case 'SET_EXAMPLES': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) =>
+          nodeSelected(action.selection, node.id)
+            ? {
+                ...node,
+                examples: action.examples,
+              }
+            : node
+        ),
+        relationships: state.relationships.map((relationship) =>
+          relationshipSelected(action.selection, relationship.id)
+            ? {
+                ...relationship,
+                examples: action.examples,
+              }
+            : relationship
+        ),
+      };
+    }
+
     case 'ADD_LABEL': {
       return {
         style: state.style,

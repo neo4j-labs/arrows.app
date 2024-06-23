@@ -6,6 +6,7 @@ export interface Relationship extends Entity {
   fromId: Id;
   toId: Id;
   ontology?: Ontology;
+  examples?: string;
 }
 
 export const setType = (relationship: Relationship, type: string) => {
