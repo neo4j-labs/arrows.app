@@ -43,9 +43,13 @@ export const relationshipToPredicateClass = (
 ): LinkMLClass => {
   return {
     is_a: SpiresCoreClasses.NamedEntity,
-    description: `The predicate for the ${
-      findNode(relationship.fromId).caption
-    } to ${findNode(relationship.toId).caption} relationships.`,
+    attributes: {
+      label: {
+        description: `The predicate for the ${
+          findNode(relationship.fromId).caption
+        } to ${findNode(relationship.toId).caption} relationships.`,
+      },
+    },
     id_prefixes: relationship.ontologies.map((ontology) => ontology.id),
     annotations: relationship.ontologies.length
       ? {
