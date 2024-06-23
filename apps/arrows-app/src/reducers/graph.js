@@ -113,7 +113,7 @@ const graph = (state = emptyGraph(), action) => {
       };
     }
 
-    case 'CHANGE_ONTOLOGY': {
+    case 'SET_ONTOLOGY': {
       return {
         style: state.style,
         nodes: state.nodes.map((node) =>

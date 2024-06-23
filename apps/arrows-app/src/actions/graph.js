@@ -478,9 +478,9 @@ export const removeLabel = (selection, label) => ({
   label,
 });
 
-export const changeOntology = (selection, ontology) => ({
+export const setOntology = (selection, ontology) => ({
   category: 'GRAPH',
-  type: 'CHANGE_ONTOLOGY',
+  type: 'SET_ONTOLOGY',
   selection,
   ontology,
 });
