@@ -20,6 +20,7 @@ import {
   deleteSelection,
   setOntology,
   setExamples,
+  setCardinality,
 } from '../actions/graph';
 import DetailInspector from '../components/DetailInspector';
 import { getSelectedNodes } from '../selectors/inspection';
@@ -101,6 +102,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onSaveOntology: (selection, ontologies) => {
       dispatch(setOntology(selection, ontologies));
+    },
+    onSaveCardinality: (selection, cardinality) => {
+      dispatch(setCardinality(selection, cardinality));
     },
   };
 };

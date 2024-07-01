@@ -485,6 +485,13 @@ export const setOntology = (selection, ontologies) => ({
   ontologies: ontologies,
 });
 
+export const setCardinality = (selection, cardinality) => ({
+  category: 'GRAPH',
+  type: 'SET_CARDINALITY',
+  selection,
+  cardinality,
+});
+
 export const mergeOnPropertyValues = (selection, propertyKey) => {
   return function (dispatch, getState) {
     const state = getState();

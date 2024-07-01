@@ -29,6 +29,10 @@ import LabelTable from './LabelTable';
 import { CaptionInspector } from './CaptionInspector';
 import { graphsDifferInMoreThanPositions } from '../model/Graph';
 import { ontologies } from '../../../../libs/model/src/lib/Ontology';
+import {
+  Cardinality,
+  toVisualCardinality,
+} from '../../../../libs/model/src/lib/Relationship';
 
 export default class DetailInspector extends Component {
   constructor(props) {
@@ -62,6 +66,7 @@ export default class DetailInspector extends Component {
       selection,
       graph,
       onSaveCaption,
+      onSaveCardinality,
       onSaveExamples,
       onSaveType,
       onDuplicate,
@@ -136,6 +141,9 @@ export default class DetailInspector extends Component {
       const commonType = commonValue(
         relationships.map((relationship) => relationship.type)
       );
+      const commonCardinality = commonValue(
+        relationships.map((relationship) => relationship.cardinality)
+      );
 
       fields.push(
         <Form.Field key="_type">
@@ -144,6 +152,25 @@ export default class DetailInspector extends Component {
             value={commonType || ''}
             onChange={(event) => onSaveType(selection, event.target.value)}
             placeholder={commonType === undefined ? '<multiple types>' : null}
+          />
+        </Form.Field>
+      );
+
+      fields.push(
+        <Form.Field key="_cardinality">
+          <label>Cardinality</label>
+          <Dropdown
+            selection
+            value={commonCardinality ?? null}
+            placeholder={'Select a cardinality'}
+            options={Object.keys(Cardinality).map((cardinality) => {
+              return {
+                key: cardinality,
+                text: toVisualCardinality(cardinality),
+                value: cardinality,
+              };
+            })}
+            onChange={(e, { value }) => onSaveCardinality(selection, value)}
           />
         </Form.Field>
       );

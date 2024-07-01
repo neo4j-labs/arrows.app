@@ -157,6 +157,21 @@ const graph = (state = emptyGraph(), action) => {
       };
     }
 
+    case 'SET_CARDINALITY': {
+      return {
+        style: state.style,
+        nodes: state.nodes,
+        relationships: state.relationships.map((relationship) =>
+          relationshipSelected(action.selection, relationship.id)
+            ? {
+                ...relationship,
+                cardinality: action.cardinality,
+              }
+            : relationship
+        ),
+      };
+    }
+
     case 'ADD_LABEL': {
       return {
         style: state.style,

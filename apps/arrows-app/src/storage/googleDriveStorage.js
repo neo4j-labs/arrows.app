@@ -80,6 +80,7 @@ export const constructGraphFromFile = (data) => {
       ontologies: relationship.ontologies || [],
       examples: relationship.examples || '',
       properties: relationship.properties || {},
+      cardinality: relationship.cardinality,
       style: relationship.style || {},
     }));
 
