@@ -1,6 +1,7 @@
 import { getStyleSelector } from '../selectors/style';
 import { adaptForBackground } from './backgroundColorAdaption';
 import { selectionBorder } from '../model/colors';
+import { Cardinality } from '../../../../libs/model/src/lib/Relationship';
 
 export const relationshipArrowDimensions = (
   resolvedRelationship,
@@ -20,8 +21,8 @@ export const relationshipArrowDimensions = (
   let headHeight = 0;
   let chinHeight = 0;
 
-  const directionality = style('directionality');
-  if (directionality === 'directed') {
+  const cardinality = resolvedRelationship.relationship.cardinality;
+  if (cardinality !== Cardinality.MANY_TO_MANY) {
     hasArrowHead = true;
     headWidth = arrowWidth + 6 * Math.sqrt(arrowWidth);
     headHeight = headWidth * 1.5;
