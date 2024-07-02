@@ -302,12 +302,6 @@ export const styleAttributeGroups = [
     entityTypes: ['relationship'],
     attributes: [
       {
-        key: 'directionality',
-        appliesTo: 'Relationship',
-        type: 'directionality',
-        defaultValue: 'directed',
-      },
-      {
         key: 'detail-position',
         appliesTo: 'RelationshipWithDetail',
         type: 'detail-position',
@@ -481,7 +475,6 @@ export const styleTypes = {
     options: ['sans-serif', ...googleFonts.map((font) => font.fontFamily)],
   },
   'font-weight': { editor: 'dropdown', options: ['normal', 'bold'] },
-  directionality: { editor: 'dropdown', options: ['directed', 'undirected'] },
   'outside-position': {
     editor: 'dropdown',
     options: [

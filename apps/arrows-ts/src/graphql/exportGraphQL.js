@@ -105,12 +105,6 @@ function exportGraphQL(graph) {
   });
 
   graph.relationships.forEach((rel) => {
-    if (rel.style && rel.style.directionality === 'undirected') {
-      throw new Error(
-        'Undirected relationships not supported with GraphQL export.'
-      );
-    }
-
     if (!rel.type) {
       throw new Error(
         'Relationships without a type are not supported with GraphQL export.'

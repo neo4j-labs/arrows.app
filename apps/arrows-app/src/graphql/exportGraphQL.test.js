@@ -59,52 +59,6 @@ describe('graphql', () => {
       }
     });
 
-    it('should throw undirected relationships not supported', () => {
-      const graph = {
-        nodes: [
-          {
-            id: 'n0',
-            caption: '',
-            labels: ['Actor'],
-            properties: {
-              name: 'String',
-            },
-            style: {},
-          },
-          {
-            id: 'n1',
-            caption: '',
-            labels: ['Movie'],
-            properties: {
-              title: 'String',
-            },
-            style: {},
-          },
-        ],
-        relationships: [
-          {
-            id: 'n0',
-            fromId: 'n0',
-            toId: 'n1',
-            type: 'ACTED_IN',
-            properties: {},
-            style: {
-              directionality: 'undirected',
-            },
-          },
-        ],
-      };
-
-      try {
-        exportGraphQL(graph);
-        throw new Error('asserting this test throws');
-      } catch (error) {
-        expect(error.message).toEqual(
-          'Undirected relationships not supported with GraphQL export.'
-        );
-      }
-    });
-
     it('should throw relationships without a type are not supported', () => {
       const graph = {
         nodes: [
