@@ -113,7 +113,7 @@ export class ElbowArrow {
     ctx.lineWidth = this.dimensions.arrowWidth;
     ctx.strokeStyle = this.dimensions.arrowColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(...this.path.end.xy);
       ctx.rotate(this.path.endDirection);
       ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0);
@@ -140,7 +140,7 @@ export class ElbowArrow {
     ctx.lineCap = 'round';
     ctx.strokeStyle = this.dimensions.selectionColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(...this.path.end.xy);
       ctx.rotate(this.path.endDirection);
       ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0);

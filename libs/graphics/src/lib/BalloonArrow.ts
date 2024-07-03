@@ -75,7 +75,7 @@ export class BalloonArrow {
     ctx.lineWidth = this.dimensions.arrowWidth;
     ctx.strokeStyle = this.dimensions.arrowColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.rotate(Math.PI + this.deflection);
       ctx.translate(-this.nodeRadius, 0);
       ctx.fillStyle = this.dimensions.arrowColor;
@@ -103,7 +103,7 @@ export class BalloonArrow {
     ctx.lineCap = 'round';
     ctx.strokeStyle = this.dimensions.selectionColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.rotate(Math.PI + this.deflection);
       ctx.translate(-this.nodeRadius, 0);
       ctx.lineWidth = indicatorWidth;

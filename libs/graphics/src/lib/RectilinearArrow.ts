@@ -234,7 +234,7 @@ export class RectilinearArrow {
     ctx.lineWidth = this.dimensions.arrowWidth;
     ctx.strokeStyle = this.dimensions.arrowColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(...this.endShaft.xy);
       ctx.rotate(this.shaft.endDirection);
       ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0);
@@ -261,7 +261,7 @@ export class RectilinearArrow {
     ctx.lineCap = 'round';
     ctx.strokeStyle = this.dimensions.selectionColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(...this.endShaft.xy);
       ctx.rotate(this.shaft.endDirection);
       ctx.translate(this.dimensions.headHeight - this.dimensions.chinHeight, 0);

@@ -62,7 +62,7 @@ export class StraightArrow {
     ctx.lineWidth = this.dimensions.arrowWidth;
     ctx.strokeStyle = this.dimensions.arrowColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(this.endAttach.x, this.endAttach.y);
       ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle());
       ctx.fillStyle = this.dimensions.arrowColor;
@@ -91,7 +91,7 @@ export class StraightArrow {
     ctx.lineCap = 'round';
     ctx.strokeStyle = this.dimensions.selectionColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(this.endAttach.x, this.endAttach.y);
       ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle());
       ctx.lineWidth = indicatorWidth;

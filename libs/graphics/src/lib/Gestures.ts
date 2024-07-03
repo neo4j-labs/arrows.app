@@ -116,7 +116,7 @@ export default class Gestures {
 
           const dimensions = {
             arrowWidth: 4,
-            hasArrowHead: true,
+            hasOutgoingArrowHead: true,
             headWidth: 16,
             headHeight: 24,
             chinHeight: 2.4,

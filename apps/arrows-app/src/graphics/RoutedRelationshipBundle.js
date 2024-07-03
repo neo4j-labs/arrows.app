@@ -33,14 +33,22 @@ export class RoutedRelationshipBundle {
       )
     );
     const maxLeftHeadHeight = Math.max(
-      ...arrowDimensions.map((arrow) =>
-        arrow.leftToRight ? 0 : arrow.headHeight
-      )
+      ...arrowDimensions.map((arrow) => {
+        if (arrow.leftToRight) {
+          return arrow.hasIngoingArrowHead ? arrow.headHeight : 0;
+        } else {
+          return arrow.hasOutgoingArrowHead ? arrow.headHeight : 0;
+        }
+      })
     );
     const maxRightHeadHeight = Math.max(
-      ...arrowDimensions.map((arrow) =>
-        arrow.leftToRight ? arrow.headHeight : 0
-      )
+      ...arrowDimensions.map((arrow) => {
+        if (arrow.leftToRight) {
+          return arrow.hasOutgoingArrowHead ? arrow.headHeight : 0;
+        } else {
+          return arrow.hasIngoingArrowHead ? arrow.headHeight : 0;
+        }
+      })
     );
     const relationshipSeparation = Math.max(
       ...arrowDimensions.map((arrow) => arrow.separation)

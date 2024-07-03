@@ -10,7 +10,8 @@ export interface ArrowDimensions {
   arrowWidth: any;
   arrowColor: any;
   selectionColor?: any;
-  hasArrowHead: boolean;
+  hasOutgoingArrowHead: boolean;
+  hasIngoingArrowHead: boolean;
   headWidth: number;
   headHeight: number;
   chinHeight: number;
@@ -31,17 +32,21 @@ export const relationshipArrowDimensions = (
   const arrowColor = style('arrow-color');
   const selectionColor = adaptForBackground(selectionBorder, style);
 
-  let hasArrowHead = false;
+  let hasOutgoingArrowHead = false;
+  let hasIngoingArrowHead = false;
   let headWidth = 0;
   let headHeight = 0;
   let chinHeight = 0;
 
   const cardinality = resolvedRelationship.relationship.cardinality;
   if (cardinality !== Cardinality.MANY_TO_MANY) {
-    hasArrowHead = true;
+    hasOutgoingArrowHead = true;
     headWidth = arrowWidth + 6 * Math.sqrt(arrowWidth);
     headHeight = headWidth * 1.5;
     chinHeight = headHeight / 10;
+  }
+  if (cardinality === Cardinality.ONE_TO_ONE) {
+    hasIngoingArrowHead = true;
   }
 
   const separation = style('margin-peer');
@@ -53,7 +58,8 @@ export const relationshipArrowDimensions = (
     arrowWidth,
     arrowColor,
     selectionColor,
-    hasArrowHead,
+    hasOutgoingArrowHead,
+    hasIngoingArrowHead,
     headWidth,
     headHeight,
     chinHeight,

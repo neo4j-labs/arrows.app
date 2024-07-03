@@ -89,7 +89,7 @@ export class ParallelArrow {
     ctx.lineWidth = this.dimensions.arrowWidth;
     ctx.strokeStyle = this.dimensions.arrowColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(this.centreDistance, 0);
       ctx.rotate(-this.endDeflection);
       ctx.translate(-this.endRadius, 0);
@@ -118,7 +118,7 @@ export class ParallelArrow {
     ctx.lineCap = 'round';
     ctx.strokeStyle = this.dimensions.selectionColor;
     ctx.stroke();
-    if (this.dimensions.hasArrowHead) {
+    if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(this.centreDistance, 0);
       ctx.rotate(-this.endDeflection);
       ctx.translate(-this.endRadius, 0);
