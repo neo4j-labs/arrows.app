@@ -1,22 +1,31 @@
 import { getDistanceToLine } from './utils/geometryUtils';
 import arrowHead from './arrowHead';
 import { Point } from '../model/Point';
+import { Vector } from '../model/Vector';
 import { normaliseAngle } from './utils/angles';
 
 export class StraightArrow {
   constructor(startCentre, endCentre, startAttach, endAttach, dimensions) {
     const interNodeVector = endCentre.vectorFrom(startCentre);
     const arrowVector = endAttach.vectorFrom(startAttach);
+    const headsHeight =
+      (dimensions.headHeight - dimensions.chinHeight) *
+      (dimensions.hasIngoingArrowHead ? 2 : 1);
     const factor =
-      (arrowVector.distance() - dimensions.headHeight + dimensions.chinHeight) /
-      arrowVector.distance();
+      (arrowVector.distance() - headsHeight) / arrowVector.distance();
 
     this.startCentre = startCentre;
     this.angle = interNodeVector.angle();
     this.dimensions = dimensions;
     this.startAttach = startAttach;
+    this.startShaft = startAttach;
+    if (dimensions.hasIngoingArrowHead) {
+      this.startShaft = this.startShaft.translate(
+        new Vector(dimensions.headHeight - dimensions.chinHeight, 0)
+      );
+    }
     this.endAttach = endAttach;
-    this.endShaft = startAttach.translate(arrowVector.scale(factor));
+    this.endShaft = this.startShaft.translate(arrowVector.scale(factor));
   }
 
   distanceFrom(point) {
@@ -39,7 +48,7 @@ export class StraightArrow {
     ctx.translate(this.startCentre.x, this.startCentre.y);
     ctx.rotate(this.angle);
     ctx.beginPath();
-    ctx.moveTo(this.startAttach.x, this.startAttach.y);
+    ctx.moveTo(this.startShaft.x, this.startShaft.y);
     ctx.lineTo(this.endShaft.x, this.endShaft.y);
     ctx.lineWidth = this.dimensions.arrowWidth;
     ctx.strokeStyle = this.dimensions.arrowColor;
@@ -56,7 +65,19 @@ export class StraightArrow {
         true,
         false
       );
-      ctx.fill();
+    }
+    if (this.dimensions.hasIngoingArrowHead) {
+      ctx.translate(this.startAttach.x - this.endAttach.x, 0);
+      ctx.rotate(this.startAttach.vectorFrom(this.endAttach).angle());
+      ctx.fillStyle = this.dimensions.arrowColor;
+      arrowHead(
+        ctx,
+        this.dimensions.headHeight,
+        this.dimensions.chinHeight,
+        this.dimensions.headWidth,
+        true,
+        false
+      );
     }
     ctx.restore();
   }
@@ -67,7 +88,7 @@ export class StraightArrow {
     ctx.translate(this.startCentre.x, this.startCentre.y);
     ctx.rotate(this.angle);
     ctx.beginPath();
-    ctx.moveTo(this.startAttach.x, this.startAttach.y);
+    ctx.moveTo(this.startShaft.x, this.startShaft.y);
     ctx.lineTo(this.endShaft.x, this.endShaft.y);
     ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth;
     ctx.lineCap = 'round';
@@ -86,14 +107,26 @@ export class StraightArrow {
         false,
         true
       );
-      ctx.stroke();
+    }
+    if (this.dimensions.hasIngoingArrowHead) {
+      ctx.translate(this.startAttach.x - this.endAttach.x, 0);
+      ctx.rotate(this.startAttach.vectorFrom(this.endAttach).angle());
+      ctx.fillStyle = this.dimensions.arrowColor;
+      arrowHead(
+        ctx,
+        this.dimensions.headHeight,
+        this.dimensions.chinHeight,
+        this.dimensions.headWidth,
+        false,
+        true
+      );
     }
     ctx.restore();
   }
 
   midPoint() {
-    return this.startAttach
-      .translate(this.endShaft.vectorFrom(this.startAttach).scale(0.5))
+    return this.startShaft
+      .translate(this.endShaft.vectorFrom(this.startShaft).scale(0.5))
       .rotate(this.angle)
       .translate(this.startCentre.vectorFromOrigin());
   }
