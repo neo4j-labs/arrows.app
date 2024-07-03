@@ -1,11 +1,7 @@
 export const setType = (relationship, type) => {
   return {
-    id: relationship.id,
+    ...relationship,
     type,
-    style: relationship.style,
-    properties: relationship.properties,
-    fromId: relationship.fromId,
-    toId: relationship.toId,
   };
 };
 
@@ -19,10 +15,7 @@ export const databaseTypeToStringType = (databaseType) => {
 
 export const reverse = (relationship) => {
   return {
-    id: relationship.id,
-    type: relationship.type,
-    style: relationship.style,
-    properties: relationship.properties,
+    ...relationship,
     toId: relationship.fromId,
     fromId: relationship.toId,
   };
