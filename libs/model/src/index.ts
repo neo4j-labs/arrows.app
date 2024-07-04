@@ -14,6 +14,7 @@ export * from './lib/fonts';
 export * from './lib/constants';
 export * from './lib/attachments';
 export * from './lib/themes';
+export * from './lib/properties';
 
 export * from './lib/guides/AnyGuide';
 export * from './lib/guides/CircleGuide';

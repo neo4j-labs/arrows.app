@@ -3,7 +3,7 @@ import { databaseTypeToStringType } from '../model/Relationship';
 import {
   propertiesFromDatabaseEntity,
   styleFromDatabaseEntity,
-} from '../model/properties';
+} from '@neo4j-arrows/model';
 import { emptyGraph } from '../model/Graph';
 import { loadClusters } from '../actions/gang';
 import { labelsFromDatabaseEntity } from '../model/labels';

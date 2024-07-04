@@ -13,7 +13,7 @@ import {
   setArrowsProperty,
   setProperty,
   removeArrowsProperty,
-} from '../model/properties';
+} from '@neo4j-arrows/model';
 import { idsMatch } from '../model/Id';
 import {
   nodeStyleAttributes,

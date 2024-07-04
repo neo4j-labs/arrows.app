@@ -2,7 +2,7 @@ import { stringTypeToDatabaseType } from '../model/Relationship';
 import {
   propertyKeyToDatabaseKey,
   styleKeyToDatabaseKey,
-} from '../model/properties';
+} from '@neo4j-arrows/model';
 import {
   nodeStyleAttributes,
   relationshipStyleAttributes,

@@ -1,4 +1,4 @@
-import { styleKeyToDatabaseKey } from '../model/properties';
+import { styleKeyToDatabaseKey } from '@neo4j-arrows/model';
 import { getNodeIdMap } from '../model/Graph';
 const plainIdentifier = new RegExp('^[A-Za-z][A-Za-z_]*$');
 

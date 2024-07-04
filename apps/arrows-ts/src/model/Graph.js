@@ -1,4 +1,4 @@
-import { indexablePropertyText } from './properties';
+import { indexablePropertyText } from '@neo4j-arrows/model';
 import { completeWithDefaults } from './styling';
 import { otherNodeId } from './Relationship';
 import { nextAvailableId } from './Id';

@@ -18,7 +18,7 @@ import {
   combineProperties,
   combineStyle,
   summarizeProperties,
-} from '../model/properties';
+} from '@neo4j-arrows/model';
 import { renderCounters } from './EntityCounters';
 import PropertyTable from './PropertyTable';
 import StyleTable from './StyleTable';
