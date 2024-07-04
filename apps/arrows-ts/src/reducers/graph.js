@@ -113,6 +113,65 @@ const graph = (state = emptyGraph(), action) => {
       };
     }
 
+    case 'SET_ONTOLOGY': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) =>
+          nodeSelected(action.selection, node.id)
+            ? {
+                ...node,
+                ontologies: action.ontologies,
+              }
+            : node
+        ),
+        relationships: state.relationships.map((relationship) =>
+          relationshipSelected(action.selection, relationship.id)
+            ? {
+                ...relationship,
+                ontologies: action.ontologies,
+              }
+            : relationship
+        ),
+      };
+    }
+
+    case 'SET_EXAMPLES': {
+      return {
+        style: state.style,
+        nodes: state.nodes.map((node) =>
+          nodeSelected(action.selection, node.id)
+            ? {
+                ...node,
+                examples: action.examples,
+              }
+            : node
+        ),
+        relationships: state.relationships.map((relationship) =>
+          relationshipSelected(action.selection, relationship.id)
+            ? {
+                ...relationship,
+                examples: action.examples,
+              }
+            : relationship
+        ),
+      };
+    }
+
+    case 'SET_CARDINALITY': {
+      return {
+        style: state.style,
+        nodes: state.nodes,
+        relationships: state.relationships.map((relationship) =>
+          relationshipSelected(action.selection, relationship.id)
+            ? {
+                ...relationship,
+                cardinality: action.cardinality,
+              }
+            : relationship
+        ),
+      };
+    }
+
     case 'ADD_LABEL': {
       return {
         style: state.style,

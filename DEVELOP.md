@@ -4,7 +4,7 @@
 
 ## Development server
 
-Run `nx serve arrows-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+Run `nx serve arrows-ts` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
 
 ## Understand this workspace
 

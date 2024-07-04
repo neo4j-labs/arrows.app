@@ -1,5 +1,5 @@
-import { Ontology } from '../../../../libs/model/src/lib/Ontology';
-import { toClassName } from '../../../arrows-app/src/linkml/naming';
+import { Ontology } from '@neo4j-arrows/model';
+import { toClassName } from '../linkml/naming';
 
 export const toAnnotators = (ontologies: Ontology[]): string => {
   return ontologies.map((ontology) => `sqlite:obo:${ontology.id}`).join(', ');

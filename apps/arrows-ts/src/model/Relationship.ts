@@ -1,3 +1,20 @@
+export enum Cardinality {
+  ONE_TO_ONE = 'ONE_TO_ONE',
+  ONE_TO_MANY = 'ONE_TO_MANY',
+  MANY_TO_MANY = 'MANY_TO_MANY',
+}
+
+export function toVisualCardinality(cardinality: Cardinality): string {
+  switch (cardinality) {
+    case Cardinality.ONE_TO_ONE:
+      return '1:1';
+    case Cardinality.ONE_TO_MANY:
+      return '1:N';
+    case Cardinality.MANY_TO_MANY:
+      return 'N:N';
+  }
+}
+
 export const setType = (relationship, type) => {
   return {
     id: relationship.id,

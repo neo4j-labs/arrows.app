@@ -3,7 +3,7 @@ import * as ReactDOM from 'react-dom/client';
 import thunkMiddleware from 'redux-thunk';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
+import { createStore, applyMiddleware, compose } from 'redux';
 
 import reducer from './reducers';
 
@@ -25,6 +25,7 @@ import './styles.css';
 import App from './app/App';
 
 const middleware = [
+  thunkMiddleware,
   recentStorageMiddleware,
   storageMiddleware,
   windowLocationHashMiddleware,
@@ -32,11 +33,11 @@ const middleware = [
   imageCacheMiddleware,
 ];
 
+const composeEnhancers =
+  (window as any).__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const store = createStore(
   reducer,
-  (window as any).__REDUX_DEVTOOLS_EXTENSION__ &&
-    (window as any).__REDUX_DEVTOOLS_EXTENSION__(),
-  applyMiddleware(thunkMiddleware, ...middleware)
+  composeEnhancers(applyMiddleware(...middleware))
 );
 initGoogleDriveApi(store);
 store.dispatch(windowResized(window.innerWidth, window.innerHeight));

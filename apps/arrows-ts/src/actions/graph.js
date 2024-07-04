@@ -478,6 +478,20 @@ export const removeLabel = (selection, label) => ({
   label,
 });
 
+export const setOntology = (selection, ontologies) => ({
+  category: 'GRAPH',
+  type: 'SET_ONTOLOGY',
+  selection,
+  ontologies: ontologies,
+});
+
+export const setCardinality = (selection, cardinality) => ({
+  category: 'GRAPH',
+  type: 'SET_CARDINALITY',
+  selection,
+  cardinality,
+});
+
 export const mergeOnPropertyValues = (selection, propertyKey) => {
   return function (dispatch, getState) {
     const state = getState();
@@ -597,6 +611,13 @@ export const setRelationshipType = (selection, relationshipType) => ({
   type: 'SET_RELATIONSHIP_TYPE',
   selection,
   relationshipType,
+});
+
+export const setExamples = (selection, examples) => ({
+  category: 'GRAPH',
+  type: 'SET_EXAMPLES',
+  selection,
+  examples,
 });
 
 export const duplicateNodesAndRelationships = (

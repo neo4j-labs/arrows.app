@@ -1,7 +1,7 @@
 import { getStyleSelector } from '../selectors/style';
 import { adaptForBackground } from './backgroundColorAdaption';
 import { selectionBorder } from '../model/colors';
-import { Cardinality } from '../model/src/lib/Relationship';
+import { Cardinality } from '../model/Relationship';
 
 export const relationshipArrowDimensions = (
   resolvedRelationship,

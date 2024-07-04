@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {
   Segment,
   Divider,
+  Dropdown,
   Form,
   Input,
   ButtonGroup,
@@ -27,6 +28,11 @@ import { combineLabels, summarizeLabels } from '../model/labels';
 import LabelTable from './LabelTable';
 import { CaptionInspector } from './CaptionInspector';
 import { graphsDifferInMoreThanPositions } from '../model/Graph';
+import {
+  ontologies,
+  Cardinality,
+  toVisualCardinality,
+} from '@neo4j-arrows/model';
 
 export default class DetailInspector extends Component {
   constructor(props) {
@@ -60,6 +66,8 @@ export default class DetailInspector extends Component {
       selection,
       graph,
       onSaveCaption,
+      onSaveCardinality,
+      onSaveExamples,
       onSaveType,
       onDuplicate,
       onDelete,
@@ -80,6 +88,7 @@ export default class DetailInspector extends Component {
       onSavePropertyKey,
       onSavePropertyValue,
       onDeleteProperty,
+      onSaveOntology,
     } = this.props;
     const fields = [];
 
@@ -132,6 +141,9 @@ export default class DetailInspector extends Component {
       const commonType = commonValue(
         relationships.map((relationship) => relationship.type)
       );
+      const commonCardinality = commonValue(
+        relationships.map((relationship) => relationship.cardinality)
+      );
 
       fields.push(
         <Form.Field key="_type">
@@ -140,6 +152,25 @@ export default class DetailInspector extends Component {
             value={commonType || ''}
             onChange={(event) => onSaveType(selection, event.target.value)}
             placeholder={commonType === undefined ? '<multiple types>' : null}
+          />
+        </Form.Field>
+      );
+
+      fields.push(
+        <Form.Field key="_cardinality">
+          <label>Cardinality</label>
+          <Dropdown
+            selection
+            value={commonCardinality ?? null}
+            placeholder={'Select a cardinality'}
+            options={Object.keys(Cardinality).map((cardinality) => {
+              return {
+                key: cardinality,
+                text: toVisualCardinality(cardinality),
+                value: cardinality,
+              };
+            })}
+            onChange={(e, { value }) => onSaveCardinality(selection, value)}
           />
         </Form.Field>
       );
@@ -168,6 +199,53 @@ export default class DetailInspector extends Component {
           }
         />
       );
+
+      if (entities.length < 2) {
+        const { ontologies: entityOntologies, examples } = entities[0];
+
+        fields.push(
+          <Form.Field key="_ontology">
+            <label>Ontology</label>
+            <Dropdown
+              selection
+              clearable
+              value={
+                entityOntologies
+                  ? entityOntologies.map((ontology) => ontology.id)
+                  : null
+              }
+              multiple
+              placeholder={'Select an ontology'}
+              options={ontologies.map((ontology) => {
+                return {
+                  key: ontology.id,
+                  text: ontology.id,
+                  value: ontology.id,
+                };
+              })}
+              onChange={(e, { value }) =>
+                onSaveOntology(
+                  selection,
+                  ontologies.filter((ontology) => value.includes(ontology.id))
+                )
+              }
+            />
+          </Form.Field>
+        );
+
+        fields.push(
+          <Form.Field key="_examples">
+            <label>Examples</label>
+            <Input
+              value={examples}
+              onChange={(event) =>
+                onSaveExamples(selection, event.target.value)
+              }
+              placeholder={'Provide examples for this entity'}
+            />
+          </Form.Field>
+        );
+      }
     }
 
     fields.push(

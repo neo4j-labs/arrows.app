@@ -22,3 +22,5 @@ export * from './lib/guides/HandleGuide';
 export * from './lib/guides/intersections';
 export * from './lib/guides/intervals';
 export * from './lib/guides/LineGuide';
+
+export * from './lib/Ontology';

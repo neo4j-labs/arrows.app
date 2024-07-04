@@ -5,6 +5,7 @@ import ExportCypherPanel from './ExportCypherPanel';
 import ExportSvgPanel from './ExportSvgPanel';
 import ExportJsonPanel from './ExportJsonPanel';
 import ExportGraphQLPanel from './ExportGraphQLPanel';
+import ExportLinkMLPanel from './ExportLinkMLPanel';
 import {
   loadFavoriteExportTab,
   saveFavoriteExportTab,
@@ -89,6 +90,17 @@ class ExportModal extends Component {
         render: () => (
           <Tab.Pane attached={false}>
             <ExportGraphQLPanel
+              graph={this.props.graph}
+              diagramName={this.props.diagramName}
+            />
+          </Tab.Pane>
+        ),
+      },
+      {
+        menuItem: 'LinkML',
+        render: () => (
+          <Tab.Pane attached={false}>
+            <ExportLinkMLPanel
               graph={this.props.graph}
               diagramName={this.props.diagramName}
             />
