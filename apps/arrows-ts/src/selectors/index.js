@@ -5,7 +5,7 @@ import ResolvedRelationship from '../graphics/ResolvedRelationship';
 import VisualGraph from '../graphics/VisualGraph';
 import TransformationHandles from '../graphics/TransformationHandles';
 import { bundle } from '../model/graph/relationshipBundling';
-import { RoutedRelationshipBundle } from '../graphics/RoutedRelationshipBundle';
+import { RoutedRelationshipBundle } from '@neo4j-arrows/graphics';
 import CanvasAdaptor from '../graphics/utils/CanvasAdaptor';
 import {
   nodeEditing,
