@@ -4,7 +4,7 @@ import { relationshipArrowDimensions } from './arrowDimensions';
 import ResolvedRelationship from './ResolvedRelationship';
 import { RectilinearArrow } from './RectilinearArrow';
 import { compareWaypoints } from './SeekAndDestroy';
-import { ElbowArrow } from './ElbowArrow';
+import { ElbowArrow } from '@neo4j-arrows/graphics';
 
 export const computeRelationshipAttachments = (graph, visualNodes) => {
   const nodeAttachments = {};

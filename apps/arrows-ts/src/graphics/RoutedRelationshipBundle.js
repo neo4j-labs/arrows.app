@@ -2,6 +2,7 @@ import {
   normalStraightArrow,
   ParallelArrow,
   StraightArrow,
+  ElbowArrow,
 } from '@neo4j-arrows/graphics';
 import { VisualRelationship } from './VisualRelationship';
 import { relationshipEditing } from '../model/selection';
@@ -9,7 +10,6 @@ import { BalloonArrow } from '@neo4j-arrows/graphics';
 import { neighbourPositions } from '../model/Graph';
 import { clockwiseAngularSpace } from './utils/clockwiseAngularSpace';
 import { normaliseAngle } from './utils/angles';
-import { ElbowArrow } from './ElbowArrow';
 import { RectilinearArrow } from './RectilinearArrow';
 import { relationshipArrowDimensions } from './arrowDimensions';
 import { combineBoundingBoxes } from './utils/BoundingBox';

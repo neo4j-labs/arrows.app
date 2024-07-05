@@ -1,4 +1,5 @@
 export * from './lib/BalloonArrow';
+export * from './lib/ElbowArrow';
 export * from './lib/ParallelArrow';
 export * from './lib/StraightArrow';
 export * from './lib/VisualGraph';
