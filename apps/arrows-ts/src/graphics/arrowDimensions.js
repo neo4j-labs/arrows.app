@@ -1,7 +1,7 @@
 import { getStyleSelector } from '../selectors/style';
 import { adaptForBackground } from './backgroundColorAdaption';
 import { selectionBorder } from '../model/colors';
-import { Cardinality } from '../model/Relationship';
+import { Cardinality } from '@neo4j-arrows/model';
 
 export const relationshipArrowDimensions = (
   resolvedRelationship,

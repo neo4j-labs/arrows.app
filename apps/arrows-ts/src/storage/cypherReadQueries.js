@@ -1,5 +1,5 @@
 import { Point } from '../model/Point';
-import { databaseTypeToStringType } from '../model/Relationship';
+import { databaseTypeToStringType } from '@neo4j-arrows/model';
 import {
   propertiesFromDatabaseEntity,
   styleFromDatabaseEntity,

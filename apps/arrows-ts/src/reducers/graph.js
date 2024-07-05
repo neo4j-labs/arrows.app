@@ -6,7 +6,7 @@ import {
   moveTo,
   setCaption,
 } from '../model/Node';
-import { reverse, setType } from '../model/Relationship';
+import { reverse, setType } from '@neo4j-arrows/model';
 import {
   removeProperty,
   renameProperty,

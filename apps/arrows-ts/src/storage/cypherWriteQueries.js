@@ -1,4 +1,4 @@
-import { stringTypeToDatabaseType } from '../model/Relationship';
+import { stringTypeToDatabaseType } from '@neo4j-arrows/model';
 import {
   propertyKeyToDatabaseKey,
   styleKeyToDatabaseKey,

@@ -1,6 +1,6 @@
 import { indexablePropertyText } from '@neo4j-arrows/model';
 import { completeWithDefaults } from './styling';
-import { otherNodeId } from './Relationship';
+import { otherNodeId } from '@neo4j-arrows/model';
 import { nextAvailableId } from './Id';
 import { Point } from './Point';
 
