@@ -3,7 +3,6 @@ import { Vector } from '@neo4j-arrows/model';
 import { getDistanceToLine } from './utils/geometryUtils';
 import arrowHead from './arrowHead';
 import { ArrowDimensions } from './arrowDimensions';
-import { CanvasAdaptor } from './utils/CanvasAdaptor';
 import { DrawingContext } from './utils/DrawingContext';
 
 export class ParallelArrow {
@@ -18,6 +17,7 @@ export class ParallelArrow {
   arcRadius: number;
   dimensions: ArrowDimensions;
   startAttach: Point;
+  startShaft: Point;
   endDeflection: number;
   endAttach: Point;
   startControl: number;
@@ -50,6 +50,13 @@ export class ParallelArrow {
     this.dimensions = dimensions;
 
     this.startAttach = new Point(startRadius, 0).rotate(startDeflection);
+    this.startShaft = new Point(
+      startRadius +
+        (dimensions.hasIngoingArrowHead
+          ? dimensions.headHeight - dimensions.chinHeight
+          : 0),
+      0
+    ).rotate(endDeflection);
     this.endDeflection = endDeflection;
     this.endAttach = new Point(-endRadius, 0)
       .rotate(-endDeflection)
@@ -105,6 +112,22 @@ export class ParallelArrow {
     ctx.save();
     ctx.translate(this.startCentre.x, this.startCentre.y);
     ctx.rotate(this.angle);
+    if (this.dimensions.hasIngoingArrowHead) {
+      const [x, y] = this.startAttach.xy;
+      ctx.translate(x, y);
+      ctx.rotate(Math.PI + this.endDeflection);
+      ctx.fillStyle = this.dimensions.arrowColor;
+      arrowHead(
+        ctx,
+        this.dimensions.headHeight,
+        this.dimensions.chinHeight,
+        this.dimensions.headWidth,
+        true,
+        false
+      );
+      ctx.rotate(Math.PI - this.endDeflection);
+      ctx.translate(-x, -y);
+    }
     ctx.beginPath();
     this.path(ctx);
     ctx.lineWidth = this.dimensions.arrowWidth;
@@ -123,7 +146,6 @@ export class ParallelArrow {
         true,
         false
       );
-      ctx.fill();
     }
     ctx.restore();
   }
@@ -133,11 +155,28 @@ export class ParallelArrow {
     ctx.save();
     ctx.translate(this.startCentre.x, this.startCentre.y);
     ctx.rotate(this.angle);
+    ctx.strokeStyle = this.dimensions.selectionColor;
+    if (this.dimensions.hasIngoingArrowHead) {
+      const [x, y] = this.startAttach.xy;
+      ctx.translate(x, y);
+      ctx.rotate(Math.PI + this.endDeflection);
+      ctx.lineWidth = indicatorWidth;
+      ctx.lineJoin = 'round';
+      arrowHead(
+        ctx,
+        this.dimensions.headHeight,
+        this.dimensions.chinHeight,
+        this.dimensions.headWidth,
+        false,
+        true
+      );
+      ctx.rotate(Math.PI - this.endDeflection);
+      ctx.translate(-x, -y);
+    }
     ctx.beginPath();
     this.path(ctx);
     ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = this.dimensions.selectionColor;
     ctx.stroke();
     if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(this.centreDistance, 0);
@@ -159,7 +198,7 @@ export class ParallelArrow {
   }
 
   path(ctx: DrawingContext) {
-    ctx.moveTo(this.startAttach.x, this.startAttach.y);
+    ctx.moveTo(this.startShaft.x, this.startShaft.y);
     ctx.arcTo(
       this.startControl,
       this.displacement,
