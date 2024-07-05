@@ -1,7 +1,7 @@
 import { drawPolygon } from './canvasRenderer';
 import { ringMargin } from './constants';
 import { black, blueGreen, purple } from '../model/colors';
-import { BalloonArrow } from './BalloonArrow';
+import { BalloonArrow } from '@neo4j-arrows/graphics';
 import { normalStraightArrow } from './StraightArrow';
 import { adaptForBackground } from './backgroundColorAdaption';
 

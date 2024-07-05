@@ -2,7 +2,7 @@ import { ParallelArrow } from './ParallelArrow';
 import { normalStraightArrow, StraightArrow } from './StraightArrow';
 import { VisualRelationship } from './VisualRelationship';
 import { relationshipEditing } from '../model/selection';
-import { BalloonArrow } from './BalloonArrow';
+import { BalloonArrow } from '@neo4j-arrows/graphics';
 import { neighbourPositions } from '../model/Graph';
 import { clockwiseAngularSpace } from './utils/clockwiseAngularSpace';
 import { normaliseAngle } from './utils/angles';

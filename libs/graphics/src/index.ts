@@ -1,3 +1,4 @@
+export * from './lib/BalloonArrow';
 export * from './lib/VisualGraph';
 export * from './lib/VisualNode';
 export * from './lib/VisualRelationship';
