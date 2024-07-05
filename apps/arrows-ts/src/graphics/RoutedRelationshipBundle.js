@@ -1,5 +1,8 @@
-import { ParallelArrow } from './ParallelArrow';
-import { normalStraightArrow, StraightArrow } from './StraightArrow';
+import {
+  normalStraightArrow,
+  ParallelArrow,
+  StraightArrow,
+} from '@neo4j-arrows/graphics';
 import { VisualRelationship } from './VisualRelationship';
 import { relationshipEditing } from '../model/selection';
 import { BalloonArrow } from '@neo4j-arrows/graphics';
