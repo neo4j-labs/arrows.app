@@ -3,7 +3,6 @@ import { ArrowDimensions } from './arrowDimensions';
 import arrowHead from './arrowHead';
 import { BoundingBox } from './utils/BoundingBox';
 import { perpendicular } from './utils/angles';
-import { CanvasAdaptor } from './utils/CanvasAdaptor';
 import { DrawingContext } from './utils/DrawingContext';
 
 export class BalloonArrow {
@@ -16,6 +15,7 @@ export class BalloonArrow {
   displacement: number;
   deflection: number;
   startAttach: Point;
+  startShaft: Point;
   endShaft: Point;
   control: number;
 
@@ -39,6 +39,13 @@ export class BalloonArrow {
     this.deflection = (this.displacement * 0.6) / nodeRadius;
 
     this.startAttach = new Point(nodeRadius, 0).rotate(-this.deflection);
+    this.startShaft = new Point(
+      nodeRadius +
+        (dimensions.hasIngoingArrowHead
+          ? dimensions.headHeight - dimensions.chinHeight
+          : 0),
+      0
+    ).rotate(-this.deflection);
     this.endShaft = new Point(
       nodeRadius + dimensions.headHeight - dimensions.chinHeight,
       0
@@ -70,6 +77,22 @@ export class BalloonArrow {
     ctx.save();
     ctx.translate(...this.nodeCentre.xy);
     ctx.rotate(this.angle);
+    if (this.dimensions.hasIngoingArrowHead) {
+      const [x, y] = this.startAttach.xy;
+      ctx.translate(x, y);
+      ctx.rotate(Math.PI - this.deflection);
+      ctx.fillStyle = this.dimensions.arrowColor;
+      arrowHead(
+        ctx,
+        this.dimensions.headHeight,
+        this.dimensions.chinHeight,
+        this.dimensions.headWidth,
+        true,
+        false
+      );
+      ctx.rotate(Math.PI + this.deflection);
+      ctx.translate(-x, -y);
+    }
     ctx.beginPath();
     this.path(ctx);
     ctx.lineWidth = this.dimensions.arrowWidth;
@@ -95,13 +118,29 @@ export class BalloonArrow {
   drawSelectionIndicator(ctx: DrawingContext) {
     const indicatorWidth = 10;
     ctx.save();
+    ctx.strokeStyle = this.dimensions.selectionColor;
     ctx.translate(...this.nodeCentre.xy);
     ctx.rotate(this.angle);
+    if (this.dimensions.hasIngoingArrowHead) {
+      ctx.rotate(Math.PI - this.deflection);
+      ctx.translate(-this.nodeRadius, 0);
+      ctx.lineWidth = indicatorWidth;
+      ctx.lineJoin = 'round';
+      arrowHead(
+        ctx,
+        this.dimensions.headHeight,
+        this.dimensions.chinHeight,
+        this.dimensions.headWidth,
+        false,
+        true
+      );
+      ctx.translate(this.nodeRadius, 0);
+      ctx.rotate(Math.PI + this.deflection);
+    }
     ctx.beginPath();
     this.path(ctx);
     ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth;
     ctx.lineCap = 'round';
-    ctx.strokeStyle = this.dimensions.selectionColor;
     ctx.stroke();
     if (this.dimensions.hasOutgoingArrowHead) {
       ctx.rotate(Math.PI + this.deflection);
@@ -116,13 +155,12 @@ export class BalloonArrow {
         false,
         true
       );
-      ctx.stroke();
     }
     ctx.restore();
   }
 
   path(ctx: DrawingContext) {
-    ctx.moveTo(this.startAttach.x, this.startAttach.y);
+    ctx.moveTo(this.startShaft.x, this.startShaft.y);
     ctx.arcTo(
       this.control,
       -this.displacement,
