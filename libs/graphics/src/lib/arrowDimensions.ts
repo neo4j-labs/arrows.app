@@ -37,7 +37,9 @@ export const relationshipArrowDimensions = (
   const chinHeight = headHeight / 10;
 
   const cardinality = resolvedRelationship.relationship.cardinality;
-  const hasIngoingArrowHead = cardinality === Cardinality.ONE_TO_ONE;
+  const hasIngoingArrowHead =
+    cardinality === Cardinality.MANY_TO_ONE ||
+    cardinality === Cardinality.ONE_TO_ONE;
   const hasOutgoingArrowHead =
     cardinality === Cardinality.ONE_TO_MANY ||
     cardinality === Cardinality.ONE_TO_ONE;

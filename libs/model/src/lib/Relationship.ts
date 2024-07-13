@@ -5,6 +5,7 @@ export enum Cardinality {
   ONE_TO_ONE = 'ONE_TO_ONE',
   ONE_TO_MANY = 'ONE_TO_MANY',
   MANY_TO_MANY = 'MANY_TO_MANY',
+  MANY_TO_ONE = 'MANY_TO_ONE',
 }
 
 export function toVisualCardinality(cardinality: Cardinality): string {
@@ -15,6 +16,8 @@ export function toVisualCardinality(cardinality: Cardinality): string {
       return '1:N';
     case Cardinality.MANY_TO_MANY:
       return 'N:N';
+    case Cardinality.MANY_TO_ONE:
+      return 'N:1';
   }
 }
 
