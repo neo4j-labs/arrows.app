@@ -47,7 +47,10 @@ export class BalloonArrow {
       0
     ).rotate(-this.deflection);
     this.endShaft = new Point(
-      nodeRadius + dimensions.headHeight - dimensions.chinHeight,
+      nodeRadius +
+        (dimensions.hasOutgoingArrowHead
+          ? dimensions.headHeight - dimensions.chinHeight
+          : 0),
       0
     ).rotate(this.deflection);
 

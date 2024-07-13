@@ -69,7 +69,12 @@ export class ParallelArrow {
       ((this.centreDistance - this.endAttach.x) * displacement) /
         this.endAttach.y;
     this.endShaft = new Point(
-      -(endRadius + dimensions.headHeight - dimensions.chinHeight),
+      -(
+        endRadius +
+        (dimensions.hasOutgoingArrowHead
+          ? dimensions.headHeight - dimensions.chinHeight
+          : 0)
+      ),
       0
     )
       .rotate(-endDeflection)

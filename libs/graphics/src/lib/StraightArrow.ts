@@ -3,7 +3,6 @@ import arrowHead from './arrowHead';
 import { Point, Vector } from '@neo4j-arrows/model';
 import { normaliseAngle } from './utils/angles';
 import { ArrowDimensions } from './arrowDimensions';
-import { CanvasAdaptor } from './utils/CanvasAdaptor';
 import { DrawingContext } from './utils/DrawingContext';
 
 export class StraightArrow {
@@ -27,7 +26,7 @@ export class StraightArrow {
     const arrowVector = endAttach.vectorFrom(startAttach);
     const headsHeight =
       (dimensions.headHeight - dimensions.chinHeight) *
-      (dimensions.hasIngoingArrowHead ? 2 : 1);
+      (+dimensions.hasIngoingArrowHead + +dimensions.hasOutgoingArrowHead);
     const factor =
       (arrowVector.distance() - headsHeight) / arrowVector.distance();
 
@@ -65,6 +64,21 @@ export class StraightArrow {
     ctx.save();
     ctx.translate(this.startCentre.x, this.startCentre.y);
     ctx.rotate(this.angle);
+    if (this.dimensions.hasIngoingArrowHead) {
+      ctx.translate(this.startAttach.x, 0);
+      ctx.rotate(this.startAttach.vectorFrom(this.endAttach).angle());
+      ctx.fillStyle = this.dimensions.arrowColor;
+      arrowHead(
+        ctx,
+        this.dimensions.headHeight,
+        this.dimensions.chinHeight,
+        this.dimensions.headWidth,
+        true,
+        false
+      );
+      ctx.rotate(Math.PI - this.endAttach.vectorFrom(this.startAttach).angle());
+      ctx.translate(-this.startAttach.x, 0);
+    }
     ctx.beginPath();
     ctx.moveTo(this.startShaft.x, this.startShaft.y);
     ctx.lineTo(this.endShaft.x, this.endShaft.y);
@@ -84,19 +98,6 @@ export class StraightArrow {
         false
       );
     }
-    if (this.dimensions.hasIngoingArrowHead) {
-      ctx.translate(this.startAttach.x - this.endAttach.x, 0);
-      ctx.rotate(this.startAttach.vectorFrom(this.endAttach).angle());
-      ctx.fillStyle = this.dimensions.arrowColor;
-      arrowHead(
-        ctx,
-        this.dimensions.headHeight,
-        this.dimensions.chinHeight,
-        this.dimensions.headWidth,
-        true,
-        false
-      );
-    }
     ctx.restore();
   }
 
@@ -105,18 +106,12 @@ export class StraightArrow {
     ctx.save();
     ctx.translate(this.startCentre.x, this.startCentre.y);
     ctx.rotate(this.angle);
-    ctx.beginPath();
-    ctx.moveTo(this.startShaft.x, this.startShaft.y);
-    ctx.lineTo(this.endShaft.x, this.endShaft.y);
-    ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth;
-    ctx.lineCap = 'round';
     ctx.strokeStyle = this.dimensions.selectionColor;
-    ctx.stroke();
-    if (this.dimensions.hasOutgoingArrowHead) {
-      ctx.translate(this.endAttach.x, this.endAttach.y);
-      ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle());
+    ctx.lineJoin = 'round';
+    if (this.dimensions.hasIngoingArrowHead) {
+      ctx.translate(this.startAttach.x, 0);
+      ctx.rotate(this.startAttach.vectorFrom(this.endAttach).angle());
       ctx.lineWidth = indicatorWidth;
-      ctx.lineJoin = 'round';
       arrowHead(
         ctx,
         this.dimensions.headHeight,
@@ -125,11 +120,20 @@ export class StraightArrow {
         false,
         true
       );
+      ctx.rotate(Math.PI - this.endAttach.vectorFrom(this.startAttach).angle());
+      ctx.translate(-this.startAttach.x, 0);
     }
-    if (this.dimensions.hasIngoingArrowHead) {
-      ctx.translate(this.startAttach.x - this.endAttach.x, 0);
-      ctx.rotate(this.startAttach.vectorFrom(this.endAttach).angle());
-      ctx.fillStyle = this.dimensions.arrowColor;
+    ctx.beginPath();
+    ctx.moveTo(this.startShaft.x, this.startShaft.y);
+    ctx.lineTo(this.endShaft.x, this.endShaft.y);
+    ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    if (this.dimensions.hasOutgoingArrowHead) {
+      ctx.translate(this.endAttach.x, this.endAttach.y);
+      ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle());
+      ctx.lineWidth = indicatorWidth;
+      ctx.lineJoin = 'round';
       arrowHead(
         ctx,
         this.dimensions.headHeight,

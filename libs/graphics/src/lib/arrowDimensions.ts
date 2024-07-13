@@ -32,22 +32,15 @@ export const relationshipArrowDimensions = (
   const arrowColor = style('arrow-color');
   const selectionColor = adaptForBackground(selectionBorder, style);
 
-  let hasOutgoingArrowHead = false;
-  let hasIngoingArrowHead = false;
-  let headWidth = 0;
-  let headHeight = 0;
-  let chinHeight = 0;
+  const headWidth = arrowWidth + 6 * Math.sqrt(arrowWidth);
+  const headHeight = headWidth * 1.5;
+  const chinHeight = headHeight / 10;
 
   const cardinality = resolvedRelationship.relationship.cardinality;
-  if (cardinality !== Cardinality.MANY_TO_MANY) {
-    hasOutgoingArrowHead = true;
-    headWidth = arrowWidth + 6 * Math.sqrt(arrowWidth);
-    headHeight = headWidth * 1.5;
-    chinHeight = headHeight / 10;
-  }
-  if (cardinality === Cardinality.ONE_TO_ONE) {
-    hasIngoingArrowHead = true;
-  }
+  const hasIngoingArrowHead = cardinality === Cardinality.ONE_TO_ONE;
+  const hasOutgoingArrowHead =
+    cardinality === Cardinality.ONE_TO_MANY ||
+    cardinality === Cardinality.ONE_TO_ONE;
 
   const separation = style('margin-peer');
   const leftToRight = resolvedRelationship.from === leftNode;
