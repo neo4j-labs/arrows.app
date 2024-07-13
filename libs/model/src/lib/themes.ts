@@ -1,5 +1,6 @@
 import { Graph } from './Graph';
 import { Point } from './Point';
+import { Cardinality } from './Relationship';
 
 export interface Theme {
   name: string;
@@ -47,6 +48,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
       ],
       style: {
@@ -193,6 +195,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
       ],
     },
@@ -286,6 +289,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
       ],
     },
@@ -384,6 +388,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
       ],
     },
@@ -553,6 +558,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
         {
           id: 'n1',
@@ -562,6 +568,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n2',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
         {
           id: 'n2',
@@ -571,6 +578,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n1',
           toId: 'n2',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
         {
           id: 'n3',
@@ -580,6 +588,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n3',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
         {
           id: 'n4',
@@ -589,6 +598,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n4',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
         {
           id: 'n5',
@@ -598,6 +608,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n5',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
         {
           id: 'n6',
@@ -607,6 +618,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n6',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
         {
           id: 'n7',
@@ -616,6 +628,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n5',
           toId: 'n7',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
         {
           id: 'n8',
@@ -625,6 +638,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n4',
           toId: 'n1',
+          cardinality: Cardinality.ONE_TO_MANY,
         },
       ],
     },
