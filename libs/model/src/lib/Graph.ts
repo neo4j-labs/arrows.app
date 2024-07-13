@@ -21,7 +21,6 @@ export const emptyGraph = (): Graph => {
         position: new Point(0, 0),
         caption: '',
         style: {},
-        labels: [],
         properties: {},
       },
     ],
@@ -112,7 +111,6 @@ const nodesDifferInMoreThanPositions = (nodes1: Node[], nodes2: Node[]) => {
       node1.id !== node2.id ||
       node1.caption !== node2.caption ||
       node1.style !== node2.style ||
-      node1.labels !== node2.labels ||
       node1.properties !== node2.properties
     );
   });

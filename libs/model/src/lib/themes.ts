@@ -23,7 +23,6 @@ export const themes: Theme[] = [
           // },
           caption: 'a',
           style: {},
-          labels: [],
           properties: {},
         },
         {
@@ -36,7 +35,6 @@ export const themes: Theme[] = [
           // },
           caption: 'b',
           style: {},
-          labels: [],
           properties: {},
         },
       ],
@@ -165,7 +163,6 @@ export const themes: Theme[] = [
           //   "y": -74.54584527220625
           // },
           caption: '',
-          labels: ['Product'],
           properties: {
             SKU: '750045',
             unit: '100',
@@ -181,7 +178,6 @@ export const themes: Theme[] = [
           //   "y": -74.54584527220625
           // },
           caption: '',
-          labels: ['Category'],
           properties: {
             stock: 'true',
           },
@@ -266,7 +262,6 @@ export const themes: Theme[] = [
           style: {
             'node-color': '#F79767',
           },
-          labels: [],
           properties: {},
         },
         {
@@ -279,7 +274,6 @@ export const themes: Theme[] = [
           // },
           caption: 'That thing you do',
           style: {},
-          labels: [],
           properties: {},
         },
       ],
@@ -362,7 +356,6 @@ export const themes: Theme[] = [
             'node-color': '#F79767',
             'border-color': '#f36924',
           },
-          labels: [],
           properties: {},
         },
         {
@@ -375,7 +368,6 @@ export const themes: Theme[] = [
           // },
           caption: 'The Da Vinci Code',
           style: {},
-          labels: ['Movie'],
           properties: {
             released: '2006',
             tagline: 'Break The Codes',
@@ -461,7 +453,6 @@ export const themes: Theme[] = [
           style: {
             'node-color': '#7b64ff',
           },
-          labels: [],
           properties: {},
         },
         {
@@ -474,7 +465,6 @@ export const themes: Theme[] = [
           // },
           caption: '',
           style: {},
-          labels: [],
           properties: {},
         },
         {
@@ -487,7 +477,6 @@ export const themes: Theme[] = [
           // },
           caption: '',
           style: {},
-          labels: [],
           properties: {},
         },
         {
@@ -502,7 +491,6 @@ export const themes: Theme[] = [
           style: {
             'node-color': '#fcdc00',
           },
-          labels: [],
           properties: {},
         },
         {
@@ -515,7 +503,6 @@ export const themes: Theme[] = [
           // },
           caption: '',
           style: {},
-          labels: [],
           properties: {},
         },
         {
@@ -528,7 +515,6 @@ export const themes: Theme[] = [
           // },
           caption: '',
           style: {},
-          labels: [],
           properties: {},
         },
         {
@@ -541,7 +527,6 @@ export const themes: Theme[] = [
           // },
           caption: '',
           style: {},
-          labels: [],
           properties: {},
         },
         {
@@ -556,7 +541,6 @@ export const themes: Theme[] = [
           style: {
             'node-color': '#c45100',
           },
-          labels: [],
           properties: {},
         },
       ],

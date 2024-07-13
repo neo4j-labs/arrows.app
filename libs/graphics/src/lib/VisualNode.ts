@@ -83,7 +83,7 @@ export class VisualNode {
     const iconPosition = style('icon-position');
     const hasIcon = !!iconImage;
     const hasCaption = !!node.caption;
-    const hasLabels = node.labels.length > 0;
+    const hasLabels = node.ontologies && node.ontologies.length > 0;
     const hasProperties = Object.keys(node.properties).length > 0;
 
     const outsidePosition = style('outside-position');
@@ -177,7 +177,7 @@ export class VisualNode {
         case 'inside':
           this.insideComponents.push(
             (this.labels = new NodeLabelsInsideNode(
-              node.labels,
+              node.ontologies?.map((ontology) => ontology.id) ?? [],
               editing,
               style,
               measureTextContext
@@ -188,7 +188,7 @@ export class VisualNode {
         default:
           this.outsideComponents.push(
             (this.labels = new NodeLabelsOutsideNode(
-              node.labels,
+              node.ontologies?.map((ontology) => ontology.id) ?? [],
               this.outsideOrientation,
               editing,
               style,

@@ -4,9 +4,6 @@ import {
   setNodeCaption,
   setRelationshipType,
   renameProperty,
-  addLabel,
-  renameLabel,
-  removeLabel,
 } from '../actions/graph';
 import { getVisualGraph } from '../selectors';
 import { GraphTextEditors } from '../components/GraphTextEditors';
@@ -25,15 +22,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     onExit: () => {
       dispatch(deactivateEditing());
-    },
-    onAddLabel: (selection, label) => {
-      dispatch(addLabel(selection, label));
-    },
-    onRenameLabel: (selection, oldLabel, newLabel) => {
-      dispatch(renameLabel(selection, oldLabel, newLabel));
-    },
-    onRemoveLabel: (selection, label) => {
-      dispatch(removeLabel(selection, label));
     },
     onSetNodeCaption: (selection, caption) => {
       dispatch(setNodeCaption(selection, caption));

@@ -5,7 +5,7 @@
 Web-based tool for drawing pictures of graphs, for use in documents or presentations.
 
 - **Quick:** Intuitive drawing with a mouse.
-- **Neo4j Property Graph Model:** Draw nodes, relationships, properties, labels.
+- **Neo4j Property Graph Model:** Draw nodes, relationships, properties.
 - **Fine-grained Styling:** Control sizes, layouts, colors.
 - **Export as image:** Use images in documents or presentations.
 
@@ -40,7 +40,7 @@ no code at all.
 ## Key Features
 
 - Quick: Intuitive drawing with a mouse.
-- Neo4j Property Graph Model. Explicit support for: nodes, relationships, properties, labels.
+- Neo4j Property Graph Model. Explicit support for: nodes, relationships, properties.
 - Fine-grained Styling. Control over: sizes, positions, colors.
 - Export images. Main intended use is to create images for documents or presentations.
 

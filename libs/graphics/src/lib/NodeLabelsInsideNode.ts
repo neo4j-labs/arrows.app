@@ -2,7 +2,6 @@ import { Point, StyleFunction, Vector } from '@neo4j-arrows/model';
 import { Pill } from './Pill';
 import { combineBoundingBoxes } from './utils/BoundingBox';
 import { TextMeasurementContext } from './utils/TextMeasurementContext';
-import { CanvasAdaptor } from './utils/CanvasAdaptor';
 import { DrawingContext } from './utils/DrawingContext';
 
 export class NodeLabelsInsideNode {

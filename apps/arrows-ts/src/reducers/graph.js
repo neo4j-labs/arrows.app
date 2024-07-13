@@ -1,7 +1,4 @@
 import {
-  addLabel,
-  renameLabel,
-  removeLabel,
   Cardinality,
   emptyGraph,
   moveTo,
@@ -33,7 +30,6 @@ const graph = (state = emptyGraph(), action) => {
         position: action.newNodePosition,
         caption: action.caption,
         style: action.style,
-        labels: [],
         properties: {},
       });
       return {
@@ -52,7 +48,6 @@ const graph = (state = emptyGraph(), action) => {
             position: action.targetNodePositions[i],
             caption: action.caption,
             style: action.style,
-            labels: [],
             properties: {},
           };
         }),
@@ -169,54 +164,6 @@ const graph = (state = emptyGraph(), action) => {
               }
             : relationship
         ),
-      };
-    }
-
-    case 'ADD_LABEL': {
-      return {
-        style: state.style,
-        nodes: state.nodes.map((node) =>
-          nodeSelected(action.selection, node.id)
-            ? addLabel(node, action.label)
-            : node
-        ),
-        relationships: state.relationships,
-      };
-    }
-
-    case 'ADD_LABELS': {
-      return {
-        style: state.style,
-        nodes: state.nodes.map((node) =>
-          action.nodeLabels.hasOwnProperty(node.id)
-            ? addLabel(node, action.nodeLabels[node.id])
-            : node
-        ),
-        relationships: state.relationships,
-      };
-    }
-
-    case 'RENAME_LABEL': {
-      return {
-        style: state.style,
-        nodes: state.nodes.map((node) =>
-          nodeSelected(action.selection, node.id)
-            ? renameLabel(node, action.oldLabel, action.newLabel)
-            : node
-        ),
-        relationships: state.relationships,
-      };
-    }
-
-    case 'REMOVE_LABEL': {
-      return {
-        style: state.style,
-        nodes: state.nodes.map((node) =>
-          nodeSelected(action.selection, node.id)
-            ? removeLabel(node, action.label)
-            : node
-        ),
-        relationships: state.relationships,
       };
     }
 
@@ -438,7 +385,6 @@ const graph = (state = emptyGraph(), action) => {
           position: spec.position,
           caption: oldNode.caption,
           style: { ...oldNode.style },
-          labels: [...oldNode.labels],
           properties: { ...oldNode.properties },
         };
         newNodes.push(newNode);
@@ -517,9 +463,6 @@ const graph = (state = emptyGraph(), action) => {
             );
             if (spec) {
               let augmentedNode = node;
-              for (const label of spec.labels) {
-                augmentedNode = addLabel(augmentedNode, label);
-              }
               for (const [key, value] of Object.entries(spec.properties)) {
                 augmentedNode = setProperty(augmentedNode, key, value);
               }

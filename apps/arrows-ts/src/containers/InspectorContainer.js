@@ -8,11 +8,7 @@ import {
   setArrowsProperty,
   removeArrowsProperty,
   reverseRelationships,
-  addLabel,
-  renameLabel,
-  removeLabel,
   duplicateSelection,
-  convertCaptionsToLabels,
   convertCaptionsToPropertyValues,
   inlineRelationships,
   mergeOnPropertyValues,
@@ -40,20 +36,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    onAddLabel: (selection, label) => {
-      dispatch(addLabel(selection, label));
-    },
-    onRenameLabel: (selection, oldLabel, newLabel) => {
-      dispatch(renameLabel(selection, oldLabel, newLabel));
-    },
-    onRemoveLabel: (selection, label) => {
-      dispatch(removeLabel(selection, label));
-    },
     onSaveCaption: (selection, caption) => {
       dispatch(setNodeCaption(selection, caption));
-    },
-    onConvertCaptionsToLabels: () => {
-      dispatch(convertCaptionsToLabels());
     },
     onConvertCaptionsToPropertyValues: () => {
       dispatch(convertCaptionsToPropertyValues());

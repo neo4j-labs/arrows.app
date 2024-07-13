@@ -24,14 +24,11 @@ import {
   styleAttributeGroups,
   summarizeProperties,
   toVisualCardinality,
-  combineLabels,
-  summarizeLabels,
 } from '@neo4j-arrows/model';
 import { renderCounters } from './EntityCounters';
 import PropertyTable from './PropertyTable';
 import StyleTable from './StyleTable';
 import { DetailToolbox } from './DetailToolbox';
-import LabelTable from './LabelTable';
 import { CaptionInspector } from './CaptionInspector';
 
 export default class DetailInspector extends Component {
@@ -79,9 +76,7 @@ export default class DetailInspector extends Component {
       selectedNodes,
       onSelect,
     } = this.props;
-    const { onConvertCaptionsToLabels, onConvertCaptionsToPropertyValues } =
-      this.props;
-    const { onAddLabel, onRenameLabel, onRemoveLabel } = this.props;
+    const { onConvertCaptionsToPropertyValues } = this.props;
     const { onSaveArrowsPropertyValue, onDeleteArrowsProperty } = this.props;
     const {
       onMergeOnValues,
@@ -113,26 +108,7 @@ export default class DetailInspector extends Component {
           key="caption"
           value={value}
           onSaveCaption={(caption) => onSaveCaption(selection, caption)}
-          onConvertCaptionsToLabels={onConvertCaptionsToLabels}
           onConvertCaptionsToPropertyValues={onConvertCaptionsToPropertyValues}
-        />
-      );
-    }
-
-    if (selectionIncludes.nodes) {
-      const labels = combineLabels(selectedNodes);
-      const labelSummary = summarizeLabels(entities, graph);
-
-      fields.push(
-        <LabelTable
-          key="labels"
-          labels={labels}
-          labelSummary={labelSummary}
-          onAddLabel={(label) => onAddLabel(selection, label)}
-          onRenameLabel={(oldLabel, newLabel) =>
-            onRenameLabel(selection, oldLabel, newLabel)
-          }
-          onRemoveLabel={(label) => onRemoveLabel(selection, label)}
         />
       );
     }

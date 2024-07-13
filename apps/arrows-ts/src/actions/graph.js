@@ -450,34 +450,6 @@ export const setNodeCaption = (selection, caption) => ({
   caption,
 });
 
-export const addLabel = (selection, label) => ({
-  category: 'GRAPH',
-  type: 'ADD_LABEL',
-  selection,
-  label,
-});
-
-export const addLabels = (nodeLabels) => ({
-  category: 'GRAPH',
-  type: 'ADD_LABELS',
-  nodeLabels,
-});
-
-export const renameLabel = (selection, oldLabel, newLabel) => ({
-  category: 'GRAPH',
-  type: 'RENAME_LABEL',
-  selection,
-  oldLabel,
-  newLabel,
-});
-
-export const removeLabel = (selection, label) => ({
-  category: 'GRAPH',
-  type: 'REMOVE_LABEL',
-  selection,
-  label,
-});
-
 export const setOntology = (selection, ontologies) => ({
   category: 'GRAPH',
   type: 'SET_ONTOLOGY',
@@ -774,7 +746,6 @@ export const inlineRelationships = (selection) => {
         );
         return {
           addPropertiesNodeId: relationship.fromId,
-          labels: targetNode.labels,
           properties: targetNode.properties,
           removeNodeId: relationship.toId,
         };
@@ -833,22 +804,6 @@ export const importNodesAndRelationships = (importedGraph) => {
       nodes: newNodes,
       relationships: newRelationships,
     });
-  };
-};
-
-export const convertCaptionsToLabels = () => {
-  return function (dispatch, getState) {
-    const state = getState();
-    const selection = state.selection;
-    const graph = getPresentGraph(state);
-    const nodesToConvert = selectedNodes(graph, selection);
-    const nodeLabels = Object.fromEntries(
-      nodesToConvert.map((node) => {
-        return [node.id, node.caption];
-      })
-    );
-    dispatch(addLabels(nodeLabels));
-    dispatch(setNodeCaption(selection, ''));
   };
 };
 

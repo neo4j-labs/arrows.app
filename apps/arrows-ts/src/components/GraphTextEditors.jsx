@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { CaptionEditor } from './CaptionEditor';
 import { RelationshipTypeEditor } from './RelationshipTypeEditor';
 import { PropertiesEditor } from './PropertiesEditor';
-import { LabelsEditor } from './LabelsEditor';
 import { getStyleSelector } from '../selectors/style';
 import { NodeCaptionFillNode } from '../graphics/NodeCaptionFillNode';
 import { NodeCaptionOutsideNode } from '../graphics/NodeCaptionOutsideNode';
@@ -11,7 +10,7 @@ import { RelationshipType } from '../graphics/RelationshipType';
 import { ComponentStack } from '../graphics/ComponentStack';
 import { Vector } from '../model/Vector';
 
-const EditableComponentTypes = ['CAPTION', 'LABELS', 'TYPE', 'PROPERTIES'];
+const EditableComponentTypes = ['CAPTION', 'TYPE', 'PROPERTIES'];
 
 const editableComponentFilter = (component) =>
   EditableComponentTypes.indexOf(component.component.type) !== -1;
@@ -174,17 +173,6 @@ export class GraphTextEditors extends Component {
             onSetNodeCaption={(caption) =>
               this.props.onSetNodeCaption(this.props.selection, caption)
             }
-            onKeyDown={this.handleKeyDown}
-          />
-        );
-      case 'LABELS':
-        return (
-          <LabelsEditor
-            key={'labels-' + visualEntity.id}
-            visualNode={visualEntity}
-            selection={this.props.selection}
-            onAddLabel={this.props.onAddLabel}
-            onRenameLabel={this.props.onRenameLabel}
             onKeyDown={this.handleKeyDown}
           />
         );

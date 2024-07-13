@@ -57,7 +57,6 @@ export const constructGraphFromFile = (data) => {
     id: node.id,
     position: new Point(node.position.x, node.position.y),
     caption: node.caption,
-    labels: node.labels || [],
     ontologies: node.ontologies || [],
     examples: node.examples || '',
     properties: node.properties || {},

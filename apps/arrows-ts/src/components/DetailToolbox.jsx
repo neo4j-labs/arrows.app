@@ -105,13 +105,10 @@ const shouldShowInlineRelationshipsButton = (graph, selection) => {
     return false;
   }
 
-  // all target nodes have labels or properties
+  // all target nodes have properties
   for (const targetNodeId of targetNodeIds) {
     const targetNode = graph.nodes.find((node) => node.id === targetNodeId);
-    if (
-      targetNode.labels.length === 0 &&
-      Object.entries(targetNode.properties).length === 0
-    ) {
+    if (Object.entries(targetNode.properties).length === 0) {
       return false;
     }
   }

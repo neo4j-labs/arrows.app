@@ -164,7 +164,6 @@ const formats = [
             position: new Point(separation * column, separation * row),
             caption: cell,
             style: {},
-            labels: [],
             properties: {},
           };
         });

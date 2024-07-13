@@ -13,7 +13,6 @@ export type StyleFunction = (s: string) => string | number;
 const hasIcon = (node: Entity, style: StyleFunction) =>
   !!style('node-icon-image') || !!style('relationship-icon-image');
 const hasCaption = (node: Node) => node.caption && node.caption.length > 0;
-const hasLabels = (node: Node) => node.labels && node.labels.length > 0;
 const hasType = (relationship: Relationship) =>
   relationship.type && relationship.type.length > 0;
 const hasProperty = (entity: Entity) =>
@@ -33,14 +32,12 @@ const styleFilters = {
     relevantToNode: (node: Node, style: StyleFunction) =>
       (hasIcon(node, style) && style('icon-position') === 'inside') ||
       (hasCaption(node) && style('caption-position') === 'inside') ||
-      (hasLabels(node) && style('label-position') === 'inside') ||
       (hasProperty(node) && style('property-position') === 'inside'),
   },
   NodeWithOutsideDetail: {
     relevantToNode: (node: Node, style: StyleFunction) =>
       (hasIcon(node, style) && style('icon-position') === 'outside') ||
       (hasCaption(node) && style('caption-position') === 'outside') ||
-      (hasLabels(node) && style('label-position') === 'outside') ||
       (hasProperty(node) && style('property-position') === 'outside'),
   },
   NodeWithIcon: {
@@ -56,9 +53,6 @@ const styleFilters = {
   NodeWithCaptionOutside: {
     relevantToNode: (node: Node, style: StyleFunction) =>
       hasCaption(node) && style('caption-position') === 'outside',
-  },
-  NodeWithLabel: {
-    relevantToNode: hasLabels,
   },
   Relationship: {
     relevantToRelationship: () => true,
