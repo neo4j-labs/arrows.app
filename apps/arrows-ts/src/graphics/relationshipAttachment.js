@@ -1,10 +1,12 @@
 import { attachmentOptions } from '../model/attachments';
 import { getStyleSelector } from '../selectors/style';
-import { relationshipArrowDimensions } from './arrowDimensions';
 import ResolvedRelationship from './ResolvedRelationship';
 import { RectilinearArrow } from './RectilinearArrow';
 import { compareWaypoints } from './SeekAndDestroy';
-import { ElbowArrow } from '@neo4j-arrows/graphics';
+import {
+  ElbowArrow,
+  relationshipArrowDimensions,
+} from '@neo4j-arrows/graphics';
 
 export const computeRelationshipAttachments = (graph, visualNodes) => {
   const nodeAttachments = {};

@@ -1,3 +1,4 @@
+export * from './lib/arrowDimensions';
 export * from './lib/BalloonArrow';
 export * from './lib/ElbowArrow';
 export * from './lib/ParallelArrow';
