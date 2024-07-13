@@ -1,4 +1,3 @@
-import { fetchGraphFromDatabase } from '../storage/neo4jStorage';
 import { fetchGraphFromDrive } from '../storage/googleDriveStorage';
 import { ActionCreators as UndoActionCreators } from 'redux-undo';
 
@@ -114,9 +113,6 @@ export const reloadGraph = () => {
         if (storage.fileId) {
           dispatch(fetchGraphFromDrive(storage.fileId));
         }
-        break;
-      case 'DATABASE':
-        dispatch(fetchGraphFromDatabase());
         break;
     }
   };

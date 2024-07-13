@@ -8,7 +8,6 @@ Web-based tool for drawing pictures of graphs, for use in documents or presentat
 - **Neo4j Property Graph Model:** Draw nodes, relationships, properties, labels.
 - **Fine-grained Styling:** Control sizes, layouts, colors.
 - **Export as image:** Use images in documents or presentations.
-- **Export as Cypher:** Run Cypher to create graphs in a Neo4j database.
 
 Arrows.app is only for drawing pictures of graphs.
 Interested in visualizing your Neo4j graph database instead? Please see our other pages about
@@ -44,7 +43,6 @@ no code at all.
 - Neo4j Property Graph Model. Explicit support for: nodes, relationships, properties, labels.
 - Fine-grained Styling. Control over: sizes, positions, colors.
 - Export images. Main intended use is to create images for documents or presentations.
-- Export Cypher to create graphs in Neo4j
 
 ## Anti-features
 

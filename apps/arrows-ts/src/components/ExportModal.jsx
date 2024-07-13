@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Modal, Button, Tab } from 'semantic-ui-react';
 import ExportPngPanel from './ExportPngPanel';
-import ExportCypherPanel from './ExportCypherPanel';
 import ExportSvgPanel from './ExportSvgPanel';
 import ExportJsonPanel from './ExportJsonPanel';
-import ExportGraphQLPanel from './ExportGraphQLPanel';
 import ExportLinkMLPanel from './ExportLinkMLPanel';
 import {
   loadFavoriteExportTab,
@@ -56,14 +54,6 @@ class ExportModal extends Component {
         ),
       },
       {
-        menuItem: 'Cypher',
-        render: () => (
-          <Tab.Pane attached={false}>
-            <ExportCypherPanel graph={this.props.graph} />
-          </Tab.Pane>
-        ),
-      },
-      {
         menuItem: 'JSON',
         render: () => (
           <Tab.Pane attached={false}>
@@ -79,17 +69,6 @@ class ExportModal extends Component {
         render: () => (
           <Tab.Pane attached={false}>
             <ExportUrlPanel
-              graph={this.props.graph}
-              diagramName={this.props.diagramName}
-            />
-          </Tab.Pane>
-        ),
-      },
-      {
-        menuItem: 'GraphQL',
-        render: () => (
-          <Tab.Pane attached={false}>
-            <ExportGraphQLPanel
               graph={this.props.graph}
               diagramName={this.props.diagramName}
             />

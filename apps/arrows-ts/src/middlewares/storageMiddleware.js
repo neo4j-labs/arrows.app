@@ -1,4 +1,3 @@
-import { updateStore as updateNeoStore } from '../storage/neo4jStorage';
 import { renameGoogleDriveStore, saveFile } from '../actions/googleDrive';
 import { getPresentGraph } from '../selectors';
 import { ActionCreators as UndoActionCreators } from 'redux-undo';
@@ -15,8 +14,6 @@ import {
   puttingGraphSucceeded,
 } from '../actions/storage';
 import { fetchGraphFromDrive } from '../storage/googleDriveStorage';
-
-const updateQueue = [];
 
 const driveUpdateInterval = 1000; // ms
 const localUpdateInterval = 500; // ms
@@ -143,30 +140,7 @@ export const storageMiddleware = (store) => (next) => (action) => {
           }, driveUpdateInterval);
         }
         break;
-
-      case 'DATABASE':
-        if (action.category === 'GRAPH') {
-          updateQueue.push(action);
-          drainUpdateQueue(newState);
-        }
-        break;
     }
   }
   return result;
-};
-
-const drainUpdateQueue = (state) => {
-  const applyHead = () => {
-    if (updateQueue.length > 0) {
-      const action = updateQueue.shift();
-
-      updateNeoStore(action, state)
-        .then(() => {
-          applyHead();
-        })
-        .catch((error) => console.log(error));
-    }
-  };
-
-  applyHead();
 };
