@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect';
 import memoize from 'memoizee';
-import VisualNode from '../graphics/VisualNode';
+import { VisualNode } from '@neo4j-arrows/graphics';
 import ResolvedRelationship from '../graphics/ResolvedRelationship';
 import VisualGraph from '../graphics/VisualGraph';
 import TransformationHandles from '../graphics/TransformationHandles';

@@ -1,7 +1,7 @@
 import config from '../config';
 import { googleDriveSignInStatusChanged } from './storage';
 import { renderPngForThumbnail } from '../graphics/utils/offScreenCanvasRenderer';
-import { indexableText } from '../model/Graph';
+import { indexableText } from '@neo4j-arrows/model';
 export const DISCOVERY_DOCS = [
   'https://www.googleapis.com/discovery/v1/apis/drive/v3/rest',
 ];

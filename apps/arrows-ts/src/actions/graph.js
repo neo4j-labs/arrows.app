@@ -22,7 +22,7 @@ import {
   defaultRelationshipLength,
 } from '../graphics/constants';
 import BoundingBox from '../graphics/utils/BoundingBox';
-import { translate } from '../model/Node';
+import { translate } from '@neo4j-arrows/model';
 import { lockHandleDragType } from './mouse';
 import { CircleGuide } from '../model/guides/CircleGuide';
 import { LineGuide } from '../model/guides/LineGuide';

@@ -15,24 +15,24 @@ import {
   selectedRelationships,
 } from '../model/selection';
 import {
+  Cardinality,
+  categoriesPresent,
   combineProperties,
   combineStyle,
+  graphsDifferInMoreThanPositions,
+  ontologies,
+  styleAttributeGroups,
   summarizeProperties,
+  toVisualCardinality,
+  combineLabels,
+  summarizeLabels,
 } from '@neo4j-arrows/model';
 import { renderCounters } from './EntityCounters';
 import PropertyTable from './PropertyTable';
 import StyleTable from './StyleTable';
 import { DetailToolbox } from './DetailToolbox';
-import { categoriesPresent, styleAttributeGroups } from '../model/styling';
-import { combineLabels, summarizeLabels } from '../model/labels';
 import LabelTable from './LabelTable';
 import { CaptionInspector } from './CaptionInspector';
-import { graphsDifferInMoreThanPositions } from '../model/Graph';
-import {
-  ontologies,
-  Cardinality,
-  toVisualCardinality,
-} from '@neo4j-arrows/model';
 
 export default class DetailInspector extends Component {
   constructor(props) {

@@ -1,4 +1,4 @@
-import { moveTo } from '../model/Node';
+import { moveTo } from '@neo4j-arrows/model';
 
 const initialState = [];
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Input, Popup } from 'semantic-ui-react';
-import { validate } from '../../model/styling';
+import { validate } from '@neo4j-arrows/model';
 
 export default class extends Component {
   constructor(props) {

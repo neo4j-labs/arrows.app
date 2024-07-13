@@ -1,4 +1,4 @@
-import { Node } from '../../../../libs/model/src/lib/Node';
+import { Node } from '@neo4j-arrows/model';
 import { LinkMLClass, Attribute, SpiresCoreClasses } from './types';
 import { toAttributeName } from './naming';
 import { toAnnotators } from '../../../arrows-ts/src/model/ontologies';

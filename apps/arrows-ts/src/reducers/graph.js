@@ -1,24 +1,22 @@
-import { emptyGraph } from '../model/Graph';
 import {
   addLabel,
   renameLabel,
   removeLabel,
+  Cardinality,
+  emptyGraph,
   moveTo,
-  setCaption,
-} from '../model/Node';
-import { Cardinality, reverse, setType } from '@neo4j-arrows/model';
-import {
-  removeProperty,
-  renameProperty,
-  setArrowsProperty,
-  setProperty,
-  removeArrowsProperty,
-} from '@neo4j-arrows/model';
-import { idsMatch } from '../model/Id';
-import {
   nodeStyleAttributes,
   relationshipStyleAttributes,
-} from '../model/styling';
+  removeArrowsProperty,
+  removeProperty,
+  renameProperty,
+  reverse,
+  setCaption,
+  setType,
+  setArrowsProperty,
+  setProperty,
+} from '@neo4j-arrows/model';
+import { idsMatch } from '../model/Id';
 import undoable, { groupByActionTypes } from 'redux-undo';
 import { nodeSelected, relationshipSelected } from '../model/selection';
 

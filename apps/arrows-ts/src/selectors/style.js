@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect';
-import { validate } from '../model/styling';
+import { validate } from '@neo4j-arrows/model';
 
 const graphStyleSelector = (graph) => graph.style || {};
 

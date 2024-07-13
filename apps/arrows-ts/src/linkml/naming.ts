@@ -1,5 +1,4 @@
-import { Node } from '../../../../libs/model/src/lib/Node';
-import { Relationship } from '../../../../libs/model/src/lib/Relationship';
+import { Node, Relationship } from '@neo4j-arrows/model';
 import { camelCase, snakeCase, upperFirst } from 'lodash';
 
 export const toClassName = (str: string): string => upperFirst(camelCase(str));

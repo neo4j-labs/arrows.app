@@ -1,7 +1,5 @@
-import { Point } from '../model/Point';
+import { completeWithDefaults, emptyGraph, Point } from '@neo4j-arrows/model';
 import { gettingDiagramNameSucceeded } from '../actions/diagramName';
-import { completeWithDefaults } from '../model/styling';
-import { emptyGraph } from '../model/Graph';
 import { gettingGraph, gettingGraphSucceeded } from '../actions/storage';
 
 export function fetchGraphFromDrive(fileId) {

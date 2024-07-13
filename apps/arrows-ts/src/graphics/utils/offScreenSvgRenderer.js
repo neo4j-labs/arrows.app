@@ -4,7 +4,7 @@ import { Vector } from '../../model/Vector';
 import SvgAdaptor from './SvgAdaptor';
 import { Base64 } from 'js-base64';
 import { assembleGoogleFontFacesCssWithEmbeddedFontData } from './fontWrangling';
-import { usedCodePoints } from '../../model/Graph';
+import { usedCodePoints } from '@neo4j-arrows/model';
 
 export const renderSvgDom = (graph, cachedImages) => {
   const { visualGraph, boundingBox } = createVisualGraphAndBoundingBox(
