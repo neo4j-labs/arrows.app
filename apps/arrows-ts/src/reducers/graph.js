@@ -6,7 +6,7 @@ import {
   moveTo,
   setCaption,
 } from '../model/Node';
-import { reverse, setType } from '@neo4j-arrows/model';
+import { Cardinality, reverse, setType } from '@neo4j-arrows/model';
 import {
   removeProperty,
   renameProperty,
@@ -67,6 +67,7 @@ const graph = (state = emptyGraph(), action) => {
             type: '',
             style: {},
             properties: {},
+            cardinality: Cardinality.ONE_TO_MANY,
             fromId: action.sourceNodeIds[i],
             toId: action.targetNodeIds[i],
           };
@@ -89,6 +90,7 @@ const graph = (state = emptyGraph(), action) => {
             type: '',
             style: {},
             properties: {},
+            cardinality: Cardinality.ONE_TO_MANY,
             fromId: action.sourceNodeIds[i],
             toId: action.targetNodeIds[i],
           };

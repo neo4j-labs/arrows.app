@@ -1,4 +1,5 @@
 import { ActionTypes } from 'redux-undo';
+import { Cardinality } from '@neo4j-arrows/model';
 
 const allEntitiesSelected = (oldEntities, newEntities) => {
   return newEntities.every((newEntity) =>
@@ -118,6 +119,7 @@ export default function selection(
         entities: action.newRelationshipIds.map((newRelationshipId) => ({
           entityType: 'relationship',
           id: newRelationshipId,
+          cardinality: Cardinality.ONE_TO_MANY,
         })),
       };
     }

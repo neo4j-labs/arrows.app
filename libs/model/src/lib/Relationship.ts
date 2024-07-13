@@ -24,7 +24,7 @@ export interface Relationship extends Entity {
   toId: Id;
   ontologies?: Ontology[];
   examples?: string;
-  cardinality?: Cardinality;
+  cardinality: Cardinality;
 }
 
 export const setType = (relationship: Relationship, type: string) => {
