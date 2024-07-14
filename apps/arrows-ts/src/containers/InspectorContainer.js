@@ -20,17 +20,19 @@ import {
 } from '../actions/graph';
 import DetailInspector from '../components/DetailInspector';
 import { getSelectedNodes } from '../selectors/inspection';
-import { getPresentGraph } from '@neo4j-arrows/graphics';
+import { getOntologies, getPresentGraph } from '@neo4j-arrows/graphics';
 import { toggleSelection } from '../actions/selection';
 
 const mapStateToProps = (state) => {
   const graph = getPresentGraph(state);
+  const ontologies = getOntologies(state);
   return {
     graph,
     cachedImages: state.cachedImages,
     selection: state.selection,
     selectedNodes: getSelectedNodes({ ...state, graph }),
     inspectorVisible: state.applicationLayout.inspectorVisible,
+    ontologies,
   };
 };
 

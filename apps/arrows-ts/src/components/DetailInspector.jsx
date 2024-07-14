@@ -20,7 +20,6 @@ import {
   combineProperties,
   combineStyle,
   graphsDifferInMoreThanPositions,
-  ontologies,
   styleAttributeGroups,
   summarizeProperties,
   toVisualCardinality,
@@ -60,6 +59,7 @@ export default class DetailInspector extends Component {
 
   render() {
     const {
+      ontologies,
       selection,
       graph,
       onSaveCaption,
