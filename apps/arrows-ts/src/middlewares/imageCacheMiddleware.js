@@ -1,7 +1,7 @@
 import { imageAttributes } from '@neo4j-arrows/model';
 import { containsCachedImage, loadImage } from '../graphics/utils/ImageCache';
 import { imageEvent } from '../actions/cachedImages';
-import { getPresentGraph } from '@neo4j-arrows/graphics';
+import { getPresentGraph } from '../selectors';
 
 export const imageCacheMiddleware = (store) => (next) => (action) => {
   const result = next(action);

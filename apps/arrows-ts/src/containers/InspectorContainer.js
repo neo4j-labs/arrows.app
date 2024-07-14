@@ -20,7 +20,7 @@ import {
 } from '../actions/graph';
 import DetailInspector from '../components/DetailInspector';
 import { getSelectedNodes } from '../selectors/inspection';
-import { getOntologies, getPresentGraph } from '@neo4j-arrows/graphics';
+import { getOntologies, getPresentGraph } from '../selectors';
 import { toggleSelection } from '../actions/selection';
 
 const mapStateToProps = (state) => {

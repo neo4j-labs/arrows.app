@@ -6,7 +6,7 @@ import {
   getGraph,
   getPositionsOfSelectedNodes,
   getPresentGraph,
-} from '@neo4j-arrows/graphics';
+} from '../selectors';
 import { nodeSelected } from '../model/selection';
 import { Guides } from '../model/guides/guides';
 

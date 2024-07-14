@@ -1,5 +1,5 @@
 import { renameGoogleDriveStore, saveFile } from '../actions/googleDrive';
-import { getPresentGraph } from '@neo4j-arrows/graphics';
+import { getPresentGraph } from '../selectors';
 import { ActionCreators as UndoActionCreators } from 'redux-undo';
 import {
   loadGraphFromLocalStorage,

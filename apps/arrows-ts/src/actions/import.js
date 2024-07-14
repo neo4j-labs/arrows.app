@@ -4,7 +4,7 @@ import {
   setGraphStyle,
 } from './graph';
 import { Point } from '../model/Point';
-import { getPresentGraph } from '@neo4j-arrows/graphics';
+import { getPresentGraph } from '../selectors';
 import { constructGraphFromFile } from '../storage/googleDriveStorage';
 import { translate } from '@neo4j-arrows/model';
 import { Vector } from '../model/Vector';

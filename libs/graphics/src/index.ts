@@ -10,4 +10,3 @@ export * from './lib/VisualRelationship';
 export * from './lib/VisualAttachment';
 export * from './lib/VisualGang';
 export * from './lib/VisualGuides';
-export * from './lib/utils/selectors';

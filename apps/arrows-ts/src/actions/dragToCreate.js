@@ -1,7 +1,7 @@
 import snapToTargetNode from './snapToTargetNode';
 import { snapToDistancesAndAngles } from './geometricSnapping';
 import { idsMatch } from '../model/Id';
-import { getVisualGraph } from '@neo4j-arrows/graphics';
+import { getVisualGraph } from '../selectors';
 import { selectedNodeIds } from '../model/selection';
 import { Guides } from '../model/guides/guides';
 

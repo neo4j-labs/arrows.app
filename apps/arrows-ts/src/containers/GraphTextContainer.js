@@ -5,7 +5,7 @@ import {
   setRelationshipType,
   renameProperty,
 } from '../actions/graph';
-import { getVisualGraph } from '@neo4j-arrows/graphics';
+import { getVisualGraph } from '../selectors';
 import { GraphTextEditors } from '../components/GraphTextEditors';
 import React from 'react';
 import { deactivateEditing } from '../actions/selection';
