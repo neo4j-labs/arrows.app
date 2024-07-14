@@ -5,7 +5,7 @@ import { PropertiesEditor } from './PropertiesEditor';
 import { getStyleSelector } from '../selectors/style';
 import { NodeCaptionFillNode } from '../graphics/NodeCaptionFillNode';
 import { NodeCaptionOutsideNode } from '../graphics/NodeCaptionOutsideNode';
-import { measureTextContext } from '../selectors';
+import { measureTextContext } from '@neo4j-arrows/graphics';
 import { RelationshipType } from '../graphics/RelationshipType';
 import { ComponentStack } from '../graphics/ComponentStack';
 import { Vector } from '../model/Vector';

@@ -2,7 +2,10 @@ import { connect } from 'react-redux';
 import GraphDisplay from '../components/GraphDisplay';
 import { compose } from 'react-recompose';
 import withKeyBindings from '../interactions/Keybindings';
-import { getVisualGraph, getTransformationHandles } from '../selectors/index';
+import {
+  getVisualGraph,
+  getTransformationHandles,
+} from '@neo4j-arrows/graphics';
 import { deleteSelection, duplicateSelection } from '../actions/graph';
 import {
   selectAll,
@@ -11,7 +14,7 @@ import {
 } from '../actions/selection';
 import { computeCanvasSize } from '../model/applicationLayout';
 import { ActionCreators as UndoActionCreators } from 'redux-undo';
-import { getBackgroundImage } from '../selectors';
+import { getBackgroundImage } from '@neo4j-arrows/graphics';
 
 const mapStateToProps = (state) => {
   return {

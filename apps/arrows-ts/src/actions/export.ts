@@ -1,4 +1,4 @@
-import { getPresentGraph } from '../selectors';
+import { getPresentGraph } from '@neo4j-arrows/graphics';
 import { selectedNodes, selectedRelationships } from '../model/selection';
 
 export const handleCopy = () => {

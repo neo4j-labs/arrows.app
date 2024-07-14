@@ -3,7 +3,7 @@ import {
   getPresentGraph,
   getTransformationHandles,
   getVisualGraph,
-} from '../selectors/';
+} from '@neo4j-arrows/graphics';
 import { activateEditing, clearSelection, toggleSelection } from './selection';
 import {
   connectNodes,

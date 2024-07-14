@@ -1,5 +1,5 @@
 import { ViewTransformation } from '../../state/ViewTransformation';
-import { getVisualGraph } from '../../selectors/index';
+import { getVisualGraph } from '@neo4j-arrows/graphics';
 import { Vector } from '../../model/Vector';
 import SvgAdaptor from './SvgAdaptor';
 import { Base64 } from 'js-base64';

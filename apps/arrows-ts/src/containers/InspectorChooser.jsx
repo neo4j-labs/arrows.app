@@ -4,7 +4,7 @@ import { selectedRelationships } from '../model/selection';
 import InspectorContainer from './InspectorContainer';
 import GeneralInspectorContainer from './GeneralInspectorContainer';
 import { getSelectedNodes } from '../selectors/inspection';
-import { getPresentGraph } from '../selectors';
+import { getPresentGraph } from '@neo4j-arrows/graphics';
 
 const mapStateToProps = (state) => {
   const selection = state.selection;

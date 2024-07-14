@@ -4,7 +4,7 @@ import { ViewTransformation } from '../state/ViewTransformation';
 import { Vector } from '../model/Vector';
 import { tryMoveNode } from '../actions/graph';
 import { canvasPadding, computeCanvasSize } from '../model/applicationLayout';
-import { getVisualGraph } from '../selectors/index';
+import { getVisualGraph } from '@neo4j-arrows/graphics';
 import BoundingBox from '../graphics/utils/BoundingBox';
 
 const observedActionTypes = [

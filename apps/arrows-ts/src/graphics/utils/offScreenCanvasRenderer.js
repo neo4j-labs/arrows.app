@@ -1,5 +1,5 @@
 import { ViewTransformation } from '../../state/ViewTransformation';
-import { getBackgroundImage, getVisualGraph } from '../../selectors/index';
+import { getBackgroundImage, getVisualGraph } from '@neo4j-arrows/graphics';
 import { Vector } from '../../model/Vector';
 import CanvasAdaptor from './CanvasAdaptor';
 

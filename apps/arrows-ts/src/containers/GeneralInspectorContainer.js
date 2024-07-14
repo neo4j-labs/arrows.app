@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import { createNode, setGraphStyle, setGraphStyles } from '../actions/graph';
 import GeneralInspector from '../components/GeneralInspector';
-import { getPresentGraph } from '../selectors';
+import { getPresentGraph } from '@neo4j-arrows/graphics';
 import { styleCustomize, styleTheme } from '../actions/applicationLayout';
 import { toggleSelection } from '../actions/selection';
 

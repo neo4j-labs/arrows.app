@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import ExportModal from '../components/ExportModal';
 import { hideExportDialog } from '../actions/applicationDialogs';
-import { getPresentGraph } from '../selectors';
+import { getPresentGraph } from '@neo4j-arrows/graphics';
 
 const mapStateToProps = (state) => {
   return {
