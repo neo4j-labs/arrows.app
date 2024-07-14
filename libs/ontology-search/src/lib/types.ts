@@ -16,7 +16,7 @@ type Links = {
   last: Link;
 };
 
-type OntologyConfig = {
+export type OntologyConfig = {
   id: string;
   description: string;
   title: string;
