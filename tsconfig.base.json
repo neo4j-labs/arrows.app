@@ -17,6 +17,7 @@
     "paths": {
       "@neo4j-arrows/graphics": ["libs/graphics/src/index.ts"],
       "@neo4j-arrows/model": ["libs/model/src/index.ts"],
+      "@neo4j-arrows/ontology-search": ["libs/ontology-search/src/index.ts"],
       "@neo4j-arrows/selectors": ["libs/selectors/src/index.ts"]
     }
   },
