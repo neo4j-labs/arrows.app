@@ -9,8 +9,9 @@ import { measureTextContext } from '../selectors';
 import { RelationshipType } from '../graphics/RelationshipType';
 import { ComponentStack } from '../graphics/ComponentStack';
 import { Vector } from '../model/Vector';
+import { LabelsEditor } from './LabelsEditor';
 
-const EditableComponentTypes = ['CAPTION', 'TYPE', 'PROPERTIES'];
+const EditableComponentTypes = ['CAPTION', 'TYPE', 'LABELS', 'PROPERTIES'];
 
 const editableComponentFilter = (component) =>
   EditableComponentTypes.indexOf(component.component.type) !== -1;
@@ -185,6 +186,13 @@ export class GraphTextEditors extends Component {
               this.props.onSetRelationshipType(this.props.selection, type)
             }
             onKeyDown={this.handleKeyDown}
+          />
+        );
+      case 'LABELS':
+        return (
+          <LabelsEditor
+            key={'labels-' + visualEntity.id}
+            visualNode={visualEntity}
           />
         );
       case 'PROPERTIES':
