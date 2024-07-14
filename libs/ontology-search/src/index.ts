@@ -16,8 +16,8 @@ const toOntology = ({
   };
 };
 
-export const ontologies = async (): Promise<Ontology[]> => {
-  return fetch(ONTOLOGIES_LIST).then((response) =>
+export const ontologies = async (size = 20): Promise<Ontology[]> => {
+  return fetch(`${ONTOLOGIES_LIST}?size=${size}`).then((response) =>
     response
       .json()
       .then((data: OntologiesJson) => data._embedded.ontologies.map(toOntology))
