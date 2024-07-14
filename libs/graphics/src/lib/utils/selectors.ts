@@ -18,6 +18,7 @@ import {
   selectedNodeIds,
   EntitySelection,
   Point,
+  Ontology,
 } from '@neo4j-arrows/model';
 import { computeRelationshipAttachments } from '../relationshipAttachment';
 import { BackgroundImage } from '../BackgroundImage';
@@ -29,6 +30,9 @@ const getViewTransformation = (state: { viewTransformation: any }) =>
   state.viewTransformation;
 const getCachedImages = (state: { cachedImages: Record<string, ImageInfo> }) =>
   state.cachedImages;
+
+export const getOntologies = (state: { ontologies: Ontology[] }) =>
+  state.ontologies;
 
 export const getPresentGraph = (state: { graph: any }) =>
   state.graph.present || state.graph;

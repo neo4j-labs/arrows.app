@@ -1,7 +1,6 @@
 import { StrictMode } from 'react';
 import * as ReactDOM from 'react-dom/client';
 import thunkMiddleware from 'redux-thunk';
-import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware, compose } from 'redux';
 
@@ -23,6 +22,7 @@ import { imageCacheMiddleware } from './middlewares/imageCacheMiddleware';
 import './styles.css';
 
 import App from './app/App';
+import { fetchOntologies } from './actions/ontologies';
 
 const middleware = [
   thunkMiddleware,
@@ -42,6 +42,7 @@ const store = createStore(
 initGoogleDriveApi(store);
 store.dispatch(windowResized(window.innerWidth, window.innerHeight));
 store.dispatch(initRecentStorage(store.getState()));
+store.dispatch(fetchOntologies());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
