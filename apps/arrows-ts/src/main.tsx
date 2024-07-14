@@ -22,7 +22,7 @@ import { imageCacheMiddleware } from './middlewares/imageCacheMiddleware';
 import './styles.css';
 
 import App from './app/App';
-import { fetchOntologies } from './actions/ontologies';
+import { fetchOntologiesMiddleware } from './middlewares/fetchOntologiesMiddleware';
 
 const middleware = [
   thunkMiddleware,
@@ -31,6 +31,7 @@ const middleware = [
   windowLocationHashMiddleware,
   viewportMiddleware,
   imageCacheMiddleware,
+  fetchOntologiesMiddleware,
 ];
 
 const composeEnhancers =
@@ -42,7 +43,6 @@ const store = createStore(
 initGoogleDriveApi(store);
 store.dispatch(windowResized(window.innerWidth, window.innerHeight));
 store.dispatch(initRecentStorage(store.getState()));
-store.dispatch(fetchOntologies());
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
