@@ -1,5 +1,6 @@
 import {
   loadOntologiesFailure,
+  loadOntologiesRequest,
   loadOntologiesSuccess,
 } from '../actions/ontologies';
 import { Action, Dispatch } from 'redux';
@@ -10,6 +11,7 @@ export const fetchOntologiesMiddleware =
     const result = next(action);
 
     if (action.type === 'GETTING_GRAPH') {
+      store.dispatch(loadOntologiesRequest());
       ontologiesCount().then((count) => {
         ontologies(count)
           .then((ontologies) =>

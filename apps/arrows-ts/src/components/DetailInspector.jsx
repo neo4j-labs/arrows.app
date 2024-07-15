@@ -178,10 +178,11 @@ export default class DetailInspector extends Component {
 
       if (entities.length < 2) {
         const { ontologies: entityOntologies, examples } = entities[0];
+        const { ontologies: storeOntologies, isFetching } = ontologies;
 
         fields.push(
           <Form.Field key="_ontology">
-            <label>Ontology</label>
+            <label>Ontologies</label>
             <Dropdown
               selection
               clearable
@@ -191,8 +192,10 @@ export default class DetailInspector extends Component {
                   : null
               }
               multiple
+              loading={isFetching}
+              search
               placeholder={'Select an ontology'}
-              options={ontologies.map((ontology) => {
+              options={storeOntologies.map((ontology) => {
                 return {
                   key: ontology.id,
                   text: ontology.id,
@@ -202,7 +205,9 @@ export default class DetailInspector extends Component {
               onChange={(e, { value }) =>
                 onSaveOntology(
                   selection,
-                  ontologies.filter((ontology) => value.includes(ontology.id))
+                  storeOntologies.filter((ontology) =>
+                    value.includes(ontology.id)
+                  )
                 )
               }
             />
