@@ -2,10 +2,10 @@ import { Entity, Id } from './Id';
 import { Ontology } from './Ontology';
 
 export enum Cardinality {
-  ONE_TO_ONE = 'ONE_TO_ONE',
   ONE_TO_MANY = 'ONE_TO_MANY',
-  MANY_TO_MANY = 'MANY_TO_MANY',
   MANY_TO_ONE = 'MANY_TO_ONE',
+  ONE_TO_ONE = 'ONE_TO_ONE',
+  MANY_TO_MANY = 'MANY_TO_MANY',
 }
 
 export function toVisualCardinality(cardinality: Cardinality): string {
