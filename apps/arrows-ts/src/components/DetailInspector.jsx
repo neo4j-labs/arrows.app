@@ -31,10 +31,6 @@ import { DetailToolbox } from './DetailToolbox';
 import { CaptionInspector } from './CaptionInspector';
 
 export default class DetailInspector extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   shouldComponentUpdate(nextProps, nextState, nextContext) {
     return (
       nextProps.inspectorVisible &&
@@ -293,34 +289,32 @@ export default class DetailInspector extends Component {
     );
 
     return (
-      <React.Fragment>
-        <Segment basic style={{ margin: 0 }}>
-          <Form style={{ textAlign: 'left' }}>
-            {disabledSubmitButtonToPreventImplicitSubmission}
-            <Form.Field key="_selected">
-              <label>Selection:</label>
-              {renderCounters(
-                selectedNodeIds(selection),
-                selectedRelationshipIds(selection),
-                onSelect,
-                'blue'
-              )}
-            </Form.Field>
-            <DetailToolbox
-              graph={graph}
-              selection={selection}
-              onReverseRelationships={reverseRelationships}
-              onInlineRelationships={(selection) => {
-                return inlineRelationships(selection);
-              }}
-              onMergeNodes={mergeNodes}
-              onDuplicate={onDuplicate}
-              onDelete={onDelete}
-            />
-            {fields}
-          </Form>
-        </Segment>
-      </React.Fragment>
+      <Segment basic style={{ margin: 0 }}>
+        <Form style={{ textAlign: 'left' }}>
+          {disabledSubmitButtonToPreventImplicitSubmission}
+          <Form.Field key="_selected">
+            <label>Selection:</label>
+            {renderCounters(
+              selectedNodeIds(selection),
+              selectedRelationshipIds(selection),
+              onSelect,
+              'blue'
+            )}
+          </Form.Field>
+          <DetailToolbox
+            graph={graph}
+            selection={selection}
+            onReverseRelationships={reverseRelationships}
+            onInlineRelationships={(selection) => {
+              return inlineRelationships(selection);
+            }}
+            onMergeNodes={mergeNodes}
+            onDuplicate={onDuplicate}
+            onDelete={onDelete}
+          />
+          {fields}
+        </Form>
+      </Segment>
     );
   }
 }
