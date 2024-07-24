@@ -1,5 +1,5 @@
 import { Relationship, Node } from '@neo4j-arrows/model';
-import { toAnnotators } from '../model/ontologies';
+import { toAnnotators } from './ontologies';
 import { Attribute, LinkMLClass, SpiresCoreClasses } from './types';
 import { toClassName } from './naming';
 

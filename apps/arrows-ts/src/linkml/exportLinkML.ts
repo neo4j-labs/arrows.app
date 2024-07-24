@@ -13,7 +13,7 @@ import {
   relationshipToPredicateClass,
 } from './relationships';
 import { nodeToClass } from './nodes';
-import { toPrefixes } from '../../../arrows-ts/src/model/ontologies';
+import { toPrefixes } from './ontologies';
 
 const getAnnotations = (nodes: Node[]): LinkMLClass => {
   return {

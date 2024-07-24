@@ -1,5 +1,5 @@
 import { Ontology } from '@neo4j-arrows/model';
-import { toClassName } from '../linkml/naming';
+import { toClassName } from './naming';
 
 const SQLITE = 'sqlite:obo:';
 const BIOONTOLOGY = 'http://purl.bioontology.org/ontology/';

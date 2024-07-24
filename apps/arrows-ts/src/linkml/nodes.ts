@@ -1,7 +1,7 @@
 import { Node } from '@neo4j-arrows/model';
 import { LinkMLClass, Attribute, SpiresCoreClasses } from './types';
 import { toAttributeName } from './naming';
-import { toAnnotators } from '../../../arrows-ts/src/model/ontologies';
+import { toAnnotators } from './ontologies';
 
 export const nodeToClass = (node: Node): LinkMLClass => {
   const propertiesToAttributes = (): Record<string, Attribute> => {
