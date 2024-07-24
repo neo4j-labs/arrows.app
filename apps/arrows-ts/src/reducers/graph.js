@@ -34,9 +34,8 @@ const graph = (state = emptyGraph(), action) => {
         properties: {},
       });
       return {
-        style: state.style,
+        ...state,
         nodes: newNodes,
-        relationships: state.relationships,
       };
     }
 
@@ -69,7 +68,7 @@ const graph = (state = emptyGraph(), action) => {
       ];
 
       return {
-        style: state.style,
+        ...state,
         nodes: newNodes,
         relationships: newRelationships,
       };
@@ -91,27 +90,25 @@ const graph = (state = emptyGraph(), action) => {
         }),
       ];
       return {
-        style: state.style,
-        nodes: state.nodes,
+        ...state,
         relationships: newRelationships,
       };
     }
 
     case 'SET_NODE_CAPTION': {
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.map((node) =>
           nodeSelected(action.selection, node.id)
             ? setCaption(node, action.caption)
             : node
         ),
-        relationships: state.relationships,
       };
     }
 
     case 'SET_ONTOLOGY': {
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.map((node) =>
           nodeSelected(action.selection, node.id)
             ? {
@@ -133,7 +130,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'SET_EXAMPLES': {
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.map((node) =>
           nodeSelected(action.selection, node.id)
             ? {
@@ -155,8 +152,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'SET_CARDINALITY': {
       return {
-        style: state.style,
-        nodes: state.nodes,
+        ...state,
         relationships: state.relationships.map((relationship) =>
           relationshipSelected(action.selection, relationship.id)
             ? {
@@ -178,7 +174,7 @@ const graph = (state = emptyGraph(), action) => {
       const translateNodeId = (nodeId) =>
         nodeIdMap.has(nodeId) ? nodeIdMap.get(nodeId) : nodeId;
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes
           .filter((node) => {
             return !action.mergeSpecs.some((spec) =>
@@ -221,7 +217,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'RENAME_PROPERTY': {
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.map((node) =>
           nodeSelected(action.selection, node.id)
             ? renameProperty(node, action.oldPropertyKey, action.newPropertyKey)
@@ -241,7 +237,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'SET_PROPERTY': {
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.map((node) =>
           nodeSelected(action.selection, node.id)
             ? setProperty(node, action.key, action.value)
@@ -257,19 +253,18 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'SET_PROPERTY_VALUES': {
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.map((node) =>
           action.nodePropertyValues.hasOwnProperty(node.id)
             ? setProperty(node, action.key, action.nodePropertyValues[node.id])
             : node
         ),
-        relationships: state.relationships,
       };
     }
 
     case 'SET_ARROWS_PROPERTY': {
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.map((node) =>
           nodeStyleAttributes.includes(action.key) &&
           nodeSelected(action.selection, node.id)
@@ -287,7 +282,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'REMOVE_PROPERTY': {
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.map((node) =>
           nodeSelected(action.selection, node.id)
             ? removeProperty(node, action.key)
@@ -303,7 +298,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'REMOVE_ARROWS_PROPERTY': {
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.map((node) =>
           nodeSelected(action.selection, node.id)
             ? removeArrowsProperty(node, action.key)
@@ -321,9 +316,8 @@ const graph = (state = emptyGraph(), action) => {
       const graphStyle = { ...state.style };
       graphStyle[action.key] = action.value;
       return {
+        ...state,
         style: graphStyle,
-        nodes: state.nodes,
-        relationships: state.relationships,
       };
     }
 
@@ -333,9 +327,8 @@ const graph = (state = emptyGraph(), action) => {
         graphStyle[key] = value;
       }
       return {
+        ...state,
         style: graphStyle,
-        nodes: state.nodes,
-        relationships: state.relationships,
       };
     }
 
@@ -360,15 +353,13 @@ const graph = (state = emptyGraph(), action) => {
       if (clean) return state;
 
       return {
-        style: state.style,
+        ...state,
         nodes: Object.values(nodeIdToNode),
-        relationships: state.relationships,
       };
 
     case 'SET_RELATIONSHIP_TYPE':
       return {
-        style: state.style,
-        nodes: state.nodes,
+        ...state,
         relationships: state.relationships.map((relationship) =>
           relationshipSelected(action.selection, relationship.id)
             ? setType(relationship, action.relationshipType)
@@ -409,7 +400,7 @@ const graph = (state = emptyGraph(), action) => {
       });
 
       return {
-        style: state.style,
+        ...state,
         nodes: newNodes,
         relationships: newRelationships,
       };
@@ -423,7 +414,7 @@ const graph = (state = emptyGraph(), action) => {
       ];
 
       return {
-        style: state.style,
+        ...state,
         nodes: newNodes,
         relationships: newRelationships,
       };
@@ -431,7 +422,7 @@ const graph = (state = emptyGraph(), action) => {
 
     case 'DELETE_NODES_AND_RELATIONSHIPS':
       return {
-        style: state.style,
+        ...state,
         nodes: state.nodes.filter((node) => !action.nodeIdMap[node.id]),
         relationships: state.relationships.filter(
           (relationship) => !action.relationshipIdMap[relationship.id]
