@@ -50,8 +50,10 @@ export const exportLinkML = (
       linkml: 'https://w3id.org/linkml/',
       ontogpt: 'http://w3id.org/ontogpt/',
       ...toPrefixes([
-        ...nodes.flatMap((node) => node.ontologies),
-        ...relationships.flatMap((relationship) => relationship.ontologies),
+        ...nodes.flatMap((node) => node.ontologies ?? []),
+        ...relationships.flatMap(
+          (relationship) => relationship.ontologies ?? []
+        ),
       ]),
     },
     imports: ['ontogpt:core', 'linkml:types'],

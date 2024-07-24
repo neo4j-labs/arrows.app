@@ -12,7 +12,7 @@ export const relationshipToRelationshipClass = (
     return {
       range: toClassName(node.caption),
       annotations: {
-        'prompt.examples': node.examples,
+        'prompt.examples': node.examples ?? '',
       },
     };
   };
@@ -29,7 +29,7 @@ export const relationshipToRelationshipClass = (
       predicate: {
         range: `${toRelationshipClassName(relationship)}Predicate`,
         annotations: {
-          'prompt.examples': relationship.examples,
+          'prompt.examples': relationship.examples ?? '',
         },
       },
     },
@@ -40,8 +40,10 @@ export const relationshipToPredicateClass = (
   relationship: Relationship,
   findNode: (id: string) => Node
 ): LinkMLClass => {
+  const relationshipOntologies = relationship.ontologies ?? [];
+
   return {
-    is_a: SpiresCoreClasses.NamedEntity,
+    is_a: SpiresCoreClasses.RelationshipType,
     attributes: {
       label: {
         description: `The predicate for the ${
@@ -49,10 +51,12 @@ export const relationshipToPredicateClass = (
         } to ${findNode(relationship.toId).caption} relationships.`,
       },
     },
-    id_prefixes: relationship.ontologies.map((ontology) => ontology.id),
-    annotations: relationship.ontologies.length
+    id_prefixes: relationshipOntologies.map((ontology) =>
+      ontology.id.toLocaleUpperCase()
+    ),
+    annotations: relationshipOntologies.length
       ? {
-          annotators: toAnnotators(relationship.ontologies),
+          annotators: toAnnotators(relationshipOntologies),
         }
       : {},
   };

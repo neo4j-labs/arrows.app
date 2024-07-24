@@ -7,6 +7,8 @@ export type Attribute = {
 
 export enum SpiresCoreClasses {
   NamedEntity = 'NamedEntity',
+  RelationshipType = 'RelationshipType',
+  TextWithTriplets = 'TextWithTriplets',
   Triple = 'Triple',
 }
 

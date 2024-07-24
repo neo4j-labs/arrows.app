@@ -16,13 +16,17 @@ export const nodeToClass = (node: Node): LinkMLClass => {
     );
   };
 
+  const nodeOntologies = node.ontologies ?? [];
+
   return {
     is_a: SpiresCoreClasses.NamedEntity,
     attributes: propertiesToAttributes(),
-    id_prefixes: node.ontologies.map((ontology) => ontology.id),
-    annotations: node.ontologies.length
+    id_prefixes: nodeOntologies.map((ontology) =>
+      ontology.id.toLocaleUpperCase()
+    ),
+    annotations: nodeOntologies.length
       ? {
-          annotators: toAnnotators(node.ontologies),
+          annotators: toAnnotators(nodeOntologies),
         }
       : {},
   };
