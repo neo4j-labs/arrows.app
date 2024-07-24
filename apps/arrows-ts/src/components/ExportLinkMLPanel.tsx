@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Form, Icon, TextArea } from 'semantic-ui-react';
 import { Base64 } from 'js-base64';
 import yaml from 'js-yaml';
-import { exportLinkML } from '../linkml/exportLinkML';
+import { fromGraph } from '@neo4j-arrows/linkml';
 
 class ExportLinkMLPanel extends Component {
   constructor(props) {
@@ -11,7 +11,7 @@ class ExportLinkMLPanel extends Component {
 
   render() {
     const linkMLString = yaml.dump(
-      exportLinkML(this.props.diagramName, this.props.graph)
+      fromGraph(this.props.diagramName, this.props.graph)
     );
 
     const handleDownloadPydantic = async () => {
