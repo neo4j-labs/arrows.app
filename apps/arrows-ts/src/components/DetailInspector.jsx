@@ -62,6 +62,7 @@ export default class DetailInspector extends Component {
       onSaveCaption,
       onSaveCardinality,
       onSaveExamples,
+      onSaveRelationshipType,
       onSaveType,
       onDuplicate,
       onDelete,
@@ -114,6 +115,9 @@ export default class DetailInspector extends Component {
       const commonType = commonValue(
         relationships.map((relationship) => relationship.type)
       );
+      const commonRelationshipType = commonValue(
+        relationships.map((relationship) => relationship.relationshipType)
+      );
       const commonCardinality = commonValue(
         relationships.map((relationship) => relationship.cardinality)
       );
@@ -121,9 +125,22 @@ export default class DetailInspector extends Component {
       fields.push(
         <Form.Field key="_type">
           <label>Type</label>
+          <Input
+            value={commonType || ''}
+            onChange={(event) => onSaveType(selection, event.target.value)}
+            placeholder={commonType === undefined ? '<multiple types>' : null}
+          />
+        </Form.Field>
+      );
+
+      fields.push(
+        <Form.Field key="_relationshipType">
+          <label>Relationship type</label>
           <Dropdown
-            value={commonType || RelationshipType.ASSOCIATION}
-            onChange={(e, { value }) => onSaveType(selection, value)}
+            value={commonRelationshipType || RelationshipType.ASSOCIATION}
+            onChange={(e, { value }) =>
+              onSaveRelationshipType(selection, value)
+            }
             placeholder={commonType === undefined ? '<multiple types>' : null}
             selection
             options={Object.keys(RelationshipType).map((relationshipType) => {
@@ -139,7 +156,8 @@ export default class DetailInspector extends Component {
 
       if (
         relationships.every(
-          (relationship) => relationship.type === RelationshipType.ASSOCIATION
+          (relationship) =>
+            relationship.relationshipType === RelationshipType.ASSOCIATION
         )
       ) {
         fields.push(

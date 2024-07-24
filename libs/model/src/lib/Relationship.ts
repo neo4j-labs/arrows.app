@@ -27,7 +27,8 @@ export function toVisualCardinality(cardinality: Cardinality): string {
 }
 
 export interface Relationship extends Entity {
-  type: RelationshipType;
+  type: string;
+  relationshipType: RelationshipType;
   fromId: Id;
   toId: Id;
   ontologies?: Ontology[];
@@ -35,14 +36,24 @@ export interface Relationship extends Entity {
   cardinality?: Cardinality;
 }
 
-export const setType = (relationship: Relationship, type: RelationshipType) => {
+export const setType = (relationship: Relationship, type: string) => {
+  return {
+    ...relationship,
+    type,
+  };
+};
+
+export const setRelationshipType = (
+  relationship: Relationship,
+  relationshipType: RelationshipType
+) => {
   return {
     ...relationship,
     cardinality:
-      type === RelationshipType.ASSOCIATION
+      relationshipType === RelationshipType.ASSOCIATION
         ? relationship.cardinality ?? Cardinality.ONE_TO_MANY
         : null,
-    type,
+    relationshipType,
   };
 };
 

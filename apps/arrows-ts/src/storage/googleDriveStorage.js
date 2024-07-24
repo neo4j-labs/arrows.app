@@ -75,14 +75,14 @@ export const constructGraphFromFile = (data) => {
         nodes.some((node) => node.id === relationship.toId)
     )
     .map((relationship) => ({
-      id: relationship.id,
-      fromId: relationship.fromId,
+      ...relationship,
       toId: relationship.toId,
-      type: relationship.type || RelationshipType.ASSOCIATION,
+      type: relationship.type || '',
+      relationshipType:
+        relationship.relationshipType || RelationshipType.ASSOCIATION,
       ontologies: relationship.ontologies || [],
       examples: relationship.examples || '',
       properties: relationship.properties || {},
-      cardinality: relationship.cardinality,
       style: relationship.style || {},
     }));
 

@@ -9,9 +9,10 @@ import {
   renameProperty,
   reverse,
   setCaption,
-  setType,
+  setRelationshipType,
   setArrowsProperty,
   setProperty,
+  setType,
   RelationshipType,
 } from '@neo4j-arrows/model';
 import { idsMatch } from '../model/Id';
@@ -61,7 +62,8 @@ const graph = (state = emptyGraph(), action) => {
         ...action.newRelationshipIds.map((newRelationshipId, i) => {
           return {
             id: newRelationshipId,
-            type: RelationshipType.ASSOCIATION,
+            type: '',
+            relationshipType: RelationshipType.ASSOCIATION,
             style: {},
             properties: {},
             cardinality: Cardinality.ONE_TO_MANY,
@@ -84,7 +86,8 @@ const graph = (state = emptyGraph(), action) => {
         ...action.newRelationshipIds.map((newRelationshipId, i) => {
           return {
             id: newRelationshipId,
-            type: RelationshipType.ASSOCIATION,
+            type: '',
+            relationshipType: RelationshipType.ASSOCIATION,
             style: {},
             properties: {},
             cardinality: Cardinality.ONE_TO_MANY,
@@ -361,12 +364,22 @@ const graph = (state = emptyGraph(), action) => {
         nodes: Object.values(nodeIdToNode),
       };
 
+    case 'SET_TYPE':
+      return {
+        ...state,
+        relationships: state.relationships.map((relationship) =>
+          relationshipSelected(action.selection, relationship.id)
+            ? setType(relationship, action.typeValue)
+            : relationship
+        ),
+      };
+
     case 'SET_RELATIONSHIP_TYPE':
       return {
         ...state,
         relationships: state.relationships.map((relationship) =>
           relationshipSelected(action.selection, relationship.id)
-            ? setType(relationship, action.relationshipType)
+            ? setRelationshipType(relationship, action.relationshipType)
             : relationship
         ),
       };
@@ -393,12 +406,10 @@ const graph = (state = emptyGraph(), action) => {
           idsMatch(r.id, spec.oldRelationshipId)
         );
         const newRelationship = {
+          ...oldRelationship,
           id: newRelationshipId,
-          type: oldRelationship.type,
           fromId: spec.fromId,
           toId: spec.toId,
-          style: { ...oldRelationship.style },
-          properties: { ...oldRelationship.properties },
         };
         newRelationships.push(newRelationship);
       });

@@ -40,7 +40,10 @@ export const relationshipArrowDimensions = (
   let hasIngoingArrowHead = false;
   let hasOutgoingArrowHead = false;
 
-  if (resolvedRelationship.relationship.type === RelationshipType.ASSOCIATION) {
+  if (
+    resolvedRelationship.relationship.relationshipType ===
+    RelationshipType.ASSOCIATION
+  ) {
     const cardinality = resolvedRelationship.relationship.cardinality;
     hasIngoingArrowHead =
       cardinality === Cardinality.MANY_TO_ONE ||
@@ -50,12 +53,16 @@ export const relationshipArrowDimensions = (
       cardinality === Cardinality.ONE_TO_ONE;
   }
 
-  if (resolvedRelationship.relationship.type === RelationshipType.INHERITANCE) {
+  if (
+    resolvedRelationship.relationship.relationshipType ===
+    RelationshipType.INHERITANCE
+  ) {
     hasOutgoingArrowHead = true;
   }
 
   const fillArrowHeads =
-    resolvedRelationship.relationship.type === RelationshipType.ASSOCIATION;
+    resolvedRelationship.relationship.relationshipType ===
+    RelationshipType.ASSOCIATION;
   const arrowHeadsWidth = 1;
 
   const separation = style('margin-peer');

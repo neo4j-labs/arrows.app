@@ -584,6 +584,13 @@ export const setGraphStyles = (style) => ({
   style,
 });
 
+export const setType = (selection, typeValue) => ({
+  category: 'GRAPH',
+  type: 'SET_TYPE',
+  selection,
+  typeValue,
+});
+
 export const setRelationshipType = (selection, relationshipType) => ({
   category: 'GRAPH',
   type: 'SET_RELATIONSHIP_TYPE',
@@ -718,7 +725,8 @@ export const duplicateSelection = () => {
       );
       relationshipIdMap[newRelationshipId] = {
         oldRelationshipId: relationshipId,
-        relationshipType: oldRelationship.type,
+        type: oldRelationship.type,
+        relationshipType: oldRelationship.relationshipType,
         fromId:
           oldNodeToNewNodeMap[oldRelationship.fromId] ||
           previousNodeMap[oldRelationship.fromId] ||

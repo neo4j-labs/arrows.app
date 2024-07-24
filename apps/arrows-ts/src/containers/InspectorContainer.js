@@ -3,6 +3,7 @@ import {
   setProperty,
   setNodeCaption,
   setRelationshipType,
+  setType,
   renameProperty,
   removeProperty,
   setArrowsProperty,
@@ -48,7 +49,10 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(setExamples(selection, examples));
     },
     onSaveType: (selection, type) => {
-      dispatch(setRelationshipType(selection, type));
+      dispatch(setType(selection, type));
+    },
+    onSaveRelationshipType: (selection, relationshipType) => {
+      dispatch(setRelationshipType(selection, relationshipType));
     },
     onMergeOnValues: (selection, propertyKey) => {
       dispatch(mergeOnPropertyValues(selection, propertyKey));
