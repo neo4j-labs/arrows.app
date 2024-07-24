@@ -1,9 +1,7 @@
-import { Graph, Node } from '@neo4j-arrows/model';
-import { plural } from 'pluralize';
-import { LinkMLClass, Attribute, LinkML } from './lib/types';
+import { Graph } from '@neo4j-arrows/model';
+import { LinkMLClass, LinkML, SpiresCoreClasses } from './lib/types';
 import {
   findNodeFactory,
-  toAttributeName,
   toClassName,
   toRelationshipClassNameFactory,
 } from './lib/naming';
@@ -15,25 +13,9 @@ import {
 import { nodeToClass } from './lib/nodes';
 import { toPrefixes } from './lib/ontologies';
 
-const getAnnotations = (nodes: Node[]): LinkMLClass => {
-  return {
-    tree_root: true,
-    attributes: nodes.reduce(
-      (attributes: Record<string, Attribute>, node) => ({
-        ...attributes,
-        [toAttributeName(plural(node.caption))]: {
-          range: toClassName(node.caption),
-          multivalued: true,
-        },
-      }),
-      {}
-    ),
-  };
-};
-
 export const fromGraph = (
   name: string,
-  { nodes, relationships }: Graph
+  { description, nodes, relationships }: Graph
 ): LinkML => {
   const findNode = findNodeFactory(nodes);
   const toRelationshipClassName = toRelationshipClassNameFactory(nodes);
@@ -58,7 +40,16 @@ export const fromGraph = (
     },
     imports: ['ontogpt:core', 'linkml:types'],
     classes: {
-      ...{ [`${toClassName(name)}Annotations`]: getAnnotations(nodes) },
+      Document: {
+        tree_root: true,
+        description,
+        is_a: SpiresCoreClasses.TextWithTriplets,
+        slot_usage: {
+          triples: {
+            range: `${toRelationshipClassName(relationships[0])}Relationship`,
+          },
+        },
+      },
       ...nodes.reduce(
         (classes: Record<string, LinkMLClass>, node) => ({
           ...classes,
