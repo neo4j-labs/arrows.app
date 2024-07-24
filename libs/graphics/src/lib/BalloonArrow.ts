@@ -85,13 +85,14 @@ export class BalloonArrow {
       ctx.translate(x, y);
       ctx.rotate(Math.PI - this.deflection);
       ctx.fillStyle = this.dimensions.arrowColor;
+      ctx.lineWidth = this.dimensions.arrowHeadsWidth;
       arrowHead(
         ctx,
         this.dimensions.headHeight,
         this.dimensions.chinHeight,
         this.dimensions.headWidth,
-        true,
-        false
+        this.dimensions.fillArrowHeads,
+        !this.dimensions.fillArrowHeads
       );
       ctx.rotate(Math.PI + this.deflection);
       ctx.translate(-x, -y);
@@ -104,16 +105,16 @@ export class BalloonArrow {
     if (this.dimensions.hasOutgoingArrowHead) {
       ctx.rotate(Math.PI + this.deflection);
       ctx.translate(-this.nodeRadius, 0);
+      ctx.lineWidth = this.dimensions.arrowHeadsWidth;
       ctx.fillStyle = this.dimensions.arrowColor;
       arrowHead(
         ctx,
         this.dimensions.headHeight,
         this.dimensions.chinHeight,
         this.dimensions.headWidth,
-        true,
-        false
+        this.dimensions.fillArrowHeads,
+        !this.dimensions.fillArrowHeads
       );
-      ctx.fill();
     }
     ctx.restore();
   }

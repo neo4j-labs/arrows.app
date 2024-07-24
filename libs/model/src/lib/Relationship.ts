@@ -10,6 +10,7 @@ export enum Cardinality {
 
 export enum RelationshipType {
   ASSOCIATION = 'ASSOCIATION',
+  INHERITANCE = 'INHERITANCE',
 }
 
 export function toVisualCardinality(cardinality: Cardinality): string {
@@ -31,12 +32,16 @@ export interface Relationship extends Entity {
   toId: Id;
   ontologies?: Ontology[];
   examples?: string;
-  cardinality: Cardinality;
+  cardinality?: Cardinality;
 }
 
-export const setType = (relationship: Relationship, type: string) => {
+export const setType = (relationship: Relationship, type: RelationshipType) => {
   return {
     ...relationship,
+    cardinality:
+      type === RelationshipType.ASSOCIATION
+        ? relationship.cardinality ?? Cardinality.ONE_TO_MANY
+        : null,
     type,
   };
 };

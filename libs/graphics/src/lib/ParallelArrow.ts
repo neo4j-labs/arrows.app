@@ -121,14 +121,15 @@ export class ParallelArrow {
       const [x, y] = this.startAttach.xy;
       ctx.translate(x, y);
       ctx.rotate(Math.PI + this.endDeflection);
+      ctx.lineWidth = this.dimensions.arrowHeadsWidth;
       ctx.fillStyle = this.dimensions.arrowColor;
       arrowHead(
         ctx,
         this.dimensions.headHeight,
         this.dimensions.chinHeight,
         this.dimensions.headWidth,
-        true,
-        false
+        this.dimensions.fillArrowHeads,
+        !this.dimensions.fillArrowHeads
       );
       ctx.rotate(Math.PI - this.endDeflection);
       ctx.translate(-x, -y);
@@ -142,14 +143,15 @@ export class ParallelArrow {
       ctx.translate(this.centreDistance, 0);
       ctx.rotate(-this.endDeflection);
       ctx.translate(-this.endRadius, 0);
+      ctx.lineWidth = this.dimensions.arrowHeadsWidth;
       ctx.fillStyle = this.dimensions.arrowColor;
       arrowHead(
         ctx,
         this.dimensions.headHeight,
         this.dimensions.chinHeight,
         this.dimensions.headWidth,
-        true,
-        false
+        this.dimensions.fillArrowHeads,
+        !this.dimensions.fillArrowHeads
       );
     }
     ctx.restore();

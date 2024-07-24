@@ -1,4 +1,4 @@
-import { Graph, getStyleSelector } from '@neo4j-arrows/model';
+import { Graph, RelationshipType, getStyleSelector } from '@neo4j-arrows/model';
 import { adaptForBackground } from './backgroundColorAdaption';
 import { selectionBorder, Cardinality } from '@neo4j-arrows/model';
 import { ResolvedRelationship } from './ResolvedRelationship';
@@ -17,6 +17,8 @@ export interface ArrowDimensions {
   chinHeight: number;
   separation?: any;
   leftToRight?: boolean;
+  fillArrowHeads: boolean;
+  arrowHeadsWidth: number;
 }
 
 export const relationshipArrowDimensions = (
@@ -35,14 +37,26 @@ export const relationshipArrowDimensions = (
   const headWidth = arrowWidth + 6 * Math.sqrt(arrowWidth);
   const headHeight = headWidth * 1.5;
   const chinHeight = headHeight / 10;
+  let hasIngoingArrowHead = false;
+  let hasOutgoingArrowHead = false;
 
-  const cardinality = resolvedRelationship.relationship.cardinality;
-  const hasIngoingArrowHead =
-    cardinality === Cardinality.MANY_TO_ONE ||
-    cardinality === Cardinality.ONE_TO_ONE;
-  const hasOutgoingArrowHead =
-    cardinality === Cardinality.ONE_TO_MANY ||
-    cardinality === Cardinality.ONE_TO_ONE;
+  if (resolvedRelationship.relationship.type === RelationshipType.ASSOCIATION) {
+    const cardinality = resolvedRelationship.relationship.cardinality;
+    hasIngoingArrowHead =
+      cardinality === Cardinality.MANY_TO_ONE ||
+      cardinality === Cardinality.ONE_TO_ONE;
+    hasOutgoingArrowHead =
+      cardinality === Cardinality.ONE_TO_MANY ||
+      cardinality === Cardinality.ONE_TO_ONE;
+  }
+
+  if (resolvedRelationship.relationship.type === RelationshipType.INHERITANCE) {
+    hasOutgoingArrowHead = true;
+  }
+
+  const fillArrowHeads =
+    resolvedRelationship.relationship.type === RelationshipType.ASSOCIATION;
+  const arrowHeadsWidth = 1;
 
   const separation = style('margin-peer');
   const leftToRight = resolvedRelationship.from === leftNode;
@@ -60,5 +74,7 @@ export const relationshipArrowDimensions = (
     chinHeight,
     separation,
     leftToRight,
+    fillArrowHeads,
+    arrowHeadsWidth,
   };
 };

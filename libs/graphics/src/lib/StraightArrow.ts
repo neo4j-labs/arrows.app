@@ -67,14 +67,15 @@ export class StraightArrow {
     if (this.dimensions.hasIngoingArrowHead) {
       ctx.translate(this.startAttach.x, 0);
       ctx.rotate(this.startAttach.vectorFrom(this.endAttach).angle());
+      ctx.lineWidth = this.dimensions.arrowHeadsWidth;
       ctx.fillStyle = this.dimensions.arrowColor;
       arrowHead(
         ctx,
         this.dimensions.headHeight,
         this.dimensions.chinHeight,
         this.dimensions.headWidth,
-        true,
-        false
+        this.dimensions.fillArrowHeads,
+        !this.dimensions.fillArrowHeads
       );
       ctx.rotate(Math.PI - this.endAttach.vectorFrom(this.startAttach).angle());
       ctx.translate(-this.startAttach.x, 0);
@@ -88,14 +89,15 @@ export class StraightArrow {
     if (this.dimensions.hasOutgoingArrowHead) {
       ctx.translate(this.endAttach.x, this.endAttach.y);
       ctx.rotate(this.endAttach.vectorFrom(this.startAttach).angle());
+      ctx.lineWidth = this.dimensions.arrowHeadsWidth;
       ctx.fillStyle = this.dimensions.arrowColor;
       arrowHead(
         ctx,
         this.dimensions.headHeight,
         this.dimensions.chinHeight,
         this.dimensions.headWidth,
-        true,
-        false
+        this.dimensions.fillArrowHeads,
+        !this.dimensions.fillArrowHeads
       );
     }
     ctx.restore();
