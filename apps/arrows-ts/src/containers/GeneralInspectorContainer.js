@@ -1,5 +1,10 @@
 import { connect } from 'react-redux';
-import { createNode, setGraphStyle, setGraphStyles } from '../actions/graph';
+import {
+  createNode,
+  setGraphDescription,
+  setGraphStyle,
+  setGraphStyles,
+} from '../actions/graph';
 import GeneralInspector from '../components/GeneralInspector';
 import { getPresentGraph } from '../selectors';
 import { styleCustomize, styleTheme } from '../actions/applicationLayout';
@@ -33,6 +38,9 @@ const mapDispatchToProps = (dispatch) => {
     },
     onApplyTheme: (style) => {
       dispatch(setGraphStyles(style));
+    },
+    onDescriptionChange: (description) => {
+      dispatch(setGraphDescription(description));
     },
   };
 };

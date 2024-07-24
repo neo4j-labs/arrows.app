@@ -464,6 +464,12 @@ export const setCardinality = (selection, cardinality) => ({
   cardinality,
 });
 
+export const setGraphDescription = (description) => ({
+  category: 'GRAPH',
+  type: 'SET_GRAPH_DESCRIPTION',
+  description,
+});
+
 export const mergeOnPropertyValues = (selection, propertyKey) => {
   return function (dispatch, getState) {
     const state = getState();

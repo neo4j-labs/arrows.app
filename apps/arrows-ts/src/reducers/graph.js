@@ -24,6 +24,10 @@ const graph = (state = emptyGraph(), action) => {
     case 'NEW_LOCAL_STORAGE_DIAGRAM':
       return emptyGraph();
 
+    case 'SET_GRAPH_DESCRIPTION': {
+      return { ...state, description: action.description };
+    }
+
     case 'CREATE_NODE': {
       const newNodes = state.nodes.slice();
       newNodes.push({

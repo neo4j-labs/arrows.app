@@ -9,6 +9,7 @@ import { Relationship } from './Relationship';
 export interface Graph {
   nodes: Node[];
   relationships: Relationship[];
+  description: string;
   style: any;
 }
 export const emptyGraph = (): Graph => {
@@ -25,6 +26,7 @@ export const emptyGraph = (): Graph => {
       },
     ],
     relationships: [],
+    description: '',
     style: completeWithDefaults({}),
   };
 };

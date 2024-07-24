@@ -99,6 +99,7 @@ export const constructGraphFromFile = (data) => {
 
   return {
     graph: {
+      ...graph,
       nodes,
       relationships,
       style: completeWithDefaults(graph.style),
