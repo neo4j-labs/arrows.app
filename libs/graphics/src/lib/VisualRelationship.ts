@@ -58,7 +58,6 @@ export class VisualRelationship {
     this.components = new ComponentStack();
     const iconImage = style('relationship-icon-image');
     const hasIcon = !!iconImage;
-    const hasType = !!resolvedRelationship.type;
     const hasProperties =
       Object.keys(resolvedRelationship.relationship.properties).length > 0;
 
@@ -70,17 +69,6 @@ export class VisualRelationship {
           editing,
           style,
           imageCache
-        ))
-      );
-    }
-    if (hasType) {
-      this.components.push(
-        (this.type = new RelationshipType(
-          resolvedRelationship.type,
-          alignment,
-          editing,
-          style,
-          measureTextContext
         ))
       );
     }

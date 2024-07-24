@@ -13,8 +13,6 @@ export type StyleFunction = (s: string) => string | number;
 const hasIcon = (node: Entity, style: StyleFunction) =>
   !!style('node-icon-image') || !!style('relationship-icon-image');
 const hasCaption = (node: Node) => node.caption && node.caption.length > 0;
-const hasType = (relationship: Relationship) =>
-  relationship.type && relationship.type.length > 0;
 const hasProperty = (entity: Entity) =>
   entity.properties && Object.keys(entity.properties).length > 0;
 
@@ -59,10 +57,7 @@ const styleFilters = {
   },
   RelationshipWithDetail: {
     relevantToRelationship: (relationship: Relationship) =>
-      hasType(relationship) || hasProperty(relationship),
-  },
-  RelationshipWithType: {
-    relevantToRelationship: hasType,
+      hasProperty(relationship),
   },
   NodeOrRelationshipWithProperty: {
     relevantToNode: hasProperty,

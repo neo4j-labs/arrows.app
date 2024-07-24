@@ -23,6 +23,7 @@ import {
   styleAttributeGroups,
   summarizeProperties,
   toVisualCardinality,
+  RelationshipType,
 } from '@neo4j-arrows/model';
 import { renderCounters } from './EntityCounters';
 import PropertyTable from './PropertyTable';
@@ -120,32 +121,50 @@ export default class DetailInspector extends Component {
       fields.push(
         <Form.Field key="_type">
           <label>Type</label>
-          <Input
-            value={commonType || ''}
-            onChange={(event) => onSaveType(selection, event.target.value)}
+          <Dropdown
+            value={commonType || RelationshipType.ASSOCIATION}
+            onChange={(e, { value }) => onSaveType(selection, value)}
             placeholder={commonType === undefined ? '<multiple types>' : null}
+            selection
+            options={Object.keys(RelationshipType).map((relationshipType) => {
+              return {
+                key: relationshipType,
+                text: relationshipType,
+                value: relationshipType,
+              };
+            })}
           />
         </Form.Field>
       );
 
-      fields.push(
-        <Form.Field key="_cardinality">
-          <label>Cardinality</label>
-          <Dropdown
-            selection
-            value={commonCardinality ?? null}
-            placeholder={'Select a cardinality'}
-            options={Object.keys(Cardinality).map((cardinality) => {
-              return {
-                key: cardinality,
-                text: toVisualCardinality(cardinality),
-                value: cardinality,
-              };
-            })}
-            onChange={(e, { value }) => onSaveCardinality(selection, value)}
-          />
-        </Form.Field>
-      );
+      if (
+        relationships.every(
+          (relationship) => relationship.type === RelationshipType.ASSOCIATION
+        )
+      ) {
+        fields.push(
+          <Form.Field key="_cardinality">
+            <label>Cardinality</label>
+            <Dropdown
+              selection
+              value={commonCardinality ?? Cardinality.ONE_TO_MANY}
+              placeholder={
+                commonCardinality === undefined
+                  ? '<multiple cardinalities>'
+                  : null
+              }
+              options={Object.keys(Cardinality).map((cardinality) => {
+                return {
+                  key: cardinality,
+                  text: toVisualCardinality(cardinality),
+                  value: cardinality,
+                };
+              })}
+              onChange={(e, { value }) => onSaveCardinality(selection, value)}
+            />
+          </Form.Field>
+        );
+      }
     }
 
     if (selectionIncludes.relationships || selectionIncludes.nodes) {

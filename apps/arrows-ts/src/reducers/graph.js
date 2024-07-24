@@ -12,6 +12,7 @@ import {
   setType,
   setArrowsProperty,
   setProperty,
+  RelationshipType,
 } from '@neo4j-arrows/model';
 import { idsMatch } from '../model/Id';
 import undoable, { groupByActionTypes } from 'redux-undo';
@@ -57,7 +58,7 @@ const graph = (state = emptyGraph(), action) => {
         ...action.newRelationshipIds.map((newRelationshipId, i) => {
           return {
             id: newRelationshipId,
-            type: '',
+            type: RelationshipType.ASSOCIATION,
             style: {},
             properties: {},
             cardinality: Cardinality.ONE_TO_MANY,
@@ -80,7 +81,7 @@ const graph = (state = emptyGraph(), action) => {
         ...action.newRelationshipIds.map((newRelationshipId, i) => {
           return {
             id: newRelationshipId,
-            type: '',
+            type: RelationshipType.ASSOCIATION,
             style: {},
             properties: {},
             cardinality: Cardinality.ONE_TO_MANY,

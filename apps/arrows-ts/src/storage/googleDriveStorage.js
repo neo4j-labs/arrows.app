@@ -1,4 +1,9 @@
-import { completeWithDefaults, emptyGraph, Point } from '@neo4j-arrows/model';
+import {
+  completeWithDefaults,
+  emptyGraph,
+  Point,
+  RelationshipType,
+} from '@neo4j-arrows/model';
 import { gettingDiagramNameSucceeded } from '../actions/diagramName';
 import { gettingGraph, gettingGraphSucceeded } from '../actions/storage';
 
@@ -73,7 +78,7 @@ export const constructGraphFromFile = (data) => {
       id: relationship.id,
       fromId: relationship.fromId,
       toId: relationship.toId,
-      type: relationship.type || '',
+      type: relationship.type || RelationshipType.ASSOCIATION,
       ontologies: relationship.ontologies || [],
       examples: relationship.examples || '',
       properties: relationship.properties || {},

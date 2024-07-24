@@ -8,6 +8,10 @@ export enum Cardinality {
   MANY_TO_MANY = 'MANY_TO_MANY',
 }
 
+export enum RelationshipType {
+  ASSOCIATION = 'ASSOCIATION',
+}
+
 export function toVisualCardinality(cardinality: Cardinality): string {
   switch (cardinality) {
     case Cardinality.ONE_TO_ONE:
@@ -22,7 +26,7 @@ export function toVisualCardinality(cardinality: Cardinality): string {
 }
 
 export interface Relationship extends Entity {
-  type: string;
+  type: RelationshipType;
   fromId: Id;
   toId: Id;
   ontologies?: Ontology[];
