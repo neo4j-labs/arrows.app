@@ -2,19 +2,11 @@
 import { defineConfig } from 'vite';
 
 import viteTsConfigPaths from 'vite-tsconfig-paths';
-import dts from 'vite-plugin-dts';
-import { joinPathFragments } from '@nx/devkit';
 
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/ontology-search',
 
   plugins: [
-    dts({
-      entryRoot: 'src',
-      tsConfigFilePath: joinPathFragments(__dirname, 'tsconfig.lib.json'),
-      skipDiagnostics: true,
-    }),
-
     viteTsConfigPaths({
       root: '../../',
     }),
