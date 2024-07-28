@@ -1,6 +1,6 @@
 import { Graph } from './Graph';
 import { Point } from './Point';
-import { Cardinality } from './Relationship';
+import { Cardinality, RelationshipType } from './Relationship';
 
 export interface Theme {
   name: string;
@@ -13,6 +13,7 @@ export const themes: Theme[] = [
     name: 'Chunky',
     description: 'For simple, bold diagrams.',
     graph: {
+      description: '',
       nodes: [
         {
           id: 'n0',
@@ -48,6 +49,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
       ],
@@ -105,6 +107,7 @@ export const themes: Theme[] = [
     name: 'Dark Code',
     description: 'Light-on-dark contrast similar to an IDE',
     graph: {
+      description: '',
       style: {
         'font-family': 'Fira Code',
         'background-color': '#2B2B2B',
@@ -195,6 +198,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
       ],
@@ -204,6 +208,7 @@ export const themes: Theme[] = [
     name: 'Bloom',
     description: 'Theme based on Neo4j Bloom.',
     graph: {
+      description: '',
       style: {
         'font-family': 'Nunito Sans',
         'background-color': '#F2F2F2',
@@ -289,6 +294,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
       ],
@@ -298,6 +304,7 @@ export const themes: Theme[] = [
     name: 'Browser',
     description: 'Theme based on Neo4j Browser',
     graph: {
+      description: '',
       style: {
         'font-family': 'sans-serif',
         'background-color': '#FAFCFF',
@@ -388,6 +395,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
       ],
@@ -397,6 +405,7 @@ export const themes: Theme[] = [
     name: 'Iconic',
     description: 'Minimal undirected graphs suitable for very small pictures',
     graph: {
+      description: '',
       style: {
         'font-family': 'sans-serif',
         'background-color': '#ffffff',
@@ -558,6 +567,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n1',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
         {
@@ -568,6 +578,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n2',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
         {
@@ -578,6 +589,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n1',
           toId: 'n2',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
         {
@@ -588,6 +600,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n3',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
         {
@@ -598,6 +611,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n4',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
         {
@@ -608,6 +622,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n5',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
         {
@@ -618,6 +633,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n0',
           toId: 'n6',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
         {
@@ -628,6 +644,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n5',
           toId: 'n7',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
         {
@@ -638,6 +655,7 @@ export const themes: Theme[] = [
           properties: {},
           fromId: 'n4',
           toId: 'n1',
+          relationshipType: RelationshipType.ASSOCIATION,
           cardinality: Cardinality.ONE_TO_MANY,
         },
       ],

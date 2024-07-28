@@ -18,11 +18,11 @@ import {
   orientationAngles,
   orientationFromAngle,
   orientationFromName,
+  TextOrientation,
 } from './circumferentialTextAlignment';
 import { Vector } from '@neo4j-arrows/model';
 import { ComponentStack } from './ComponentStack';
 import { ImageInfo } from './utils/ImageCache';
-import { CanvasAdaptor } from './utils/CanvasAdaptor';
 import { TextMeasurementContext } from './utils/TextMeasurementContext';
 import { DrawingContext } from './utils/DrawingContext';
 
@@ -36,7 +36,7 @@ export class VisualNode {
   internalScaleFactor?: number;
   insideComponents: any;
   outsideComponents: any;
-  outsideOrientation: import('/Users/akollegger/Developer/neo4j-contrib/neo4j-arrows-app/libs/graphics/src/lib/circumferentialTextAlignment').TextOrientation;
+  outsideOrientation: TextOrientation;
   icon?: NodeIconInside;
   caption?: NodeCaptionInsideNode | NodeCaptionFillNode;
   labels?: NodeLabelsInsideNode;
@@ -251,7 +251,7 @@ export class VisualNode {
     this.outsideOffset = new Vector(1, 0)
       .rotate(this.outsideOrientation.angle || 0)
       .scale(this.outsideComponentRadius)
-      .plus(new Vector(0, outsideVerticalOffset));
+      .plus(new Vector(0, outsideVerticalOffset ?? 0));
   }
 
   get id() {
