@@ -6,8 +6,8 @@ import { normalStraightArrow } from './StraightArrow';
 import { adaptForBackground } from './backgroundColorAdaption';
 import { VisualGraph } from './VisualGraph';
 import { DisplayOptions } from './utils/DisplayOptions';
-import { CanvasAdaptor } from './utils/CanvasAdaptor';
 import { DrawingContext } from './utils/DrawingContext';
+import { ArrowDimensions } from './arrowDimensions';
 
 export interface GestureComponents {
   dragToCreate: {
@@ -114,13 +114,16 @@ export class Gestures {
             false
           );
 
-          const dimensions = {
+          const dimensions: ArrowDimensions = {
             arrowWidth: 4,
             hasOutgoingArrowHead: true,
             headWidth: 16,
             headHeight: 24,
             chinHeight: 2.4,
             arrowColor: this.newEntityColor,
+            hasIngoingArrowHead: false,
+            fillArrowHeads: true,
+            arrowHeadsWidth: 0,
           };
           if (targetNode && sourceNode === targetNode) {
             const arrow = new BalloonArrow(
