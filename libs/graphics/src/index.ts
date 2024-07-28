@@ -1,6 +1,7 @@
 export * from './lib/arrowDimensions';
 export * from './lib/BalloonArrow';
 export * from './lib/ElbowArrow';
+export * from './lib/Gestures';
 export * from './lib/ParallelArrow';
 export * from './lib/RoutedRelationshipBundle';
 export * from './lib/StraightArrow';

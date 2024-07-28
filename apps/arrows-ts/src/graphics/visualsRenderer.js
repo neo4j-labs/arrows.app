@@ -1,4 +1,4 @@
-import Gestures from './Gestures';
+import { Gestures } from '@neo4j-arrows/graphics';
 import CanvasAdaptor from './utils/CanvasAdaptor';
 import { VisualGuides } from './VisualGuides';
 

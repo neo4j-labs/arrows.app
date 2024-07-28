@@ -19,7 +19,7 @@ export interface GestureComponents {
   selectionMarquee: any;
 }
 
-export default class Gestures {
+export class Gestures {
   visualGraph: VisualGraph;
   gestures: GestureComponents;
   marqueeColor: string;

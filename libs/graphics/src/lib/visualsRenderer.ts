@@ -1,6 +1,6 @@
 import { Guides } from '@neo4j-arrows/model';
 import { BackgroundImage } from './BackgroundImage';
-import Gestures, { GestureComponents } from './Gestures';
+import { Gestures, GestureComponents } from './Gestures';
 import { CanvasAdaptor } from './utils/CanvasAdaptor';
 import { DisplayOptions } from './utils/DisplayOptions';
 import { VisualGraph } from './VisualGraph';
