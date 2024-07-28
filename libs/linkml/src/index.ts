@@ -43,7 +43,7 @@ export const fromGraph = (
       Document: {
         tree_root: true,
         description,
-        is_a: SpiresCoreClasses.TextWithTriplets,
+        is_a: SpiresCoreClasses.TextWithTriples,
         slot_usage: {
           triples: {
             range: `${toRelationshipClassName(relationships[0])}Relationship`,
