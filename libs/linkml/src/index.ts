@@ -9,6 +9,7 @@ import { snakeCase } from 'lodash';
 import {
   relationshipToRelationshipClass,
   relationshipToPredicateClass,
+  findRelationshipsFromNodeFactory,
 } from './lib/relationships';
 import { nodeToClass } from './lib/nodes';
 import { toPrefixes } from './lib/ontologies';
@@ -18,6 +19,8 @@ export const fromGraph = (
   { description, nodes, relationships }: Graph
 ): LinkML => {
   const findNode = findNodeFactory(nodes);
+  const findRelationshipFromNode =
+    findRelationshipsFromNodeFactory(relationships);
   const toRelationshipClassName = toRelationshipClassNameFactory(nodes);
 
   const snakeCasedName = snakeCase(name);
@@ -57,7 +60,11 @@ export const fromGraph = (
       ...nodes.reduce(
         (classes: Record<string, LinkMLClass>, node) => ({
           ...classes,
-          [toClassName(node.caption)]: nodeToClass(node),
+          [toClassName(node.caption)]: nodeToClass(
+            node,
+            findNode,
+            findRelationshipFromNode
+          ),
         }),
         {}
       ),

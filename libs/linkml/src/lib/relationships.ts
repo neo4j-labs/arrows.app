@@ -3,6 +3,13 @@ import { toAnnotators } from './ontologies';
 import { Attribute, LinkMLClass, SpiresCoreClasses } from './types';
 import { toClassName } from './naming';
 
+export const findRelationshipsFromNodeFactory = (
+  relationship: Relationship[]
+): ((node: Node) => Relationship[]) => {
+  return (node: Node): Relationship[] =>
+    relationship.filter((relationship) => relationship.fromId === node.id);
+};
+
 export const relationshipToRelationshipClass = (
   relationship: Relationship,
   nodeIdToNode: (id: string) => Node,

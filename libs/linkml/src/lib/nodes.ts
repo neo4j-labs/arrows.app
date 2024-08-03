@@ -1,9 +1,13 @@
-import { Node } from '@neo4j-arrows/model';
+import { Node, Relationship, RelationshipType } from '@neo4j-arrows/model';
 import { LinkMLClass, Attribute, SpiresCoreClasses } from './types';
-import { toAttributeName } from './naming';
+import { toAttributeName, toClassName } from './naming';
 import { toAnnotators } from './ontologies';
 
-export const nodeToClass = (node: Node): LinkMLClass => {
+export const nodeToClass = (
+  node: Node,
+  findNode: (id: string) => Node,
+  findRelationshipFromNode: (node: Node) => Relationship[]
+): LinkMLClass => {
   const propertiesToAttributes = (): Record<string, Attribute> => {
     return Object.entries(node.properties).reduce(
       (attributes: Record<string, Attribute>, [key, value]) => ({
@@ -17,9 +21,18 @@ export const nodeToClass = (node: Node): LinkMLClass => {
   };
 
   const nodeOntologies = node.ontologies ?? [];
+  const [inheritance, ...rest] = findRelationshipFromNode(node).filter(
+    (relationship) =>
+      relationship.relationshipType === RelationshipType.INHERITANCE
+  );
 
   return {
-    is_a: SpiresCoreClasses.NamedEntity,
+    is_a: inheritance
+      ? toClassName(findNode(inheritance.toId).caption)
+      : SpiresCoreClasses.NamedEntity,
+    mixins: rest.map((inheritance) =>
+      toClassName(findNode(inheritance.toId).caption)
+    ),
     attributes: propertiesToAttributes(),
     id_prefixes: nodeOntologies.map((ontology) =>
       ontology.id.toLocaleUpperCase()
