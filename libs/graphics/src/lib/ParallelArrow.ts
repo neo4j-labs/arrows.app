@@ -136,7 +136,7 @@ export class ParallelArrow {
     }
     ctx.beginPath();
     this.path(ctx);
-    ctx.lineWidth = this.dimensions.arrowWidth;
+    ctx.lineWidth = this.dimensions.shaftWidth;
     ctx.strokeStyle = this.dimensions.arrowColor;
     ctx.stroke();
     if (this.dimensions.hasOutgoingArrowHead) {
@@ -182,7 +182,7 @@ export class ParallelArrow {
     }
     ctx.beginPath();
     this.path(ctx);
-    ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth;
+    ctx.lineWidth = this.dimensions.shaftWidth + indicatorWidth;
     ctx.lineCap = 'round';
     ctx.stroke();
     if (this.dimensions.hasOutgoingArrowHead) {

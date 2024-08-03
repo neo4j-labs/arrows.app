@@ -19,6 +19,7 @@ export interface ArrowDimensions {
   leftToRight?: boolean;
   fillArrowHeads: boolean;
   arrowHeadsWidth: number;
+  shaftWidth: number;
 }
 
 export const relationshipArrowDimensions = (
@@ -31,6 +32,11 @@ export const relationshipArrowDimensions = (
   const startRadius = resolvedRelationship.from.radius + style('margin-start');
   const endRadius = resolvedRelationship.to.radius + style('margin-end');
   const arrowWidth = style('arrow-width');
+  const shaftWidth =
+    resolvedRelationship.relationship.relationshipType ===
+    RelationshipType.INHERITANCE
+      ? 1
+      : style('arrow-width');
   const arrowColor = style('arrow-color');
   const selectionColor = adaptForBackground(selectionBorder, style);
 
@@ -83,5 +89,6 @@ export const relationshipArrowDimensions = (
     leftToRight,
     fillArrowHeads,
     arrowHeadsWidth,
+    shaftWidth,
   };
 };

@@ -83,7 +83,7 @@ export class StraightArrow {
     ctx.beginPath();
     ctx.moveTo(this.startShaft.x, this.startShaft.y);
     ctx.lineTo(this.endShaft.x, this.endShaft.y);
-    ctx.lineWidth = this.dimensions.arrowWidth;
+    ctx.lineWidth = this.dimensions.shaftWidth;
     ctx.strokeStyle = this.dimensions.arrowColor;
     ctx.stroke();
     if (this.dimensions.hasOutgoingArrowHead) {
@@ -128,7 +128,7 @@ export class StraightArrow {
     ctx.beginPath();
     ctx.moveTo(this.startShaft.x, this.startShaft.y);
     ctx.lineTo(this.endShaft.x, this.endShaft.y);
-    ctx.lineWidth = this.dimensions.arrowWidth + indicatorWidth;
+    ctx.lineWidth = this.dimensions.shaftWidth + indicatorWidth;
     ctx.lineCap = 'round';
     ctx.stroke();
     if (this.dimensions.hasOutgoingArrowHead) {
