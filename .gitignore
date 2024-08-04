@@ -42,4 +42,4 @@ node_modules
 dist
 
 # Ignore all .env files
-.env*
+.env
