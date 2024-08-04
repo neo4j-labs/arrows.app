@@ -45,9 +45,13 @@ export const fromGraph = (
         description,
         is_a: SpiresCoreClasses.TextWithTriples,
         slot_usage: {
-          triples: {
-            range: `${toRelationshipClassName(relationships[0])}Relationship`,
-          },
+          triples: relationships[0]
+            ? {
+                range: `${toRelationshipClassName(
+                  relationships[0]
+                )}Relationship`,
+              }
+            : {},
         },
       },
       ...nodes.reduce(
