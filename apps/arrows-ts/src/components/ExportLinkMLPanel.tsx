@@ -15,7 +15,7 @@ class ExportLinkMLPanel extends Component {
     );
 
     const handleDownloadPydantic = async () => {
-      const response = await fetch('http://localhost:8000/gen-pydantic', {
+      const response = await fetch(import.meta.env.VITE_GEN_PYDANTIC_ENDPOINT, {
         body: linkMLString,
         method: 'POST',
       });
