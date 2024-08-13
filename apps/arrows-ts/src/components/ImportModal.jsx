@@ -11,7 +11,11 @@ class ImportModal extends Component {
   }
 
   tryImport = () => {
-    const result = this.props.tryImport(this.state.text, this.props.separation);
+    const result = this.props.tryImport(
+      this.state.text,
+      this.props.separation,
+      this.props.ontologies
+    );
     if (result.errorMessage) {
       this.setState({
         errorMessage: result.errorMessage,
@@ -41,14 +45,14 @@ class ImportModal extends Component {
         <Modal.Content scrolling>
           <Message>
             <p>
-              Import using the same JSON structure as you can see in the Export
-              window.
+              Import using the same JSON or LinkML structure as you can see in
+              the Export window.
             </p>
             <p>
-              Alternatively, if you don't provide a JSON object, input will be
-              treated as plain text, delimited by tabs and line breaks. For
-              example, copy and paste from a spreadsheet to create one node per
-              cell.
+              Alternatively, if you don't provide a JSON or LinkML object, input
+              will be treated as plain text, delimited by tabs and line breaks.
+              For example, copy and paste from a spreadsheet to create one node
+              per cell.
             </p>
             <p>
               Both of these import formats are also available by simply pasting

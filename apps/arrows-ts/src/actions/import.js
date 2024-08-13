@@ -4,22 +4,24 @@ import {
   setGraphStyle,
 } from './graph';
 import { Point } from '../model/Point';
-import { getPresentGraph } from '../selectors';
+import { getOntologies, getPresentGraph } from '../selectors';
 import { constructGraphFromFile } from '../storage/googleDriveStorage';
 import { translate } from '@neo4j-arrows/model';
 import { Vector } from '../model/Vector';
 import { hideImportDialog } from './applicationDialogs';
 import { shrinkImageUrl } from '../graphics/utils/resizeImage';
 import { Base64 } from 'js-base64';
+import { toGraph } from '@neo4j-arrows/linkml';
+import { load } from 'js-yaml';
 
 export const tryImport = (dispatch) => {
-  return function (text, separation) {
+  return function (text, separation, ontologies) {
     let importedGraph;
 
     const format = formats.find((format) => format.recognise(text));
     if (format) {
       try {
-        importedGraph = format.parse(text, separation);
+        importedGraph = format.parse(text, separation, ontologies);
       } catch (e) {
         return {
           errorMessage: e.toString(),
@@ -40,6 +42,7 @@ export const tryImport = (dispatch) => {
 export const interpretClipboardData = (
   clipboardData,
   nodeSpacing,
+  ontologies,
   handlers
 ) => {
   const textPlainMimeType = 'text/plain';
@@ -51,7 +54,7 @@ export const interpretClipboardData = (
         switch (format.outputType) {
           case 'graph':
             // eslint-disable-next-line no-case-declarations
-            const importedGraph = format.parse(text, nodeSpacing);
+            const importedGraph = format.parse(text, nodeSpacing, ontologies);
             handlers.onGraph && handlers.onGraph(importedGraph);
             break;
 
@@ -79,10 +82,11 @@ export const handlePaste = (pasteEvent) => {
   return function (dispatch, getState) {
     const state = getState();
     const separation = nodeSeparation(state);
+    const ontologies = getOntologies(state).ontologies;
     const selection = state.selection;
 
     const clipboardData = pasteEvent.clipboardData;
-    interpretClipboardData(clipboardData, separation, {
+    interpretClipboardData(clipboardData, separation, ontologies, {
       onGraph: (graph) => {
         dispatch(importNodesAndRelationships(graph));
       },
@@ -115,6 +119,47 @@ export const handlePaste = (pasteEvent) => {
 };
 
 const formats = [
+  {
+    // LinkML
+    recognise: (plainText) => {
+      try {
+        const linkml = load(plainText);
+        const linkmlPrefix = Object.entries(linkml.prefixes).find(
+          ([key, value]) => key === 'linkml'
+        );
+        return !!linkmlPrefix;
+      } catch {
+        return false;
+      }
+    },
+    outputType: 'graph',
+    parse: (plainText, separation, ontologies) => {
+      const graph = toGraph(load(plainText), ontologies);
+      const nodes = graph.nodes.map((node, index) => ({
+        ...node,
+        position: new Point(
+          separation * Math.cos(360 * index),
+          separation * Math.sin(360 * index)
+        ),
+        style: {},
+      }));
+
+      const relationships = graph.relationships.map((relationship) => ({
+        ...relationship,
+        style: {},
+      }));
+
+      const left = Math.min(...nodes.map((node) => node.position.x));
+      const top = Math.min(...nodes.map((node) => node.position.y));
+      const vector = new Vector(-left, -top);
+      const originNodes = nodes.map((node) => translate(node, vector));
+      return {
+        ...graph,
+        nodes: originNodes,
+        relationships,
+      };
+    },
+  },
   {
     // JSON
     recognise: (plainText) => new RegExp('^{.*}$', 's').test(plainText.trim()),
