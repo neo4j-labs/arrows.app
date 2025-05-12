@@ -641,5 +641,152 @@ describe("graphql", () => {
 
       compare(expected, received);
     });
+
+    // New test for property value type inference
+    it("should correctly infer property types from values", () => {
+      const graph = {
+        nodes: [
+          {
+            id: "n0",
+            caption: "",
+            labels: ["Customer"],
+            properties: {
+              name: "John Smith",
+              age: "42",
+              vip: "true",
+              balance: "123.45",
+              id: "CUST-001"
+            },
+            style: {},
+          },
+          {
+            id: "n1",
+            caption: "",
+            labels: ["Order"],
+            properties: {
+              id: "ORD-001",
+              total: "99.99",
+              items: "3",
+              status: "PENDING"
+            },
+            style: {},
+          }
+        ],
+        relationships: [
+          {
+            id: "n0",
+            fromId: "n1",
+            toId: "n0",
+            type: "PLACED_BY",
+            properties: {
+              timestamp: "2023-05-12",
+              confirmed: "true"
+            },
+            style: {},
+          }
+        ],
+      };
+
+      const received = exportGraphQL(graph);
+
+      const expected = `
+        type Customer {
+          name: String
+          age: Int
+          vip: Boolean
+          balance: Float
+          id: String
+          orderPlacedBy: Order @relationship(type: "PLACED_BY", direction: IN, properties: "PlacedBy")
+        }
+
+        type Order {
+          id: String
+          total: Float
+          items: Int
+          status: String
+          placedByCustomer: Customer @relationship(type: "PLACED_BY", direction: OUT, properties: "PlacedBy")
+        }
+
+        interface PlacedBy {
+          timestamp: String
+          confirmed: Boolean
+        }
+      `;
+
+      compare(expected, received);
+    });
+
+    it("should correctly infer property types from values", () => {
+      const graph = {
+        nodes: [
+          {
+            id: "n0",
+            caption: "",
+            labels: ["Customer"],
+            properties: {
+              name: "John Smith",
+              age: "42",
+              vip: "true",
+              balance: "123.45",
+              id: "CUST-001",
+            },
+            style: {},
+          },
+          {
+            id: "n1",
+            caption: "",
+            labels: ["Order"],
+            properties: {
+              id: "ORD-001",
+              total: "99.99",
+              items: "3",
+              status: "PENDING",
+            },
+            style: {},
+          },
+        ],
+        relationships: [
+          {
+            id: "n0",
+            fromId: "n1",
+            toId: "n0",
+            type: "PLACED_BY",
+            properties: {
+              timestamp: "2023-05-12",
+              confirmed: "true",
+            },
+            style: {},
+          },
+        ],
+      };
+
+      const received = exportGraphQL(graph);
+
+      const expected = `
+          type Customer {
+            name: String
+            age: Int
+            vip: Boolean
+            balance: Float
+            id: String
+            orderPlacedBy: Order @relationship(type: "PLACED_BY", direction: IN, properties: "PlacedBy")
+          }
+
+          type Order {
+            id: String
+            total: Float
+            items: Int
+            status: String
+            placedByCustomer: Customer @relationship(type: "PLACED_BY", direction: OUT, properties: "PlacedBy")
+          }
+
+          interface PlacedBy {
+            timestamp: String
+            confirmed: Boolean
+          }
+        `;
+
+      compare(expected, received);
+    });
   });
 });
