@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "license": "Apache2",
   "scripts": {
-    "build": "nx run arrows-ts:build"
+    "postinstall": "cd ./apps/arrows-app && npm install --force",
+    "build": "nx run arrows-ts:build"  
   },
   "private": true,
   "dependencies": {
@@ -73,6 +74,7 @@
     "vite-plugin-eslint": "^1.8.1",
     "vite-tsconfig-paths": "4.2.0",
     "vitest": "0.31.0",
+    "vite-plugin-commonjs": "^0.10.4",
     "web-vitals": "^3.3.1"
   }
 }
