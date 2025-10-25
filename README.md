@@ -68,6 +68,79 @@ _Things this code doesn't do._
 
 In development as an open-source project with core contributors from Neo4j, managed under Neo4j Labs.
 
+## Docker Deployment
+
+Arrows.app can be easily deployed using Docker for production or development environments.
+
+### Quick Start with Docker Compose
+
+The easiest way to run arrows.app in a container:
+
+```bash
+# Build and start the container
+docker-compose up -d
+
+# Access the application at http://localhost:8080
+```
+
+To stop the container:
+
+```bash
+docker-compose down
+```
+
+### Building the Docker Image Manually
+
+```bash
+# Build the image
+docker build -t arrows-app:latest .
+
+# Run the container
+docker run -d -p 8080:80 --name arrows-app arrows-app:latest
+
+# Access the application at http://localhost:8080
+```
+
+### Docker Container Details
+
+- **Base Image:** nginx:alpine (lightweight and secure)
+- **Build Process:** Multi-stage build to minimize image size
+- **Port:** Exposes port 80 (mapped to 8080 on host by default)
+- **Health Check:** Includes built-in health monitoring
+- **External Access:** Fully accessible from outside the container
+
+### Configuration
+
+To run on a different port, modify the port mapping:
+
+```bash
+# Run on port 3000 instead
+docker run -d -p 3000:80 --name arrows-app arrows-app:latest
+```
+
+Or update the `docker-compose.yml` file:
+
+```yaml
+ports:
+  - "3000:80"  # Change 8080 to your desired port
+```
+
+### Production Deployment
+
+For production deployments, consider:
+
+1. **Using a reverse proxy** (like Traefik or nginx) for HTTPS termination
+2. **Setting resource limits** in docker-compose.yml:
+   ```yaml
+   deploy:
+     resources:
+       limits:
+         cpus: '0.5'
+         memory: 512M
+   ```
+3. **Using Docker secrets** for any sensitive configuration
+4. **Enabling container restart policies** (already configured as `unless-stopped`)
+
 ## Copyright Notice
 
 Copyright 2017-2023 by Neo4j, Inc.
