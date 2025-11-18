@@ -419,6 +419,7 @@ class ExportAgentFrameworkPanel extends Component {
         {/* Export Button */}
         <Form.Field>
           <Button
+            type="button"
             onClick={this.exportToAgentFramework}
             loading={loading || polling}
             disabled={loading || polling || !selectedAgentId}
