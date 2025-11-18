@@ -73,7 +73,7 @@ class ExportAgentFrameworkPanel extends Component {
     return {
       node_label: sanitizedLabel,
       system_prompt: agentNode.properties?.system_prompt || 'You are a helpful agent.',
-      model: agentNode.properties?.model || 'claude-sonnet-4',
+      // model field removed - let backend use its own default
       tools: toolNodes.map(toolNode => {
         // Extract all properties except 'description' as config
         const { description, ...config } = toolNode.properties || {};
@@ -291,7 +291,7 @@ class ExportAgentFrameworkPanel extends Component {
                 Create an Agent node and connect Tool nodes with <strong>HAS_TOOL</strong> relationships.
               </p>
               <Message.List>
-                <Message.Item>Agent node should have properties: <code>system_prompt</code>, <code>model</code></Message.Item>
+                <Message.Item>Agent node should have property: <code>system_prompt</code></Message.Item>
                 <Message.Item>Tool nodes should have properties: <code>description</code> + any config fields</Message.Item>
                 <Message.Item>Connect them with relationship type: <strong>HAS_TOOL</strong> (case-sensitive)</Message.Item>
               </Message.List>
@@ -341,8 +341,6 @@ class ExportAgentFrameworkPanel extends Component {
                   {' '}- {toolNodes.map(t => t.caption || t.id).join(', ')}
                 </>
               )}
-              <br />
-              <strong>Model:</strong> {selectedAgent?.properties?.model || 'claude-sonnet-4 (default)'}
             </p>
           </Message>
         )}
@@ -442,7 +440,7 @@ class ExportAgentFrameworkPanel extends Component {
         <Message>
           <Message.Header>How to use</Message.Header>
           <Message.List>
-            <Message.Item>Create an <strong>Agent node</strong> with properties: <code>system_prompt</code>, <code>model</code></Message.Item>
+            <Message.Item>Create an <strong>Agent node</strong> with property: <code>system_prompt</code></Message.Item>
             <Message.Item>Create <strong>Tool nodes</strong> with properties: <code>description</code> + config (e.g., <code>api_key</code>, <code>db_connection</code>)</Message.Item>
             <Message.Item>Connect Agent → Tool with relationship type <strong>HAS_TOOL</strong></Message.Item>
             <Message.Item>Click "Export Agent" to send to backend</Message.Item>
