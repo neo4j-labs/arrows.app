@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Button, Icon, Message, TextArea, Dropdown, Progress } from 'semantic-ui-react';
+import ChatInterface from './ChatInterface';
 
 class ExportAgentFrameworkPanel extends Component {
   constructor(props) {
@@ -13,7 +14,8 @@ class ExportAgentFrameworkPanel extends Component {
       response: null,
       agentId: null,
       progress: null,
-      apiUrl: 'http://localhost:8000'
+      apiUrl: 'http://localhost:8000',
+      chatOpen: false
     };
     this.pollInterval = null;
   }
@@ -400,6 +402,16 @@ class ExportAgentFrameworkPanel extends Component {
                   </>
                 )}
               </p>
+              <Button
+                primary
+                icon
+                labelPosition='left'
+                onClick={() => this.setState({ chatOpen: true })}
+                style={{ marginTop: '12px' }}
+              >
+                <Icon name='comments' />
+                Start Chat
+              </Button>
             </Message.Content>
           </Message>
         )}
@@ -445,9 +457,20 @@ class ExportAgentFrameworkPanel extends Component {
             <Message.Item>Connect Agent → Tool with relationship type <strong>HAS_TOOL</strong></Message.Item>
             <Message.Item>Click "Export Agent" to send to backend</Message.Item>
             <Message.Item>Wait for tools to be built (progress shown above)</Message.Item>
-            <Message.Item>When ready, agent can be used for chat (Sprint 2)</Message.Item>
+            <Message.Item>When ready, click "Start Chat" to talk with your agent!</Message.Item>
           </Message.List>
         </Message>
+
+        {/* Chat Interface Modal */}
+        {success && agentId && (
+          <ChatInterface
+            open={this.state.chatOpen}
+            onClose={() => this.setState({ chatOpen: false })}
+            agentId={agentId}
+            agentName={selectedAgent?.caption}
+            apiUrl={apiUrl}
+          />
+        )}
       </Form>
     );
   }
