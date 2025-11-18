@@ -175,12 +175,12 @@ class ChatInterface extends Component {
                   <Comment.Avatar
                     src={msg.role === 'user'
                       ? 'https://react.semantic-ui.com/images/avatar/small/matt.jpg'
-                      : 'https://react.semantic-ui.com/images/avatar/small/bot.png'
+                      : 'https://react.semantic-ui.com/images/avatar/small/elliot.jpg'
                     }
                   />
                   <Comment.Content>
                     <Comment.Author as='span'>
-                      {msg.role === 'user' ? 'You' : 'Agent'}
+                      {msg.role === 'user' ? 'You' : agentName || 'Agent'}
                     </Comment.Author>
                     <Comment.Metadata>
                       <div>{this.formatTimestamp(msg.timestamp)}</div>
@@ -215,29 +215,27 @@ class ChatInterface extends Component {
         <Modal.Actions style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {/* Message Input */}
           <Form onSubmit={(e) => e.preventDefault()} style={{ width: '100%', margin: 0 }}>
-            <Form.Group style={{ margin: 0 }}>
-              <Form.TextArea
-                placeholder='Type your message here... (Press Enter to send, Shift+Enter for new line)'
-                value={message}
-                onChange={(e) => this.setState({ message: e.target.value })}
-                onKeyPress={this.handleKeyPress}
-                disabled={loading}
-                style={{ flex: 1, minHeight: '60px', resize: 'vertical' }}
-                rows={2}
-              />
-              <Button
-                type="button"
-                primary
-                icon
-                labelPosition='left'
-                onClick={this.handleSendMessage}
-                disabled={loading || !message.trim()}
-                style={{ alignSelf: 'flex-end' }}
-              >
-                <Icon name='send' />
-                Send
-              </Button>
-            </Form.Group>
+            <Form.TextArea
+              placeholder='Type your message here... (Press Enter to send, Shift+Enter for new line)'
+              value={message}
+              onChange={(e) => this.setState({ message: e.target.value })}
+              onKeyPress={this.handleKeyPress}
+              disabled={loading}
+              style={{ width: '100%', minHeight: '60px', resize: 'vertical', marginBottom: '8px' }}
+              rows={2}
+            />
+            <Button
+              type="button"
+              primary
+              icon
+              labelPosition='left'
+              onClick={this.handleSendMessage}
+              disabled={loading || !message.trim()}
+              fluid
+            >
+              <Icon name='send' />
+              Send
+            </Button>
           </Form>
 
           {/* Bottom Actions */}
