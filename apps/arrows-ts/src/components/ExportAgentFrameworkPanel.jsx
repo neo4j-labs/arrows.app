@@ -21,6 +21,7 @@ class ExportAgentFrameworkPanel extends Component {
   }
 
   componentDidMount() {
+    console.log('🟢 ExportAgentFrameworkPanel MOUNTED');
     // Auto-select first agent if only one exists
     const agentNodes = this.detectAgentNodes();
     if (agentNodes.length === 1) {
@@ -29,6 +30,7 @@ class ExportAgentFrameworkPanel extends Component {
   }
 
   componentWillUnmount() {
+    console.log('🔴 ExportAgentFrameworkPanel UNMOUNTING');
     // Clean up polling interval on unmount
     if (this.pollInterval) {
       clearInterval(this.pollInterval);
@@ -177,10 +179,20 @@ class ExportAgentFrameworkPanel extends Component {
     }
   };
 
-  exportToAgentFramework = async () => {
+  exportToAgentFramework = async (e) => {
+    // DEBUG: Check if this is being called
+    console.log('🔥 exportToAgentFramework called', e);
+
+    // Prevent any default behavior
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
     const { selectedAgentId } = this.state;
     const { graph } = this.props;
 
+    console.log('🔥 Setting loading state');
     this.setState({ loading: true, error: null, success: false, response: null });
 
     const agentNode = graph.nodes.find(n => n.id === selectedAgentId);
