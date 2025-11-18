@@ -65,16 +65,26 @@ class ExportAgentFrameworkPanel extends Component {
 
   // Transform agent node + tool nodes to API format
   transformToAPIFormat = (agentNode, toolNodes) => {
+    // Sanitize node_label: replace spaces and special chars with underscores
+    const sanitizedLabel = (agentNode.caption || `agent_${agentNode.id}`)
+      .replace(/\s+/g, '_')
+      .replace(/[^a-zA-Z0-9_]/g, '_');
+
     return {
-      node_label: agentNode.caption || `agent_${agentNode.id}`,
+      node_label: sanitizedLabel,
       system_prompt: agentNode.properties?.system_prompt || 'You are a helpful agent.',
       model: agentNode.properties?.model || 'claude-sonnet-4',
       tools: toolNodes.map(toolNode => {
         // Extract all properties except 'description' as config
         const { description, ...config } = toolNode.properties || {};
 
+        // Sanitize tool name as well
+        const sanitizedToolName = (toolNode.caption || `tool_${toolNode.id}`)
+          .replace(/\s+/g, '_')
+          .replace(/[^a-zA-Z0-9_]/g, '_');
+
         return {
-          name: toolNode.caption || `tool_${toolNode.id}`,
+          name: sanitizedToolName,
           description: description || 'A tool for the agent.',
           config: Object.keys(config).length > 0 ? config : undefined
         };
