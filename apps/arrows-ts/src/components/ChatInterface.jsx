@@ -214,7 +214,7 @@ class ChatInterface extends Component {
 
         <Modal.Actions style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {/* Message Input */}
-          <Form style={{ width: '100%', margin: 0 }}>
+          <Form onSubmit={(e) => e.preventDefault()} style={{ width: '100%', margin: 0 }}>
             <Form.Group style={{ margin: 0 }}>
               <Form.TextArea
                 placeholder='Type your message here... (Press Enter to send, Shift+Enter for new line)'
@@ -226,6 +226,7 @@ class ChatInterface extends Component {
                 rows={2}
               />
               <Button
+                type="button"
                 primary
                 icon
                 labelPosition='left'
@@ -242,6 +243,7 @@ class ChatInterface extends Component {
           {/* Bottom Actions */}
           <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
             <Button
+              type="button"
               onClick={this.handleNewChat}
               icon
               labelPosition='left'
@@ -249,7 +251,7 @@ class ChatInterface extends Component {
               <Icon name='refresh' />
               New Chat
             </Button>
-            <Button onClick={onClose}>
+            <Button type="button" onClick={onClose}>
               Close
             </Button>
           </div>

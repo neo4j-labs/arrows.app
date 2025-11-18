@@ -271,7 +271,7 @@ class ExportAgentFrameworkPanel extends Component {
     }));
 
     return (
-      <Form>
+      <Form onSubmit={(e) => e.preventDefault()}>
         <Message info icon>
           <Icon name='robot' />
           <Message.Content>
@@ -403,6 +403,7 @@ class ExportAgentFrameworkPanel extends Component {
                 )}
               </p>
               <Button
+                type="button"
                 primary
                 icon
                 labelPosition='left'
