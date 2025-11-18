@@ -264,7 +264,8 @@ class ExportAgentFrameworkPanel extends Component {
       error,
       response,
       progress,
-      apiUrl
+      apiUrl,
+      agentId  // ← FIXED: Added missing agentId
     } = this.state;
 
     // Detect agent nodes
