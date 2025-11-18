@@ -7,6 +7,7 @@ import ExportJsonPanel from "./ExportJsonPanel";
 import ExportGraphQLPanel from "./ExportGraphQLPanel";
 import {loadFavoriteExportTab, saveFavoriteExportTab} from "../actions/localStorage";
 import ExportUrlPanel from "./ExportUrlPanel";
+import ExportAgentFrameworkPanel from "./ExportAgentFrameworkPanel";
 
 class ExportModal extends Component {
 
@@ -89,6 +90,17 @@ class ExportModal extends Component {
         render: () => (
           <Tab.Pane attached={false}>
             <ExportGraphQLPanel
+              graph={this.props.graph}
+              diagramName={this.props.diagramName}
+            />
+          </Tab.Pane>
+        ),
+      },
+      {
+        menuItem: 'Agent Framework',
+        render: () => (
+          <Tab.Pane attached={false}>
+            <ExportAgentFrameworkPanel
               graph={this.props.graph}
               diagramName={this.props.diagramName}
             />
