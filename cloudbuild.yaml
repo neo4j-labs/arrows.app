@@ -13,5 +13,5 @@ steps:
 
 availableSecrets:
   secretManager:
-  - versionName: projects/arrows-app-295615/secrets/google-api-key/versions/1
+  - versionName: projects/arrows-app-295615/secrets/google-api-key/versions/2
     env: 'VITE_GOOGLE_API_KEY'
