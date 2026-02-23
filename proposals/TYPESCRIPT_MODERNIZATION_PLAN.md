@@ -119,7 +119,7 @@ Rough dependency order for conversion (lower layers first so types flow upward):
 
 The app uses **deprecated Google auth** (`gapi.auth2`) for Google Drive sign-in and storage. Google recommends migrating to [Google Identity Services (GIS)](https://developers.google.com/identity/oauth2/web/guides/migration-to-gis) and no longer maintains the old auth library.
 
-**Recommendation:** Address this **before** starting the TypeScript migration (or as part of Phase 0) so you don’t type code that will then be replaced. See **[docs/GOOGLE_DRIVE_AUTH_MODERNIZATION.md](GOOGLE_DRIVE_AUTH_MODERNIZATION.md)** for current usage, what’s deprecated, and a step-by-step migration to GIS. After that, continue with Phase 0 (RootState, react-recompose) and the rest of the phases.
+**Recommendation:** Address this **before** starting the TypeScript migration (or as part of Phase 0) so you don’t type code that will then be replaced. See **[GOOGLE_DRIVE_AUTH_MODERNIZATION.md](GOOGLE_DRIVE_AUTH_MODERNIZATION.md)** for current usage, what’s deprecated, and a step-by-step migration to GIS. After that, continue with Phase 0 (RootState, react-recompose) and the rest of the phases.
 
 ---
 
