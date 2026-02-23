@@ -1,73 +1,108 @@
 import config from "../config";
-import {googleDriveSignInStatusChanged} from "./storage";
 import {renderPngForThumbnail} from "../graphics/utils/offScreenCanvasRenderer";
 import {indexableText} from "../model/Graph";
+import {initTokenClient} from "../googleDriveAuth";
+
 export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
 export const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install';
 
+/**
+ * Initialize Google Drive API: GIS token client + gapi for Picker/Drive upload only.
+ * Does not request a token or open consent; sets apiInitialized when ready.
+ * Any Drive or Picker request that receives 401 must dispatch clearGoogleDriveToken(store)
+ * so that signedIn is set false and the user can re-authorize on next user gesture.
+ */
 export const initGoogleDriveApi = (store) => {
-  const initClient = () => {
-    window.gapi.client.init({
-      apiKey: config.apiKey,
-      clientId: config.clientId,
-      discoveryDocs: DISCOVERY_DOCS,
-      scope: SCOPES
-    }).then(() => {
-      // Listen for sign-in state changes.
-      window.gapi.auth2.getAuthInstance().isSignedIn.listen(updateSignedInStatus);
+  initTokenClient(store);
 
-      // Handle the initial sign-in state.
-      updateSignedInStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get());
-    })
-  }
+  const initGapiForPickerAndDrive = () => {
+    if (!window.gapi) {
+      store.dispatch({ type: 'GOOGLE_DRIVE_API_INITIALIZED' });
+      return;
+    }
+    // Load gapi for Picker and Drive upload only; no auth2. (drive-share removed; ShareClient replaced in US4.)
+    window.gapi.load("client:picker", () => {
+      window.gapi.client.init({
+        apiKey: config.apiKey,
+        clientId: config.clientId,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
+      }).then(() => {
+        store.dispatch({ type: 'GOOGLE_DRIVE_API_INITIALIZED' });
+      }).catch(() => {
+        store.dispatch({ type: 'GOOGLE_DRIVE_API_INITIALIZED' });
+      });
+    });
+  };
 
-  const updateSignedInStatus = (signedIn) => {
-    store.dispatch(googleDriveSignInStatusChanged(signedIn))
+  if (window.google?.accounts?.oauth2) {
+    initGapiForPickerAndDrive();
+  } else {
+    window.addEventListener('load', () => {
+      if (window.google?.accounts?.oauth2) {
+        initGapiForPickerAndDrive();
+      } else {
+        store.dispatch({ type: 'GOOGLE_DRIVE_API_INITIALIZED' });
+      }
+    });
   }
+};
 
-  if (window.gapi) {
-    window.gapi.load("client:auth2:picker:drive-share", initClient)
-  }
-}
+/** Clear token and set signedIn false. Call on 401 from any Drive/Picker request or on explicit sign-out. */
+export const clearGoogleDriveToken = () => ({
+  type: 'CLEAR_GOOGLE_DRIVE_TOKEN'
+});
 
 export const signIn = () => {
-  window.gapi.auth2.getAuthInstance().signIn();
-}
+  // Replaced by requestAccessToken() from googleDriveAuth; kept for compatibility until modal wired.
+};
 
-export const renameGoogleDriveStore = (fileId, userFileName) => {
-  window.gapi.client.drive.files.update({
-    "fileId": fileId,
-    "resource": {
-      "name": userFileName
-    }
+/**
+ * Rename a Drive file. Uses access token from Redux. On 401, dispatch clearGoogleDriveToken.
+ */
+export const renameGoogleDriveStore = (fileId, userFileName, accessToken, dispatch) => {
+  const url = `https://www.googleapis.com/drive/v3/files/${fileId}?supportsAllDrives=true`;
+  fetch(url, {
+    method: 'PATCH',
+    headers: {
+      'Authorization': 'Bearer ' + accessToken,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ name: userFileName })
   })
-    .then(function(response) {
-        // Handle the results here (response.result has the parsed body).
-        console.log("Response", response);
-      },
-      function(err) { console.error("Execute error", err); });
-}
+    .then(res => {
+      if (res.status === 401) {
+        dispatch?.(clearGoogleDriveToken());
+        return;
+      }
+      return res.json();
+    })
+    .then(() => {})
+    .catch(err => console.error('Rename error', err));
+};
 
 const base64urlEncodeDataUrl = (dataUrl) => {
-  return dataUrl.substring('data:image/png;base64,'.length).replace(/\+/g, '-').replace(/\//g, '_')
-}
+  return dataUrl.substring('data:image/png;base64,'.length).replace(/\+/g, '-').replace(/\//g, '_');
+};
 
-export const saveFile = (graph, cachedImages, fileId, fileName, onFileSaved) => {
+/**
+ * Save diagram to Drive (create or overwrite). Uses access token from Redux. On 401, dispatch clearGoogleDriveToken.
+ */
+export const saveFile = (graph, cachedImages, fileId, fileName, onFileSaved, accessToken, dispatch) => {
   const boundary = '-------314159265358979323846';
   const delimiter = "\r\n--" + boundary + "\r\n";
   const close_delim = "\r\n--" + boundary + "--";
-
   const contentType = 'application/vnd.neo4j.arrows+json';
 
   const metadata = {
-    'name': `${fileName}`,
-    'mimeType': contentType,
-    'contentHints': {
-      'thumbnail': {
-        'image': base64urlEncodeDataUrl(renderPngForThumbnail(graph, cachedImages).dataUrl),
-        'mimeType': 'image/png'
+    name: fileName,
+    mimeType: contentType,
+    contentHints: {
+      thumbnail: {
+        image: base64urlEncodeDataUrl(renderPngForThumbnail(graph, cachedImages).dataUrl),
+        mimeType: 'image/png'
       },
-      'indexableText': indexableText(graph)
+      indexableText: indexableText(graph)
     }
   };
 
@@ -77,28 +112,29 @@ export const saveFile = (graph, cachedImages, fileId, fileName, onFileSaved) => 
     JSON.stringify(metadata) +
     delimiter +
     'Content-Type: ' + contentType + '\r\n\r\n' +
-    JSON.stringify({graph}) +
+    JSON.stringify({ graph }) +
     close_delim;
 
-  const request = window.gapi.client.request({
-    'path': `/upload/drive/v3/files${fileId ? '/' + fileId : ''}`,
-    'method': fileId ? 'PATCH' : 'POST',
-    'params': {
-      'uploadType': 'multipart',
-      'supportsAllDrives': true
-    },
-    'headers': {
+  const uploadUrl = `https://www.googleapis.com/upload/drive/v3/files${fileId ? '/' + fileId : ''}?uploadType=multipart&supportsAllDrives=true`;
+  fetch(uploadUrl, {
+    method: fileId ? 'PATCH' : 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + accessToken,
       'Content-Type': 'multipart/related; boundary="' + boundary + '"'
     },
-    'body': multipartRequestBody
-  });
-
-  request.execute((file) => {
-    if (file.error) {
-      console.log(file)
-    } else {
-      onFileSaved(file.id)
-    }
-  });
-
-}
+    body: multipartRequestBody
+  })
+    .then(res => {
+      if (res.status === 401) {
+        dispatch?.(clearGoogleDriveToken());
+        return null;
+      }
+      return res.json();
+    })
+    .then(file => {
+      if (file?.id) {
+        onFileSaved(file.id);
+      }
+    })
+    .catch(err => console.error('Save error', err));
+};

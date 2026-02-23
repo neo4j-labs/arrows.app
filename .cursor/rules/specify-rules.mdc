@@ -1,0 +1,30 @@
+# arrows-app Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2026-02-23
+
+## Active Technologies
+
+- TypeScript 5.0.4 (app `arrows-ts`); some modules still .js (e.g. googleDrive, reducers). + React 18.2, Redux 4.2, Nx 16.2, Vite 4.3; Google Identity Services (GIS) script for auth; Drive API v3 REST; Google Picker. (001-google-drive-auth-migration)
+
+## Project Structure
+
+```text
+backend/
+frontend/
+tests/
+```
+
+## Commands
+
+npm test && npm run lint
+
+## Code Style
+
+TypeScript 5.0.4 (app `arrows-ts`); some modules still .js (e.g. googleDrive, reducers).: Follow standard conventions
+
+## Recent Changes
+
+- 001-google-drive-auth-migration: Added TypeScript 5.0.4 (app `arrows-ts`); some modules still .js (e.g. googleDrive, reducers). + React 18.2, Redux 4.2, Nx 16.2, Vite 4.3; Google Identity Services (GIS) script for auth; Drive API v3 REST; Google Picker.
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

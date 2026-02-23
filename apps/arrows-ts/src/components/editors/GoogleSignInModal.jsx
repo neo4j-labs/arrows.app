@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {connect} from "react-redux"
 import { Modal, Button } from 'semantic-ui-react'
 import {cancelGoogleDriveAuthorization} from "../../actions/storage";
+import {requestAccessToken} from "../../googleDriveAuth";
 
 class GoogleSignInModal extends Component {
 
@@ -9,11 +10,17 @@ class GoogleSignInModal extends Component {
     this.props.onCancel()
   }
 
+  onAuthorize = () => {
+    // Must be in response to user gesture only (FR-002).
+    this.props.requestAccessToken()
+  }
+
   render() {
+    const { showModal, apiInitialized } = this.props;
     return (
       <Modal
         size="small"
-        open={this.props.showModal}
+        open={showModal}
         onClose={this.onCancel}
       >
         <Modal.Header>Google Drive</Modal.Header>
@@ -43,7 +50,8 @@ class GoogleSignInModal extends Component {
           />
           <Button
             primary
-            onClick={this.props.signIn}
+            disabled={!apiInitialized}
+            onClick={this.onAuthorize}
             content="Authorize"
           />
         </Modal.Actions>
@@ -55,15 +63,15 @@ class GoogleSignInModal extends Component {
 const mapStateToProps = state => {
   return {
     showModal: !state.googleDrive.signedIn &&
-      (state.storage.mode === 'GOOGLE_DRIVE' || state.storage.status === 'PICKING_FROM_GOOGLE_DRIVE')
+      (state.storage.mode === 'GOOGLE_DRIVE' || state.storage.status === 'PICKING_FROM_GOOGLE_DRIVE'),
+    apiInitialized: state.googleDrive.apiInitialized,
+    signedIn: state.googleDrive.signedIn
   }
 }
 
 const mapDispatchToProps = dispatch => {
   return {
-    signIn: () => {
-      window.gapi.auth2.getAuthInstance().signIn();
-    },
+    requestAccessToken,
     onCancel: () => {
       dispatch(cancelGoogleDriveAuthorization())
     }

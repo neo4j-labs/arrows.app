@@ -1,69 +1,59 @@
 import React, { Component } from 'react'
-import config from "../config";
-import { DISCOVERY_DOCS, SCOPES } from '../actions/googleDrive'
+import { connect } from 'react-redux'
+import config from "../config"
 
-export default class extends Component {
+class GoogleDrivePickerWrapper extends Component {
 
-  componentDidMount () {
-    this.createPicker()
+  componentDidMount() {
+    this.tryCreatePicker();
   }
 
-  ensureGapiAndActWithToken(setupPicker) {
-    const showPicker = () => {
-      setupPicker(window.gapi.auth.getToken().access_token)
-      this.picker.setVisible(true)
-    }
-
-    if (window.gapi.auth2.getAuthInstance() && window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-      showPicker()
-    } else {
-      window.gapi.client.init({
-        apiKey: config.apiKey,
-        clientId: config.clientId,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES
-      }).then(() => {
-        if (window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-          showPicker()
-        } else {
-          window.gapi.auth2.getAuthInstance().signIn()
-            .then(() => {
-              showPicker()
-            })
-        }
-      })
+  componentDidUpdate(prevProps) {
+    if (this.props.accessToken && !prevProps.accessToken) {
+      this.tryCreatePicker();
     }
   }
 
-  createPicker() {
-    const setupPicker = (accessToken) => {
-      const view = new window.google.picker.DocsView()
-      view.setMimeTypes("application/vnd.neo4j.arrows+json")
-      view.setMode(window.google.picker.DocsViewMode.LIST)
-      this.picker = new window.google.picker.PickerBuilder()
-        .addView(view)
-        .hideTitleBar(true)
-        .setOAuthToken(accessToken)
-        .setAppId(config.appId)
-        .setDeveloperKey(config.apiKey)
-        .setCallback(this.pickerCallback.bind(this))
-        .build();
+  tryCreatePicker() {
+    const { accessToken } = this.props;
+    if (!accessToken || !window.google?.picker) {
+      return;
     }
-
-    this.ensureGapiAndActWithToken(setupPicker)
+    if (this.picker) {
+      this.picker.setVisible(true);
+      return;
+    }
+    const view = new window.google.picker.DocsView();
+    view.setMimeTypes("application/vnd.neo4j.arrows+json");
+    view.setMode(window.google.picker.DocsViewMode.LIST);
+    this.picker = new window.google.picker.PickerBuilder()
+      .addView(view)
+      .hideTitleBar(true)
+      .setOAuthToken(accessToken)
+      .setAppId(config.appId)
+      .setDeveloperKey(config.apiKey)
+      .setCallback(this.pickerCallback.bind(this))
+      .build();
+    this.picker.setVisible(true);
   }
 
-  pickerCallback ({action, docs}) {
+  pickerCallback({ action, docs }) {
     if (action === 'picked' && docs.length > 0) {
-      const fileId = docs[0].id
-      this.props.onFilePicked(fileId)
+      const fileId = docs[0].id;
+      this.props.onFilePicked(fileId);
     }
     if (action === 'cancel') {
-      this.props.onCancelPicker()
+      this.props.onCancelPicker();
     }
   }
 
-  render () {
-    return null
+  render() {
+    return null;
   }
 }
+
+const mapStateToProps = (state) => ({
+  accessToken: state.googleDrive?.accessToken
+});
+
+export default connect(mapStateToProps)(GoogleDrivePickerWrapper);
