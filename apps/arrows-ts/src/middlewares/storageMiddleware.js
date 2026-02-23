@@ -39,9 +39,13 @@ export const storageMiddleware = store => next => action => {
 
   if (action.type === 'RENAME_DIAGRAM') {
     switch (storage.mode) {
-      case "GOOGLE_DRIVE":
-        renameGoogleDriveStore(storage.fileId, action.diagramName)
-        break
+      case "GOOGLE_DRIVE": {
+        const accessToken = newState.googleDrive?.accessToken;
+        if (accessToken) {
+          renameGoogleDriveStore(storage.fileId, action.diagramName, accessToken, store.dispatch);
+        }
+        break;
+      }
 
       case "LOCAL_STORAGE":
         saveGraphToLocalStorage(storage.fileId,{graph, diagramName})
@@ -58,13 +62,14 @@ export const storageMiddleware = store => next => action => {
       }
 
       case 'POST': {
-        store.dispatch(postingGraph())
+        const accessToken = newState.googleDrive?.accessToken;
+        if (!accessToken) break;
+        store.dispatch(postingGraph());
         const onFileSaved = (fileId) => {
-          store.dispatch(postedFileOnGoogleDrive(fileId))
-        }
-
-        saveFile(graph, cachedImages, null, newState.diagramName, onFileSaved)
-        break
+          store.dispatch(postedFileOnGoogleDrive(fileId));
+        };
+        saveFile(graph, cachedImages, null, newState.diagramName, onFileSaved, accessToken, store.dispatch);
+        break;
       }
     }
   }
@@ -108,15 +113,16 @@ export const storageMiddleware = store => next => action => {
           }
 
           deBounce(() => {
-            store.dispatch(puttingGraph())
-
+            const accessToken = newState.googleDrive?.accessToken;
+            if (!accessToken) return;
+            store.dispatch(puttingGraph());
             saveFile(graph, cachedImages, storage.fileId, newState.diagramName, (fileId) => {
               if (fileId !== storage.fileId) {
                 console.warn("Unexpected change of fileId from %o to %o",
-                  storage.fileId, fileId)
+                  storage.fileId, fileId);
               }
-              store.dispatch(puttingGraphSucceeded())
-            })
+              store.dispatch(puttingGraphSucceeded());
+            }, accessToken, store.dispatch);
           }, driveUpdateInterval)
         }
         break

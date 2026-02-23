@@ -1,6 +1,6 @@
 {
   "name": "arrows-workspace",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "license": "Apache2",
   "scripts": {
     "build": "nx run arrows-ts:build"

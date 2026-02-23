@@ -62,8 +62,8 @@ class Header extends PureComponent {
   // }
 
   render() {
-    const openShareDialog = storage => {
-      new GoogleDriveShare(storage).openDialog()
+    const openShareDialog = (storage, accessToken, on401) => {
+      new GoogleDriveShare(storage, accessToken, on401).openDialog()
     }
 
     const newDiagramOptions = ['GOOGLE_DRIVE', 'LOCAL_STORAGE'].map(mode => (
@@ -124,6 +124,14 @@ class Header extends PureComponent {
             <div role="option" className="item" onClick={this.props.onImportClick}>Import</div>
             <div className="divider"/>
             <div role="option" className="item" onClick={this.props.onHelpClick}>Help</div>
+            {this.props.googleDrive?.signedIn && this.props.storage.mode === 'GOOGLE_DRIVE' ? (
+              <>
+                <div className="divider"/>
+                <div role="option" className="item" onClick={this.props.onSignOutGoogleDrive}>
+                  Sign out from Google Drive
+                </div>
+              </>
+            ) : null}
           </div>
         </div>
         <DiagramNameEditor
@@ -161,7 +169,8 @@ class Header extends PureComponent {
           {this.props.storage.mode === 'GOOGLE_DRIVE' ?
             <Menu.Item>
               <Button
-                onClick={() => openShareDialog(this.props.storage)}
+                disabled={!this.props.googleDrive?.accessToken || !this.props.storage.fileId}
+                onClick={() => openShareDialog(this.props.storage, this.props.googleDrive?.accessToken, this.props.onClearGoogleDriveToken)}
                 icon='users'
                 color='orange'
                 content='Share'

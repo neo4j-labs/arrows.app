@@ -2,42 +2,57 @@ import { Point } from "../model/Point";
 import { gettingDiagramNameSucceeded } from "../actions/diagramName";
 import {completeWithDefaults} from "../model/styling";
 import {emptyGraph} from "../model/Graph";
-import {gettingGraph, gettingGraphSucceeded} from "../actions/storage";
+import {gettingGraph, gettingGraphSucceeded, gettingGraphFailed} from "../actions/storage";
+import {clearGoogleDriveToken} from "../actions/googleDrive";
 
 export function fetchGraphFromDrive(fileId) {
-  return function (dispatch) {
-    dispatch(gettingGraph())
+  return function (dispatch, getState) {
+    const accessToken = getState().googleDrive?.accessToken;
+    if (!accessToken) {
+      return;
+    }
+    dispatch(gettingGraph());
 
-    const fetchData = () => getFileInfo(fileId)
+    const on401 = () => dispatch(clearGoogleDriveToken());
+
+    const fetchData = () => getFileInfo(fileId, false, accessToken, on401)
       .then(data => {
-        const layers = constructGraphFromFile(JSON.parse(data))
-        dispatch(gettingGraphSucceeded(layers.graph))
+        const layers = constructGraphFromFile(JSON.parse(data));
+        dispatch(gettingGraphSucceeded(layers.graph));
       })
+      .catch(() => dispatch(gettingGraphFailed()));
 
     const fetchFileName = () =>
-      getFileInfo(fileId, true)
+      getFileInfo(fileId, true, accessToken, on401)
         .then(fileMetadata => {
-          const fileName = JSON.parse(fileMetadata).name
-          dispatch(gettingDiagramNameSucceeded(fileName))
+          const fileName = JSON.parse(fileMetadata).name;
+          dispatch(gettingDiagramNameSucceeded(fileName));
         })
+        .catch(() => {});
 
-    fetchFileName()
-    fetchData()
-  }
+    fetchFileName();
+    fetchData();
+  };
 }
 
-const getFileInfo = (fileId, metaOnly = false) => {
+const getFileInfo = (fileId, metaOnly = false, accessToken, on401) => {
   return new Promise((resolve, reject) => {
-    const downloadUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?supportsAllDrives=true${metaOnly ? '' : '&alt=media'}`
-    const accessToken = window.gapi.auth.getToken().access_token
+    const downloadUrl = `https://www.googleapis.com/drive/v3/files/${fileId}?supportsAllDrives=true${metaOnly ? '' : '&alt=media'}`;
     const xhr = new XMLHttpRequest();
-    xhr.open('GET', downloadUrl)
-    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken)
-    xhr.onload = () => resolve(xhr.responseText)
-    xhr.onerror = error => reject(error)
-    xhr.send()
-  })
-}
+    xhr.open('GET', downloadUrl);
+    xhr.setRequestHeader('Authorization', 'Bearer ' + accessToken);
+    xhr.onload = () => {
+      if (xhr.status === 401) {
+        on401?.();
+        reject(new Error('Unauthorized'));
+        return;
+      }
+      resolve(xhr.responseText);
+    };
+    xhr.onerror = () => reject(xhr);
+    xhr.send();
+  });
+};
 
 export const constructGraphFromFile = (data) => {
   let graph

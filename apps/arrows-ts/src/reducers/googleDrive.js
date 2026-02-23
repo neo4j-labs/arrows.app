@@ -1,11 +1,32 @@
-export default (state = {}, action) => {
+const initialState = {
+  apiInitialized: false,
+  signedIn: false,
+  accessToken: null,
+  expiresAt: null
+};
+
+export default (state = initialState, action) => {
   switch (action.type) {
-    case 'GOOGLE_DRIVE_SIGN_IN_STATUS':
+    case 'GOOGLE_DRIVE_API_INITIALIZED':
       return {
-        apiInitialized: true,
-        signedIn: action.signedIn
-      }
+        ...state,
+        apiInitialized: true
+      };
+    case 'SET_GOOGLE_DRIVE_TOKEN':
+      return {
+        ...state,
+        accessToken: action.accessToken,
+        expiresAt: action.expiresAt ?? null,
+        signedIn: true
+      };
+    case 'CLEAR_GOOGLE_DRIVE_TOKEN':
+      return {
+        ...state,
+        accessToken: null,
+        expiresAt: null,
+        signedIn: false
+      };
     default:
-      return state
+      return state;
   }
-}
+};

@@ -139,4 +139,11 @@ Both triggers can use the same `cloudbuild.yaml`; the only difference is which a
 
 - **Build fails on “secret not found”**: Check Secret Manager secret name/version and that the Cloud Build service account has `roles/secretmanager.secretAccessor` on that secret.
 - **Drive / Picker not working**: Ensure the API key is set in the build (Secret Manager) and that the key has the Drive API (and any required OAuth client IDs) configured in Google Cloud Console.
+- **Error 400: redirect_uri_mismatch** (e.g. on staging): Google Identity Services (GIS) only allows sign-in from **authorized JavaScript origins**. You must register each deployment origin in the OAuth 2.0 client used by the app (`clientId` in `apps/arrows-ts/src/config.ts`).
+  1. Open [Google Cloud Console → APIs & Services → Credentials](https://console.cloud.google.com/apis/credentials?project=arrows-app-295615).
+  2. Under **OAuth 2.0 Client IDs**, open the client that matches the app’s `clientId` (e.g. “Web client” for the arrows-app).
+  3. Under **Authorized JavaScript origins**, add:
+     - **Production**: `https://arrows-app-295615.nw.r.appspot.com` (or your production domain, e.g. `https://arrows.neo4jlabs.com`).
+     - **Staging**: `https://staging-dot-arrows-app-295615.nw.r.appspot.com` (use the exact origin shown in the browser error if different)
+  4. Save. Changes take effect quickly; retry sign-in on the affected environment.
 - **Wrong project**: Use `gcloud config set project arrows-app-295615` (or your project ID) and ensure the trigger runs in the same project.

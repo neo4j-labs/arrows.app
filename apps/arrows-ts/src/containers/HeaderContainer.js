@@ -11,6 +11,8 @@ import {
   postCurrentDiagramAsNewFileOnGoogleDrive
 } from "../actions/storage";
 import {ActionCreators as UndoActionCreators} from "redux-undo";
+import {signOut} from "../googleDriveAuth";
+import {clearGoogleDriveToken} from "../actions/googleDrive";
 
 const mapStateToProps = state => {
   return {
@@ -20,7 +22,8 @@ const mapStateToProps = state => {
       undo: state.graph.past.length < 1,
       redo: state.graph.future.length < 1
     },
-    storage: state.storage
+    storage: state.storage,
+    googleDrive: state.googleDrive
   }
 }
 
@@ -64,6 +67,12 @@ const mapDispatchToProps = dispatch => {
     },
     onHelpClick: () => {
       dispatch(showHelpDialog())
+    },
+    onSignOutGoogleDrive: () => {
+      signOut()
+    },
+    onClearGoogleDriveToken: () => {
+      dispatch(clearGoogleDriveToken())
     }
   }
 }
