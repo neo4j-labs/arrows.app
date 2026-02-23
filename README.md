@@ -28,6 +28,8 @@ For suggestions and feedback, please start a [discussion](https://github.com/neo
 
 To chat directly with the developers about contributing code, join us over on [Neo4j Discord #neo4j-arrows](https://discord.gg/neo4j).
 
+**Deploying to GCP:** See [DEPLOYMENT.md](DEPLOYMENT.md) for the publishing workflow, prerequisites (GCP project, API key, Secret Manager), and how to deploy to production or staging.
+
 ---
 
 # Arrows codebase

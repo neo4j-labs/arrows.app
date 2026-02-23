@@ -1,3 +1,8 @@
+# Optional substitution: set _APP_YAML=app.staging.yaml in a trigger to deploy to staging.
+# Default (production): app.yaml
+substitutions:
+  _APP_YAML: 'app.yaml'
+
 steps:
 - name: node:18
   entrypoint: npm
@@ -9,7 +14,7 @@ steps:
   secretEnv: ['VITE_GOOGLE_API_KEY']
 
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['app', 'deploy']
+  args: ['app', 'deploy', '${_APP_YAML}']
 
 availableSecrets:
   secretManager:

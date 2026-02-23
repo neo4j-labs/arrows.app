@@ -1,0 +1,17 @@
+# App Engine staging service. Deploy with: gcloud app deploy app.staging.yaml
+# URL: https://staging-dot-<project-id>.appspot.com
+runtime: python311
+service: staging
+
+handlers:
+- url: /
+  static_files: dist/apps/arrows-ts/index.html
+  upload: dist/apps/arrows-ts/index.html
+  secure: always
+  redirect_http_response_code: 301
+
+- url: /(.*)
+  static_files: dist/apps/arrows-ts/\1
+  upload: dist/apps/arrows-ts/(.*)
+  secure: always
+  redirect_http_response_code: 301

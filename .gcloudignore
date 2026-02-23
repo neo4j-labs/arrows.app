@@ -1,6 +1,13 @@
+# Do not use #!include:.gitignore — it adds "dist", and the built app
+# must be uploaded. We ignore only what we need and leave dist/ included.
 .gcloudignore
 .git
 .gitignore
-#!include:.gitignore
-
-!/dist/**
+node_modules
+*.log
+.env*
+.vscode
+coverage
+.nyc_output
+*.md
+!DEPLOYMENT.md
