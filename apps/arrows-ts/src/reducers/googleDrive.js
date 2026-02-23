@@ -12,12 +12,6 @@ export default (state = initialState, action) => {
         ...state,
         apiInitialized: true
       };
-    case 'GOOGLE_DRIVE_SIGN_IN_STATUS':
-      return {
-        ...state,
-        apiInitialized: true,
-        signedIn: action.signedIn
-      };
     case 'SET_GOOGLE_DRIVE_TOKEN':
       return {
         ...state,

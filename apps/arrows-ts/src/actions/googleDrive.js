@@ -2,9 +2,9 @@ import config from "../config";
 import {renderPngForThumbnail} from "../graphics/utils/offScreenCanvasRenderer";
 import {indexableText} from "../model/Graph";
 import {initTokenClient} from "../googleDriveAuth";
+import {DISCOVERY_DOCS, SCOPES} from "../googleDriveConstants";
 
-export const DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"];
-export const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/drive.install';
+export { DISCOVERY_DOCS, SCOPES };
 
 /**
  * Initialize Google Drive API: GIS token client + gapi for Picker/Drive upload only.
@@ -13,9 +13,10 @@ export const SCOPES = 'https://www.googleapis.com/auth/drive.file https://www.go
  * so that signedIn is set false and the user can re-authorize on next user gesture.
  */
 export const initGoogleDriveApi = (store) => {
-  initTokenClient(store);
-
   const initGapiForPickerAndDrive = () => {
+    if (window.google?.accounts?.oauth2) {
+      initTokenClient(store);
+    }
     if (!window.gapi) {
       store.dispatch({ type: 'GOOGLE_DRIVE_API_INITIALIZED' });
       return;
@@ -39,9 +40,8 @@ export const initGoogleDriveApi = (store) => {
     initGapiForPickerAndDrive();
   } else {
     window.addEventListener('load', () => {
-      if (window.google?.accounts?.oauth2) {
-        initGapiForPickerAndDrive();
-      } else {
+      initGapiForPickerAndDrive();
+      if (!window.google?.accounts?.oauth2) {
         store.dispatch({ type: 'GOOGLE_DRIVE_API_INITIALIZED' });
       }
     });
@@ -52,10 +52,6 @@ export const initGoogleDriveApi = (store) => {
 export const clearGoogleDriveToken = () => ({
   type: 'CLEAR_GOOGLE_DRIVE_TOKEN'
 });
-
-export const signIn = () => {
-  // Replaced by requestAccessToken() from googleDriveAuth; kept for compatibility until modal wired.
-};
 
 /**
  * Rename a Drive file. Uses access token from Redux. On 401, dispatch clearGoogleDriveToken.

@@ -85,11 +85,6 @@ export function postedFileToLocalStorage() {
   }
 }
 
-export const googleDriveSignInStatusChanged = (signedIn) => ({
-  type: 'GOOGLE_DRIVE_SIGN_IN_STATUS',
-  signedIn
-})
-
 export const cancelGoogleDriveAuthorization = () => (dispatch, getState) => {
   const state = getState()
   const { storage, recentStorage } = state

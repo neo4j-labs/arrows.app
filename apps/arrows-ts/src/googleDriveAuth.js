@@ -5,7 +5,7 @@
  */
 
 import config from './config';
-import { SCOPES } from './actions/googleDrive';
+import { SCOPES } from './googleDriveConstants';
 
 let tokenClient = null;
 let storeRef = null;

@@ -9,9 +9,9 @@ Auto-generated from all feature plans. Last updated: 2026-02-23
 ## Project Structure
 
 ```text
-backend/
-frontend/
-tests/
+apps/          # arrows-ts (main app), arrows-ts-e2e, arrows-app (legacy)
+libs/          # model, graphics, selectors, etc.
+specs/         # Feature specs and implementation plans
 ```
 
 ## Commands

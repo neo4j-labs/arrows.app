@@ -30,6 +30,7 @@ export default class GoogleDriveShareWrapper {
       })
       .then(file => {
         if (!file?.webViewLink) return;
+        // No in-app toast in this codebase; using alert for feedback. A follow-up could add a non-blocking toast.
         if (navigator.clipboard?.writeText) {
           navigator.clipboard.writeText(file.webViewLink).then(() => {
             alert('Link copied to clipboard.');
