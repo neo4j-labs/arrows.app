@@ -10,19 +10,13 @@ To setup this workspace, run the following command at the root of the repo:
 npm install
 ```
 
-> The repo is due some dependency updates, if you have conflicts locally on install, please attach the `--force` flag to the command above.
-
-Then, you can build frontend and the local dependencies with:
-
-```bash
-npm run build
-```
-
-Now, you can follow the commands for the development server.
+> If you see peer dependency conflicts, use `--legacy-peer-deps` instead of `--force`.
 
 ## Development server
 
-Run `npx nx serve arrows-app` for a dev server. Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+Run `npx nx serve arrows-ts` for a dev server (the production app). Navigate to http://localhost:4200/. The app will automatically reload if you change any of the source files.
+
+To run the legacy app instead: `npx nx serve arrows-app`.
 
 ## Understand this workspace
 

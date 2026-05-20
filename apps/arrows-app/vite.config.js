@@ -17,5 +17,6 @@ export default defineConfig({
     setupFiles: 'src/setupTests.js',
     css: true,
   },
+  // commonjs() transforms CJS require() calls (e.g. neo4jStorage) to ESM for Vite
   plugins: [react(), commonjs()],
 });
