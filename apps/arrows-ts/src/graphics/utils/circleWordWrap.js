@@ -1,3 +1,21 @@
+export const splitIntoLines = (text, lineWidth, measureWidth) => {
+  const words = text.split(/\s+/)
+  const lines = []
+  let currentLine = ''
+  for (const word of words) {
+    if (currentLine === '') {
+      currentLine = word
+    } else if (measureWidth(word) <= lineWidth) {
+      currentLine += ' ' + word
+    } else {
+      lines.push(currentLine)
+      currentLine = word
+    }
+  }
+  if (currentLine !== '') lines.push(currentLine)
+  return lines
+}
+
 export const fitTextToCircle = (text, radius, measureWidth, lineHeight) => {
 
   const sq = (n) => n * n;
