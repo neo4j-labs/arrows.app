@@ -16,5 +16,7 @@ export class ResolvedRelationship {
     readonly endAttachment:VisualAttachment, 
     readonly selected:boolean,
     readonly graph:Graph
-  ) {}
+  ) {
+    this.type = relationship.type
+  }
 }

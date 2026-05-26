@@ -1,0 +1,70 @@
+# arrows-code
+
+Subsystem brings arrows.app into VS Code (extension + MCP server). Self-contained under `arrows-code/`; deletable without breaking the host monorepo.
+
+## Layout
+
+```
+arrows-code/
+├── apps/
+│   ├── vscode-arrows/   VS Code extension (CustomTextEditorProvider + commands + sidebar)
+│   └── mcp-arrows/      MCP server (stdio transport, tools + resources)
+├── libs/
+│   ├── format-json/     read/write canonical .arrows JSON
+│   ├── format-cypher/   exportCypher (relocated from apps/arrows-ts)
+│   ├── patch/           PatchOp types + apply()
+│   ├── renderer-host/   thin SVG wrapper over @neo4j-arrows/graphics
+│   ├── validator/       structural validation
+│   └── test-utils/      shared fixtures
+└── fixtures/examples/   bundled .arrows examples shown in sidebar
+```
+
+Only allowed imports from the host repo: `@neo4j-arrows/{model,graphics,selectors}`. Never `apps/arrows-ts/**`.
+
+## Commands
+
+```bash
+npx nx test arrows-code-validator               # one project
+npx nx run-many -t test --projects=arrows-code-* # all
+cd arrows-code/apps/vscode-arrows && npm run build        # bundle + copy embed/examples
+cd arrows-code/apps/vscode-arrows && npm run commands-test  # real VS Code Electron host
+cd arrows-code/apps/vscode-arrows && npm run package      # build .vsix
+```
+
+## Comment policy
+
+Default: write no comment.
+
+Add one only when the *why* isn't visible in the code:
+
+- A platform quirk (`acquireVsCodeApi` is one-shot; jsdom `getContext` throws when canvas npm pkg is absent)
+- A historical bug the code now guards against (echo ping-pong, mid-drag clobber)
+- A non-obvious invariant a future reader would otherwise break
+- A reference to an external contract that constrains the code (Cypher escape rules, VS Code message protocol)
+
+Never write:
+
+- File header doc-blocks describing what the file does (the export names already do)
+- Comments restating the next line (`// increment counter` above `counter++`)
+- Multi-paragraph comments. One sentence max.
+- Comments narrating sections of a function (`// 1. Parse`, `// 2. Validate`). Extract a function if you need a heading.
+- TODO/FIXME without an issue link. Move to GitHub issues.
+- Justification that belongs in the commit message ("fix for bug #123", "added for the X flow").
+- `@param`/`@returns` JSDoc on TypeScript code — types already document those.
+
+When trimming an existing comment, ask: would removing it confuse a competent reader? If no, remove.
+
+## Architecture invariants
+
+- **Graph is immutable.** Reducers and patch ops return new objects; never mutate in place.
+- **Bridge state machine.** Outbound (shouldEmit) and inbound (applyHostLoad deferral) consult the same `isUserBusy` predicate. Don't add a new busy-condition to one side without the other.
+- **Single race flag in PreviewProvider.** `roundTripState: 'idle' | 'applying'`. Don't split it back into two.
+- **Document-version guard.** Every webview→host edit checks `originatingDocVersion` against current. Stale edits drop.
+
+## Test conventions
+
+Co-located `*.spec.ts(x)` next to source. Vitest. Use `@arrows-code/test-utils` fixtures (`emptyGraph`, `makeNode`, `makeRel`, `aliceBobGraph`) — don't inline structurally-equivalent graphs across files.
+
+`commands-test.mjs` boots a real VS Code Electron host via `@vscode/test-electron`. Run before packaging.
+
+The bridge has a torture spec (`apps/arrows-ts/src/embed/bridge.spec.ts`) that hammers interleaved drag/edit/load operations through a fake store. Add new bridge scenarios there, not new ad-hoc tests.

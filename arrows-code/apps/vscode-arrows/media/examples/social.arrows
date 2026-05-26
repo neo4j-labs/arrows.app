@@ -1,0 +1,32 @@
+{
+  "style": {
+    "background-color": "#ffffff",
+    "border-color": "#222222",
+    "border-width": 3,
+    "caption-color": "#222222",
+    "caption-font-size": 32,
+    "font-family": "sans-serif",
+    "node-color": "#ffe081",
+    "radius": 55
+  },
+  "nodes": [
+    { "id": "u1", "position": { "x": -700, "y":  -300 }, "caption": "Alice",   "labels": ["User"], "properties": { "handle": "'@alice'", "joined": "'2023-01-04'" }, "style": { "node-color": "#a7c7e7" } },
+    { "id": "u2", "position": { "x":  -50, "y":  -600 }, "caption": "Bob",     "labels": ["User"], "properties": { "handle": "'@bob'" },   "style": { "node-color": "#a7c7e7" } },
+    { "id": "u3", "position": { "x":  600, "y":  -300 }, "caption": "Carol",   "labels": ["User"], "properties": { "handle": "'@carol'" }, "style": { "node-color": "#a7c7e7" } },
+    { "id": "u4", "position": { "x":  -50, "y":   200 }, "caption": "Dan",     "labels": ["User"], "properties": { "handle": "'@dan'" },   "style": { "node-color": "#a7c7e7" } },
+    { "id": "p1", "position": { "x": -700, "y":   500 }, "caption": "Post #1", "labels": ["Post"], "properties": { "text": "'Welcome to my graph!'", "postedAt": "'2025-04-20'" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "p2", "position": { "x":  600, "y":   500 }, "caption": "Post #2", "labels": ["Post"], "properties": { "text": "'Trying out Cypher today'", "postedAt": "'2025-05-02'" }, "style": { "node-color": "#fff1a8" } }
+  ],
+  "relationships": [
+    { "id": "r1",  "fromId": "u1", "toId": "u2", "type": "FOLLOWS",      "properties": { "since": "'2024-02'" }, "style": {} },
+    { "id": "r2",  "fromId": "u2", "toId": "u3", "type": "FOLLOWS",      "properties": {}, "style": {} },
+    { "id": "r3",  "fromId": "u3", "toId": "u1", "type": "FOLLOWS",      "properties": {}, "style": {} },
+    { "id": "r4",  "fromId": "u4", "toId": "u1", "type": "FOLLOWS",      "properties": {}, "style": {} },
+    { "id": "r5",  "fromId": "u4", "toId": "u2", "type": "FOLLOWS",      "properties": {}, "style": {} },
+    { "id": "r6",  "fromId": "u1", "toId": "p1", "type": "POSTED",       "properties": {}, "style": {} },
+    { "id": "r7",  "fromId": "u3", "toId": "p2", "type": "POSTED",       "properties": {}, "style": {} },
+    { "id": "r8",  "fromId": "u2", "toId": "p1", "type": "LIKED",        "properties": {}, "style": {} },
+    { "id": "r9",  "fromId": "u4", "toId": "p1", "type": "LIKED",        "properties": {}, "style": {} },
+    { "id": "r10", "fromId": "u1", "toId": "p2", "type": "COMMENTED_ON", "properties": { "text": "'nice one!'" }, "style": {} }
+  ]
+}

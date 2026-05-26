@@ -1,0 +1,36 @@
+{
+  "style": {
+    "background-color": "#ffffff",
+    "border-color": "#222222",
+    "border-width": 3,
+    "caption-color": "#222222",
+    "caption-font-size": 36,
+    "font-family": "sans-serif",
+    "node-color": "#ffe081",
+    "radius": 55
+  },
+  "nodes": [
+    { "id": "c1",  "position": { "x": -500, "y":    0 }, "caption": "Erin",            "labels": ["Customer"], "properties": { "email": "'erin@example.com'", "since": "'2024-03-01'" }, "style": { "node-color": "#a7c7e7" } },
+    { "id": "o1",  "position": { "x": -150, "y": -200 }, "caption": "#1042",           "labels": ["Order"],    "properties": { "placedAt": "'2025-04-12'", "total": "129.50" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "o2",  "position": { "x": -150, "y":  200 }, "caption": "#1077",           "labels": ["Order"],    "properties": { "placedAt": "'2025-05-02'", "total": "44.00" },  "style": { "node-color": "#fff1a8" } },
+    { "id": "p1",  "position": { "x":  250, "y": -300 }, "caption": "Wireless mouse",  "labels": ["Product"],  "properties": { "sku": "'MS-WX-01'", "price": "29.50" }, "style": { "node-color": "#ffb4a2" } },
+    { "id": "p2",  "position": { "x":  250, "y": -100 }, "caption": "Mechanical kbd",  "labels": ["Product"],  "properties": { "sku": "'KB-MX-87'", "price": "100.00" }, "style": { "node-color": "#ffb4a2" } },
+    { "id": "p3",  "position": { "x":  250, "y":  150 }, "caption": "USB-C cable",     "labels": ["Product"],  "properties": { "sku": "'CB-USC-1'", "price": "12.00" }, "style": { "node-color": "#ffb4a2" } },
+    { "id": "p4",  "position": { "x":  250, "y":  350 }, "caption": "Mouse pad XL",    "labels": ["Product"],  "properties": { "sku": "'MP-XL-01'", "price": "32.00" }, "style": { "node-color": "#ffb4a2" } },
+    { "id": "cat1","position": { "x":  700, "y":  -50 }, "caption": "Peripherals",     "labels": ["Category"], "properties": {}, "style": { "node-color": "#c0a9e0" } },
+    { "id": "cat2","position": { "x":  700, "y":  250 }, "caption": "Accessories",     "labels": ["Category"], "properties": {}, "style": { "node-color": "#c0a9e0" } }
+  ],
+  "relationships": [
+    { "id": "r1",  "fromId": "c1",  "toId": "o1",  "type": "PLACED",   "properties": {}, "style": {} },
+    { "id": "r2",  "fromId": "c1",  "toId": "o2",  "type": "PLACED",   "properties": {}, "style": {} },
+    { "id": "r3",  "fromId": "o1",  "toId": "p1",  "type": "CONTAINS", "properties": { "qty": "1" }, "style": {} },
+    { "id": "r4",  "fromId": "o1",  "toId": "p2",  "type": "CONTAINS", "properties": { "qty": "1" }, "style": {} },
+    { "id": "r5",  "fromId": "o2",  "toId": "p3",  "type": "CONTAINS", "properties": { "qty": "2" }, "style": {} },
+    { "id": "r6",  "fromId": "o2",  "toId": "p4",  "type": "CONTAINS", "properties": { "qty": "1" }, "style": {} },
+    { "id": "r7",  "fromId": "p1",  "toId": "cat1","type": "IN_CATEGORY", "properties": {}, "style": {} },
+    { "id": "r8",  "fromId": "p2",  "toId": "cat1","type": "IN_CATEGORY", "properties": {}, "style": {} },
+    { "id": "r9",  "fromId": "p3",  "toId": "cat2","type": "IN_CATEGORY", "properties": {}, "style": {} },
+    { "id": "r10", "fromId": "p4",  "toId": "cat2","type": "IN_CATEGORY", "properties": {}, "style": {} },
+    { "id": "r11", "fromId": "c1",  "toId": "p4",  "type": "VIEWED",   "properties": { "at": "'2025-04-30'" }, "style": { "arrow-color": "#999", "directionality": "directed" } }
+  ]
+}

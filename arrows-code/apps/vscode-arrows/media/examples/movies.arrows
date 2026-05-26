@@ -1,0 +1,32 @@
+{
+  "style": {
+    "background-color": "#ffffff",
+    "border-color": "#222222",
+    "border-width": 3,
+    "caption-color": "#222222",
+    "caption-font-size": 36,
+    "font-family": "sans-serif",
+    "node-color": "#ffd166",
+    "radius": 60
+  },
+  "nodes": [
+    { "id": "p1", "position": { "x":   200, "y": -500 }, "caption": "Keanu Reeves",     "labels": ["Person"],            "properties": { "born": "1964" }, "style": {} },
+    { "id": "p2", "position": { "x":  -700, "y": -500 }, "caption": "Carrie-Anne Moss", "labels": ["Person"],            "properties": { "born": "1967" }, "style": {} },
+    { "id": "p3", "position": { "x":  1100, "y": -500 }, "caption": "Laurence Fishburne","labels": ["Person"],            "properties": { "born": "1961" }, "style": {} },
+    { "id": "p4", "position": { "x":  -300, "y":  500 }, "caption": "Lana Wachowski",   "labels": ["Person", "Director"], "properties": { "born": "1965" }, "style": { "node-color": "#118ab2" } },
+    { "id": "p5", "position": { "x":   700, "y":  500 }, "caption": "Chad Stahelski",   "labels": ["Person", "Director"], "properties": { "born": "1968" }, "style": { "node-color": "#118ab2" } },
+    { "id": "m1", "position": { "x":  -300, "y":    0 }, "caption": "The Matrix",       "labels": ["Movie"],             "properties": { "released": "1999", "tagline": "'Welcome to the Real World'" }, "style": { "node-color": "#06d6a0" } },
+    { "id": "m2", "position": { "x":   700, "y":    0 }, "caption": "John Wick",        "labels": ["Movie"],             "properties": { "released": "2014" }, "style": { "node-color": "#06d6a0" } },
+    { "id": "g1", "position": { "x":   200, "y":  900 }, "caption": "Action",           "labels": ["Genre"],             "properties": {}, "style": { "node-color": "#ef476f" } }
+  ],
+  "relationships": [
+    { "id": "r1", "fromId": "p1", "toId": "m1", "type": "ACTED_IN", "properties": { "roles": "['Neo']" },       "style": {} },
+    { "id": "r2", "fromId": "p2", "toId": "m1", "type": "ACTED_IN", "properties": { "roles": "['Trinity']" },   "style": {} },
+    { "id": "r3", "fromId": "p3", "toId": "m1", "type": "ACTED_IN", "properties": { "roles": "['Morpheus']" },  "style": {} },
+    { "id": "r4", "fromId": "p1", "toId": "m2", "type": "ACTED_IN", "properties": { "roles": "['John Wick']" }, "style": {} },
+    { "id": "r5", "fromId": "p4", "toId": "m1", "type": "DIRECTED", "properties": {}, "style": {} },
+    { "id": "r6", "fromId": "p5", "toId": "m2", "type": "DIRECTED", "properties": {}, "style": {} },
+    { "id": "r7", "fromId": "m1", "toId": "g1", "type": "IN_GENRE", "properties": {}, "style": {} },
+    { "id": "r8", "fromId": "m2", "toId": "g1", "type": "IN_GENRE", "properties": {}, "style": {} }
+  ]
+}

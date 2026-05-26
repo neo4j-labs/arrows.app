@@ -1,0 +1,36 @@
+{
+  "style": {
+    "background-color": "#ffffff",
+    "border-color": "#1a1a1a",
+    "border-width": 3,
+    "caption-color": "#1a1a1a",
+    "caption-font-size": 32,
+    "font-family": "sans-serif",
+    "node-color": "#f5e1da",
+    "radius": 55
+  },
+  "nodes": [
+    { "id": "d1", "position": { "x":  -700, "y":  -700 }, "caption": "Device X",  "labels": ["Device"],  "properties": { "ip": "'10.0.0.42'" }, "style": { "node-color": "#c0a9e0" } },
+    { "id": "d2", "position": { "x":   700, "y":  -700 }, "caption": "Device Y",  "labels": ["Device"],  "properties": { "ip": "'10.0.0.42'" }, "style": { "node-color": "#c0a9e0" } },
+    { "id": "p1", "position": { "x":  -900, "y":  -300 }, "caption": "Person A",  "labels": ["Person"],  "properties": { "ssn": "'***-**-1234'" }, "style": { "node-color": "#ffb4a2" } },
+    { "id": "p2", "position": { "x":   900, "y":  -300 }, "caption": "Person B",  "labels": ["Person"],  "properties": { "ssn": "'***-**-5678'" }, "style": { "node-color": "#ffb4a2" } },
+    { "id": "p3", "position": { "x":     0, "y":   900 }, "caption": "Person C",  "labels": ["Person"],  "properties": { "ssn": "'***-**-9012'" }, "style": { "node-color": "#ffb4a2" } },
+    { "id": "a1", "position": { "x":  -600, "y":     0 }, "caption": "Acct #001", "labels": ["Account"], "properties": { "balance": "8500.00" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "a3", "position": { "x":   600, "y":     0 }, "caption": "Acct #003", "labels": ["Account"], "properties": { "balance": "7400.00" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "a4", "position": { "x":   600, "y":   500 }, "caption": "Acct #004", "labels": ["Account"], "properties": { "balance": "0.00" },    "style": { "node-color": "#fff1a8" } },
+    { "id": "a2", "position": { "x":  -600, "y":   500 }, "caption": "Acct #002", "labels": ["Account"], "properties": { "balance": "120.00" }, "style": { "node-color": "#fff1a8" } }
+  ],
+  "relationships": [
+    { "id": "r1",  "fromId": "p1", "toId": "a1", "type": "OWNS",        "properties": {}, "style": {} },
+    { "id": "r2",  "fromId": "p2", "toId": "a3", "type": "OWNS",        "properties": {}, "style": {} },
+    { "id": "r3",  "fromId": "p3", "toId": "a4", "type": "OWNS",        "properties": {}, "style": {} },
+    { "id": "r4",  "fromId": "p1", "toId": "a2", "type": "OWNS",        "properties": {}, "style": {} },
+    { "id": "r5",  "fromId": "p1", "toId": "d1", "type": "USES",        "properties": {}, "style": {} },
+    { "id": "r6",  "fromId": "p2", "toId": "d2", "type": "USES",        "properties": {}, "style": {} },
+    { "id": "r7",  "fromId": "p3", "toId": "d1", "type": "USES",        "properties": {}, "style": { "arrow-color": "#c0392b" } },
+    { "id": "r8",  "fromId": "a1", "toId": "a3", "type": "TRANSFERRED", "properties": { "amount": "4200.00" }, "style": { "arrow-color": "#c0392b" } },
+    { "id": "r9",  "fromId": "a3", "toId": "a4", "type": "TRANSFERRED", "properties": { "amount": "4100.00" }, "style": { "arrow-color": "#c0392b" } },
+    { "id": "r10", "fromId": "a4", "toId": "a2", "type": "TRANSFERRED", "properties": { "amount": "3950.00" }, "style": { "arrow-color": "#c0392b" } },
+    { "id": "r11", "fromId": "a2", "toId": "a1", "type": "TRANSFERRED", "properties": { "amount": "3800.00" }, "style": { "arrow-color": "#c0392b" } }
+  ]
+}

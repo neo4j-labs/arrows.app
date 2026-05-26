@@ -1,0 +1,41 @@
+{
+  "style": {
+    "background-color": "#ffffff",
+    "border-color": "#1a1a1a",
+    "border-width": 3,
+    "caption-color": "#1a1a1a",
+    "caption-font-size": 30,
+    "font-family": "sans-serif",
+    "node-color": "#e2e8f0",
+    "radius": 60
+  },
+  "nodes": [
+    { "id": "doc1",  "position": { "x": -1000, "y":    0 }, "caption": "Document",  "labels": ["Document"], "properties": { "id": "'doc-001'", "path": "'graphrag-overview.pdf'", "pages": "12" }, "style": { "node-color": "#118ab2", "caption-color": "#ffffff" } },
+    { "id": "ch1",   "position": { "x":  -300, "y": -500 }, "caption": "Chunk 1",   "labels": ["Chunk"],    "properties": { "id": "'doc-001:0'", "text": "'GraphRAG combines knowledge graphs with vector search…'",  "embedding": "$embedding0", "page": "1" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "ch2",   "position": { "x":   500, "y": -500 }, "caption": "Chunk 2",   "labels": ["Chunk"],    "properties": { "id": "'doc-001:1'", "text": "'A lexical graph captures the document structure…'",       "embedding": "$embedding1", "page": "1" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "ch3",   "position": { "x":  1300, "y": -500 }, "caption": "Chunk 3",   "labels": ["Chunk"],    "properties": { "id": "'doc-001:2'", "text": "'Entities are extracted via an LLM…'",                       "embedding": "$embedding2", "page": "2" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "ch4",   "position": { "x":  2100, "y": -500 }, "caption": "Chunk 4",   "labels": ["Chunk"],    "properties": { "id": "'doc-001:3'", "text": "'Retrieval starts with a vector search…'",                  "embedding": "$embedding3", "page": "3" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "e1",    "position": { "x":  -200, "y":  600 }, "caption": "GraphRAG",        "labels": ["__Entity__", "Concept"], "properties": { "name": "'GraphRAG'" },        "style": { "node-color": "#c0a9e0" } },
+    { "id": "e2",    "position": { "x":   600, "y":  600 }, "caption": "Knowledge Graph", "labels": ["__Entity__", "Concept"], "properties": { "name": "'Knowledge Graph'" }, "style": { "node-color": "#c0a9e0" } },
+    { "id": "e3",    "position": { "x":  1400, "y":  600 }, "caption": "Vector Search",   "labels": ["__Entity__", "Concept"], "properties": { "name": "'Vector Search'" },   "style": { "node-color": "#c0a9e0" } },
+    { "id": "e4",    "position": { "x":  2200, "y":  600 }, "caption": "LLM",             "labels": ["__Entity__", "Concept"], "properties": { "name": "'LLM'" },             "style": { "node-color": "#c0a9e0" } }
+  ],
+  "relationships": [
+    { "id": "fd1", "fromId": "ch1", "toId": "doc1", "type": "FROM_DOCUMENT", "properties": {}, "style": {} },
+    { "id": "fd2", "fromId": "ch2", "toId": "doc1", "type": "FROM_DOCUMENT", "properties": {}, "style": {} },
+    { "id": "fd3", "fromId": "ch3", "toId": "doc1", "type": "FROM_DOCUMENT", "properties": {}, "style": {} },
+    { "id": "fd4", "fromId": "ch4", "toId": "doc1", "type": "FROM_DOCUMENT", "properties": {}, "style": {} },
+    { "id": "n1",  "fromId": "ch1", "toId": "ch2",  "type": "NEXT_CHUNK",    "properties": {}, "style": {} },
+    { "id": "n2",  "fromId": "ch2", "toId": "ch3",  "type": "NEXT_CHUNK",    "properties": {}, "style": {} },
+    { "id": "n3",  "fromId": "ch3", "toId": "ch4",  "type": "NEXT_CHUNK",    "properties": {}, "style": {} },
+    { "id": "m1",  "fromId": "ch1", "toId": "e1",   "type": "MENTIONS",      "properties": {}, "style": {} },
+    { "id": "m2",  "fromId": "ch1", "toId": "e2",   "type": "MENTIONS",      "properties": {}, "style": {} },
+    { "id": "m3",  "fromId": "ch2", "toId": "e2",   "type": "MENTIONS",      "properties": {}, "style": {} },
+    { "id": "m4",  "fromId": "ch3", "toId": "e1",   "type": "MENTIONS",      "properties": {}, "style": {} },
+    { "id": "m5",  "fromId": "ch3", "toId": "e4",   "type": "MENTIONS",      "properties": {}, "style": {} },
+    { "id": "m6",  "fromId": "ch4", "toId": "e3",   "type": "MENTIONS",      "properties": {}, "style": {} },
+    { "id": "m7",  "fromId": "ch4", "toId": "e4",   "type": "MENTIONS",      "properties": {}, "style": {} },
+    { "id": "k1",  "fromId": "e1",  "toId": "e2",   "type": "COMBINES",      "properties": {}, "style": { "arrow-color": "#6a1b9a" } },
+    { "id": "k2",  "fromId": "e1",  "toId": "e3",   "type": "COMBINES",      "properties": {}, "style": { "arrow-color": "#6a1b9a" } }
+  ]
+}

@@ -43,3 +43,12 @@ dist
 
 # Ignore all .env files
 .env*
+
+# arrows-code subsystem build/test artifacts
+arrows-code/**/dist/
+arrows-code/apps/vscode-arrows/.vscode-test/
+arrows-code/apps/vscode-arrows/*.vsix
+.vscode-test/
+
+# Stray editor scratch files
+**/Untitled-*.arrows

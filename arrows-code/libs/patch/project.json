@@ -1,0 +1,35 @@
+{
+  "name": "arrows-code-patch",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "arrows-code/libs/patch/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/arrows-code/libs/patch",
+        "main": "arrows-code/libs/patch/src/index.ts",
+        "tsConfig": "arrows-code/libs/patch/tsconfig.lib.json",
+        "assets": ["arrows-code/libs/patch/*.md"],
+        "generatePackageJson": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["arrows-code/libs/patch/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["coverage/arrows-code/libs/patch"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../../coverage/arrows-code/libs/patch"
+      }
+    }
+  },
+  "tags": ["scope:arrows-code", "type:lib"]
+}

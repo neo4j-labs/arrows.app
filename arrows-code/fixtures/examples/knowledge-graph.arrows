@@ -1,0 +1,38 @@
+{
+  "style": {
+    "background-color": "#ffffff",
+    "border-color": "#1a1a1a",
+    "border-width": 3,
+    "caption-color": "#1a1a1a",
+    "caption-font-size": 32,
+    "font-family": "sans-serif",
+    "node-color": "#e2e8f0",
+    "radius": 55
+  },
+  "nodes": [
+    { "id": "c1",  "position": { "x": -1000, "y": -900 }, "caption": "Computing Machinery and Intelligence", "labels": ["Concept"],     "properties": { "year": "1950" }, "style": { "node-color": "#c0a9e0" } },
+    { "id": "c2",  "position": { "x":     0, "y": -900 }, "caption": "Stored-program computer",              "labels": ["Concept"],     "properties": {},                  "style": { "node-color": "#c0a9e0" } },
+    { "id": "c3",  "position": { "x":  1000, "y": -900 }, "caption": "Information theory",                   "labels": ["Concept"],     "properties": { "year": "1948" }, "style": { "node-color": "#c0a9e0" } },
+    { "id": "p1",  "position": { "x": -1000, "y": -300 }, "caption": "Alan Turing",                          "labels": ["Person"],      "properties": { "born": "1912", "died": "1954" }, "style": { "node-color": "#a7c7e7" } },
+    { "id": "p2",  "position": { "x":     0, "y": -300 }, "caption": "John von Neumann",                     "labels": ["Person"],      "properties": { "born": "1903", "died": "1957" }, "style": { "node-color": "#a7c7e7" } },
+    { "id": "p3",  "position": { "x":  1000, "y": -300 }, "caption": "Claude Shannon",                       "labels": ["Person"],      "properties": { "born": "1916", "died": "2001" }, "style": { "node-color": "#a7c7e7" } },
+    { "id": "o1",  "position": { "x": -1000, "y":  300 }, "caption": "Bletchley Park",                       "labels": ["Organization"],"properties": { "founded": "1938" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "o2",  "position": { "x":  1000, "y":  300 }, "caption": "Bell Labs",                            "labels": ["Organization"],"properties": { "founded": "1925" }, "style": { "node-color": "#fff1a8" } },
+    { "id": "pl1", "position": { "x": -1000, "y":  900 }, "caption": "United Kingdom",                       "labels": ["Place"],       "properties": { "iso": "'GB'" },     "style": { "node-color": "#90be6d" } },
+    { "id": "pl2", "position": { "x":  1000, "y":  900 }, "caption": "United States",                        "labels": ["Place"],       "properties": { "iso": "'US'" },     "style": { "node-color": "#90be6d" } }
+  ],
+  "relationships": [
+    { "id": "r1",  "fromId": "p1", "toId": "c1",  "type": "AUTHORED",         "properties": {}, "style": {} },
+    { "id": "r2",  "fromId": "p2", "toId": "c2",  "type": "PROPOSED",         "properties": {}, "style": {} },
+    { "id": "r3",  "fromId": "p3", "toId": "c3",  "type": "FOUNDED",          "properties": {}, "style": {} },
+    { "id": "r4",  "fromId": "p1", "toId": "o1",  "type": "WORKED_AT",        "properties": { "from": "1939", "to": "1945" }, "style": {} },
+    { "id": "r5",  "fromId": "p3", "toId": "o2",  "type": "WORKED_AT",        "properties": { "from": "1941", "to": "1956" }, "style": {} },
+    { "id": "r6",  "fromId": "o1", "toId": "pl1", "type": "LOCATED_IN",       "properties": {}, "style": {} },
+    { "id": "r7",  "fromId": "o2", "toId": "pl2", "type": "LOCATED_IN",       "properties": {}, "style": {} },
+    { "id": "r8",  "fromId": "p1", "toId": "pl1", "type": "BORN_IN",          "properties": {}, "style": {} },
+    { "id": "r9",  "fromId": "p2", "toId": "pl2", "type": "BORN_IN",          "properties": {}, "style": {} },
+    { "id": "r10", "fromId": "p3", "toId": "pl2", "type": "BORN_IN",          "properties": {}, "style": {} },
+    { "id": "r11", "fromId": "p1", "toId": "p2",  "type": "INFLUENCED_BY",    "properties": {}, "style": { "arrow-color": "#6a1b9a" } },
+    { "id": "r12", "fromId": "p3", "toId": "p2",  "type": "COLLABORATED_WITH","properties": {}, "style": { "arrow-color": "#6a1b9a" } }
+  ]
+}

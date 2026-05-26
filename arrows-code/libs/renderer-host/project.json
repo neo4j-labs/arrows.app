@@ -1,0 +1,35 @@
+{
+  "name": "arrows-code-renderer-host",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "arrows-code/libs/renderer-host/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/arrows-code/libs/renderer-host",
+        "main": "arrows-code/libs/renderer-host/src/index.ts",
+        "tsConfig": "arrows-code/libs/renderer-host/tsconfig.lib.json",
+        "assets": ["arrows-code/libs/renderer-host/*.md"],
+        "generatePackageJson": true
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["arrows-code/libs/renderer-host/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": ["coverage/arrows-code/libs/renderer-host"],
+      "options": {
+        "passWithNoTests": true,
+        "reportsDirectory": "../../../coverage/arrows-code/libs/renderer-host"
+      }
+    }
+  },
+  "tags": ["scope:arrows-code", "type:lib"]
+}
