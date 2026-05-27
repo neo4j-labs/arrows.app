@@ -5,6 +5,10 @@ import { Vector } from '../model/Vector';
 import { useTool } from './ToolContext';
 import { hitTestAt } from './embedActions';
 import { computeZoomTransform, cursorFor, decideMouseDown } from './panInteraction';
+// @ts-expect-error JS modules without local typings.
+import { getVisualGraph } from '../selectors';
+// @ts-expect-error
+import { computeCanvasSize, subtractPadding } from '../model/applicationLayout';
 
 // Capture-phase canvas handler that owns three behaviors when the pan tool is active:
 //   1. Drag on empty canvas → translate viewTransformation; stopImmediatePropagation
@@ -77,12 +81,21 @@ export function EmbedPanHandler(): null {
       const rect = (target as HTMLCanvasElement).getBoundingClientRect();
       e.preventDefault();
       e.stopImmediatePropagation();
-      const vt = (store.getState() as any).viewTransformation;
+      const state = store.getState() as any;
+      const vt = state.viewTransformation;
+      const visualGraph = getVisualGraph(state);
+      const bb = visualGraph?.boundingBox?.();
+      const canvasSize = subtractPadding(computeCanvasSize(state.applicationLayout));
+      const fitScale =
+        bb && bb.width > 0 && bb.height > 0
+          ? Math.min(canvasSize.width / bb.width, canvasSize.height / bb.height)
+          : undefined;
       const out = computeZoomTransform({
         currentScale: vt.scale,
         currentOffset: { dx: vt.offset.dx, dy: vt.offset.dy },
         cursor: { x: e.clientX - rect.left, y: e.clientY - rect.top },
         deltaY: e.deltaY,
+        fitScale,
       });
       dispatch({ type: 'ADJUST_VIEWPORT', scale: out.scale, panX: out.offsetX, panY: out.offsetY });
     };

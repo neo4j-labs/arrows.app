@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from '../reducers';
 import GraphContainer from '../containers/GraphContainer';
-import { viewportMiddleware } from '../middlewares/viewportMiddleware';
+import { embedViewportMiddleware } from './embedViewportMiddleware';
 import { imageCacheMiddleware } from '../middlewares/imageCacheMiddleware';
 import { windowResized } from '../actions/applicationLayout';
 import { initBridge } from './bridge';
@@ -25,7 +25,7 @@ import '../styles.css';
 
 const store = createStore(
   reducer,
-  applyMiddleware(thunkMiddleware, viewportMiddleware, imageCacheMiddleware)
+  applyMiddleware(thunkMiddleware, embedViewportMiddleware, imageCacheMiddleware)
 );
 
 // Guard against silent breakage from web-app refactors. The embed assumes a

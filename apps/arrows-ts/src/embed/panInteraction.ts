@@ -73,6 +73,9 @@ export interface ZoomInput {
   cursor: { x: number; y: number };
   /** Wheel deltaY: positive = scroll down = zoom out, negative = scroll up = zoom in. */
   deltaY: number;
+  /** Scale at which the graph fits the viewport. The floor never exceeds this
+   *  so the user can always zoom out enough to see the entire graph. */
+  fitScale?: number;
 }
 
 export interface ZoomOutput {
@@ -86,7 +89,9 @@ export interface ZoomOutput {
 export function computeZoomTransform(input: ZoomInput): ZoomOutput {
   const factor = (100 - input.deltaY) / 100;
   const targetScale = input.currentScale * factor;
-  const scale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, targetScale));
+  const fitFloor = input.fitScale ?? MIN_ZOOM;
+  const minScale = Math.min(MIN_ZOOM, fitFloor);
+  const scale = Math.min(MAX_ZOOM, Math.max(minScale, targetScale));
   // Solve for offset so cursor maps to the same graph point at the new scale.
   const graphX = (input.cursor.x - input.currentOffset.dx) / input.currentScale;
   const graphY = (input.cursor.y - input.currentOffset.dy) / input.currentScale;
