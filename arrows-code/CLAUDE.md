@@ -12,7 +12,6 @@ arrows-code/
 │   ├── format-json/     read/write canonical .arrows JSON
 │   ├── format-cypher/   exportCypher (relocated from apps/arrows-ts)
 │   ├── patch/           PatchOp types + apply()
-│   ├── renderer-host/   thin SVG wrapper over @neo4j-arrows/graphics
 │   ├── validator/       structural validation
 │   └── test-utils/      shared fixtures
 └── fixtures/examples/   bundled .arrows examples shown in sidebar

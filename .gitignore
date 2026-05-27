@@ -49,6 +49,7 @@ arrows-code/**/dist/
 arrows-code/apps/vscode-arrows/.vscode-test/
 arrows-code/apps/vscode-arrows/*.vsix
 arrows-code/apps/vscode-arrows/media/embed/
+arrows-code/apps/vscode-arrows/media/examples/
 .vscode-test/
 
 # Stray editor scratch files

@@ -21,9 +21,6 @@
       "@arrows-code/format-json": ["arrows-code/libs/format-json/src/index.ts"],
       "@arrows-code/layout": ["arrows-code/libs/layout/src/index.ts"],
       "@arrows-code/patch": ["arrows-code/libs/patch/src/index.ts"],
-      "@arrows-code/renderer-host": [
-        "arrows-code/libs/renderer-host/src/index.ts"
-      ],
       "@arrows-code/test-utils": [
         "arrows-code/libs/test-utils/src/index.ts"
       ],

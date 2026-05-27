@@ -15,7 +15,6 @@ arrows-code/
 │   ├── format-cypher/    Cypher CREATE/MERGE export with injection-hardened escapes
 │   ├── layout/           5 layout algorithms (force / hierarchical / radial / circular / grid)
 │   ├── patch/            PatchOp types + pure apply()
-│   ├── renderer-host/    headless SVG via @neo4j-arrows/graphics (jsdom-shimmed in Node)
 │   ├── validator/        structural + style-key validation
 │   └── test-utils/       shared graph fixtures
 ├── fixtures/examples/    .arrows files shipped with the extension as bundled examples

@@ -23,8 +23,8 @@
         "aliases": ["Arrows", "arrows"],
         "configuration": "./language-configuration.json",
         "icon": {
-          "light": "./media/file-icon-light.svg",
-          "dark": "./media/file-icon-dark.svg"
+          "light": "./media/file-icon.svg",
+          "dark": "./media/file-icon.svg"
         }
       }
     ],
@@ -140,7 +140,6 @@
   "dependencies": {
     "@arrows-code/format-json": "*",
     "@arrows-code/format-cypher": "*",
-    "@arrows-code/renderer-host": "*",
     "@arrows-code/patch": "*",
     "@arrows-code/validator": "*"
   }
