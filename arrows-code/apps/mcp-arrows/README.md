@@ -10,9 +10,10 @@ Provides tools and read-only resources over MCP's stdio transport:
 
 | Tool | Purpose |
 |---|---|
-| `render_arrows` | Render a graph (JSON or object) to SVG. Returns `{ svg, width, height, diagnostics }`. |
+| `render_arrows` | Render a graph to SVG. Returns an inline image content block (image/svg+xml, base64) AND a JSON text block with `{ svg, width, height, diagnostics }`. One tool covers both image clients and programmatic callers. |
 | `validate_arrows` | Run the structural + style validator. Returns `{ diagnostics }`. |
 | `apply_patch` | Apply a list of `PatchOp`s (addNode, setProperty, renameLabel, …) to a graph and return the updated JSON. |
+| `layout_graph` | Apply force / hierarchical / radial / circular / grid algorithm — same five as the VS Code "Auto-arrange nodes" command. Stop guessing coordinates. |
 | `describe_schema` | Extract labels, relationship types, properties, and direction summaries from a graph. |
 | `export_cypher` | Emit Cypher `CREATE` statements with proper identifier and string escaping. |
 
@@ -22,8 +23,12 @@ Provides tools and read-only resources over MCP's stdio transport:
 |---|---|
 | `arrows://spec/style-schema` | Every recognized style key + its expected value type. Generated from `@neo4j-arrows/model` so it never drifts. |
 | `arrows://spec/themes` | Built-in palette themes. |
-| `arrows://spec/model-types` | TypeScript signatures for `Graph`, `Node`, `Relationship`, `PatchOp`. |
-| `arrows://conventions/neo4j` | Naming conventions: PascalCase labels, SCREAMING_SNAKE_CASE relationship types. |
+| `arrows://spec/model-types` | TypeScript signatures for `Graph`, `Node`, `Relationship`. |
+| `arrows://spec/patch-ops` | Catalog of every `PatchOp` variant — required fields, effect, composition rules. Read before composing ops. |
+| `arrows://spec/cypher-mapping` | How arrows property values encode to Cypher literals (the `"'Alice'"` vs `"42"` vs `"$param"` rule). |
+| `arrows://conventions/neo4j` | Naming + modelling conventions, plus canonical "what's missing" patterns per domain (social, citations, GraphRAG, IAM, microservices, state machines). |
+| `arrows://examples/index` | List of bundled fixtures with domain summary and recommended layout. Fetch a fixture by `arrows://examples/<name>`. |
+| `arrows://guide/workflow` | Ordered playbooks: build from scratch, refactor, export to Cypher, visualize unknown graphs. **Read this first** — the tools are primitives; ordering is the skill. |
 
 ## Install
 

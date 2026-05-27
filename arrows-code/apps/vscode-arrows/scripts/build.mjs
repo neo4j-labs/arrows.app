@@ -1,14 +1,12 @@
 #!/usr/bin/env node
-// Build pipeline: vite (multi-entry main+embed) → copy to media/embed → rewrite CSS asset URLs → esbuild extension → copy jsdom for renderer-host.
+// Build pipeline: vite (multi-entry main+embed) → copy to media/embed → rewrite CSS asset URLs → esbuild extension.
 import { execSync } from 'node:child_process';
 import { build } from 'esbuild';
 import { cpSync, existsSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { createRequire } from 'node:module';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const require = createRequire(import.meta.url);
 const extRoot = resolve(__dirname, '..');
 const repoRoot = resolve(extRoot, '..', '..', '..');
 
@@ -17,6 +15,7 @@ console.log('▸ building arrows-ts (embed entry)…');
 execSync('npx vite build --outDir ../../dist/apps/arrows-ts --emptyOutDir', {
   cwd: resolve(repoRoot, 'apps/arrows-ts'),
   stdio: 'inherit',
+  env: { ...process.env, BUILD_EMBED: '1' },
 });
 
 const embedSrc = resolve(repoRoot, 'dist/apps/arrows-ts');
@@ -97,54 +96,14 @@ await build({
   entryPoints: [resolve(extRoot, 'src/extension.ts')],
   bundle: true,
   outfile: resolve(extRoot, 'dist/extension.js'),
-  external: ['vscode', 'canvas', 'bufferutil', 'utf-8-validate', 'jsdom'],
+  external: ['vscode', 'canvas', 'bufferutil', 'utf-8-validate'],
   platform: 'node',
   format: 'cjs',
   target: 'node18',
   logLevel: 'warning',
 });
 
-const jsdomSrc = resolve(repoRoot, 'node_modules/jsdom');
-const jsdomDst = resolve(extRoot, 'dist/node_modules/jsdom');
-if (existsSync(jsdomDst)) rmSync(jsdomDst, { recursive: true, force: true });
-cpSync(jsdomSrc, jsdomDst, { recursive: true, dereference: true });
-
-// Walk jsdom's actual transitive dep tree (BFS over each package's
-// dependencies field, locating each via require.resolve). Replaces a
-// hand-maintained list that silently broke when an upstream package added
-// a new dep — most recently `psl` (transitive via tough-cookie).
-function locatePackage(name, fromDir) {
-  try {
-    return dirname(require.resolve(`${name}/package.json`, { paths: [fromDir, repoRoot] }));
-  } catch {
-    return null;
-  }
-}
-
-const visited = new Set(['jsdom']);
-const queue = ['jsdom'];
-while (queue.length > 0) {
-  const pkgName = queue.shift();
-  const pkgDir = locatePackage(pkgName, repoRoot);
-  if (!pkgDir) continue;
-  let manifest;
-  try {
-    manifest = JSON.parse(readFileSync(join(pkgDir, 'package.json'), 'utf8'));
-  } catch {
-    continue;
-  }
-  for (const depName of Object.keys(manifest.dependencies ?? {})) {
-    if (visited.has(depName)) continue;
-    visited.add(depName);
-    queue.push(depName);
-    // Locate the dep relative to its parent so nested node_modules (e.g.
-    // jsdom/node_modules/tough-cookie pinned to an older major) resolve correctly.
-    const depDir = locatePackage(depName, pkgDir);
-    if (!depDir) continue;
-    const dst = resolve(extRoot, 'dist/node_modules', depName);
-    if (!existsSync(dst)) cpSync(depDir, dst, { recursive: true, dereference: true });
-  }
-}
-console.log(`▸ jsdom + ${visited.size - 1} transitive deps copied to dist/node_modules`);
+const stalePkgDir = resolve(extRoot, 'dist/node_modules');
+if (existsSync(stalePkgDir)) rmSync(stalePkgDir, { recursive: true, force: true });
 
 console.log('▸ extension bundle built');

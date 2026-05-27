@@ -85,41 +85,48 @@ async function waitForGraphChange(page: Page, minCount = 1): Promise<unknown> {
 
 // ---------------------------------------------------------------------------
 
-test('loading a partial-style graph emits no substring crash', async ({ page }) => {
+test('loading a partial-style graph triggers rehydrate without substring crash', async ({ page }) => {
   const errors: string[] = [];
   page.on('pageerror', (e) => errors.push(e.message));
   await loadEmbed(page);
-  await sendLoad(page, fixtureGraph());
+  await sendLoad(page, {
+    style: {},
+    nodes: [{ id: 'n0', position: { x: 0, y: 0 }, caption: 'X', labels: [], properties: {}, style: {} }],
+    relationships: [],
+  });
   await waitForGraphChange(page, 1);
   await page.waitForTimeout(500);
   expect(errors).toEqual([]);
 });
 
-test('embed loads and posts a ready message', async ({ page }) => {
+test('embed posts ready BEFORE any graph-changed (ordering invariant the host relies on)', async ({ page }) => {
   await loadEmbed(page);
   const msgs = await captured(page);
   const types = (msgs as { type: string }[]).map((m) => m.type);
   expect(types).toContain('ready');
+  const readyIdx = types.indexOf('ready');
+  const firstChangeIdx = types.indexOf('graph-changed');
+  if (firstChangeIdx !== -1) {
+    expect(readyIdx).toBeLessThan(firstChangeIdx);
+  }
 });
 
-test('visualize: load a graph, bridge echoes graph-changed with same nodes', async ({ page }) => {
-  page.on('pageerror', (e) => console.log('[pageerror]', e.message));
-  page.on('console', (m) => { if (m.type() === 'error') console.log('[console.error]', m.text()); });
+test('visualize: the echoed graph structurally matches the loaded graph (no field stripping)', async ({ page }) => {
   await loadEmbed(page);
-  console.log('captured after load:', await captured(page));
-  await sendLoad(page, fixtureGraph());
-  const change = (await waitForGraphChange(page, 1)) as { graph: { nodes: unknown[]; relationships: unknown[] } };
-  expect(change.graph.nodes).toHaveLength(2);
-  expect(change.graph.relationships).toHaveLength(1);
-  expect((change.graph.nodes[0] as { caption: string }).caption).toBe('Alice');
-});
-
-test('parameter values round-trip unchanged', async ({ page }) => {
-  await loadEmbed(page);
-  await sendLoad(page, fixtureGraph());
-  const change = (await waitForGraphChange(page, 1)) as { graph: { nodes: { properties: Record<string, string> }[] } };
-  // Bob has a property `greeting: '$greeting'`.
-  expect(change.graph.nodes[1].properties.greeting).toBe('$greeting');
+  const input = fixtureGraph();
+  await sendLoad(page, input);
+  const change = (await waitForGraphChange(page, 1)) as {
+    graph: {
+      nodes: Array<{ id: string; caption: string; labels: string[]; properties: Record<string, string> }>;
+      relationships: Array<{ id: string; fromId: string; toId: string; type: string }>;
+    };
+  };
+  expect(change.graph.nodes.map((n) => n.id)).toEqual(input.nodes.map((n) => n.id));
+  expect(change.graph.nodes.map((n) => n.caption)).toEqual(input.nodes.map((n) => n.caption));
+  expect(change.graph.nodes.map((n) => n.labels)).toEqual(input.nodes.map((n) => n.labels));
+  expect(change.graph.nodes.map((n) => n.properties)).toEqual(input.nodes.map((n) => n.properties));
+  expect(change.graph.relationships.map((r) => ({ id: r.id, fromId: r.fromId, toId: r.toId, type: r.type })))
+    .toEqual(input.relationships.map((r) => ({ id: r.id, fromId: r.fromId, toId: r.toId, type: r.type })));
 });
 
 test('multi-node graph: all node captions reach the bridge echo unchanged', async ({ page }) => {
@@ -143,10 +150,11 @@ test('multi-node graph: all node captions reach the bridge echo unchanged', asyn
   expect(change.graph.relationships).toHaveLength(2);
 });
 
-test('graph style round-trips through the embed', async ({ page }) => {
+test('graph style round-trips: caller keys preserved AND defaults filled in', async ({ page }) => {
   await loadEmbed(page);
+  const callerKeys = { 'node-color': '#ff0000', 'background-color': '#000000' };
   await sendLoad(page, {
-    style: { 'node-color': '#ff0000', 'background-color': '#000000' },
+    style: callerKeys,
     nodes: [
       { id: 'n0', position: { x: 0, y: 0 }, caption: 'x', labels: [], properties: {}, style: {} },
       { id: 'n1', position: { x: 100, y: 0 }, caption: 'y', labels: [], properties: {}, style: {} },
@@ -156,8 +164,13 @@ test('graph style round-trips through the embed', async ({ page }) => {
   const change = (await waitForGraphChange(page, 1)) as {
     graph: { style: Record<string, string> };
   };
-  expect(change.graph.style['node-color']).toBe('#ff0000');
-  expect(change.graph.style['background-color']).toBe('#000000');
+  const style = change.graph.style;
+  for (const [k, v] of Object.entries(callerKeys)) {
+    expect(style[k]).toBe(v);
+  }
+  for (const key of ['font-family', 'directionality', 'relationship-type', 'border-width']) {
+    expect(typeof style[key], `style[${key}] should be a string after rehydrate`).toBe('string');
+  }
 });
 
 // NOTE: ring-drag pixel coords are approximate; arrows-ts decides whether the

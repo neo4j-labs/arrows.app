@@ -22,7 +22,7 @@ Expected: every project green. As of last commit:
 The MCP test suite renders `fixtures/examples/social.arrows` end-to-end and writes a viewer to `arrows-code/dist/demo/`:
 
 ```bash
-npx nx test arrows-code-mcp-arrows
+npx nx test arrows-code-mcp-arrows    
 open arrows-code/dist/demo/viewer.html
 ```
 

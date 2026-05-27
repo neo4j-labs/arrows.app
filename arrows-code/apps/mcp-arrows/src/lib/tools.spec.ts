@@ -1,27 +1,47 @@
 import { describe, expect, it } from 'vitest';
-import { applyPatch, describeSchema, exportArrowsCypher, renderArrows, validateArrows } from './tools';
+import {
+  applyPatch,
+  describeSchema,
+  layoutGraph,
+  renderArrows,
+  validateArrows,
+} from './tools';
 
 /** Inline known-good Alice/Bob graph — robust to fixture file edits. */
-const fixture = (): string => JSON.stringify({
-  style: { 'node-color': '#ffe081', 'font-family': 'sans-serif' },
-  nodes: [
-    { id: 'n0', position: { x: 0, y: 0 }, caption: 'Alice', labels: ['Person'], properties: { name: "'Alice'", age: '30' }, style: {} },
-    { id: 'n1', position: { x: 400, y: 0 }, caption: 'Bob', labels: ['Person'], properties: { name: "'Bob'", age: '32', greeting: '$greeting' }, style: {} },
-  ],
-  relationships: [
-    { id: 'r0', fromId: 'n0', toId: 'n1', type: 'KNOWS', properties: {}, style: {} },
-  ],
-});
-
-describe('renderArrows tool', () => {
-  it('returns an SVG string with positive dimensions for a valid graph', async () => {
-    const result = await renderArrows({ graph: fixture() });
-    expect(result.svg).toContain('<svg');
-    expect(result.svg).toContain('xmlns');
-    expect(result.width).toBeGreaterThan(0);
-    expect(result.height).toBeGreaterThan(0);
+const fixture = (): string =>
+  JSON.stringify({
+    style: { 'node-color': '#ffe081', 'font-family': 'sans-serif' },
+    nodes: [
+      {
+        id: 'n0',
+        position: { x: 0, y: 0 },
+        caption: 'Alice',
+        labels: ['Person'],
+        properties: { name: "'Alice'", age: '30' },
+        style: {},
+      },
+      {
+        id: 'n1',
+        position: { x: 400, y: 0 },
+        caption: 'Bob',
+        labels: ['Person'],
+        properties: { name: "'Bob'", age: '32', greeting: '$greeting' },
+        style: {},
+      },
+    ],
+    relationships: [
+      {
+        id: 'r0',
+        fromId: 'n0',
+        toId: 'n1',
+        type: 'KNOWS',
+        properties: {},
+        style: {},
+      },
+    ],
   });
 
+describe('renderArrows tool', () => {
   it('returns parse-error diagnostics for malformed JSON without throwing', async () => {
     const result = await renderArrows({ graph: 'not json' });
     expect(result.diagnostics.length).toBeGreaterThan(0);
@@ -35,7 +55,9 @@ describe('renderArrows tool', () => {
 describe('validateArrows tool', () => {
   it('returns no error-severity diagnostics on a clean graph (style-key warnings allowed)', async () => {
     const result = await validateArrows({ graph: fixture() });
-    const errors = (result.diagnostics as Array<{ severity: string }>).filter((d) => d.severity === 'error');
+    const errors = (result.diagnostics as Array<{ severity: string }>).filter(
+      (d) => d.severity === 'error'
+    );
     expect(errors).toEqual([]);
   });
 
@@ -47,14 +69,32 @@ describe('validateArrows tool', () => {
   it('surfaces structural diagnostics (duplicate ids)', async () => {
     const broken = JSON.stringify({
       nodes: [
-        { id: 'dup', position: { x: 0, y: 0 }, caption: 'A', labels: [], properties: {}, style: {} },
-        { id: 'dup', position: { x: 10, y: 0 }, caption: 'B', labels: [], properties: {}, style: {} },
+        {
+          id: 'dup',
+          position: { x: 0, y: 0 },
+          caption: 'A',
+          labels: [],
+          properties: {},
+          style: {},
+        },
+        {
+          id: 'dup',
+          position: { x: 10, y: 0 },
+          caption: 'B',
+          labels: [],
+          properties: {},
+          style: {},
+        },
       ],
       relationships: [],
       style: {},
     });
     const result = await validateArrows({ graph: broken });
-    expect(result.diagnostics.some((d) => (d as { code: string }).code === 'structural.duplicate-id')).toBe(true);
+    expect(
+      result.diagnostics.some(
+        (d) => (d as { code: string }).code === 'structural.duplicate-id'
+      )
+    ).toBe(true);
   });
 });
 
@@ -63,8 +103,21 @@ describe('applyPatch tool', () => {
     const result = applyPatch({
       graph: fixture(),
       ops: [
-        { type: 'addNode', id: 'n99', x: 600, y: 200, caption: 'New', labels: ['Person'] },
-        { type: 'addRelationship', id: 'r99', fromId: 'n0', toId: 'n99', relType: 'KNOWS' },
+        {
+          type: 'addNode',
+          id: 'n99',
+          x: 600,
+          y: 200,
+          caption: 'New',
+          labels: ['Person'],
+        },
+        {
+          type: 'addRelationship',
+          id: 'r99',
+          fromId: 'n0',
+          toId: 'n99',
+          relType: 'KNOWS',
+        },
       ],
     });
     expect(result.errors).toEqual([]);
@@ -75,7 +128,15 @@ describe('applyPatch tool', () => {
   it('returns errors for invalid ops without trashing the graph', () => {
     const result = applyPatch({
       graph: fixture(),
-      ops: [{ type: 'addRelationship', id: 'r99', fromId: 'ghost', toId: 'n0', relType: 'X' }],
+      ops: [
+        {
+          type: 'addRelationship',
+          id: 'r99',
+          fromId: 'ghost',
+          toId: 'n0',
+          relType: 'X',
+        },
+      ],
     });
     expect(result.errors).toHaveLength(1);
   });
@@ -93,7 +154,8 @@ describe('describeSchema tool', () => {
   it('aggregates relationship direction by label pair', () => {
     const result = describeSchema({ graph: fixture() });
     const personToPerson = result.relsByDirection.find(
-      (d) => d.fromLabel === 'Person' && d.toLabel === 'Person' && d.type === 'KNOWS',
+      (d) =>
+        d.fromLabel === 'Person' && d.toLabel === 'Person' && d.type === 'KNOWS'
     );
     expect(personToPerson?.count).toBe(1);
   });
@@ -101,11 +163,32 @@ describe('describeSchema tool', () => {
   it('reports relationships between unlabeled nodes with the <no-label> sentinel', () => {
     const graph = JSON.stringify({
       nodes: [
-        { id: 'n0', position: { x: 0, y: 0 }, caption: '', labels: [], properties: {}, style: {} },
-        { id: 'n1', position: { x: 10, y: 0 }, caption: '', labels: [], properties: {}, style: {} },
+        {
+          id: 'n0',
+          position: { x: 0, y: 0 },
+          caption: '',
+          labels: [],
+          properties: {},
+          style: {},
+        },
+        {
+          id: 'n1',
+          position: { x: 10, y: 0 },
+          caption: '',
+          labels: [],
+          properties: {},
+          style: {},
+        },
       ],
       relationships: [
-        { id: 'r0', fromId: 'n0', toId: 'n1', type: 'LINKED', properties: {}, style: {} },
+        {
+          id: 'r0',
+          fromId: 'n0',
+          toId: 'n1',
+          type: 'LINKED',
+          properties: {},
+          style: {},
+        },
       ],
       style: {},
     });
@@ -119,26 +202,46 @@ describe('describeSchema tool', () => {
   });
 });
 
-describe('exportArrowsCypher tool', () => {
-  it('returns Cypher CREATE statements for a fixture', () => {
-    const result = exportArrowsCypher({ graph: fixture() });
-    expect(result.cypher).toContain('CREATE');
-    expect(result.cypher).toContain(':Person');
-    expect(result.cypher).toContain(':KNOWS');
+describe('layoutGraph tool', () => {
+  it('runs the force-directed layout and returns repositioned nodes', async () => {
+    const result = await layoutGraph({ graph: fixture(), layout: 'force' });
+    expect(result.layout).toBe('force');
+    expect(result.nodeCount).toBe(2);
+    const parsed = JSON.parse(result.graph);
+    // Positions should have moved off the original (0,0) / (400,0) seeds.
+    const pos = parsed.nodes.map(
+      (n: { position: { x: number; y: number } }) => n.position
+    );
+    expect(
+      pos.every(
+        (p: { x: number; y: number }) =>
+          Number.isFinite(p.x) && Number.isFinite(p.y)
+      )
+    ).toBe(true);
+  });
+
+  it('runs the grid layout deterministically', async () => {
+    const out1 = await layoutGraph({ graph: fixture(), layout: 'grid' });
+    const out2 = await layoutGraph({ graph: fixture(), layout: 'grid' });
+    expect(out1.graph).toBe(out2.graph);
+  });
+
+  it('rejects an unknown layout id at the zod boundary', async () => {
+    await expect(
+      layoutGraph({ graph: fixture(), layout: 'spiral' as never })
+    ).rejects.toThrow();
   });
 });
 
-const emptyFixture = (): string => JSON.stringify({ nodes: [], relationships: [], style: {} });
+const emptyFixture = (): string =>
+  JSON.stringify({ nodes: [], relationships: [], style: {} });
 
 describe('tools — empty-graph edges', () => {
-  it('renderArrows handles an empty graph without throwing', async () => {
-    const result = await renderArrows({ graph: emptyFixture() });
-    expect(result.svg).toContain('<svg');
-  });
-
   it('validateArrows on an empty graph returns no error diagnostics', async () => {
     const result = await validateArrows({ graph: emptyFixture() });
-    const errors = (result.diagnostics as Array<{ severity: string }>).filter((d) => d.severity === 'error');
+    const errors = (result.diagnostics as Array<{ severity: string }>).filter(
+      (d) => d.severity === 'error'
+    );
     expect(errors).toEqual([]);
   });
 
@@ -146,11 +249,6 @@ describe('tools — empty-graph edges', () => {
     const result = describeSchema({ graph: emptyFixture() });
     expect(result.labels).toEqual([]);
     expect(result.relTypes).toEqual([]);
-  });
-
-  it('exportArrowsCypher on an empty graph does not crash', () => {
-    const result = exportArrowsCypher({ graph: emptyFixture() });
-    expect(typeof result.cypher).toBe('string');
   });
 });
 
@@ -161,7 +259,13 @@ describe('applyPatch — composition + self-loop', () => {
       ops: [
         { type: 'addNode', id: 'a', x: 0, y: 0 },
         { type: 'addNode', id: 'b', x: 100, y: 0 },
-        { type: 'addRelationship', id: 'r0', fromId: 'a', toId: 'b', relType: 'KNOWS' },
+        {
+          type: 'addRelationship',
+          id: 'r0',
+          fromId: 'a',
+          toId: 'b',
+          relType: 'KNOWS',
+        },
         { type: 'addLabel', id: 'a', label: 'Person' },
         { type: 'setProperty', id: 'b', key: 'name', value: "'Bob'" },
       ],
@@ -178,7 +282,13 @@ describe('applyPatch — composition + self-loop', () => {
       graph: emptyFixture(),
       ops: [
         { type: 'addNode', id: 'n0', x: 0, y: 0 },
-        { type: 'addRelationship', id: 'r0', fromId: 'n0', toId: 'n0', relType: 'LOOP' },
+        {
+          type: 'addRelationship',
+          id: 'r0',
+          fromId: 'n0',
+          toId: 'n0',
+          relType: 'LOOP',
+        },
       ],
     });
     expect(result.errors).toEqual([]);

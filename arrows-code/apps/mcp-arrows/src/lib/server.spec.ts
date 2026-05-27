@@ -9,10 +9,14 @@ import { renderArrows } from './tools';
  * what Claude expects: image content base64 + parseable inner SVG.
  */
 describe('MCP image content contract', () => {
+  // render_arrows is now the only render tool. Its result must work both as
+  // an MCP image content block (image clients) AND as a JSON text block that
+  // includes the SVG string (programmatic clients) — folding render_arrows_svg
+  // back into the same tool. Both modes share the same upstream renderer.
   it('renderArrows result can be wrapped as an MCP image block (svg → base64)', async () => {
     const text = readFileSync(
       resolve(__dirname, '../../../../fixtures/examples/social.arrows'),
-      'utf8',
+      'utf8'
     );
     const { svg } = await renderArrows({ graph: text });
     const data = Buffer.from(svg, 'utf8').toString('base64');

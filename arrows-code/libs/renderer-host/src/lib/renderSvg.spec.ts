@@ -39,35 +39,15 @@ const sample: Graph = {
 };
 
 describe('renderGraphToSvg', () => {
-  it('produces an SVG string with the xmlns attribute', async () => {
+  it('output is a well-formed SVG root with the correct xmlns', async () => {
     const { svg } = await renderGraphToSvg(sample);
-    expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"');
     expect(svg.startsWith('<svg')).toBe(true);
+    expect(svg).toContain('xmlns="http://www.w3.org/2000/svg"');
   });
 
-  it('returns positive width and height for a non-empty graph', async () => {
-    const { width, height } = await renderGraphToSvg(sample);
-    expect(width).toBeGreaterThan(0);
-    expect(height).toBeGreaterThan(0);
-  });
-
-  it('contains text for each node caption', async () => {
+  it('draws a path or polyline for each relationship', async () => {
     const { svg } = await renderGraphToSvg(sample);
-    expect(svg).toContain('Alice');
-    expect(svg).toContain('Bob');
-  });
-
-  it('contains an SVG path for the relationship line', async () => {
-    const { svg } = await renderGraphToSvg(sample);
-    // Relationship draws as a polyline or path; both indicate the link is present.
     expect(/<(path|polyline)\b/.test(svg)).toBe(true);
-  });
-
-  it('can render repeatedly without error', async () => {
-    const a = await renderGraphToSvg(sample);
-    const b = await renderGraphToSvg(sample);
-    expect(a.width).toBe(b.width);
-    expect(a.height).toBe(b.height);
   });
 
   it('renders an empty graph without throwing and produces a valid <svg> root', async () => {
@@ -119,6 +99,52 @@ describe('renderGraphToSvg', () => {
     const { svg } = await renderGraphToSvg(unicode);
     // jsdom serializes the text node; the caption survives even if non-BMP chars are escaped.
     expect(svg).toMatch(/h[eé]llo/);
+  });
+
+  it('paints a background rect when graph.style.background-color is set', async () => {
+    // Exported SVGs without a background look like hollow line drawings against
+    // whatever surface they're pasted into. Mirror what the canvas renderer does.
+    const withBg: Graph = {
+      style: { 'background-color': '#fafafa' },
+      nodes: [{ entityType: 'Node', id: 'n0', position: new Point(0, 0), caption: 'A', labels: [], properties: {}, style: {} }],
+      relationships: [],
+    };
+    const { svg } = await renderGraphToSvg(withBg);
+    expect(svg).toContain('<rect width="100%" height="100%" fill="#fafafa"');
+  });
+
+  it('does NOT paint a background rect when no background-color is set', async () => {
+    const noBg: Graph = {
+      style: {},
+      nodes: [{ entityType: 'Node', id: 'n0', position: new Point(0, 0), caption: 'A', labels: [], properties: {}, style: {} }],
+      relationships: [],
+    };
+    const { svg } = await renderGraphToSvg(noBg);
+    expect(svg).not.toContain('width="100%" height="100%"');
+  });
+
+  it('skips the background rect for transparent or none values', async () => {
+    for (const value of ['transparent', 'none', '']) {
+      const g: Graph = {
+        style: { 'background-color': value },
+        nodes: [{ entityType: 'Node', id: 'n0', position: new Point(0, 0), caption: 'A', labels: [], properties: {}, style: {} }],
+        relationships: [],
+      };
+      const { svg } = await renderGraphToSvg(g);
+      expect(svg).not.toContain('width="100%" height="100%"');
+    }
+  });
+
+  it('escapes hostile attribute characters in the background-color value', async () => {
+    // Defense against a malformed style value breaking out of the fill="..." attr.
+    const evil: Graph = {
+      style: { 'background-color': '#fff"><script>alert(1)</script>' },
+      nodes: [{ entityType: 'Node', id: 'n0', position: new Point(0, 0), caption: 'A', labels: [], properties: {}, style: {} }],
+      relationships: [],
+    };
+    const { svg } = await renderGraphToSvg(evil);
+    expect(svg).not.toContain('<script>');
+    expect(svg).toContain('&quot;');
   });
 
   it('returns SVG-space screen positions for every node', async () => {

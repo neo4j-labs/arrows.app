@@ -1,4 +1,7 @@
 import { Point, completeWithDefaults } from '@neo4j-arrows/model';
+import { renderSvgDom } from '@neo4j-arrows/graphics';
+// @ts-expect-error — JS module without local typings, imported for its single default export.
+import exportGraphQL from '../graphql/exportGraphQL';
 import { shouldEmit } from './shouldEmit';
 import { isUserBusy } from './userBusy';
 export { isUserBusy };
@@ -9,9 +12,14 @@ type AnyStore = {
   getState: () => unknown;
 };
 
-declare const acquireVsCodeApi: undefined | (() => { postMessage: (m: unknown) => void });
+declare const acquireVsCodeApi:
+  | undefined
+  | (() => { postMessage: (m: unknown) => void });
 
-interface HostChannel { post: (m: unknown) => void; name: 'vscode' | 'iframe' | 'test' }
+interface HostChannel {
+  post: (m: unknown) => void;
+  name: 'vscode' | 'iframe' | 'test';
+}
 
 // Stable JSON for equality regardless of which side produced the graph:
 //  - writeGraph (host) sorts keys and strips entityType
@@ -45,7 +53,10 @@ function defaultHost(): HostChannel {
 }
 
 type IncomingGraph = {
-  nodes?: Array<{ position?: { x: number; y: number } | unknown; [k: string]: unknown }>;
+  nodes?: Array<{
+    position?: { x: number; y: number } | unknown;
+    [k: string]: unknown;
+  }>;
   relationships?: unknown[];
   style?: unknown;
 };
@@ -56,13 +67,14 @@ export function rehydrate(graph: IncomingGraph): IncomingGraph {
     // Visual* classes do raw graph.style[key] lookups — missing keys crash adaptForBackground.
     style: completeWithDefaults((graph.style ?? {}) as Record<string, unknown>),
     nodes: (graph.nodes ?? []).map((node) => {
-      const pos = (node as { position?: { x?: unknown; y?: unknown } }).position;
+      const pos = (node as { position?: { x?: unknown; y?: unknown } })
+        .position;
       if (pos && typeof pos === 'object' && !(pos instanceof Point)) {
         return {
           ...node,
           position: new Point(
             Number((pos as { x: unknown }).x) || 0,
-            Number((pos as { y: unknown }).y) || 0,
+            Number((pos as { y: unknown }).y) || 0
           ),
         };
       }
@@ -73,9 +85,12 @@ export function rehydrate(graph: IncomingGraph): IncomingGraph {
 
 // Plain action — bypasses the gettingGraphSucceeded thunk's clearHistory() so undo survives host echoes.
 export function applyHostLoad(store: AnyStore, graph: IncomingGraph): void {
-  store.dispatch({ category: 'GRAPH', type: 'GETTING_GRAPH_SUCCEEDED', storedGraph: graph });
+  store.dispatch({
+    category: 'GRAPH',
+    type: 'GETTING_GRAPH_SUCCEEDED',
+    storedGraph: graph,
+  });
 }
-
 
 const isInputFocused = (): boolean => {
   const el = typeof document !== 'undefined' ? document.activeElement : null;
@@ -90,13 +105,33 @@ export interface InitBridgeOptions {
   inputFocused?: () => boolean;
 }
 
+export interface EmbedMenuEntry {
+  id: string;
+  title: string;
+  description: string;
+  icon?: string;
+}
+
+function isValidMenuEntry(e: unknown): e is EmbedMenuEntry {
+  if (!e || typeof e !== 'object') return false;
+  const { id, title, description } = e as Record<string, unknown>;
+  return (
+    typeof id === 'string' &&
+    typeof title === 'string' &&
+    typeof description === 'string'
+  );
+}
+
 export interface BridgeHandle {
   receive: (msg: unknown) => void;
   flush: () => void;
   post: (msg: unknown) => void;
 }
 
-export function initBridge(store: AnyStore, opts: InitBridgeOptions = {}): BridgeHandle {
+export function initBridge(
+  store: AnyStore,
+  opts: InitBridgeOptions = {}
+): BridgeHandle {
   const host = opts.host ?? defaultHost();
   const inputFocused = opts.inputFocused ?? isInputFocused;
 
@@ -112,7 +147,8 @@ export function initBridge(store: AnyStore, opts: InitBridgeOptions = {}): Bridg
   // within the window (typical roundtrip <100ms; we give 30s slack).
   const ECHO_TTL_MS = 30_000;
   const emittedAt = new Map<string, number>();
-  const now = (): number => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  const now = (): number =>
+    typeof performance !== 'undefined' ? performance.now() : Date.now();
   const prune = (): void => {
     const cutoff = now() - ECHO_TTL_MS;
     for (const [key, t] of emittedAt) {
@@ -146,7 +182,11 @@ export function initBridge(store: AnyStore, opts: InitBridgeOptions = {}): Bridg
       tryApplyPending();
       return;
     }
-    const decision = shouldEmit({ state: store.getState(), lastSerialized, isTyping: inputFocused() });
+    const decision = shouldEmit({
+      state: store.getState(),
+      lastSerialized,
+      isTyping: inputFocused(),
+    });
     if (!decision.emit || !decision.graph) return;
     lastSerialized = decision.serialized;
     rememberEmit(decision.graph);
@@ -155,17 +195,59 @@ export function initBridge(store: AnyStore, opts: InitBridgeOptions = {}): Bridg
 
   const receive = (msg: unknown): void => {
     if (!msg || typeof msg !== 'object') return;
-    const m = msg as { type?: string; graph?: IncomingGraph; docVersion?: number };
+    const m = msg as {
+      type?: string;
+      graph?: IncomingGraph;
+      docVersion?: number;
+      menu?: EmbedMenuEntry[];
+      requestId?: string;
+    };
     if (m.type === 'load' && m.graph) {
       if (typeof m.docVersion === 'number') docVersion = m.docVersion;
+      if (Array.isArray(m.menu) && m.menu.every(isValidMenuEntry)) {
+        (window as unknown as { __arrowsMenu: EmbedMenuEntry[] }).__arrowsMenu =
+          m.menu;
+        window.dispatchEvent(new CustomEvent('__arrowsMenu'));
+      }
       pendingLoad = m.graph;
       tryApplyPending();
+      return;
+    }
+    if (m.type === 'request-svg' && typeof m.requestId === 'string') {
+      try {
+        const svg = renderCurrentGraphToSvg(store.getState());
+        host.post({ type: 'svg-result', requestId: m.requestId, svg });
+      } catch (err) {
+        host.post({
+          type: 'svg-result',
+          requestId: m.requestId,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
+      return;
+    }
+    if (m.type === 'request-graphql' && typeof m.requestId === 'string') {
+      try {
+        const graphql = renderCurrentGraphToGraphQL(store.getState());
+        host.post({ type: 'graphql-result', requestId: m.requestId, graphql });
+      } catch (err) {
+        host.post({
+          type: 'graphql-result',
+          requestId: m.requestId,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      }
     }
   };
 
   if (typeof window !== 'undefined') {
     window.addEventListener('message', (event: MessageEvent) => {
-      if (host.name === 'iframe' && event.source !== window.parent && event.source !== window) return;
+      if (
+        host.name === 'iframe' &&
+        event.source !== window.parent &&
+        event.source !== window
+      )
+        return;
       receive(event.data);
     });
   }
@@ -180,4 +262,59 @@ export function initBridge(store: AnyStore, opts: InitBridgeOptions = {}): Bridg
   host.post({ type: 'ready', host: host.name });
 
   return { receive, flush: tryEmit, post: host.post };
+}
+
+function renderCurrentGraphToSvg(state: unknown): string {
+  const s = state as {
+    graph?: unknown;
+    cachedImages?: Record<string, unknown>;
+  };
+  const graph = (
+    s.graph && typeof s.graph === 'object' && 'present' in (s.graph as object)
+      ? (s.graph as { present: unknown }).present
+      : s.graph
+  ) as Parameters<typeof renderSvgDom>[0];
+  const cachedImages = (s.cachedImages ?? {}) as Parameters<
+    typeof renderSvgDom
+  >[1];
+  const svgEl = renderSvgDom(graph, cachedImages);
+  const width = svgEl.getAttribute('width') ?? '0';
+  const height = svgEl.getAttribute('height') ?? '0';
+  let svg = new XMLSerializer().serializeToString(svgEl);
+  if (!svg.includes('xmlns=')) {
+    svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
+  }
+  const bg = (graph.style as Record<string, unknown> | undefined)?.[
+    'background-color'
+  ];
+  if (
+    typeof bg === 'string' &&
+    bg.trim().length > 0 &&
+    bg !== 'transparent' &&
+    bg !== 'none'
+  ) {
+    svg = svg.replace(
+      /<svg\b([^>]*)>/,
+      `<svg$1><rect width="100%" height="100%" fill="${escapeAttr(bg)}"/>`
+    );
+  }
+  void width;
+  void height;
+  return svg;
+}
+
+function escapeAttr(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/"/g, '&quot;')
+    .replace(/</g, '&lt;');
+}
+
+function renderCurrentGraphToGraphQL(state: unknown): string {
+  const s = state as { graph?: unknown };
+  const graph =
+    s.graph && typeof s.graph === 'object' && 'present' in (s.graph as object)
+      ? (s.graph as { present: unknown }).present
+      : s.graph;
+  return (exportGraphQL as (g: unknown) => string)(graph);
 }

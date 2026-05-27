@@ -11,6 +11,7 @@ export type ApplyDecision =
 // PreviewProvider (serialized applies) respectively. Here we just decide:
 // is the text actually changing?
 export function decideApply(input: ApplyDecisionInput): ApplyDecision {
-  if (input.currentText === input.nextText) return { action: 'skip', reason: 'noop' };
+  if (input.currentText === input.nextText)
+    return { action: 'skip', reason: 'noop' };
   return { action: 'apply' };
 }

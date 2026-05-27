@@ -8,8 +8,17 @@ export function installHeadlessDom(): void {
   const g = globalThis as Record<string, unknown>;
   if (typeof g['document'] === 'undefined') {
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { JSDOM } = require('jsdom') as typeof import('jsdom');
-    const dom = new JSDOM('<!doctype html><html><body></body></html>', { pretendToBeVisual: true });
+    const { JSDOM, VirtualConsole } = require('jsdom') as typeof import('jsdom');
+    // Silence jsdom's "Not implemented: HTMLCanvasElement.prototype.getContext"
+    // warning. We shim getContext ourselves below; the original throw is
+    // expected and the stderr spam makes MCP clients think the server crashed.
+    const virtualConsole = new VirtualConsole();
+    virtualConsole.on('jsdomError', (err) => {
+      const msg = err && typeof err === 'object' && 'message' in err ? String((err as { message: unknown }).message) : '';
+      if (msg.includes('Not implemented:') && msg.includes('getContext')) return;
+      process.stderr.write(`[jsdom] ${msg}\n`);
+    });
+    const dom = new JSDOM('<!doctype html><html><body></body></html>', { pretendToBeVisual: true, virtualConsole });
     const w = dom.window as unknown as Record<string, unknown>;
     // Some Node 25+ globals (notably `navigator`) are read-only — skip what we can't write.
     for (const key of ['window', 'document', 'XMLSerializer', 'Element', 'HTMLElement', 'SVGElement', 'Node', 'HTMLCanvasElement', 'navigator']) {

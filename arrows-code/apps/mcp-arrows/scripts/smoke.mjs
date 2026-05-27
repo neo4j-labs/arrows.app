@@ -64,7 +64,7 @@ try {
   // 2. tools/list
   const tools = await call('tools/list', {});
   const names = tools.result.tools.map((t) => t.name);
-  const expected = ['render_arrows', 'render_arrows_svg', 'validate_arrows', 'apply_patch', 'describe_schema', 'export_cypher'];
+  const expected = ['render_arrows', 'validate_arrows', 'apply_patch', 'layout_graph', 'describe_schema', 'export_cypher'];
   for (const n of expected) {
     if (!names.includes(n)) fail(`tools/list missing ${n}`);
   }
@@ -87,14 +87,14 @@ try {
   // 5. describe_schema
   const schema = await call('tools/call', { name: 'describe_schema', arguments: { graph: fixture } });
   const schemaBody = JSON.parse(schema.result.content[0].text);
-  if (!schemaBody.labels?.includes('Person')) fail(`describe_schema missing Person label: ${JSON.stringify(schemaBody)}`);
+  if (!schemaBody.labels?.includes('User')) fail(`describe_schema missing User label: ${JSON.stringify(schemaBody)}`);
   ok(`describe_schema → labels=${schemaBody.labels.join(',')}`);
 
   // 6. export_cypher
   const cypher = await call('tools/call', { name: 'export_cypher', arguments: { graph: fixture } });
   const cypherBody = JSON.parse(cypher.result.content[0].text);
   if (!cypherBody.cypher?.includes('CREATE')) fail('export_cypher missing CREATE');
-  if (!cypherBody.cypher?.includes(':Person')) fail('export_cypher missing :Person');
+  if (!cypherBody.cypher?.includes(':User')) fail('export_cypher missing :User');
   ok(`export_cypher → ${cypherBody.cypher.length}b Cypher`);
 
   // 7. apply_patch

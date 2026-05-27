@@ -13,15 +13,38 @@ const escape = name => {
   }
 }
 
+// Cypher-function call passthrough: date('2024-01-15'), datetime('…'), point({…}),
+// duration({…}). Detected by `name(...)` with a recognised builtin name —
+// otherwise treated as a string so user data containing parens isn't injected.
+const CYPHER_FN_PASSTHROUGH = /^(?:date|datetime|localdatetime|time|localtime|duration|point)\(.+\)$/
+
 const quote = value => {
+  const str = String(value ?? '')
+  // numeric — bare number
   if (typeof value === 'number' || (!isNaN(value) && !isNaN(parseFloat(value)))) {
     return value
-  } else {
-    // Escape backslashes first, then double quotes — prevents a value
-    // containing `"` from breaking out of the literal and injecting Cypher.
-    const str = String(value ?? '')
-    return '"' + str.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"'
   }
+  // boolean and null — bare Cypher literal
+  if (str === 'true' || str === 'false' || str === 'null') {
+    return str
+  }
+  // Cypher parameter reference — `$name` passes through unquoted.
+  if (/^\$[A-Za-z_][A-Za-z0-9_]*$/.test(str)) {
+    return str
+  }
+  // Cypher single-quoted string convention: `'literal'` round-trips as-is
+  // (the canonical arrows encoding for "this is definitely a string literal").
+  if (/^'.*'$/.test(str)) {
+    return str
+  }
+  // Cypher function call passthrough — date/datetime/point/duration/time.
+  if (CYPHER_FN_PASSTHROUGH.test(str)) {
+    return str
+  }
+  // Everything else — double-quoted string with backslash + double-quote escaping.
+  // Prevents a value containing `"` from breaking out of the literal and
+  // injecting Cypher.
+  return '"' + str.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '"'
 }
 
 const space = (left, right) => {

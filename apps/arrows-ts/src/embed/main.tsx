@@ -16,48 +16,71 @@ import { EmbedCanvasDoubleClick } from './EmbedCanvasDoubleClick';
 import { EmbedKeybindings } from './EmbedKeybindings';
 import { EmbedPanHandler } from './EmbedPanHandler';
 import { EmbedDragContinuation } from './EmbedDragContinuation';
+import { EmbedShiftMultiSelect } from './EmbedShiftMultiSelect';
 import { EmbedToolShortcuts } from './EmbedToolShortcuts';
+import { EmbedFooter } from './EmbedFooter';
 import { ToolProvider } from './ToolContext';
 import 'semantic-ui-css/semantic.min.css';
 import '../styles.css';
 
 const store = createStore(
   reducer,
-  applyMiddleware(thunkMiddleware, viewportMiddleware, imageCacheMiddleware),
+  applyMiddleware(thunkMiddleware, viewportMiddleware, imageCacheMiddleware)
 );
 
 const CHROME_PADDING = 72;
 const pushViewport = () => {
-  store.dispatch(windowResized(window.innerWidth, window.innerHeight + CHROME_PADDING));
+  store.dispatch(
+    windowResized(window.innerWidth, window.innerHeight + CHROME_PADDING)
+  );
 };
 pushViewport();
 window.addEventListener('resize', pushViewport);
 
 const bridge = initBridge(store);
 // acquireVsCodeApi is one-shot — child components reach the host via this hook.
-(window as unknown as { __arrowsHostPost: (m: unknown) => void }).__arrowsHostPost = bridge.post;
+(
+  window as unknown as { __arrowsHostPost: (m: unknown) => void }
+).__arrowsHostPost = bridge.post;
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+);
 root.render(
-  <Provider store={store}>
-    <ToolProvider>
-      <EmbedKeybindings />
-      <EmbedToolShortcuts />
-      <EmbedCanvasDoubleClick />
-      <EmbedPanHandler />
-      <EmbedDragContinuation />
-      <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'row' }}>
-        <div style={{ flex: 1, position: 'relative' }}>
-          <EmbedErrorBoundary fallbackLabel="Canvas render error">
-            <GraphContainer />
+  <EmbedErrorBoundary fallbackLabel="Embed crashed">
+    <Provider store={store}>
+      <ToolProvider>
+        <EmbedKeybindings />
+        <EmbedToolShortcuts />
+        <EmbedCanvasDoubleClick />
+        <EmbedShiftMultiSelect />
+        <EmbedPanHandler />
+        <EmbedDragContinuation />
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            flexDirection: 'row',
+          }}
+        >
+          <div style={{ flex: 1, position: 'relative' }}>
+            <EmbedErrorBoundary fallbackLabel="Canvas render error">
+              <GraphContainer />
+            </EmbedErrorBoundary>
+            <EmbedErrorBoundary fallbackLabel="Toolbar error">
+              <EmbedToolbar />
+            </EmbedErrorBoundary>
+            <EmbedErrorBoundary fallbackLabel="Context menu error">
+              <EmbedCanvasContextMenu />
+            </EmbedErrorBoundary>
+            <EmbedFooter />
+          </div>
+          <EmbedErrorBoundary fallbackLabel="Inspector error">
+            <EmbedInspectorPanel />
           </EmbedErrorBoundary>
-          <EmbedToolbar />
-          <EmbedCanvasContextMenu />
         </div>
-        <EmbedErrorBoundary fallbackLabel="Inspector error">
-          <EmbedInspectorPanel />
-        </EmbedErrorBoundary>
-      </div>
-    </ToolProvider>
-  </Provider>,
+      </ToolProvider>
+    </Provider>
+  </EmbedErrorBoundary>
 );

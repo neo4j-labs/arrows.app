@@ -22,7 +22,7 @@
     },
     "lint": {
       "executor": "@nx/linter:eslint",
-      "options": { "lintFilePatterns": ["arrows-code/apps/vscode-arrows/**/*.ts"] }
+      "options": { "lintFilePatterns": ["arrows-code/apps/vscode-arrows/src/**/*.ts"] }
     }
   }
 }

@@ -1,7 +1,7 @@
 // Interleaved-sequence tests for the bridge. shouldEmit.spec covers one-shot decisions;
 // this file threads many ops through a single bridge to catch ping-pong, clobber, and lost emits.
 
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { initBridge, type InitBridgeOptions } from './bridge';
 
 type GraphSlice = { nodes: any[]; relationships: any[]; style: Record<string, any> };
@@ -164,6 +164,21 @@ describe('bridge — rapid-edit reversal bug', () => {
       docVersion: 5,
     });
     expect(store.getState().graph.present.nodes.map((n: any) => n.id)).toEqual(['external']);
+  });
+
+  it('echo arriving AFTER the 30s TTL is treated as external (TTL actually expires)', () => {
+    vi.useFakeTimers({ toFake: ['performance', 'Date'] });
+    try {
+      const { store, bridge } = setup();
+      bridge.receive({ type: 'load', graph: { nodes: [], relationships: [], style: {} }, docVersion: 0 });
+      store.dispatch({ type: 'GRAPH/MUTATE', next: { nodes: [{ id: 'local' }], relationships: [], style: {} } });
+      vi.advanceTimersByTime(31_000);
+      bridge.receive({ type: 'load', graph: { nodes: [{ id: 'local' }], relationships: [], style: {} } });
+      bridge.receive({ type: 'load', graph: { nodes: [{ id: 'external' }], relationships: [], style: {} } });
+      expect(store.getState().graph.present.nodes.map((n: any) => n.id)).toEqual(['external']);
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it('200 rapid emits within the TTL: every echo is still recognized (no clobber under sustained drag)', () => {
@@ -367,5 +382,95 @@ describe('bridge — interleaved sequence', () => {
     // The final emit should reflect the latest committed state.
     const finalEmit = emits().at(-1);
     expect(finalEmit.graph.nodes[0].caption).toBe('Wo');
+  });
+});
+
+describe('bridge — request-svg handler', () => {
+  it('posts svg-result with an SVG string when state holds a graph', () => {
+    const { store, bridge, posts } = setup();
+    store.dispatch({
+      type: 'GRAPH/MUTATE',
+      next: {
+        nodes: [{ id: 'n0', position: { x: 0, y: 0 }, caption: 'A', labels: [], properties: {}, style: {} }],
+        relationships: [],
+        style: {},
+      },
+    });
+    posts.length = 0;
+    bridge.receive({ type: 'request-svg', requestId: 'r-1' });
+    const result = posts.find((p) => p.type === 'svg-result');
+    expect(result).toBeDefined();
+    expect(result.requestId).toBe('r-1');
+    expect(typeof result.svg === 'string' || typeof result.error === 'string').toBe(true);
+  });
+
+  it('returns an error payload (never throws) when the render fails', () => {
+    const { bridge, posts } = setup();
+    posts.length = 0;
+    bridge.receive({ type: 'request-svg', requestId: 'r-2' });
+    const result = posts.find((p) => p.type === 'svg-result' && p.requestId === 'r-2');
+    expect(result).toBeDefined();
+  });
+
+  it('ignores request-svg without a requestId (defensive contract)', () => {
+    const { bridge, posts } = setup();
+    posts.length = 0;
+    bridge.receive({ type: 'request-svg' });
+    expect(posts.filter((p) => p.type === 'svg-result')).toHaveLength(0);
+  });
+});
+
+describe('bridge — request-graphql handler', () => {
+  it('posts graphql-result with a string when state holds a graph', () => {
+    const { store, bridge, posts } = setup();
+    store.dispatch({
+      type: 'GRAPH/MUTATE',
+      next: {
+        nodes: [
+          { id: 'n0', position: { x: 0, y: 0 }, caption: 'Alice', labels: ['Person'], properties: { name: "'Alice'" }, style: {} },
+          { id: 'n1', position: { x: 100, y: 0 }, caption: 'Bob', labels: ['Person'], properties: {}, style: {} },
+        ],
+        relationships: [
+          { id: 'r0', fromId: 'n0', toId: 'n1', type: 'KNOWS', properties: {}, style: {} },
+        ],
+        style: {},
+      },
+    });
+    posts.length = 0;
+    bridge.receive({ type: 'request-graphql', requestId: 'g-1' });
+    const result = posts.find((p) => p.type === 'graphql-result');
+    expect(result).toBeDefined();
+    expect(result.requestId).toBe('g-1');
+    expect(typeof result.graphql === 'string' || typeof result.error === 'string').toBe(true);
+  });
+
+  it('returns error payload on failure rather than throwing', () => {
+    const { bridge, posts } = setup();
+    posts.length = 0;
+    bridge.receive({ type: 'request-graphql', requestId: 'g-err' });
+    const result = posts.find((p) => p.type === 'graphql-result' && p.requestId === 'g-err');
+    expect(result).toBeDefined();
+  });
+
+  it('ignores request-graphql without a requestId', () => {
+    const { bridge, posts } = setup();
+    posts.length = 0;
+    bridge.receive({ type: 'request-graphql' });
+    expect(posts.filter((p) => p.type === 'graphql-result')).toHaveLength(0);
+  });
+});
+
+describe('bridge — menu payload', () => {
+  it('preserves icon field on inbound menu entries (host → window.__arrowsMenu)', () => {
+    const { bridge } = setup();
+    const menu = [
+      { id: 'arrows.foo', title: 'Foo', description: 'foo desc', icon: 'check' },
+      { id: 'arrows.bar', title: 'Bar', description: 'bar desc', icon: 'database' },
+    ];
+    bridge.receive({ type: 'load', graph: { nodes: [], relationships: [], style: {} }, menu, docVersion: 0 });
+    const onWindow = (window as unknown as { __arrowsMenu?: typeof menu }).__arrowsMenu;
+    expect(onWindow).toEqual(menu);
+    expect(onWindow?.[0]?.icon).toBe('check');
+    expect(onWindow?.[1]?.icon).toBe('database');
   });
 });

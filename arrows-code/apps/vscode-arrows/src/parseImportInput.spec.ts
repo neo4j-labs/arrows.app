@@ -2,7 +2,16 @@ import { describe, expect, it } from 'vitest';
 import { parseImportInput } from './parseImportInput';
 
 const aliceBobJson = JSON.stringify({
-  nodes: [{ id: 'n0', position: { x: 0, y: 0 }, caption: 'A', labels: [], properties: {}, style: {} }],
+  nodes: [
+    {
+      id: 'n0',
+      position: { x: 0, y: 0 },
+      caption: 'A',
+      labels: [],
+      properties: {},
+      style: {},
+    },
+  ],
   relationships: [],
   style: {},
 });
@@ -21,7 +30,9 @@ describe('parseImportInput', () => {
 
   it('decodes a bare hash fragment (user copied just the fragment)', () => {
     const b64 = Buffer.from(aliceBobJson, 'utf8').toString('base64');
-    expect(parseImportInput(`#/import/json=${encodeURIComponent(b64)}`)).toBe(aliceBobJson);
+    expect(parseImportInput(`#/import/json=${encodeURIComponent(b64)}`)).toBe(
+      aliceBobJson
+    );
   });
 
   it('accepts raw .arrows JSON pasted in', () => {

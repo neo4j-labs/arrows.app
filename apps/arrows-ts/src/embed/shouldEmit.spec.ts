@@ -61,14 +61,24 @@ describe('shouldEmit', () => {
     expect(action.type).toBe('GETTING_GRAPH_SUCCEEDED');
   });
 
-  it('rehydrate fills in missing style keys so visualGraph.style[key] is never undefined', async () => {
+  it('rehydrate fills in EVERY canonical style key (not just background-color)', async () => {
+    const { rehydrate } = await import('./bridge');
+    const { styleAttributes } = await import('@neo4j-arrows/model');
+    const out = rehydrate({ nodes: [], relationships: [], style: {} });
+    const style = out.style as Record<string, unknown>;
+    for (const key of Object.keys(styleAttributes)) {
+      expect(style[key], `style[${key}] should be filled in but is undefined`).toBeDefined();
+    }
+  });
+
+  it('rehydrate preserves caller-provided style keys (does not overwrite with defaults)', async () => {
     const { rehydrate } = await import('./bridge');
     const out = rehydrate({
       nodes: [],
       relationships: [],
-      style: { 'node-color': '#ffe081' },
+      style: { 'node-color': '#abcdef' },
     });
-    expect((out.style as Record<string, string>)['background-color']).toBeDefined();
+    expect((out.style as Record<string, string>)['node-color']).toBe('#abcdef');
   });
 
   it('suppresses emission when a DOM input is focused (Inspector inputs)', () => {

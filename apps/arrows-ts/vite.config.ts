@@ -7,14 +7,17 @@ import { resolve } from 'node:path';
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/arrows-ts',
 
-  // Two HTML entries: the full web app (index.html) and the chrome-stripped
-  // embed (embed.html). Same source tree, same reducers, two outputs.
+  // The embed entry is opt-in via BUILD_EMBED=1 so production `nx build
+  // arrows-ts` (deployed to arrows.app) never ships /embed.html. The
+  // arrows-code extension build sets the env var when packaging the .vsix.
   build: {
     rollupOptions: {
-      input: {
-        main: resolve(__dirname, 'index.html'),
-        embed: resolve(__dirname, 'embed.html'),
-      },
+      input: process.env.BUILD_EMBED === '1'
+        ? {
+            main: resolve(__dirname, 'index.html'),
+            embed: resolve(__dirname, 'embed.html'),
+          }
+        : { main: resolve(__dirname, 'index.html') },
     },
   },
 

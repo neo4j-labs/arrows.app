@@ -206,7 +206,7 @@ exports.run = async function () {
     // Find the bundled examples dir on the installed extension.
     const ext = vscode.extensions.getExtension('neo4j-labs.arrows-code-vscode-arrows');
     const examplesDir = path.join(ext.extensionPath, 'media', 'examples');
-    const exampleName = 'movies';
+    const exampleName = 'social';
     const exampleUri = vscode.Uri.file(path.join(examplesDir, exampleName + '.arrows'));
     const target = path.join(workdir, 'from-template.arrows');
     const restoreQp = stub(vscode.window, 'showQuickPick', async () => ({ label: exampleName, uri: exampleUri }));

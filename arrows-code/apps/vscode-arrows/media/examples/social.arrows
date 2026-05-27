@@ -1,32 +1,1009 @@
 {
+  "nodes": [
+    {
+      "caption": "Alice",
+      "id": "u01",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -432.6,
+        "y": -891.5
+      },
+      "properties": {
+        "handle": "'@alice'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Bob",
+      "id": "u02",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -704.4,
+        "y": -603.5
+      },
+      "properties": {
+        "handle": "'@bob'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Carol",
+      "id": "u03",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -805.8,
+        "y": -955.5
+      },
+      "properties": {
+        "handle": "'@carol'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Dan",
+      "id": "u04",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -519.9,
+        "y": -191.5
+      },
+      "properties": {
+        "handle": "'@dan'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Eve",
+      "id": "u05",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -340,
+        "y": -510.2
+      },
+      "properties": {
+        "handle": "'@eve'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Frank",
+      "id": "u06",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -73.3,
+        "y": -769.7
+      },
+      "properties": {
+        "handle": "'@frank'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Gail",
+      "id": "u07",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 284.6,
+        "y": -640.5
+      },
+      "properties": {
+        "handle": "'@gail'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Henry",
+      "id": "u08",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 209.6,
+        "y": -1023.5
+      },
+      "properties": {
+        "handle": "'@henry'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Iris",
+      "id": "u09",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -895.9,
+        "y": -275.3
+      },
+      "properties": {
+        "handle": "'@iris'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Jack",
+      "id": "u10",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -1139.1,
+        "y": 149.4
+      },
+      "properties": {
+        "handle": "'@jack'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Kim",
+      "id": "u11",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -754.1,
+        "y": 456.3
+      },
+      "properties": {
+        "handle": "'@kim'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Lena",
+      "id": "u12",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -401.2,
+        "y": 169.5
+      },
+      "properties": {
+        "handle": "'@lena'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Mike",
+      "id": "u13",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -47.7,
+        "y": -16.2
+      },
+      "properties": {
+        "handle": "'@mike'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Nora",
+      "id": "u14",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 390.5,
+        "y": 140.6
+      },
+      "properties": {
+        "handle": "'@nora'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Owen",
+      "id": "u15",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 683.9,
+        "y": -283.1
+      },
+      "properties": {
+        "handle": "'@owen'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Petra",
+      "id": "u16",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 646.5,
+        "y": -756.4
+      },
+      "properties": {
+        "handle": "'@petra'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Quinn",
+      "id": "u17",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -990.2,
+        "y": 853
+      },
+      "properties": {
+        "handle": "'@quinn'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Rosa",
+      "id": "u18",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -647,
+        "y": 1023.5
+      },
+      "properties": {
+        "handle": "'@rosa'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Sam",
+      "id": "u19",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -374.9,
+        "y": 756.4
+      },
+      "properties": {
+        "handle": "'@sam'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Tina",
+      "id": "u20",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -52.1,
+        "y": 957.1
+      },
+      "properties": {
+        "handle": "'@tina'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Ursula",
+      "id": "u21",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 384,
+        "y": 956.2
+      },
+      "properties": {
+        "handle": "'@ursula'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Vince",
+      "id": "u22",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 533.4,
+        "y": 539.3
+      },
+      "properties": {
+        "handle": "'@vince'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Wendy",
+      "id": "u23",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 760.3,
+        "y": 223.3
+      },
+      "properties": {
+        "handle": "'@wendy'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Xavier",
+      "id": "u24",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 1139.1,
+        "y": 253.4
+      },
+      "properties": {
+        "handle": "'@xavier'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Yvonne",
+      "id": "u25",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 167.9,
+        "y": 643.1
+      },
+      "properties": {
+        "handle": "'@yvonne'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "Post #1",
+      "id": "p01",
+      "labels": [
+        "Post"
+      ],
+      "position": {
+        "x": -1094.1,
+        "y": -650.8
+      },
+      "properties": {
+        "postedAt": "'2025-04-20'",
+        "text": "'Welcome'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Post #2",
+      "id": "p02",
+      "labels": [
+        "Post"
+      ],
+      "position": {
+        "x": -0.3,
+        "y": -393.3
+      },
+      "properties": {
+        "text": "'Cypher tips'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Post #3",
+      "id": "p03",
+      "labels": [
+        "Post"
+      ],
+      "position": {
+        "x": -767.2,
+        "y": 76
+      },
+      "properties": {
+        "text": "'Graph DBs'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Post #4",
+      "id": "p04",
+      "labels": [
+        "Post"
+      ],
+      "position": {
+        "x": 307.7,
+        "y": -229.9
+      },
+      "properties": {
+        "text": "'Hello world'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Post #5",
+      "id": "p05",
+      "labels": [
+        "Post"
+      ],
+      "position": {
+        "x": -154.6,
+        "y": 447.3
+      },
+      "properties": {
+        "text": "'Coffee'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Post #6",
+      "id": "p06",
+      "labels": [
+        "Post"
+      ],
+      "position": {
+        "x": 911.8,
+        "y": 571.2
+      },
+      "properties": {
+        "text": "'TIL'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "fromId": "u01",
+      "id": "f01",
+      "properties": {},
+      "style": {},
+      "toId": "u02",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u01",
+      "id": "f02",
+      "properties": {},
+      "style": {},
+      "toId": "u03",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u02",
+      "id": "f03",
+      "properties": {},
+      "style": {},
+      "toId": "u03",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u02",
+      "id": "f04",
+      "properties": {},
+      "style": {},
+      "toId": "u04",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u03",
+      "id": "f05",
+      "properties": {},
+      "style": {},
+      "toId": "u05",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u04",
+      "id": "f06",
+      "properties": {},
+      "style": {},
+      "toId": "u05",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u05",
+      "id": "f07",
+      "properties": {},
+      "style": {},
+      "toId": "u06",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u06",
+      "id": "f08",
+      "properties": {},
+      "style": {},
+      "toId": "u07",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u07",
+      "id": "f09",
+      "properties": {},
+      "style": {},
+      "toId": "u08",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u08",
+      "id": "f10",
+      "properties": {},
+      "style": {},
+      "toId": "u01",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u09",
+      "id": "f11",
+      "properties": {},
+      "style": {},
+      "toId": "u10",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u10",
+      "id": "f12",
+      "properties": {},
+      "style": {},
+      "toId": "u11",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u11",
+      "id": "f13",
+      "properties": {},
+      "style": {},
+      "toId": "u12",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u12",
+      "id": "f14",
+      "properties": {},
+      "style": {},
+      "toId": "u13",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u13",
+      "id": "f15",
+      "properties": {},
+      "style": {},
+      "toId": "u14",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u14",
+      "id": "f16",
+      "properties": {},
+      "style": {},
+      "toId": "u15",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u15",
+      "id": "f17",
+      "properties": {},
+      "style": {},
+      "toId": "u16",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u17",
+      "id": "f18",
+      "properties": {},
+      "style": {},
+      "toId": "u18",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u18",
+      "id": "f19",
+      "properties": {},
+      "style": {},
+      "toId": "u19",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u19",
+      "id": "f20",
+      "properties": {},
+      "style": {},
+      "toId": "u20",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u20",
+      "id": "f21",
+      "properties": {},
+      "style": {},
+      "toId": "u21",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u21",
+      "id": "f22",
+      "properties": {},
+      "style": {},
+      "toId": "u22",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u22",
+      "id": "f23",
+      "properties": {},
+      "style": {},
+      "toId": "u23",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u23",
+      "id": "f24",
+      "properties": {},
+      "style": {},
+      "toId": "u24",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u01",
+      "id": "f25",
+      "properties": {},
+      "style": {},
+      "toId": "u09",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u04",
+      "id": "f26",
+      "properties": {},
+      "style": {},
+      "toId": "u12",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u05",
+      "id": "f27",
+      "properties": {},
+      "style": {},
+      "toId": "u13",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u08",
+      "id": "f28",
+      "properties": {},
+      "style": {},
+      "toId": "u16",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u11",
+      "id": "f29",
+      "properties": {},
+      "style": {},
+      "toId": "u19",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u14",
+      "id": "f30",
+      "properties": {},
+      "style": {},
+      "toId": "u22",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u25",
+      "id": "f31",
+      "properties": {},
+      "style": {},
+      "toId": "u19",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u25",
+      "id": "f32",
+      "properties": {},
+      "style": {},
+      "toId": "u21",
+      "type": "FOLLOWS"
+    },
+    {
+      "fromId": "u01",
+      "id": "p11",
+      "properties": {},
+      "style": {},
+      "toId": "p01",
+      "type": "POSTED"
+    },
+    {
+      "fromId": "u04",
+      "id": "p12",
+      "properties": {},
+      "style": {},
+      "toId": "p02",
+      "type": "POSTED"
+    },
+    {
+      "fromId": "u10",
+      "id": "p13",
+      "properties": {},
+      "style": {},
+      "toId": "p03",
+      "type": "POSTED"
+    },
+    {
+      "fromId": "u13",
+      "id": "p14",
+      "properties": {},
+      "style": {},
+      "toId": "p04",
+      "type": "POSTED"
+    },
+    {
+      "fromId": "u19",
+      "id": "p15",
+      "properties": {},
+      "style": {},
+      "toId": "p05",
+      "type": "POSTED"
+    },
+    {
+      "fromId": "u22",
+      "id": "p16",
+      "properties": {},
+      "style": {},
+      "toId": "p06",
+      "type": "POSTED"
+    },
+    {
+      "fromId": "u02",
+      "id": "l01",
+      "properties": {},
+      "style": {},
+      "toId": "p01",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u03",
+      "id": "l02",
+      "properties": {},
+      "style": {},
+      "toId": "p01",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u05",
+      "id": "l03",
+      "properties": {},
+      "style": {},
+      "toId": "p02",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u06",
+      "id": "l04",
+      "properties": {},
+      "style": {},
+      "toId": "p02",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u11",
+      "id": "l05",
+      "properties": {},
+      "style": {},
+      "toId": "p03",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u12",
+      "id": "l06",
+      "properties": {},
+      "style": {},
+      "toId": "p03",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u14",
+      "id": "l07",
+      "properties": {},
+      "style": {},
+      "toId": "p04",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u15",
+      "id": "l08",
+      "properties": {},
+      "style": {},
+      "toId": "p04",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u20",
+      "id": "l09",
+      "properties": {},
+      "style": {},
+      "toId": "p05",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u23",
+      "id": "l10",
+      "properties": {},
+      "style": {},
+      "toId": "p06",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u24",
+      "id": "l11",
+      "properties": {},
+      "style": {},
+      "toId": "p06",
+      "type": "LIKED"
+    },
+    {
+      "fromId": "u04",
+      "id": "c01",
+      "properties": {
+        "text": "'+1'"
+      },
+      "style": {},
+      "toId": "p01",
+      "type": "COMMENTED_ON"
+    },
+    {
+      "fromId": "u07",
+      "id": "c02",
+      "properties": {
+        "text": "'great post'"
+      },
+      "style": {},
+      "toId": "p02",
+      "type": "COMMENTED_ON"
+    },
+    {
+      "fromId": "u25",
+      "id": "c03",
+      "properties": {
+        "text": "'☕'"
+      },
+      "style": {},
+      "toId": "p05",
+      "type": "COMMENTED_ON"
+    }
+  ],
   "style": {
+    "arrow-color": "#000000",
+    "arrow-width": 5,
+    "attachment-end": "normal",
+    "attachment-start": "normal",
     "background-color": "#ffffff",
+    "background-image": "",
+    "background-size": "100%",
     "border-color": "#222222",
     "border-width": 3,
     "caption-color": "#222222",
-    "caption-font-size": 32,
+    "caption-font-size": 30,
+    "caption-font-weight": "normal",
+    "caption-max-width": 200,
+    "caption-position": "inside",
+    "detail-orientation": "parallel",
+    "detail-position": "inline",
+    "directionality": "directed",
     "font-family": "sans-serif",
+    "icon-position": "inside",
+    "icon-size": 64,
+    "label-background-color": "#ffffff",
+    "label-border-color": "#000000",
+    "label-border-width": 4,
+    "label-color": "#000000",
+    "label-display": "pill",
+    "label-font-size": 40,
+    "label-margin": 4,
+    "label-padding": 5,
+    "label-position": "inside",
+    "margin-end": 5,
+    "margin-peer": 20,
+    "margin-start": 5,
+    "node-background-image": "",
     "node-color": "#ffe081",
-    "radius": 55
-  },
-  "nodes": [
-    { "id": "u1", "position": { "x": -700, "y":  -300 }, "caption": "Alice",   "labels": ["User"], "properties": { "handle": "'@alice'", "joined": "'2023-01-04'" }, "style": { "node-color": "#a7c7e7" } },
-    { "id": "u2", "position": { "x":  -50, "y":  -600 }, "caption": "Bob",     "labels": ["User"], "properties": { "handle": "'@bob'" },   "style": { "node-color": "#a7c7e7" } },
-    { "id": "u3", "position": { "x":  600, "y":  -300 }, "caption": "Carol",   "labels": ["User"], "properties": { "handle": "'@carol'" }, "style": { "node-color": "#a7c7e7" } },
-    { "id": "u4", "position": { "x":  -50, "y":   200 }, "caption": "Dan",     "labels": ["User"], "properties": { "handle": "'@dan'" },   "style": { "node-color": "#a7c7e7" } },
-    { "id": "p1", "position": { "x": -700, "y":   500 }, "caption": "Post #1", "labels": ["Post"], "properties": { "text": "'Welcome to my graph!'", "postedAt": "'2025-04-20'" }, "style": { "node-color": "#fff1a8" } },
-    { "id": "p2", "position": { "x":  600, "y":   500 }, "caption": "Post #2", "labels": ["Post"], "properties": { "text": "'Trying out Cypher today'", "postedAt": "'2025-05-02'" }, "style": { "node-color": "#fff1a8" } }
-  ],
-  "relationships": [
-    { "id": "r1",  "fromId": "u1", "toId": "u2", "type": "FOLLOWS",      "properties": { "since": "'2024-02'" }, "style": {} },
-    { "id": "r2",  "fromId": "u2", "toId": "u3", "type": "FOLLOWS",      "properties": {}, "style": {} },
-    { "id": "r3",  "fromId": "u3", "toId": "u1", "type": "FOLLOWS",      "properties": {}, "style": {} },
-    { "id": "r4",  "fromId": "u4", "toId": "u1", "type": "FOLLOWS",      "properties": {}, "style": {} },
-    { "id": "r5",  "fromId": "u4", "toId": "u2", "type": "FOLLOWS",      "properties": {}, "style": {} },
-    { "id": "r6",  "fromId": "u1", "toId": "p1", "type": "POSTED",       "properties": {}, "style": {} },
-    { "id": "r7",  "fromId": "u3", "toId": "p2", "type": "POSTED",       "properties": {}, "style": {} },
-    { "id": "r8",  "fromId": "u2", "toId": "p1", "type": "LIKED",        "properties": {}, "style": {} },
-    { "id": "r9",  "fromId": "u4", "toId": "p1", "type": "LIKED",        "properties": {}, "style": {} },
-    { "id": "r10", "fromId": "u1", "toId": "p2", "type": "COMMENTED_ON", "properties": { "text": "'nice one!'" }, "style": {} }
-  ]
+    "node-icon-image": "",
+    "node-margin": 2,
+    "node-padding": 5,
+    "outside-position": "auto",
+    "property-alignment": "colon",
+    "property-color": "#000000",
+    "property-font-size": 16,
+    "property-font-weight": "normal",
+    "property-position": "outside",
+    "radius": 50,
+    "relationship-icon-image": "",
+    "type-background-color": "#ffffff",
+    "type-border-color": "#000000",
+    "type-border-width": 0,
+    "type-color": "#000000",
+    "type-font-size": 16,
+    "type-padding": 5
+  }
 }

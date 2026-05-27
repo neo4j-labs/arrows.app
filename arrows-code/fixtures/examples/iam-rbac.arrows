@@ -1,41 +1,745 @@
 {
+  "nodes": [
+    {
+      "caption": "alice",
+      "id": "u01",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -1190,
+        "y": 0
+      },
+      "properties": {
+        "email": "'alice@acme.com'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "bob",
+      "id": "u02",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -850,
+        "y": 0
+      },
+      "properties": {
+        "email": "'bob@acme.com'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "carol",
+      "id": "u03",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -510,
+        "y": 0
+      },
+      "properties": {
+        "email": "'carol@acme.com'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "dan",
+      "id": "u04",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": -170,
+        "y": 0
+      },
+      "properties": {
+        "email": "'dan@acme.com'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "eve",
+      "id": "u05",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 170,
+        "y": 0
+      },
+      "properties": {
+        "email": "'eve@acme.com'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "frank",
+      "id": "u06",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 510,
+        "y": 0
+      },
+      "properties": {
+        "email": "'frank@acme.com'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "gail",
+      "id": "u07",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 850,
+        "y": 0
+      },
+      "properties": {
+        "email": "'gail@acme.com'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "henry",
+      "id": "u08",
+      "labels": [
+        "User"
+      ],
+      "position": {
+        "x": 1190,
+        "y": 0
+      },
+      "properties": {
+        "email": "'henry@acme.com'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "engineers",
+      "id": "g01",
+      "labels": [
+        "Group"
+      ],
+      "position": {
+        "x": -510,
+        "y": 280
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "reviewers",
+      "id": "g02",
+      "labels": [
+        "Group"
+      ],
+      "position": {
+        "x": -170,
+        "y": 280
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "admins",
+      "id": "g03",
+      "labels": [
+        "Group"
+      ],
+      "position": {
+        "x": 170,
+        "y": 280
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "auditors",
+      "id": "g04",
+      "labels": [
+        "Group"
+      ],
+      "position": {
+        "x": 510,
+        "y": 280
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "developer",
+      "id": "r01",
+      "labels": [
+        "Role"
+      ],
+      "position": {
+        "x": -850,
+        "y": 560
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "code-reviewer",
+      "id": "r02",
+      "labels": [
+        "Role"
+      ],
+      "position": {
+        "x": -510,
+        "y": 560
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "repo-admin",
+      "id": "r03",
+      "labels": [
+        "Role"
+      ],
+      "position": {
+        "x": -170,
+        "y": 560
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "org-admin",
+      "id": "r04",
+      "labels": [
+        "Role"
+      ],
+      "position": {
+        "x": 170,
+        "y": 560
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "auditor",
+      "id": "r05",
+      "labels": [
+        "Role"
+      ],
+      "position": {
+        "x": 510,
+        "y": 560
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "billing-admin",
+      "id": "r06",
+      "labels": [
+        "Role"
+      ],
+      "position": {
+        "x": 850,
+        "y": 560
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "repo:read",
+      "id": "p01",
+      "labels": [
+        "Permission"
+      ],
+      "position": {
+        "x": -1190,
+        "y": 840
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "repo:write",
+      "id": "p02",
+      "labels": [
+        "Permission"
+      ],
+      "position": {
+        "x": -850,
+        "y": 840
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "repo:admin",
+      "id": "p03",
+      "labels": [
+        "Permission"
+      ],
+      "position": {
+        "x": -510,
+        "y": 840
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "settings:read",
+      "id": "p04",
+      "labels": [
+        "Permission"
+      ],
+      "position": {
+        "x": -170,
+        "y": 840
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "settings:write",
+      "id": "p05",
+      "labels": [
+        "Permission"
+      ],
+      "position": {
+        "x": 170,
+        "y": 840
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "billing:read",
+      "id": "p06",
+      "labels": [
+        "Permission"
+      ],
+      "position": {
+        "x": 510,
+        "y": 840
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "billing:write",
+      "id": "p07",
+      "labels": [
+        "Permission"
+      ],
+      "position": {
+        "x": 850,
+        "y": 840
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "audit:read",
+      "id": "p08",
+      "labels": [
+        "Permission"
+      ],
+      "position": {
+        "x": 1190,
+        "y": 840
+      },
+      "properties": {},
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "service-api",
+      "id": "res1",
+      "labels": [
+        "Resource"
+      ],
+      "position": {
+        "x": -340,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "'repository'"
+      },
+      "style": {
+        "node-color": "#90be6d"
+      }
+    },
+    {
+      "caption": "billing-db",
+      "id": "res2",
+      "labels": [
+        "Resource"
+      ],
+      "position": {
+        "x": 0,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "'database'"
+      },
+      "style": {
+        "node-color": "#90be6d"
+      }
+    },
+    {
+      "caption": "audit-log",
+      "id": "res3",
+      "labels": [
+        "Resource"
+      ],
+      "position": {
+        "x": 340,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "'log-stream'"
+      },
+      "style": {
+        "node-color": "#90be6d"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "fromId": "u01",
+      "id": "m01",
+      "properties": {},
+      "style": {},
+      "toId": "g01",
+      "type": "MEMBER_OF"
+    },
+    {
+      "fromId": "u02",
+      "id": "m02",
+      "properties": {},
+      "style": {},
+      "toId": "g01",
+      "type": "MEMBER_OF"
+    },
+    {
+      "fromId": "u03",
+      "id": "m03",
+      "properties": {},
+      "style": {},
+      "toId": "g01",
+      "type": "MEMBER_OF"
+    },
+    {
+      "fromId": "u02",
+      "id": "m04",
+      "properties": {},
+      "style": {},
+      "toId": "g02",
+      "type": "MEMBER_OF"
+    },
+    {
+      "fromId": "u04",
+      "id": "m05",
+      "properties": {},
+      "style": {},
+      "toId": "g02",
+      "type": "MEMBER_OF"
+    },
+    {
+      "fromId": "u05",
+      "id": "m06",
+      "properties": {},
+      "style": {},
+      "toId": "g03",
+      "type": "MEMBER_OF"
+    },
+    {
+      "fromId": "u06",
+      "id": "m07",
+      "properties": {},
+      "style": {},
+      "toId": "g03",
+      "type": "MEMBER_OF"
+    },
+    {
+      "fromId": "u07",
+      "id": "m08",
+      "properties": {},
+      "style": {},
+      "toId": "g04",
+      "type": "MEMBER_OF"
+    },
+    {
+      "fromId": "u08",
+      "id": "m09",
+      "properties": {},
+      "style": {},
+      "toId": "g04",
+      "type": "MEMBER_OF"
+    },
+    {
+      "fromId": "g01",
+      "id": "h01",
+      "properties": {},
+      "style": {},
+      "toId": "r01",
+      "type": "HAS_ROLE"
+    },
+    {
+      "fromId": "g01",
+      "id": "h02",
+      "properties": {},
+      "style": {},
+      "toId": "r02",
+      "type": "HAS_ROLE"
+    },
+    {
+      "fromId": "g02",
+      "id": "h03",
+      "properties": {},
+      "style": {},
+      "toId": "r02",
+      "type": "HAS_ROLE"
+    },
+    {
+      "fromId": "g02",
+      "id": "h04",
+      "properties": {},
+      "style": {},
+      "toId": "r03",
+      "type": "HAS_ROLE"
+    },
+    {
+      "fromId": "g03",
+      "id": "h05",
+      "properties": {},
+      "style": {},
+      "toId": "r04",
+      "type": "HAS_ROLE"
+    },
+    {
+      "fromId": "g03",
+      "id": "h06",
+      "properties": {},
+      "style": {},
+      "toId": "r06",
+      "type": "HAS_ROLE"
+    },
+    {
+      "fromId": "g04",
+      "id": "h07",
+      "properties": {},
+      "style": {},
+      "toId": "r05",
+      "type": "HAS_ROLE"
+    },
+    {
+      "fromId": "r01",
+      "id": "gr01",
+      "properties": {},
+      "style": {},
+      "toId": "p01",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "r01",
+      "id": "gr02",
+      "properties": {},
+      "style": {},
+      "toId": "p02",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "r02",
+      "id": "gr03",
+      "properties": {},
+      "style": {},
+      "toId": "p01",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "r02",
+      "id": "gr04",
+      "properties": {},
+      "style": {},
+      "toId": "p02",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "r03",
+      "id": "gr05",
+      "properties": {},
+      "style": {},
+      "toId": "p03",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "r04",
+      "id": "gr06",
+      "properties": {},
+      "style": {},
+      "toId": "p04",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "r04",
+      "id": "gr07",
+      "properties": {},
+      "style": {},
+      "toId": "p05",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "r05",
+      "id": "gr08",
+      "properties": {},
+      "style": {},
+      "toId": "p08",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "r06",
+      "id": "gr09",
+      "properties": {},
+      "style": {},
+      "toId": "p06",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "r06",
+      "id": "gr10",
+      "properties": {},
+      "style": {},
+      "toId": "p07",
+      "type": "GRANTS"
+    },
+    {
+      "fromId": "p01",
+      "id": "a01",
+      "properties": {},
+      "style": {},
+      "toId": "res1",
+      "type": "APPLIES_TO"
+    },
+    {
+      "fromId": "p02",
+      "id": "a02",
+      "properties": {},
+      "style": {},
+      "toId": "res1",
+      "type": "APPLIES_TO"
+    },
+    {
+      "fromId": "p03",
+      "id": "a03",
+      "properties": {},
+      "style": {},
+      "toId": "res1",
+      "type": "APPLIES_TO"
+    },
+    {
+      "fromId": "p04",
+      "id": "a04",
+      "properties": {},
+      "style": {},
+      "toId": "res2",
+      "type": "APPLIES_TO"
+    },
+    {
+      "fromId": "p05",
+      "id": "a05",
+      "properties": {},
+      "style": {},
+      "toId": "res2",
+      "type": "APPLIES_TO"
+    },
+    {
+      "fromId": "p06",
+      "id": "a06",
+      "properties": {},
+      "style": {},
+      "toId": "res2",
+      "type": "APPLIES_TO"
+    },
+    {
+      "fromId": "p07",
+      "id": "a07",
+      "properties": {},
+      "style": {},
+      "toId": "res2",
+      "type": "APPLIES_TO"
+    },
+    {
+      "fromId": "p08",
+      "id": "a08",
+      "properties": {},
+      "style": {},
+      "toId": "res3",
+      "type": "APPLIES_TO"
+    }
+  ],
   "style": {
     "background-color": "#ffffff",
     "border-color": "#222222",
     "border-width": 3,
     "caption-color": "#222222",
-    "caption-font-size": 36,
+    "caption-font-size": 30,
     "font-family": "sans-serif",
     "node-color": "#e2e8f0",
-    "radius": 60
-  },
-  "nodes": [
-    { "id": "u1", "position": { "x": -400, "y": -300 }, "caption": "alice",        "labels": ["User"],       "properties": { "email": "'alice@acme.com'" }, "style": { "node-color": "#a7c7e7" } },
-    { "id": "u2", "position": { "x": -400, "y":  -50 }, "caption": "bob",          "labels": ["User"],       "properties": { "email": "'bob@acme.com'" },   "style": { "node-color": "#a7c7e7" } },
-    { "id": "u3", "position": { "x": -400, "y":  200 }, "caption": "carol",        "labels": ["User"],       "properties": { "email": "'carol@acme.com'" }, "style": { "node-color": "#a7c7e7" } },
-    { "id": "g1", "position": { "x":    0, "y": -200 }, "caption": "engineers",    "labels": ["Group"],      "properties": {}, "style": { "node-color": "#fff1a8" } },
-    { "id": "g2", "position": { "x":    0, "y":  100 }, "caption": "admins",       "labels": ["Group"],      "properties": {}, "style": { "node-color": "#fff1a8" } },
-    { "id": "r1", "position": { "x":  400, "y": -300 }, "caption": "developer",    "labels": ["Role"],       "properties": {}, "style": { "node-color": "#ffb4a2" } },
-    { "id": "r2", "position": { "x":  400, "y":  -50 }, "caption": "reviewer",     "labels": ["Role"],       "properties": {}, "style": { "node-color": "#ffb4a2" } },
-    { "id": "r3", "position": { "x":  400, "y":  200 }, "caption": "owner",        "labels": ["Role"],       "properties": {}, "style": { "node-color": "#ffb4a2" } },
-    { "id": "p1", "position": { "x":  800, "y": -300 }, "caption": "repo:read",    "labels": ["Permission"], "properties": {}, "style": { "node-color": "#c0a9e0" } },
-    { "id": "p2", "position": { "x":  800, "y":  -50 }, "caption": "repo:write",   "labels": ["Permission"], "properties": {}, "style": { "node-color": "#c0a9e0" } },
-    { "id": "p3", "position": { "x":  800, "y":  200 }, "caption": "repo:admin",   "labels": ["Permission"], "properties": {}, "style": { "node-color": "#c0a9e0" } },
-    { "id": "res1","position": { "x": 1200, "y":  -50 }, "caption": "service-api", "labels": ["Resource"],   "properties": { "kind": "'repository'" }, "style": { "node-color": "#90be6d" } }
-  ],
-  "relationships": [
-    { "id": "e1",  "fromId": "u1",  "toId": "g1",  "type": "MEMBER_OF",  "properties": {}, "style": {} },
-    { "id": "e2",  "fromId": "u2",  "toId": "g1",  "type": "MEMBER_OF",  "properties": {}, "style": {} },
-    { "id": "e3",  "fromId": "u3",  "toId": "g2",  "type": "MEMBER_OF",  "properties": {}, "style": {} },
-    { "id": "e4",  "fromId": "g1",  "toId": "r1",  "type": "HAS_ROLE",   "properties": {}, "style": {} },
-    { "id": "e5",  "fromId": "g1",  "toId": "r2",  "type": "HAS_ROLE",   "properties": {}, "style": {} },
-    { "id": "e6",  "fromId": "g2",  "toId": "r3",  "type": "HAS_ROLE",   "properties": {}, "style": {} },
-    { "id": "e7",  "fromId": "r1",  "toId": "p1",  "type": "GRANTS",     "properties": {}, "style": {} },
-    { "id": "e8",  "fromId": "r2",  "toId": "p1",  "type": "GRANTS",     "properties": {}, "style": {} },
-    { "id": "e9",  "fromId": "r2",  "toId": "p2",  "type": "GRANTS",     "properties": {}, "style": {} },
-    { "id": "e10", "fromId": "r3",  "toId": "p3",  "type": "GRANTS",     "properties": {}, "style": {} },
-    { "id": "e11", "fromId": "p1",  "toId": "res1","type": "APPLIES_TO", "properties": {}, "style": {} },
-    { "id": "e12", "fromId": "p2",  "toId": "res1","type": "APPLIES_TO", "properties": {}, "style": {} },
-    { "id": "e13", "fromId": "p3",  "toId": "res1","type": "APPLIES_TO", "properties": {}, "style": {} }
-  ]
+    "radius": 55
+  }
 }

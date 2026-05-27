@@ -25,7 +25,9 @@ export function parseImportInput(raw: string): string | null {
       if (parsed && typeof parsed === 'object' && Array.isArray(parsed.nodes)) {
         return trimmed;
       }
-    } catch { /* fall through */ }
+    } catch {
+      /* fall through */
+    }
   }
   return null;
 }

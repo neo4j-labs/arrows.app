@@ -19,6 +19,7 @@
         "arrows-code/libs/format-cypher/src/index.ts"
       ],
       "@arrows-code/format-json": ["arrows-code/libs/format-json/src/index.ts"],
+      "@arrows-code/layout": ["arrows-code/libs/layout/src/index.ts"],
       "@arrows-code/mcp-arrows": ["arrows-code/apps/mcp-arrows/src/index.ts"],
       "@arrows-code/patch": ["arrows-code/libs/patch/src/index.ts"],
       "@arrows-code/renderer-host": [

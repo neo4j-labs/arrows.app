@@ -4,6 +4,9 @@
   "description": "Render and preview arrows.app graphs (.arrows files) directly in VS Code.",
   "version": "0.1.1",
   "publisher": "neo4j-labs",
+  "icon": "media/icon.png",
+  "galleryBanner": { "color": "#1a1a1a", "theme": "dark" },
+  "repository": { "type": "git", "url": "https://github.com/neo4j-labs/arrows.app" },
   "engines": { "vscode": "^1.85.0" },
   "categories": ["Visualization", "Other"],
   "main": "./dist/extension.js",
@@ -59,21 +62,22 @@
       }
     ],
     "commands": [
-      { "command": "arrows.newGraph",          "title": "New Graph",                  "category": "Arrows", "icon": "$(add)" },
-      { "command": "arrows.newFromExample",    "title": "New Graph from Example…",    "category": "Arrows", "icon": "$(library)" },
-      { "command": "arrows.import",            "title": "Import from URL or JSON…",   "category": "Arrows", "icon": "$(cloud-download)" },
-      { "command": "arrows.openSource",        "title": "Open as JSON Source",        "category": "Arrows", "icon": "$(json)" },
-      { "command": "arrows.openPreviewToSide", "title": "Open Preview to the Side",   "category": "Arrows", "icon": "$(open-preview)" },
-      { "command": "arrows.format",            "title": "Format / Canonicalize",      "category": "Arrows", "icon": "$(symbol-namespace)" },
+      { "command": "arrows.newGraph",          "title": "New graph",                  "category": "Arrows", "icon": "$(add)" },
+      { "command": "arrows.newFromExample",    "title": "New from example…",          "category": "Arrows", "icon": "$(library)" },
+      { "command": "arrows.import",            "title": "Import shared graph…",       "category": "Arrows", "icon": "$(cloud-download)" },
+      { "command": "arrows.openSource",        "title": "Show JSON side by side",     "category": "Arrows", "icon": "$(split-horizontal)" },
+      { "command": "arrows.openPreviewToSide", "title": "Show canvas side by side",   "category": "Arrows", "icon": "$(open-preview)" },
+      { "command": "arrows.format",            "title": "Auto-arrange nodes…",        "category": "Arrows", "icon": "$(symbol-namespace)" },
       { "command": "arrows.validate",          "title": "Validate",                   "category": "Arrows", "icon": "$(check)" },
-      { "command": "arrows.exportSvg",         "title": "Export as SVG…",             "category": "Arrows", "icon": "$(file-media)" },
-      { "command": "arrows.exportCypher",      "title": "Export as Cypher…",          "category": "Arrows", "icon": "$(database)" },
-      { "command": "arrows.copyCypher",        "title": "Copy Cypher to Clipboard",   "category": "Arrows", "icon": "$(clippy)" },
+      { "command": "arrows.exportSvg",         "title": "Save as SVG…",               "category": "Arrows", "icon": "$(file-media)" },
+      { "command": "arrows.exportGraphQL",     "title": "Save as GraphQL schema…",    "category": "Arrows", "icon": "$(symbol-interface)" },
+      { "command": "arrows.exportCypher",      "title": "Save as Cypher…",            "category": "Arrows", "icon": "$(database)" },
+      { "command": "arrows.copyCypher",        "title": "Copy Cypher to clipboard",   "category": "Arrows", "icon": "$(clippy)" },
       { "command": "arrows.openInArrowsApp",   "title": "Open in arrows.app",         "category": "Arrows", "icon": "$(link-external)" },
-      { "command": "arrows.renameLabel",       "title": "Rename Label…",              "category": "Arrows", "icon": "$(symbol-key)" },
-      { "command": "arrows.renameRelType",     "title": "Rename Relationship Type…",  "category": "Arrows", "icon": "$(arrow-swap)" },
-      { "command": "arrows.deleteFile",        "title": "Delete Graph File…",         "category": "Arrows", "icon": "$(trash)" },
-      { "command": "arrows.sidebar.refresh",   "title": "Refresh Sidebar",            "category": "Arrows", "icon": "$(refresh)" }
+      { "command": "arrows.renameLabel",       "title": "Rename label…",              "category": "Arrows", "icon": "$(symbol-key)" },
+      { "command": "arrows.renameRelType",     "title": "Rename relationship type…",  "category": "Arrows", "icon": "$(arrow-swap)" },
+      { "command": "arrows.deleteFile",        "title": "Delete graph file…",         "category": "Arrows", "icon": "$(trash)" },
+      { "command": "arrows.sidebar.refresh",   "title": "Refresh sidebar",            "category": "Arrows", "icon": "$(refresh)" }
     ],
     "menus": {
       "commandPalette": [
@@ -89,8 +93,8 @@
         { "command": "arrows.renameRelType",    "when": "resourceExtname == .arrows" }
       ],
       "editor/title": [
-        { "command": "arrows.openPreviewToSide","when": "resourceExtname == .arrows && !activeCustomEditorId", "group": "navigation" },
-        { "command": "arrows.openSource",       "when": "activeCustomEditorId == arrows.preview", "group": "navigation" }
+        { "command": "arrows.openPreviewToSide", "when": "resourceExtname == .arrows && !activeCustomEditorId", "group": "navigation" },
+        { "command": "arrows.openSource",        "when": "activeCustomEditorId == arrows.preview", "group": "navigation" }
       ],
       "editor/context": [
         { "command": "arrows.exportSvg",     "when": "resourceExtname == .arrows", "group": "arrows@1" },
@@ -121,7 +125,7 @@
     },
     "keybindings": [
       { "command": "arrows.openPreviewToSide", "key": "ctrl+k v", "mac": "cmd+k v", "when": "resourceExtname == .arrows" },
-      { "command": "arrows.format", "key": "shift+alt+f", "when": "resourceExtname == .arrows && editorTextFocus" }
+      { "command": "arrows.format",            "key": "shift+alt+f", "when": "resourceExtname == .arrows && (editorTextFocus || activeCustomEditorId == arrows.preview)" }
     ]
   },
   "scripts": {

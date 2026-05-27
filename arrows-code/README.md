@@ -19,17 +19,17 @@ Both surfaces share `libs/` (format converters, validator, patch ops, renderer h
 arrows-code/
 ├── apps/
 │   ├── vscode-arrows/    VS Code extension (CustomTextEditorProvider + commands + sidebar)
-│   └── mcp-arrows/       MCP server (stdio, 5 tools, 4 resources)
+│   └── mcp-arrows/       MCP server (stdio, 6 tools, 9 resources, 3 prompts)
 ├── libs/
 │   ├── format-json/      read/write canonical .arrows JSON, deterministic output
 │   ├── format-cypher/    Cypher CREATE/MERGE export with injection-hardened escapes
+│   ├── layout/           5 layout algorithms (force / hierarchical / radial / circular / grid)
 │   ├── patch/            PatchOp types + pure apply()
 │   ├── renderer-host/    headless SVG via @neo4j-arrows/graphics (jsdom-shimmed in Node)
 │   ├── validator/        structural + style-key validation
 │   └── test-utils/       shared graph fixtures
 ├── fixtures/examples/    .arrows files shipped with the extension as bundled examples
-├── CLAUDE.md             coding rules + architecture invariants for future contributors
-└── SPEC.md               canonical spec for what we're building and the DONE gates
+└── CLAUDE.md             coding rules + architecture invariants for future contributors
 ```
 
 ## Decoupling rules (enforced)

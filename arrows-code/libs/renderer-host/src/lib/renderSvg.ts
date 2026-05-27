@@ -26,6 +26,18 @@ export async function renderGraphToSvg(graph: Graph): Promise<RenderResult> {
     svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
   }
 
+  // renderSvgDom doesn't paint a background — SVG is transparent by default.
+  // The canvas renderer (web app) fills the viewport from graph.style['background-color'];
+  // mirror that here so an exported .svg matches what users see on screen and
+  // doesn't look like a hollow line drawing on whatever they paste it into.
+  const bg = (graph.style as Record<string, unknown> | undefined)?.['background-color'];
+  if (typeof bg === 'string' && bg.trim().length > 0 && bg !== 'transparent' && bg !== 'none') {
+    svg = svg.replace(
+      /<svg\b([^>]*)>/,
+      `<svg$1><rect width="100%" height="100%" fill="${escapeAttr(bg)}"/>`,
+    );
+  }
+
   const offset = parseOuterTranslate(svg);
   const nodes: NodeScreenPosition[] = graph.nodes.map((node) => ({
     id: node.id,
@@ -34,6 +46,10 @@ export async function renderGraphToSvg(graph: Graph): Promise<RenderResult> {
   }));
 
   return { svg, width, height, nodes };
+}
+
+function escapeAttr(value: string): string {
+  return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
 function parseOuterTranslate(svg: string): { x: number; y: number } {
