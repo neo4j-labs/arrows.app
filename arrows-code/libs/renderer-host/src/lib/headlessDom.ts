@@ -7,13 +7,13 @@ export function installHeadlessDom(): void {
 
   const g = globalThis as Record<string, unknown>;
   if (typeof g['document'] === 'undefined') {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { JSDOM, VirtualConsole } = require('jsdom') as typeof import('jsdom');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any
+    const { JSDOM, VirtualConsole } = require('jsdom') as any;
     // Silence jsdom's "Not implemented: HTMLCanvasElement.prototype.getContext"
     // warning. We shim getContext ourselves below; the original throw is
-    // expected and the stderr spam makes MCP clients think the server crashed.
+    // expected and the stderr
     const virtualConsole = new VirtualConsole();
-    virtualConsole.on('jsdomError', (err) => {
+    virtualConsole.on('jsdomError', (err: unknown) => {
       const msg = err && typeof err === 'object' && 'message' in err ? String((err as { message: unknown }).message) : '';
       if (msg.includes('Not implemented:') && msg.includes('getContext')) return;
       process.stderr.write(`[jsdom] ${msg}\n`);

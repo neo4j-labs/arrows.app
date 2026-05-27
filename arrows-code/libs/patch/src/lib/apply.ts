@@ -109,11 +109,13 @@ function applyOne(graph: Graph, op: PatchOp): Graph {
     case 'removeRelationship':
       return { ...graph, relationships: graph.relationships.filter((r) => r.id !== op.id) };
     case 'setRelType':
-      return mapRel(graph, op.id, (r) => setTypeOnRel(r, op.relType));
+      return mapRel(graph, op.id, (r) => ({ ...r, ...setTypeOnRel(r, op.relType) }));
     case 'renameRelType':
       return {
         ...graph,
-        relationships: graph.relationships.map((r) => (r.type === op.oldType ? setTypeOnRel(r, op.newType) : r)),
+        relationships: graph.relationships.map((r) =>
+          r.type === op.oldType ? { ...r, ...setTypeOnRel(r, op.newType) } : r
+        ),
       };
   }
 }

@@ -1,14 +1,13 @@
 # arrows-code
 
-Subsystem brings arrows.app into VS Code (extension + MCP server). Self-contained under `arrows-code/`; deletable without breaking the host monorepo.
+Subsystem brings arrows.app into VS Code. Self-contained under `arrows-code/`; deletable without breaking the host monorepo.
 
 ## Layout
 
 ```
 arrows-code/
 ├── apps/
-│   ├── vscode-arrows/   VS Code extension (CustomTextEditorProvider + commands + sidebar)
-│   └── mcp-arrows/      MCP server (stdio transport, tools + resources)
+│   └── vscode-arrows/   VS Code extension (CustomTextEditorProvider + commands + sidebar)
 ├── libs/
 │   ├── format-json/     read/write canonical .arrows JSON
 │   ├── format-cypher/   exportCypher (relocated from apps/arrows-ts)
