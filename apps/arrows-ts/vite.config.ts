@@ -24,6 +24,9 @@ export default defineConfig({
   server: {
     port: 4200,
     host: 'localhost',
+    fs: {
+      allow: ['../../'],
+    },
   },
 
   preview: {
