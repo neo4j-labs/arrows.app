@@ -2,7 +2,7 @@
 
 The arrows.app canvas, inside a VS Code tab. Open a `.arrows` file and you get the editor from arrows.app - drag nodes, draw relationships, edit inline. The underlying JSON stays in sync so your graph models can live in git next to the code that uses them.
 
-![Canvas editor with the inspector showing a selected node](https://raw.githubusercontent.com/AndreAtNeo4j/arrows.app/feature/vcode-ext-mcp-server/arrows-code/apps/vscode-arrows/media/screenshots/canvas.png)
+![Canvas editor with the inspector showing a selected node](https://raw.githubusercontent.com/neo4j-labs/arrows.app/main/arrows-code/apps/vscode-arrows/media/screenshots/canvas.png)
 
 ## Features
 
@@ -45,9 +45,9 @@ Press **`?`** inside the canvas to see all shortcuts.
 | Show JSON side by side | ⌘K V | Ctrl+K V |
 | Auto-arrange nodes | ⇧⌥F | Shift+Alt+F |
 
-![Canvas and JSON file open side by side](https://raw.githubusercontent.com/AndreAtNeo4j/arrows.app/feature/vcode-ext-mcp-server/arrows-code/apps/vscode-arrows/media/screenshots/sync.png)
+![Canvas and JSON file open side by side](https://raw.githubusercontent.com/neo4j-labs/arrows.app/main/arrows-code/apps/vscode-arrows/media/screenshots/sync.png)
 
-![Sidebar with workspace files, bundled examples, and quick actions](https://raw.githubusercontent.com/AndreAtNeo4j/arrows.app/feature/vcode-ext-mcp-server/arrows-code/apps/vscode-arrows/media/screenshots/sidebar.png)
+![Sidebar with workspace files, bundled examples, and quick actions](https://raw.githubusercontent.com/neo4j-labs/arrows.app/main/arrows-code/apps/vscode-arrows/media/screenshots/sidebar.png)
 
 ## Bundled examples
 

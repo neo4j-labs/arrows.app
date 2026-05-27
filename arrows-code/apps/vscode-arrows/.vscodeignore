@@ -1,0 +1,30 @@
+# Source — only the bundled dist/ ships
+src/**
+tests/**
+scripts/**
+.vscode-test/**
+.vscode/**
+
+# Build / test config
+*.config.ts
+*.config.mjs
+tsconfig*.json
+vitest.config.ts
+.eslintrc.json
+project.json
+
+# Dev artifacts
+node_modules/**
+test-results/**
+dist/**/test-runner/**
+dist/load-test-runner/**
+dist/commands-test-runner/**
+*.vsix
+*.log
+
+# Editor noise
+.DS_Store
+**/*.map
+
+# README references screenshots via absolute GitHub URLs — no need to ship them.
+media/screenshots/**

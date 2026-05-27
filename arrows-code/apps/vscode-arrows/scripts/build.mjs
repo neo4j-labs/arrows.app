@@ -85,6 +85,22 @@ function stripDeadFontReferences(dir) {
 stripDeadFontReferences(resolve(embedDst, 'assets'));
 console.log('▸ cleaned dead font references from embed CSS');
 
+// Vite copies the web app's public/ into the embed output (index.html,
+// manifest.json, cookiebot.external.min.css, the duplicate "favicon copy.ico",
+// etc). The webview only loads embed.html — drop the rest.
+const webAppOnlyFiles = [
+  'index.html',
+  'manifest.json',
+  'arrows_logo.svg',
+  'favicon copy.ico',
+  'css',
+];
+for (const name of webAppOnlyFiles) {
+  const path = resolve(embedDst, name);
+  if (existsSync(path)) rmSync(path, { recursive: true, force: true });
+}
+console.log('▸ pruned web-app-only assets from embed bundle');
+
 // Copy fixture examples so the sidebar's "Examples" section finds them.
 const examplesSrc = resolve(repoRoot, 'arrows-code/fixtures/examples');
 const examplesDst = resolve(extRoot, 'media/examples');
