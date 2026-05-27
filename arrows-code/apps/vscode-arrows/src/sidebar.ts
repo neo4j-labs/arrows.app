@@ -72,9 +72,7 @@ export class ArrowsTreeDataProvider implements vscode.TreeDataProvider<Item> {
         it.tooltip = item.uri.fsPath;
         it.description = vscode.workspace.asRelativePath(item.uri);
         it.iconPath = new vscode.ThemeIcon('graph');
-        // Use a wrapper command so we can claim focus after the editor opens
-        // — tree single-click otherwise keeps focus in the Explorer and the
-        // canvas can't receive keyboard shortcuts until the user clicks a node.
+        // Wrapper command claims focus; default tree-click leaves it on the Explorer.
         it.command = {
           command: 'arrows.openFile',
           title: 'Open',
@@ -92,8 +90,7 @@ export class ArrowsTreeDataProvider implements vscode.TreeDataProvider<Item> {
         it.tooltip = `Use "${item.label}" as a template for a new graph in your workspace`;
         it.description = item.description;
         it.iconPath = new vscode.ThemeIcon('book');
-        // Clicking an example copies it into the workspace rather than opening
-        // the read-only bundled file. Users expect "use as template" by default.
+        // Click = "use as template" (copy to workspace), not open the read-only bundled file.
         it.command = {
           command: 'arrows.newFromExample',
           title: 'Use as template',
@@ -152,7 +149,6 @@ export class ArrowsTreeDataProvider implements vscode.TreeDataProvider<Item> {
       ];
     }
     if (parent.kind === 'section' && parent.section === 'actions') {
-      // Sourced from the single catalog — no separate list to maintain.
       return sidebarQuickActions().map((cmd) => ({
         kind: 'action',
         label: cmd.title,
@@ -163,9 +159,7 @@ export class ArrowsTreeDataProvider implements vscode.TreeDataProvider<Item> {
       }));
     }
     if (parent.kind === 'section' && parent.section === 'workspace') {
-      // Exclude build-output / cache directories so e.g. the extension's own
-      // copied-at-build-time examples under `media/examples/` don't show up as
-      // duplicates of the source fixtures the user is actually editing.
+      // Skip build outputs and the extension's own copied examples.
       const exclude =
         '{**/node_modules/**,**/dist/**,**/.vscode-test/**,**/media/examples/**,**/out/**,**/build/**,**/.next/**,**/coverage/**}';
       const files = await vscode.workspace.findFiles(

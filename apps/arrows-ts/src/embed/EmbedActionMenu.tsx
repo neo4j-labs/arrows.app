@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import type { EmbedMenuEntry } from './bridge';
+import { Tooltip } from './Tooltip';
+import { shortcut } from './platformKeys';
 
 // Reads the menu entries the host posted into `window.__arrowsMenu` and renders
 // a dropdown anchored to the toolbar. Single source of truth is
@@ -62,23 +64,24 @@ export function EmbedActionMenu(): JSX.Element | null {
 
   return (
     <div ref={wrapRef} style={{ position: 'relative' }}>
-      <button
-        title="More commands"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={() => setOpen((v) => !v)}
-        style={{
-          border: 'none',
-          background: open ? '#e7eefe' : 'transparent',
-          padding: '6px 10px',
-          cursor: 'pointer',
-          color: open ? '#1664d9' : '#333',
-          borderRadius: 3,
-          display: 'inline-flex',
-          alignItems: 'center',
-        }}
-      >
-        <KebabIcon />
-      </button>
+      <Tooltip label="More commands">
+        <button
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => setOpen((v) => !v)}
+          style={{
+            border: 'none',
+            background: open ? '#e7eefe' : 'transparent',
+            padding: '6px 10px',
+            cursor: 'pointer',
+            color: open ? '#1664d9' : '#333',
+            borderRadius: 3,
+            display: 'inline-flex',
+            alignItems: 'center',
+          }}
+        >
+          <KebabIcon />
+        </button>
+      </Tooltip>
       {open && (
         <div
           role="menu"
@@ -125,7 +128,12 @@ export function EmbedActionMenu(): JSX.Element | null {
               }}
             >
               <MenuIcon name={cmd.icon} />
-              <span>{cmd.title}</span>
+              <span style={{ flex: 1 }}>{cmd.title}</span>
+              {cmd.shortcut && (
+                <span style={{ fontSize: 11, opacity: 0.65, fontFamily: 'monospace' }}>
+                  {shortcut(cmd.shortcut)}
+                </span>
+              )}
             </div>
           ))}
         </div>

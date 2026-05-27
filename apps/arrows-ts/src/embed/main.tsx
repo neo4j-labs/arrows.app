@@ -28,6 +28,27 @@ const store = createStore(
   applyMiddleware(thunkMiddleware, viewportMiddleware, imageCacheMiddleware)
 );
 
+// Guard against silent breakage from web-app refactors. The embed assumes a
+// specific store shape: a `graph` slice (with redux-undo's `present` field
+// containing { nodes, relationships, style }) and a `viewTransformation` slice.
+// If a future web-app change renames a slice or restructures the graph state,
+// the canvas renders blank — fail loudly here instead.
+const _bootState = store.getState() as Record<string, unknown>;
+const _graph = _bootState['graph'] as { present?: { nodes?: unknown } } | undefined;
+if (!_graph || !_graph.present || !Array.isArray(_graph.present.nodes)) {
+  throw new Error(
+    '[arrows-embed] Store shape mismatch: expected state.graph.present.nodes (array). ' +
+      'Likely cause: arrows-ts reducer refactor without updating the embed. ' +
+      'Check apps/arrows-ts/src/reducers/index.ts.'
+  );
+}
+if (!_bootState['viewTransformation']) {
+  throw new Error(
+    '[arrows-embed] Store shape mismatch: expected state.viewTransformation slice. ' +
+      'Check apps/arrows-ts/src/reducers/index.ts.'
+  );
+}
+
 const CHROME_PADDING = 72;
 const pushViewport = () => {
   store.dispatch(

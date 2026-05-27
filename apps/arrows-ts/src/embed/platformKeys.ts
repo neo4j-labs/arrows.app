@@ -10,14 +10,16 @@ const isMacPlatform = (): boolean => {
   return /Mac/i.test(platform) || /Mac/i.test(navigator.userAgent ?? '');
 };
 
-interface Chord { mod?: 'cmd' | 'cmd+shift' | 'shift+alt'; key: string }
+interface Chord { mod?: 'cmd' | 'cmd+shift' | 'cmd+alt' | 'shift+alt' | 'shift'; key: string }
 
 export function shortcut(c: Chord): string {
   const mac = isMacPlatform();
   switch (c.mod) {
     case 'cmd':       return mac ? `⌘${c.key}` : `Ctrl+${c.key}`;
     case 'cmd+shift': return mac ? `⇧⌘${c.key}` : `Ctrl+Shift+${c.key}`;
+    case 'cmd+alt':   return mac ? `⌥⌘${c.key}` : `Ctrl+Alt+${c.key}`;
     case 'shift+alt': return mac ? `⇧⌥${c.key}` : `Shift+Alt+${c.key}`;
+    case 'shift':     return mac ? `⇧${c.key}` : `Shift+${c.key}`;
     default:          return c.key;
   }
 }

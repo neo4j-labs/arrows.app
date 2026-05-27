@@ -59,8 +59,7 @@ export function getDiagnosticCollection(): vscode.DiagnosticCollection {
   return diagnostics;
 }
 
-// Sidebar context-menu commands receive the tree's underlying item ({uri, ...}),
-// not a vscode.Uri. Normalize so a single command body handles both call paths.
+// Sidebar tree items wrap the uri in `{uri, ...}`; palette passes raw vscode.Uri.
 function toUri(arg: unknown): vscode.Uri | undefined {
   if (!arg) return undefined;
   if (arg instanceof vscode.Uri) return arg;
@@ -87,20 +86,14 @@ async function resolveDocument(
       return undefined;
     }
   }
-  // (1) JSON view focused → activeTextEditor.
   const active = vscode.window.activeTextEditor?.document;
   if (active && active.fileName.endsWith('.arrows')) return active;
-  // (2) Canvas (custom editor) focused → activeTextEditor is undefined.
-  //     Check the active tab in the active group. The old behaviour scanned all
-  //     tabs in order and returned the first `.arrows`, which often wasn't the
-  //     focused one — every command silently retargeted to a different document.
+  // Canvas editor focused → activeTextEditor is undefined; read the active tab.
   const activeTab = vscode.window.tabGroups.activeTabGroup?.activeTab;
   const activeInput = activeTab?.input as { uri?: vscode.Uri } | undefined;
   if (activeInput?.uri && activeInput.uri.fsPath.endsWith('.arrows')) {
     return await vscode.workspace.openTextDocument(activeInput.uri);
   }
-  // (3) Nothing active — fall back to any open `.arrows` tab so palette commands
-  //     still work right after opening VS Code with one in the workspace.
   for (const group of vscode.window.tabGroups.all) {
     for (const tab of group.tabs) {
       const input = tab.input as { uri?: vscode.Uri } | undefined;
@@ -116,7 +109,6 @@ function defaultExportUri(
   document: vscode.TextDocument,
   ext: string
 ): vscode.Uri {
-  // uri.path is POSIX-style on every OS; safe to split on '/'.
   const baseName = document.uri.path.split('/').pop() ?? 'graph.arrows';
   const stem = baseName.replace(/\.arrows$/, '');
   if (document.uri.scheme === 'untitled') {
@@ -205,16 +197,10 @@ async function pickAndRename(
   await applyOpsToDocument(document, [buildOp(oldValue, newValue)]);
 }
 
-// Counter ensures multiple "New Graph" invocations get unique untitled URIs
-// — otherwise the second call would attach to the existing untitled doc.
+// Bump per "New Graph" so each call gets a unique untitled URI.
 let untitledGraphCounter = 0;
 
-/**
- * Open a .arrows file in the canvas editor AND focus the editor group. Plain
- * `vscode.openWith` from a tree single-click leaves focus in the Explorer, so
- * keyboard shortcuts target the tree instead of the canvas until the user
- * physically clicks a node.
- */
+// Focuses the editor group; plain openWith from a tree click leaves focus on the tree.
 export async function openFile(uri: vscode.Uri): Promise<void> {
   await vscode.commands.executeCommand(
     'vscode.openWith',
@@ -233,8 +219,7 @@ export async function newGraph(): Promise<void> {
   untitledGraphCounter += 1;
   const suffix = untitledGraphCounter === 1 ? '' : `-${untitledGraphCounter}`;
   const uri = vscode.Uri.parse(`untitled:Untitled${suffix}.arrows`);
-  // openTextDocument with a URI doesn't accept `content` directly — open first,
-  // then seed the template via WorkspaceEdit so the doc shows up dirty (unsaved).
+  // openTextDocument doesn't accept content for a URI; seed via WorkspaceEdit instead.
   const doc = await vscode.workspace.openTextDocument(uri);
   if (doc.getText().length === 0) {
     const edit = new vscode.WorkspaceEdit();
@@ -279,9 +264,6 @@ function listExamples(context: vscode.ExtensionContext): ExampleInfo[] {
   }
 }
 
-/** Copy a bundled example into the workspace and open it. Single entry point so
- *  the palette command, right-click "Use as template", and sidebar quick action
- *  all behave the same. Falls back to home directory if no workspace is open. */
 async function copyExampleToWorkspace(source: vscode.Uri): Promise<void> {
   const sourceName = source.path.split('/').pop() ?? 'graph.arrows';
   const stem = sourceName.replace(/\.arrows$/, '');
@@ -314,9 +296,6 @@ async function copyExampleToWorkspace(source: vscode.Uri): Promise<void> {
   );
 }
 
-/** Palette command — pick a bundled example, save copy in workspace, open it.
- *  Accepts either no arg, an Item from the sidebar tree, or a vscode.Uri pointing
- *  at the example file. */
 export function makeNewFromExample(context: vscode.ExtensionContext) {
   return async (arg?: unknown): Promise<void> => {
     const examples = listExamples(context);
@@ -339,8 +318,7 @@ export function makeNewFromExample(context: vscode.ExtensionContext) {
       if (!pick) return;
       source = pick.uri;
     }
-    // Constrain the source to the bundled examples directory — the command is
-    // public, so any extension or `command:` URI could call it with an arbitrary path.
+    // Restrict to bundled examples — command is publicly invocable.
     if (!source.fsPath.startsWith(examplesRoot(context))) {
       void vscode.window.showErrorMessage(
         'Arrows: only bundled examples may be used as templates.'
@@ -354,8 +332,6 @@ export function makeNewFromExample(context: vscode.ExtensionContext) {
 export async function openSource(arg?: unknown): Promise<void> {
   const document = await resolveDocument(arg);
   if (!document) return;
-  // Open the JSON view in a side column so the canvas stays visible. Users
-  // close the JSON tab when they're done — no need for a paired "go back" cmd.
   await vscode.commands.executeCommand(
     'vscode.openWith',
     document.uri,
@@ -389,8 +365,6 @@ export function makeFormat(context: vscode.ExtensionContext) {
       return;
     }
 
-    // QuickPick lists every algorithm. Last used is pre-selected so Enter
-    // alone re-applies it. State is per-workspace.
     const lastId = context.workspaceState.get<LayoutId>(
       LAST_LAYOUT_KEY,
       'force'
@@ -406,7 +380,6 @@ export function makeFormat(context: vscode.ExtensionContext) {
       title: 'Auto-arrange nodes',
       placeHolder: 'Pick a layout algorithm',
       matchOnDetail: true,
-      // Active item = last used so Enter just re-runs it.
       ...(startIdx >= 0
         ? ({ activeItem: items[startIdx] } as {
             activeItem: (typeof items)[number];
@@ -448,9 +421,6 @@ export function makeFormat(context: vscode.ExtensionContext) {
     }
     await replaceDocumentText(document, writeGraph(laidOut));
 
-    // Surface what just happened. Without this the canvas snaps to new
-    // positions silently and the user has no name for the layout that ran,
-    // no quick way to compare another, and no obvious undo path.
     void showLayoutAppliedToast(context, chosen, graph.nodes.length);
   };
 }
@@ -577,9 +547,7 @@ export function makeExportCypher(context: vscode.ExtensionContext) {
   };
 }
 
-// Browsers vary on URL length: ~2MB in Chrome, ~80KB in Safari. arrows.app
-// loads via window.location.hash so the whole graph travels in the URL.
-// Warn the user above this; they can still proceed.
+// Safari URL limit ~80KB; warn above 20KB but allow.
 const ARROWS_APP_URL_WARN_BYTES = 20_000;
 const ARROWS_APP_BASE = 'https://arrows.app';
 
@@ -604,8 +572,7 @@ export async function importGraph(): Promise<void> {
     );
     return;
   }
-  // Run through readGraph → writeGraph so the on-disk file uses the canonical
-  // shape (sorted keys, no entityType discriminator) regardless of source.
+  // Round-trip so the saved file uses the canonical shape regardless of source.
   const { graph, diagnostics } = readGraph(json);
   if (diagnostics.some((d) => d.severity === 'error')) {
     void vscode.window.showErrorMessage(
@@ -654,9 +621,7 @@ export async function openInArrowsApp(arg?: unknown): Promise<void> {
     );
     return;
   }
-  // arrows.app's storage reducer matches `#/import/json=<base64>` and base64-decodes
-  // into a Graph. Use Buffer for the base64 step (Node side); the web app uses the
-  // js-base64 Base64.decode on the receiving end.
+  // arrows.app reads the graph from `#/import/json=<base64>`.
   const json = writeGraph(graph);
   if (json.length > ARROWS_APP_URL_WARN_BYTES) {
     const choice = await vscode.window.showWarningMessage(
@@ -712,9 +677,7 @@ export async function deleteFile(arg?: unknown): Promise<void> {
     void vscode.window.showWarningMessage('Arrows: no .arrows file selected.');
     return;
   }
-  // The command is public — reject anything that isn't a .arrows file inside
-  // a workspace folder. Without this, a malicious `command:arrows.deleteFile`
-  // link could trash arbitrary files (e.g. ~/.ssh/id_rsa).
+  // Reject non-.arrows or outside-workspace targets; the command is publicly invocable.
   if (!uri.fsPath.endsWith('.arrows')) {
     void vscode.window.showErrorMessage(
       'Arrows: refusing to delete a non-.arrows file.'

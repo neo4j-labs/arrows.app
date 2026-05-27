@@ -1,11 +1,5 @@
-// Single source of truth for the extension's command surface. The three places
-// that USE this list — TOOLBAR_COMMANDS allowlist in PreviewProvider, sidebar
-// Quick actions, and the embed canvas dropdown menu — all read from here so
-// adding or renaming a command in one place doesn't silently miss the others.
-//
-// Naming rules: short, no "active graph" filler, parallel verbs across the set
-// (Copy ↔ Save ↔ Open). The category "Arrows" is added by VS Code in the
-// palette, so titles don't repeat it.
+// Single source of truth for the command surface — read by PreviewProvider's
+// allowlist, sidebar quick actions, and the embed dropdown.
 
 export interface ArrowsCommand {
   id: string;
@@ -19,6 +13,8 @@ export interface ArrowsCommand {
   webview: boolean;
   /** Which user-facing surfaces show this command. */
   surface: { sidebar: boolean; embedMenu: boolean };
+  /** Bound chord shown inline in the dropdown. Embed renders via shortcut(). */
+  shortcut?: { mod?: 'cmd' | 'cmd+shift' | 'shift+alt'; key: string };
 }
 
 export const COMMANDS: ArrowsCommand[] = [
@@ -61,6 +57,7 @@ export const COMMANDS: ArrowsCommand[] = [
     description: 'Pick a layout: force, hierarchical, radial, circular, grid',
     webview: true,
     surface: { sidebar: false, embedMenu: true },
+    shortcut: { mod: 'shift+alt', key: 'F' },
   },
   {
     id: 'arrows.openSource',
@@ -69,6 +66,7 @@ export const COMMANDS: ArrowsCommand[] = [
     description: 'Open the JSON in a side panel',
     webview: true,
     surface: { sidebar: false, embedMenu: true },
+    shortcut: { mod: 'cmd', key: 'K V' },
   },
   {
     id: 'arrows.copyCypher',
@@ -141,10 +139,11 @@ export interface EmbedMenuEntry {
   title: string;
   description: string;
   icon: string;
+  shortcut?: ArrowsCommand['shortcut'];
 }
 
 export function embedMenuPayload(): EmbedMenuEntry[] {
   return COMMANDS.filter((c) => c.surface.embedMenu && c.webview).map(
-    ({ id, title, description, icon }) => ({ id, title, description, icon })
+    ({ id, title, description, icon, shortcut }) => ({ id, title, description, icon, shortcut })
   );
 }

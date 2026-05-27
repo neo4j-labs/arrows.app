@@ -11,7 +11,7 @@ export function installHeadlessDom(): void {
     const { JSDOM, VirtualConsole } = require('jsdom') as any;
     // Silence jsdom's "Not implemented: HTMLCanvasElement.prototype.getContext"
     // warning. We shim getContext ourselves below; the original throw is
-    // expected and the stderr
+    // expected and the stderr.
     const virtualConsole = new VirtualConsole();
     virtualConsole.on('jsdomError', (err: unknown) => {
       const msg = err && typeof err === 'object' && 'message' in err ? String((err as { message: unknown }).message) : '';

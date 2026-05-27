@@ -1,7 +1,4 @@
-// Detect whether a pasted string is an arrows.app share URL or raw .arrows JSON,
-// returning the JSON payload either way (or null if it's neither).
-// Lives in its own file so the import command can unit-test the parsing path
-// without dragging in the rest of the extension dependency graph.
+// Parses an arrows.app share URL or raw .arrows JSON to a JSON payload, or null.
 
 function decodeArrowsAppImportUrl(input: string): string | null {
   const m = /[#/]?\/?import\/json=([^&\s]+)/.exec(input);

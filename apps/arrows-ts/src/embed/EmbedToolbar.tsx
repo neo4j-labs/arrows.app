@@ -1,8 +1,11 @@
+import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators as UndoActionCreators } from 'redux-undo';
 import { useTool, type Tool } from './ToolContext';
 import { shortcut } from './platformKeys';
 import { EmbedActionMenu } from './EmbedActionMenu';
+import { Tooltip } from './Tooltip';
+import { EmbedShortcutsHelp } from './EmbedShortcutsHelp';
 
 interface GraphSlice {
   past?: unknown[];
@@ -72,6 +75,13 @@ const PanIcon = () => (
     <path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15" />
   </svg>
 );
+const HelpIcon = () => (
+  <svg {...iconBase}>
+    <circle cx="12" cy="12" r="10" />
+    <path d="M9.5 9a2.5 2.5 0 1 1 4.5 1.5c-.8.6-1.5 1.2-1.5 2v.5" />
+    <line x1="12" y1="17" x2="12" y2="17.01" />
+  </svg>
+);
 
 export function EmbedToolbar(): JSX.Element {
   const dispatch = useDispatch();
@@ -85,47 +95,74 @@ export function EmbedToolbar(): JSX.Element {
 
   const choose = (t: Tool) => () => setTool(t);
 
+  const [helpOpen, setHelpOpen] = useState(false);
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent): void => {
+      const t = e.target as HTMLElement | null;
+      const tag = t?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || t?.isContentEditable) return;
+      if (e.key === '?' || (e.key === '/' && (e.metaKey || e.ctrlKey))) {
+        e.preventDefault();
+        setHelpOpen((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
   return (
     <div style={wrap}>
-      {/* preventDefault on mousedown stops the browser from focusing the button on click —
-          we use the blue background as the active indicator and don't want a stale focus ring. */}
-      <button
-        style={btn(false, !canUndo)}
-        disabled={!canUndo}
-        title={`Undo (${shortcut({ mod: 'cmd', key: 'Z' })})`}
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={() => dispatch(UndoActionCreators.undo())}
-      >
-        <UndoIcon />
-      </button>
-      <button
-        style={btn(false, !canRedo)}
-        disabled={!canRedo}
-        title={`Redo (${shortcut({ mod: 'cmd+shift', key: 'Z' })})`}
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={() => dispatch(UndoActionCreators.redo())}
-      >
-        <RedoIcon />
-      </button>
+      <Tooltip label={`Undo (${shortcut({ mod: 'cmd', key: 'Z' })})`}>
+        <button
+          style={btn(false, !canUndo)}
+          disabled={!canUndo}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => dispatch(UndoActionCreators.undo())}
+        >
+          <UndoIcon />
+        </button>
+      </Tooltip>
+      <Tooltip label={`Redo (${shortcut({ mod: 'cmd+shift', key: 'Z' })})`}>
+        <button
+          style={btn(false, !canRedo)}
+          disabled={!canRedo}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => dispatch(UndoActionCreators.redo())}
+        >
+          <RedoIcon />
+        </button>
+      </Tooltip>
       <span style={divider} />
-      <button
-        style={btn(tool === 'select', false)}
-        title="Select (V)"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={choose('select')}
-      >
-        <SelectIcon />
-      </button>
-      <button
-        style={btn(tool === 'pan', false)}
-        title="Pan (H, hold Space)"
-        onMouseDown={(e) => e.preventDefault()}
-        onClick={choose('pan')}
-      >
-        <PanIcon />
-      </button>
+      <Tooltip label="Select (V)">
+        <button
+          style={btn(tool === 'select', false)}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={choose('select')}
+        >
+          <SelectIcon />
+        </button>
+      </Tooltip>
+      <Tooltip label="Pan (H, hold Space)">
+        <button
+          style={btn(tool === 'pan', false)}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={choose('pan')}
+        >
+          <PanIcon />
+        </button>
+      </Tooltip>
       <span style={divider} />
+      <Tooltip label="Keyboard shortcuts (?)">
+        <button
+          style={btn(false, false)}
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => setHelpOpen(true)}
+        >
+          <HelpIcon />
+        </button>
+      </Tooltip>
       <EmbedActionMenu />
+      <EmbedShortcutsHelp open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   );
 }

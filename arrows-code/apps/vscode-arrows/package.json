@@ -1,7 +1,7 @@
 {
   "name": "arrows-code-vscode-arrows",
   "displayName": "Arrows",
-  "description": "Render and preview arrows.app graphs (.arrows files) directly in VS Code.",
+  "description": "The arrows.app canvas inside VS Code - edit Neo4j graph models visually with a .arrows JSON.",
   "version": "0.1.1",
   "publisher": "neo4j-labs",
   "icon": "media/icon.png",
@@ -68,7 +68,7 @@
       { "command": "arrows.openSource",        "title": "Show JSON side by side",     "category": "Arrows", "icon": "$(split-horizontal)" },
       { "command": "arrows.openPreviewToSide", "title": "Show canvas side by side",   "category": "Arrows", "icon": "$(open-preview)" },
       { "command": "arrows.format",            "title": "Auto-arrange nodes…",        "category": "Arrows", "icon": "$(symbol-namespace)" },
-      { "command": "arrows.validate",          "title": "Validate",                   "category": "Arrows", "icon": "$(check)" },
+      { "command": "arrows.validate",          "title": "Validate graph",                   "category": "Arrows", "icon": "$(check)" },
       { "command": "arrows.exportSvg",         "title": "Save as SVG…",               "category": "Arrows", "icon": "$(file-media)" },
       { "command": "arrows.exportGraphQL",     "title": "Save as GraphQL schema…",    "category": "Arrows", "icon": "$(symbol-interface)" },
       { "command": "arrows.exportCypher",      "title": "Save as Cypher…",            "category": "Arrows", "icon": "$(database)" },

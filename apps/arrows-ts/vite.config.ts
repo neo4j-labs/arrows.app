@@ -19,6 +19,9 @@ export default defineConfig({
           }
         : { main: resolve(__dirname, 'index.html') },
     },
+    // VS Code webviews are local-only; modulepreload eagerly fetches async
+    // chunks and defeats the lazy-load. Web app build keeps the default.
+    modulePreload: process.env.BUILD_EMBED === '1' ? false : true,
   },
 
   server: {

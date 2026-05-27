@@ -1,7 +1,7 @@
 import { Point, completeWithDefaults } from '@neo4j-arrows/model';
 import { renderSvgDom } from '@neo4j-arrows/graphics';
-// @ts-expect-error — JS module without local typings, imported for its single default export.
-import exportGraphQL from '../graphql/exportGraphQL';
+// graphql export is lazy-loaded — pulling `graphql-js` (~670 KB) into the
+// embed bundle is only justified when the user actually exports GraphQL.
 import { shouldEmit } from './shouldEmit';
 import { isUserBusy } from './userBusy';
 export { isUserBusy };
@@ -110,6 +110,7 @@ export interface EmbedMenuEntry {
   title: string;
   description: string;
   icon?: string;
+  shortcut?: { mod?: 'cmd' | 'cmd+shift' | 'shift+alt'; key: string };
 }
 
 function isValidMenuEntry(e: unknown): e is EmbedMenuEntry {
@@ -227,16 +228,18 @@ export function initBridge(
       return;
     }
     if (m.type === 'request-graphql' && typeof m.requestId === 'string') {
-      try {
-        const graphql = renderCurrentGraphToGraphQL(store.getState());
-        host.post({ type: 'graphql-result', requestId: m.requestId, graphql });
-      } catch (err) {
-        host.post({
-          type: 'graphql-result',
-          requestId: m.requestId,
-          error: err instanceof Error ? err.message : String(err),
+      const requestId = m.requestId;
+      renderCurrentGraphToGraphQL(store.getState())
+        .then((graphql) => {
+          host.post({ type: 'graphql-result', requestId, graphql });
+        })
+        .catch((err: unknown) => {
+          host.post({
+            type: 'graphql-result',
+            requestId,
+            error: err instanceof Error ? err.message : String(err),
+          });
         });
-      }
     }
   };
 
@@ -310,11 +313,14 @@ function escapeAttr(value: string): string {
     .replace(/</g, '&lt;');
 }
 
-function renderCurrentGraphToGraphQL(state: unknown): string {
+async function renderCurrentGraphToGraphQL(state: unknown): Promise<string> {
   const s = state as { graph?: unknown };
   const graph =
     s.graph && typeof s.graph === 'object' && 'present' in (s.graph as object)
       ? (s.graph as { present: unknown }).present
       : s.graph;
-  return (exportGraphQL as (g: unknown) => string)(graph);
+  // @ts-expect-error — JS module without local typings.
+  const mod = await import('../graphql/exportGraphQL');
+  const exportGraphQL = (mod.default ?? mod) as (g: unknown) => string;
+  return exportGraphQL(graph);
 }

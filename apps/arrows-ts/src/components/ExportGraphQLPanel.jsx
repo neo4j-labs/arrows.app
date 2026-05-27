@@ -1,7 +1,8 @@
 import React, { Component } from "react";
 import { Form, Icon, TextArea, Message } from "semantic-ui-react";
 import { Base64 } from "js-base64";
-import exportGraphQL from "../graphql/exportGraphQL";
+// exportGraphQL pulls graphql-js (~670KB). Dynamic-import keeps it out of the
+// initial bundle for both web app and VS Code embed.
 
 class ExportGraphQLPanel extends Component {
   constructor(props) {
@@ -13,8 +14,10 @@ class ExportGraphQLPanel extends Component {
     this.exportToGraphQL = this.exportToGraphQL.bind(this);
   }
 
-  exportToGraphQL() {
+  async exportToGraphQL() {
     try {
+      const mod = await import("../graphql/exportGraphQL");
+      const exportGraphQL = mod.default || mod;
       const typeDefs = exportGraphQL(this.props.graph);
 
       this.setState({typeDefs});

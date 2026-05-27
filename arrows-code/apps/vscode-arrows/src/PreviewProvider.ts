@@ -6,8 +6,6 @@ import { decideApply } from './syncDecision';
 import { embedMenuPayload, webviewAllowedCommandIds } from './commandsCatalog';
 import { makeRequester, type Requester } from './webviewRequest';
 
-// Allowlist derived from the single catalog (commandsCatalog.ts) so any new
-// command added there is automatically reachable from the embed iff it opts in.
 const TOOLBAR_COMMANDS = webviewAllowedCommandIds;
 
 interface ActivePanel {
@@ -67,7 +65,7 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
       localResourceRoots: [embedDir],
     };
 
-    // Serialize applyEdit calls so two rapid webview emits don't fight over the doc range.
+    // Serialize applyEdit so rapid webview emits don't race on the doc range.
     let applyChain: Promise<unknown> = Promise.resolve();
     let webviewReady = false;
     let pendingLoad: { graph: unknown; docVersion: number } | null = null;
@@ -89,9 +87,6 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
       graphql,
     });
 
-    // Embed dropdown reads its menu items from this payload — derived from the
-    // shared catalog so adding a command in commandsCatalog.ts wires it into the
-    // embed automatically (no second list to keep in sync).
     const menuPayload = embedMenuPayload();
 
     const sendLoad = (): void => {
@@ -135,9 +130,7 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
           );
         }
       };
-      // Tail-attached catch: without this, an unexpected throw inside `task`
-      // (not just a returned `false`) becomes an unhandled rejection and the
-      // chain silently freezes — the webview keeps emitting but nothing applies.
+      // Tail .catch keeps the chain alive if `task` throws (vs. just returning false).
       const next = applyChain.then(task, task).catch((err) => {
         void vscode.window.showErrorMessage(
           `Arrows: edit error: ${
@@ -153,9 +146,7 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
     subs.push(
       vscode.workspace.onDidChangeTextDocument((e) => {
         if (e.document.uri.toString() !== document.uri.toString()) return;
-        // Every change broadcasts back to the webview. The bridge's emit-history
-        // Set drops echoes of its own emits; non-matching loads (genuine external
-        // edits, format command, etc.) are applied.
+        // Bridge drops own-echoes; genuine external edits get applied.
         sendLoad();
       }),
       panel.webview.onDidReceiveMessage(
@@ -213,8 +204,6 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
   }
 }
 
-// Per-load nonce; Vite emits `<script type="module" src=…>` so a nonce on the
-// <script> tag plus `script-src 'nonce-XXX'` removes the need for 'unsafe-inline'.
 function freshNonce(): string {
   return randomBytes(16).toString('base64');
 }
@@ -243,8 +232,6 @@ function buildHtml(webview: vscode.Webview, embedDir: vscode.Uri): string {
   html = html.replace(/<base[^>]*>/g, '');
 
   const nonce = freshNonce();
-  // Tag every <script> with the nonce so script-src 'nonce-XXX' allows them
-  // without 'unsafe-inline'. Vite's bundle emits a single module script.
   html = html.replace(
     /<script\b(?![^>]*\bnonce=)/g,
     `<script nonce="${nonce}"`
@@ -262,17 +249,12 @@ function buildHtml(webview: vscode.Webview, embedDir: vscode.Uri): string {
     `<head><meta http-equiv="Content-Security-Policy" content="${csp}">`
   );
 
-  // Empty-canvas clicks (anywhere not on a node/toolbar button) don't pull
-  // focus into the iframe document by default — keyboard shortcuts then keep
-  // firing in whatever pane had focus (Explorer, command palette, etc.).
-  // A capture-phase mousedown handler forces focus on every click inside the
-  // webview, so shortcuts target the canvas immediately.
+  // Force window.focus on every click so keyboard shortcuts target the canvas.
   const focusScript = `<script nonce="${nonce}">
     (function () {
       var grabFocus = function () { try { window.focus(); } catch (_) {} };
       document.addEventListener('mousedown', grabFocus, true);
       document.addEventListener('touchstart', grabFocus, true);
-      // Also on initial load so shortcuts work without any click at all.
       window.addEventListener('load', grabFocus);
     })();
   </script>`;

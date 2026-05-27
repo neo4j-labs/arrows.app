@@ -25,7 +25,8 @@ Only allowed imports from the host repo: `@neo4j-arrows/{model,graphics,selector
 ```bash
 npx nx test arrows-code-validator               # one project
 npx nx run-many -t test --projects=arrows-code-* # all
-cd arrows-code/apps/vscode-arrows && npm run build        # bundle + copy embed/examples
+cd arrows-code/apps/vscode-arrows && npm run install:local  # build + install (then Reload Window in VS Code)
+cd arrows-code/apps/vscode-arrows && npm run build        # build only (no install)
 cd arrows-code/apps/vscode-arrows && npm run commands-test  # real VS Code Electron host
 cd arrows-code/apps/vscode-arrows && npm run package      # build .vsix
 ```
@@ -52,6 +53,16 @@ Never write:
 - `@param`/`@returns` JSDoc on TypeScript code — types already document those.
 
 When trimming an existing comment, ask: would removing it confuse a competent reader? If no, remove.
+
+## Shared canvas — one codebase, two surfaces
+
+The VS Code extension does **not** have its own copy of the graph canvas, renderer, or inspector. It embeds the arrows-ts app as a Vite bundle.
+
+- All canvas logic lives in `apps/arrows-ts/src/` (shared with the web app).
+- The embed-specific files are only in `apps/arrows-ts/src/embed/`: the postMessage bridge (`bridge.ts`), the entry point (`main.tsx`), and the thin toolbar overlay (`EmbedToolbar.tsx`, `EmbedActionMenu.tsx`, `EmbedFooter.tsx`).
+- **To change any canvas behaviour**, edit `apps/arrows-ts/src/` as you would for the web app, then rebuild: `cd arrows-code/apps/vscode-arrows && npm run build`.
+
+Never duplicate canvas or renderer code into `arrows-code/`. If something only works in one surface, the split belongs in `embed/`.
 
 ## Architecture invariants
 
