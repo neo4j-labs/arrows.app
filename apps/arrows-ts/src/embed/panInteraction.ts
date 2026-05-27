@@ -30,17 +30,6 @@ export function cursorFor(ctx: PanContext, hit: HitResult, dragging: boolean): C
   return 'grab';
 }
 
-export interface WheelZoomArgs {
-  /** Canvas-space coordinates of the cursor; the wheel thunk uses this as the zoom origin. */
-  canvasX: number;
-  canvasY: number;
-  /** Original wheel deltas — preserved so the existing zoom math (which uses dy) keeps working. */
-  deltaX: number;
-  deltaY: number;
-  /** Always true: the existing wheel thunk treats ctrlKey as the zoom signal. */
-  forceZoom: true;
-}
-
 export type ShortcutAction =
   | { type: 'tool'; tool: 'select' | 'pan' }
   | { type: 'space-held'; held: boolean }
@@ -102,17 +91,3 @@ export function computeZoomTransform(input: ZoomInput): ZoomOutput {
   };
 }
 
-/** Convert a DOM wheel event on the canvas into the args arrows' wheel thunk expects.
- *  Always sets forceZoom=true so trackpad two-finger scroll behaves like pinch-zoom. */
-export function wheelToZoomArgs(
-  rect: { left: number; top: number },
-  event: { clientX: number; clientY: number; deltaX: number; deltaY: number },
-): WheelZoomArgs {
-  return {
-    canvasX: event.clientX - rect.left,
-    canvasY: event.clientY - rect.top,
-    deltaX: event.deltaX,
-    deltaY: event.deltaY,
-    forceZoom: true,
-  };
-}

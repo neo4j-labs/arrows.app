@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { computeZoomTransform, cursorFor, decideMouseDown, resolveToolShortcut, wheelToZoomArgs } from './panInteraction';
+import { computeZoomTransform, cursorFor, decideMouseDown, resolveToolShortcut } from './panInteraction';
 import type { HitResult } from './embedActions';
 
 const empty: HitResult = { kind: 'none' };
@@ -75,34 +75,6 @@ describe('resolveToolShortcut — V/H/Space bindings', () => {
   it('returns none for unrelated keys', () => {
     expect(resolveToolShortcut({ key: 'a' }, 'down')).toEqual({ type: 'none' });
     expect(resolveToolShortcut({ key: 'Enter' }, 'down')).toEqual({ type: 'none' });
-  });
-});
-
-describe('wheelToZoomArgs — scroll always becomes zoom', () => {
-  const rect = { left: 100, top: 50 };
-
-  it('translates client coords into canvas-relative coords', () => {
-    const r = wheelToZoomArgs(rect, { clientX: 150, clientY: 80, deltaX: 0, deltaY: -10 });
-    expect(r.canvasX).toBe(50);
-    expect(r.canvasY).toBe(30);
-  });
-
-  it('preserves the original delta so the existing zoom math (uses dy) works', () => {
-    const r = wheelToZoomArgs(rect, { clientX: 0, clientY: 0, deltaX: 5, deltaY: -25 });
-    expect(r.deltaX).toBe(5);
-    expect(r.deltaY).toBe(-25);
-  });
-
-  it('forces zoom even when the original event had no ctrl modifier (trackpad two-finger scroll case)', () => {
-    // The bug: trackpad scroll on the canvas did nothing because the wheel thunk
-    // only zooms when ctrlKey is true. wheelToZoomArgs always sets forceZoom: true.
-    const r = wheelToZoomArgs(rect, { clientX: 100, clientY: 50, deltaX: 0, deltaY: 10 });
-    expect(r.forceZoom).toBe(true);
-  });
-
-  it('forces zoom for pinch-zoom (deltaY positive) AND scroll-up (deltaY negative)', () => {
-    expect(wheelToZoomArgs(rect, { clientX: 0, clientY: 0, deltaX: 0, deltaY: 1 }).forceZoom).toBe(true);
-    expect(wheelToZoomArgs(rect, { clientX: 0, clientY: 0, deltaX: 0, deltaY: -1 }).forceZoom).toBe(true);
   });
 });
 

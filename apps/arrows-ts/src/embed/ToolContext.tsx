@@ -23,7 +23,3 @@ export function useTool(): ToolCtx {
   if (!v) throw new Error('useTool outside <ToolProvider>');
   return v;
 }
-
-export function isPanActive(ctx: Pick<ToolCtx, 'tool' | 'spaceHeld'>): boolean {
-  return ctx.tool === 'pan' || ctx.spaceHeld;
-}
