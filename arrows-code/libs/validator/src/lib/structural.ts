@@ -3,13 +3,7 @@ import type { Graph } from '@neo4j-arrows/model';
 import { CODES } from './types';
 import type { Diagnostic } from './types';
 
-/**
- * Structural validation. Catches the bugs that parse cleanly but ship broken
- * models: dangling rel ids, dup ids, missing endpoints, unknown style keys.
- *
- * Style-value validation delegates to @neo4j-arrows/model `validate()` so the
- * vocabulary stays in sync with arrows.app automatically — no separate registry.
- */
+// Style-value validation delegates to @neo4j-arrows/model so the vocabulary stays in sync automatically.
 export function checkStructural(graph: Graph): Diagnostic[] {
   return [
     ...checkDuplicateIds(graph),

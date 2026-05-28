@@ -1,11 +1,21 @@
 import { describe, expect, it } from 'vitest';
+import { Point } from '@neo4j-arrows/model';
 import type { Graph } from '@neo4j-arrows/model';
-import { emptyGraph as empty, makeNode } from '@arrows-code/test-utils';
 import { checkStructural } from './structural';
 import { CODES } from './types';
 
-const node = (id: string, overrides: Partial<Graph['nodes'][number]> = {}): Graph['nodes'][number] =>
-  makeNode(id, overrides);
+const empty = (): Graph => ({ nodes: [], relationships: [], style: {} });
+
+const node = (id: string, overrides: Partial<Graph['nodes'][number]> = {}): Graph['nodes'][number] => ({
+  entityType: 'Node',
+  id,
+  position: new Point(0, 0),
+  caption: id,
+  labels: [],
+  properties: {},
+  style: {},
+  ...overrides,
+});
 
 const codes = (diagnostics: ReturnType<typeof checkStructural>): string[] => diagnostics.map((d) => d.code);
 

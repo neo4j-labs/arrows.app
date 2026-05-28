@@ -10,10 +10,8 @@ arrows-code/
 │   └── vscode-arrows/   VS Code extension (CustomTextEditorProvider + commands + sidebar)
 ├── libs/
 │   ├── format-json/     read/write canonical .arrows JSON
-│   ├── format-cypher/   exportCypher (relocated from apps/arrows-ts)
 │   ├── patch/           PatchOp types + apply()
 │   ├── validator/       structural validation
-│   └── test-utils/      shared fixtures
 └── fixtures/examples/   bundled .arrows examples shown in sidebar
 ```
 
@@ -72,7 +70,7 @@ Never duplicate canvas or renderer code into `arrows-code/`. If something only w
 
 ## Test conventions
 
-Co-located `*.spec.ts(x)` next to source. Vitest. Use `@arrows-code/test-utils` fixtures (`emptyGraph`, `makeNode`, `makeRel`, `aliceBobGraph`) — don't inline structurally-equivalent graphs across files.
+Co-located `*.spec.ts(x)` next to source. Vitest.
 
 `commands-test.mjs` boots a real VS Code Electron host via `@vscode/test-electron`. Run before packaging.
 

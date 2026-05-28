@@ -12,11 +12,9 @@ arrows-code/
 │   └── vscode-arrows/    VS Code extension (CustomTextEditorProvider + commands + sidebar)
 ├── libs/
 │   ├── format-json/      read/write canonical .arrows JSON, deterministic output
-│   ├── format-cypher/    Cypher CREATE/MERGE export with injection-hardened escapes
 │   ├── layout/           5 layout algorithms (force / hierarchical / radial / circular / grid)
 │   ├── patch/            PatchOp types + pure apply()
 │   ├── validator/        structural + style-key validation
-│   └── test-utils/       shared graph fixtures
 ├── fixtures/examples/    .arrows files shipped with the extension as bundled examples
 └── CLAUDE.md             coding rules + architecture invariants for future contributors
 ```
