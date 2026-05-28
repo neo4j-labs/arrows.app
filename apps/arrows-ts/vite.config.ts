@@ -7,9 +7,7 @@ import { resolve } from 'node:path';
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/arrows-ts',
 
-  // The embed entry is opt-in via BUILD_EMBED=1 so production `nx build
-  // arrows-ts` (deployed to arrows.app) never ships /embed.html. The
-  // arrows-code extension build sets the env var when packaging the .vsix.
+  // BUILD_EMBED=1 enables the second entry used by the VS Code extension's bundle.
   build: {
     rollupOptions: {
       input: process.env.BUILD_EMBED === '1'
@@ -19,17 +17,14 @@ export default defineConfig({
           }
         : { main: resolve(__dirname, 'index.html') },
     },
-    // VS Code webviews are local-only; modulepreload eagerly fetches async
-    // chunks and defeats the lazy-load. Web app build keeps the default.
+    // Webview is local-only; eager modulepreload defeats the graphql lazy-load.
     modulePreload: process.env.BUILD_EMBED === '1' ? false : true,
   },
 
   server: {
     port: 4200,
     host: 'localhost',
-    fs: {
-      allow: ['../../'],
-    },
+    fs: { allow: ['../../'] },
   },
 
   preview: {
@@ -39,19 +34,8 @@ export default defineConfig({
 
   plugins: [
     react(),
-    viteTsConfigPaths({
-      root: '../../',
-    }),
+    viteTsConfigPaths({ root: '../../' }),
   ],
-
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [
-  //    viteTsConfigPaths({
-  //      root: '../../',
-  //    }),
-  //  ],
-  // },
 
   test: {
     globals: true,

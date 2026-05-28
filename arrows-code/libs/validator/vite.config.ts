@@ -11,16 +11,6 @@ export default defineConfig({
       root: '../../../',
     }),
   ],
-
-  // Uncomment this if you are using workers.
-  // worker: {
-  //  plugins: [
-  //    viteTsConfigPaths({
-  //      root: '../../../',
-  //    }),
-  //  ],
-  // },
-
   test: {
     globals: true,
     cache: {
