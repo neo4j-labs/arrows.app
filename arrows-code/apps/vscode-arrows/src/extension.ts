@@ -6,10 +6,10 @@ import {
   openInArrowsApp,
   exportGraphQL,
   exportSvg,
-  getDiagnosticCollection,
   makeCopyCypher,
   makeExportCypher,
   makeFormat,
+  makeValidate,
   importGraph,
   makeNewFromExample,
   newGraph,
@@ -18,11 +18,11 @@ import {
   openSource,
   renameLabel,
   renameRelType,
-  validate,
 } from './commands';
 
 export function activate(context: vscode.ExtensionContext): void {
   const cmd = vscode.commands.registerCommand;
+  const diagnostics = vscode.languages.createDiagnosticCollection('arrows');
 
   context.subscriptions.push(
     vscode.window.registerCustomEditorProvider(
@@ -33,6 +33,7 @@ export function activate(context: vscode.ExtensionContext): void {
         supportsMultipleEditorsPerDocument: false,
       }
     ),
+    diagnostics,
     cmd('arrows.newGraph', newGraph),
     cmd('arrows.openFile', openFile),
     cmd('arrows.newFromExample', makeNewFromExample(context)),
@@ -40,7 +41,7 @@ export function activate(context: vscode.ExtensionContext): void {
     cmd('arrows.openSource', openSource),
     cmd('arrows.openPreviewToSide', openPreviewToSide),
     cmd('arrows.format', makeFormat(context)),
-    cmd('arrows.validate', validate),
+    cmd('arrows.validate', makeValidate(diagnostics)),
     cmd('arrows.exportSvg', exportSvg),
     cmd('arrows.exportGraphQL', exportGraphQL),
     cmd('arrows.exportCypher', makeExportCypher(context)),
@@ -48,8 +49,7 @@ export function activate(context: vscode.ExtensionContext): void {
     cmd('arrows.openInArrowsApp', openInArrowsApp),
     cmd('arrows.renameLabel', renameLabel),
     cmd('arrows.renameRelType', renameRelType),
-    cmd('arrows.deleteFile', deleteFile),
-    getDiagnosticCollection()
+    cmd('arrows.deleteFile', deleteFile)
   );
 
   registerSidebar(context);
