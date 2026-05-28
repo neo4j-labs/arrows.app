@@ -4,9 +4,7 @@
 import type { HitResult } from './embedActions';
 
 export interface PanContext {
-  /** Pan tool is the explicit choice (toolbar). */
   tool: 'select' | 'pan';
-  /** Spacebar held — temporary pan regardless of tool. */
   spaceHeld: boolean;
 }
 
@@ -35,9 +33,6 @@ export type ShortcutAction =
   | { type: 'space-held'; held: boolean }
   | { type: 'none' };
 
-/** Resolve a key event into one of the embed's tool-shortcut actions.
- *  Pure so the precedence (V/H/Space) can't silently regress when arrows-ts's
- *  TOGGLE_FOCUS keybinding swallows letters. */
 export function resolveToolShortcut(
   event: { key?: string; code?: string; repeat?: boolean },
   phase: 'down' | 'up',
@@ -73,8 +68,6 @@ export interface ZoomOutput {
   offsetY: number;
 }
 
-// Free-range cursor-relative zoom that bypasses arrows-ts's "minScale = fit-to-canvas" clamp.
-// Invariant: the graph point under the cursor stays under the cursor.
 export function computeZoomTransform(input: ZoomInput): ZoomOutput {
   const factor = (100 - input.deltaY) / 100;
   const targetScale = input.currentScale * factor;

@@ -4,8 +4,6 @@
 
 const isMacPlatform = (): boolean => {
   if (typeof navigator === 'undefined') return false;
-  // navigator.platform is deprecated but still the most reliable single check.
-  // userAgentData is gated behind permissions; fall back to userAgent string.
   const platform = (navigator as { platform?: string }).platform ?? '';
   return /Mac/i.test(platform) || /Mac/i.test(navigator.userAgent ?? '');
 };

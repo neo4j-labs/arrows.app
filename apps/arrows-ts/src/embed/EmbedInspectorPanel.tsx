@@ -5,12 +5,15 @@ import { inspectorWidth } from '@neo4j-arrows/model';
 // @ts-expect-error JS module without .d.ts.
 import { toggleInspector } from '../actions/applicationLayout';
 
-const wrap: React.CSSProperties = {
+const wrapBase: React.CSSProperties = {
   position: 'relative',
   display: 'flex',
   alignItems: 'stretch',
   transition: 'margin-right 200ms ease',
 };
+const wrapShown: React.CSSProperties = { ...wrapBase, marginRight: 0 };
+const wrapHidden: React.CSSProperties = { ...wrapBase, marginRight: -inspectorWidth };
+const iconStyle: React.CSSProperties = { margin: 0 };
 
 const aside: React.CSSProperties = {
   width: inspectorWidth,
@@ -44,16 +47,17 @@ export function EmbedInspectorPanel(): JSX.Element {
     (s: { applicationLayout: { inspectorVisible: boolean } }) =>
       s.applicationLayout.inspectorVisible
   );
+  const label = visible ? 'Hide inspector' : 'Show inspector';
   return (
-    <div style={{ ...wrap, marginRight: visible ? 0 : -inspectorWidth }}>
+    <div style={visible ? wrapShown : wrapHidden}>
       <div
         role="button"
-        title={visible ? 'Hide inspector' : 'Show inspector'}
-        aria-label={visible ? 'Hide inspector' : 'Show inspector'}
+        title={label}
+        aria-label={label}
         style={handle}
         onClick={() => dispatch(toggleInspector())}
       >
-        <Icon name={visible ? 'angle right' : 'angle left'} style={{ margin: 0 }} />
+        <Icon name={visible ? 'angle right' : 'angle left'} style={iconStyle} />
       </div>
       <aside style={aside}>
         <InspectorChooser />

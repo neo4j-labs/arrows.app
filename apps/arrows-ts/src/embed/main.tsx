@@ -8,6 +8,7 @@ import { embedViewportMiddleware } from './embedViewportMiddleware';
 import { imageCacheMiddleware } from '../middlewares/imageCacheMiddleware';
 import { windowResized } from '../actions/applicationLayout';
 import { initBridge } from './bridge';
+import { embedWindow } from './hostPost';
 import { EmbedInspectorPanel } from './EmbedInspectorPanel';
 import { EmbedErrorBoundary } from './EmbedErrorBoundary';
 import { EmbedToolbar } from './EmbedToolbar';
@@ -49,7 +50,7 @@ window.addEventListener('resize', pushViewport);
 
 const bridge = initBridge(store);
 // acquireVsCodeApi is one-shot per webview; expose a posting hook for children.
-(window as unknown as { __arrowsHostPost: typeof bridge.post }).__arrowsHostPost = bridge.post;
+embedWindow().__arrowsHostPost = bridge.post;
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

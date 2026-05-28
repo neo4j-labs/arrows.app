@@ -1,5 +1,4 @@
 import { Component } from 'react';
-// @ts-expect-error JS module without .d.ts — HOC adds fireAction prop.
 import withKeybindings, { ignoreTarget } from '../interactions/Keybindings';
 
 // Bubble-phase: forwards to arrows.app's registered actions. EmbedToolShortcuts

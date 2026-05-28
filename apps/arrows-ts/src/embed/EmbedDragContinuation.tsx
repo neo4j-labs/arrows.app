@@ -4,7 +4,7 @@ import { Point } from '../model/Point';
 import { Vector } from '../model/Vector';
 import { firstCanvas } from './canvasPos';
 import { useAppDispatch } from './store';
-// @ts-expect-error JS modules without .d.ts.
+// @ts-expect-error JS module without .d.ts.
 import { mouseMove } from '../actions/mouse';
 
 // Suppresses arrows.app's mouseleave-ends-drag so drags continue off-canvas,
@@ -17,8 +17,7 @@ export function EmbedDragContinuation(): null {
 
   useEffect(() => {
     const isDragging = (): boolean => {
-      const state = store.getState() as { mouse?: { dragType?: string } };
-      const dt = state.mouse?.dragType;
+      const dt = (store.getState() as { mouse?: { dragType?: string } }).mouse?.dragType;
       return !!dt && dt !== 'NONE';
     };
 

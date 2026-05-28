@@ -7,9 +7,7 @@ import { shortcut } from './platformKeys';
 import { canvasPosOf } from './canvasPos';
 import { postToHost } from './hostPost';
 import { useAppDispatch } from './store';
-// @ts-expect-error JS module without .d.ts.
 import { selectAll } from '../actions/selection';
-// @ts-expect-error JS module.
 import { deleteSelection, duplicateSelection, reverseRelationships } from '../actions/graph';
 
 interface MenuState {
@@ -18,6 +16,29 @@ interface MenuState {
   canvasPos: Point;
   hit: HitResult;
 }
+
+const menuStyle: React.CSSProperties = {
+  position: 'fixed',
+  zIndex: 10000,
+  background: '#fff',
+  border: '1px solid #d0d0d0',
+  borderRadius: 4,
+  boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
+  minWidth: 200,
+  fontFamily: 'sans-serif',
+  fontSize: 13,
+  padding: '4px 0',
+  userSelect: 'none',
+};
+
+const itemStyleBase: React.CSSProperties = {
+  padding: '6px 14px',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  gap: 24,
+};
 
 export function EmbedCanvasContextMenu() {
   const dispatch = useAppDispatch();
@@ -70,25 +91,7 @@ export function EmbedCanvasContextMenu() {
   });
 
   return (
-    <div
-      ref={menuRef}
-      role="menu"
-      style={{
-        position: 'fixed',
-        left: menu.x,
-        top: menu.y,
-        zIndex: 10000,
-        background: '#fff',
-        border: '1px solid #d0d0d0',
-        borderRadius: 4,
-        boxShadow: '0 4px 14px rgba(0,0,0,0.15)',
-        minWidth: 200,
-        fontFamily: 'sans-serif',
-        fontSize: 13,
-        padding: '4px 0',
-        userSelect: 'none',
-      }}
-    >
+    <div ref={menuRef} role="menu" style={{ ...menuStyle, left: menu.x, top: menu.y }}>
       {menu.hit.kind === 'node' && (
         <>
           <MenuItem onClick={editHit} label="Edit caption" shortcut="Enter" icon="edit outline" />
@@ -133,15 +136,7 @@ function MenuItem({ label, onClick, shortcut, icon, danger }: MenuItemProps) {
     <div
       role="menuitem"
       onClick={onClick}
-      style={{
-        padding: '6px 14px',
-        cursor: 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: 24,
-        color: danger ? '#c0392b' : '#222',
-      }}
+      style={{ ...itemStyleBase, color: danger ? '#c0392b' : '#222' }}
       onMouseEnter={(e) => { e.currentTarget.style.background = danger ? '#fdf0ee' : '#f0f4ff'; }}
       onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; }}
     >

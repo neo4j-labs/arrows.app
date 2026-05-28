@@ -2,6 +2,7 @@ import { Point, completeWithDefaults } from '@neo4j-arrows/model';
 import { renderers, type RenderKind } from './bridgeRender';
 import { shouldEmit } from './shouldEmit';
 import { isUserBusy } from './userBusy';
+import { embedWindow } from './hostPost';
 export { isUserBusy };
 
 type AnyStore = {
@@ -17,6 +18,23 @@ declare const acquireVsCodeApi:
 interface HostChannel {
   post: (m: unknown) => void;
   name: 'vscode' | 'iframe' | 'test';
+}
+
+// Recent emit canonicals; an inbound load matching one is our own echo.
+// 30s TTL covers roundtrip slack without growing unboundedly.
+const ECHO_TTL_MS = 30_000;
+
+function makeEchoCache(): { remember: (key: string) => void; isEcho: (key: string) => boolean } {
+  const seen = new Map<string, number>();
+  const now = (): number => (typeof performance !== 'undefined' ? performance.now() : Date.now());
+  const prune = (): void => {
+    const cutoff = now() - ECHO_TTL_MS;
+    for (const [key, t] of seen) if (t < cutoff) seen.delete(key);
+  };
+  return {
+    remember(key) { prune(); seen.set(key, now()); },
+    isEcho(key) { prune(); return seen.has(key); },
+  };
 }
 
 // Sort keys + drop entityType so host-produced and embed-produced graphs compare equal.
@@ -133,34 +151,14 @@ export function initBridge(
   let lastSerialized = '';
   let docVersion = -1;
   let pendingLoad: IncomingGraph | null = null;
-
-  // Recent emit canonicals; an inbound load matching one is our own echo.
-  // 30s TTL covers roundtrip slack without growing unboundedly.
-  const ECHO_TTL_MS = 30_000;
-  const emittedAt = new Map<string, number>();
-  const now = (): number =>
-    typeof performance !== 'undefined' ? performance.now() : Date.now();
-  const prune = (): void => {
-    const cutoff = now() - ECHO_TTL_MS;
-    for (const [key, t] of emittedAt) {
-      if (t < cutoff) emittedAt.delete(key);
-    }
-  };
-  const rememberEmitKey = (key: string): void => {
-    prune();
-    emittedAt.set(key, now());
-  };
-  const isOwnEchoKey = (key: string): boolean => {
-    prune();
-    return emittedAt.has(key);
-  };
+  const echoes = makeEchoCache();
 
   const tryApplyPending = (): void => {
     if (!pendingLoad) return;
     if (isUserBusy(store.getState(), inputFocused())) return;
     const raw = pendingLoad;
     pendingLoad = null;
-    if (isOwnEchoKey(canonical(raw))) return;
+    if (echoes.isEcho(canonical(raw))) return;
     const graph = rehydrate(raw);
     // Pre-arm lastSerialized so the dispatch below doesn't re-emit.
     lastSerialized = JSON.stringify(graph);
@@ -179,7 +177,7 @@ export function initBridge(
     });
     if (!decision.emit || !decision.graph) return;
     lastSerialized = decision.serialized;
-    rememberEmitKey(canonical(decision.graph));
+    echoes.remember(canonical(decision.graph));
     host.post({ type: 'graph-changed', graph: decision.graph, docVersion });
   };
 
@@ -195,8 +193,7 @@ export function initBridge(
     if (m.type === 'load' && m.graph) {
       if (typeof m.docVersion === 'number') docVersion = m.docVersion;
       if (Array.isArray(m.menu) && m.menu.every(isValidMenuEntry)) {
-        (window as unknown as { __arrowsMenu: EmbedMenuEntry[] }).__arrowsMenu =
-          m.menu;
+        embedWindow().__arrowsMenu = m.menu;
         window.dispatchEvent(new CustomEvent('__arrowsMenu'));
       }
       pendingLoad = m.graph;

@@ -2,22 +2,19 @@ import { useEffect, useState } from 'react';
 import { Button, Popup, Menu, Icon } from 'semantic-ui-react';
 import type { EmbedMenuEntry } from './bridge';
 import { shortcut } from './platformKeys';
-import { postToHost } from './hostPost';
+import { embedWindow, postToHost } from './hostPost';
 
 // Reads menu entries the host posted into `window.__arrowsMenu` and renders
 // the kebab dropdown. Single source of truth is
 // arrows-code/apps/vscode-arrows/src/commandsCatalog.ts.
 
+const readMenu = (): EmbedMenuEntry[] =>
+  (embedWindow().__arrowsMenu as EmbedMenuEntry[] | undefined) ?? [];
+
 function useMenuEntries(): EmbedMenuEntry[] {
-  const [entries, setEntries] = useState<EmbedMenuEntry[]>(() => {
-    const w = window as unknown as { __arrowsMenu?: EmbedMenuEntry[] };
-    return w.__arrowsMenu ?? [];
-  });
+  const [entries, setEntries] = useState<EmbedMenuEntry[]>(readMenu);
   useEffect(() => {
-    const refresh = (): void => {
-      const w = window as unknown as { __arrowsMenu?: EmbedMenuEntry[] };
-      setEntries(w.__arrowsMenu ?? []);
-    };
+    const refresh = (): void => setEntries(readMenu());
     window.addEventListener('__arrowsMenu', refresh);
     return () => window.removeEventListener('__arrowsMenu', refresh);
   }, []);
