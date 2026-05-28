@@ -1,5 +1,3 @@
-// Parses an arrows.app share URL or raw .arrows JSON to a JSON payload, or null.
-
 function decodeArrowsAppImportUrl(input: string): string | null {
   const m = /[#/]?\/?import\/json=([^&\s]+)/.exec(input);
   if (!m) return null;
