@@ -1,25 +1,26 @@
 import { useEffect } from 'react';
-import { useDispatch, useStore } from 'react-redux';
-import { Point } from '../model/Point';
+import { useStore } from 'react-redux';
 import { Vector } from '../model/Vector';
 import { useTool } from './ToolContext';
 import { hitTestAt } from './embedActions';
 import { computeZoomTransform, cursorFor, decideMouseDown } from './panInteraction';
+import { canvasPosOf } from './canvasPos';
+import { useAppDispatch } from './store';
 // @ts-expect-error JS modules without local typings.
 import { getVisualGraph } from '../selectors';
-// @ts-expect-error
+// @ts-expect-error JS module without local typings.
 import { computeCanvasSize, subtractPadding } from '../model/applicationLayout';
 
-// Capture-phase canvas handler that owns three behaviors when the pan tool is active:
-//   1. Drag on empty canvas → translate viewTransformation; stopImmediatePropagation
-//      so arrows' MouseHandler doesn't fire marquee.
-//   2. Hovering over a node/relationship: temporarily yield to the select tool —
-//      cursor switches to pointer and clicks reach MouseHandler for direct selection.
-//      Figma-strict mode would refuse the click; for a graph editor this hybrid is friendlier.
-//   3. Wheel = zoom (Figma/Excalidraw convention) regardless of Ctrl. Pinch-zoom
-//      already arrives as ctrlKey-true; this just promotes plain scroll too.
+interface BoundingBox { width: number; height: number }
+interface ViewportState {
+  viewTransformation: { scale: number; offset: { dx: number; dy: number } };
+  applicationLayout: unknown;
+}
+
+// Pan-tool behaviour: drag empty canvas → pan; over an entity → yield to select;
+// wheel anywhere → zoom (treat scroll like pinch).
 export function EmbedPanHandler(): null {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const store = useStore();
   const ctx = useTool();
 
@@ -29,19 +30,11 @@ export function EmbedPanHandler(): null {
     let lastY = 0;
     let downCanvas: HTMLCanvasElement | null = null;
 
-    const canvasPosOf = (e: MouseEvent | WheelEvent): { canvas: HTMLCanvasElement; pos: Point } | null => {
-      const target = e.target as HTMLElement | null;
-      if (!target || target.tagName !== 'CANVAS') return null;
-      const canvas = target as HTMLCanvasElement;
-      const rect = canvas.getBoundingClientRect();
-      return { canvas, pos: new Point(e.clientX - rect.left, e.clientY - rect.top) };
-    };
-
     const onMouseDown = (e: MouseEvent) => {
       if (e.button !== 0) return;
       const ctx2 = canvasPosOf(e);
       if (!ctx2) return;
-      const hit = (dispatch as any)(hitTestAt(ctx2.pos));
+      const hit = dispatch(hitTestAt(ctx2.pos));
       const action = decideMouseDown(ctx, hit);
       if (action === 'ignore' || action === 'yield') return;
       e.stopImmediatePropagation();
@@ -63,7 +56,7 @@ export function EmbedPanHandler(): null {
       }
       const ctx2 = canvasPosOf(e);
       if (!ctx2) return;
-      const hit = (dispatch as any)(hitTestAt(ctx2.pos));
+      const hit = dispatch(hitTestAt(ctx2.pos));
       ctx2.canvas.style.cursor = cursorFor(ctx, hit, false);
     };
     const onMouseUp = () => {
@@ -73,17 +66,14 @@ export function EmbedPanHandler(): null {
       downCanvas = null;
     };
 
-    // Wheel → zoom. Reuse arrows' wheel thunk via the existing dispatch path —
-    // forcing ctrlKey=true tells it to zoom rather than pan.
     const onWheel = (e: WheelEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (!target || target.tagName !== 'CANVAS') return;
-      const rect = (target as HTMLCanvasElement).getBoundingClientRect();
+      const ctx2 = canvasPosOf(e);
+      if (!ctx2) return;
       e.preventDefault();
       e.stopImmediatePropagation();
-      const state = store.getState() as any;
+      const state = store.getState() as ViewportState;
       const vt = state.viewTransformation;
-      const visualGraph = getVisualGraph(state);
+      const visualGraph = getVisualGraph(state) as { boundingBox?: () => BoundingBox } | null;
       const bb = visualGraph?.boundingBox?.();
       const canvasSize = subtractPadding(computeCanvasSize(state.applicationLayout));
       const fitScale =
@@ -93,7 +83,7 @@ export function EmbedPanHandler(): null {
       const out = computeZoomTransform({
         currentScale: vt.scale,
         currentOffset: { dx: vt.offset.dx, dy: vt.offset.dy },
-        cursor: { x: e.clientX - rect.left, y: e.clientY - rect.top },
+        cursor: { x: ctx2.pos.x, y: ctx2.pos.y },
         deltaY: e.deltaY,
         fitScale,
       });

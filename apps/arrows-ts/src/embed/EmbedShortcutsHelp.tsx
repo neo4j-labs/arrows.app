@@ -1,5 +1,14 @@
-import { useEffect } from 'react';
+import { Modal, Table, Header } from 'semantic-ui-react';
 import { shortcut } from './platformKeys';
+// @ts-expect-error JS module without .d.ts.
+import {
+  getKeybindingString,
+  DELETE_SELECTION,
+  DUPLICATE_SELECTION,
+  SELECT_ALL,
+  UNDO,
+  REDO,
+} from '../interactions/Keybindings';
 
 interface ShortcutRow {
   label: string;
@@ -11,7 +20,10 @@ interface Group {
   rows: ShortcutRow[];
 }
 
-const groups = (): Group[] => [
+// Reads keys for actions the web app already binds — staying in sync if those bindings change.
+const bound = (name: string): string => getKeybindingString(name) as string;
+
+const GROUPS: Group[] = [
   {
     name: 'Tools',
     rows: [
@@ -26,7 +38,11 @@ const groups = (): Group[] => [
       { label: 'Add node', keys: 'Double-click empty' },
       { label: 'Draw relationship', keys: 'Drag from node ring' },
       { label: 'Add to selection', keys: 'Shift+click' },
-      { label: 'Delete', keys: 'Delete / Backspace' },
+      { label: 'Select all', keys: bound(SELECT_ALL) },
+      { label: 'Duplicate', keys: bound(DUPLICATE_SELECTION) },
+      { label: 'Delete', keys: bound(DELETE_SELECTION) },
+      { label: 'Undo', keys: bound(UNDO) },
+      { label: 'Redo', keys: bound(REDO) },
       { label: 'Zoom', keys: 'Wheel' },
     ],
   },
@@ -45,116 +61,29 @@ interface Props {
   onClose: () => void;
 }
 
-export function EmbedShortcutsHelp({ open, onClose }: Props): JSX.Element | null {
-  useEffect(() => {
-    if (!open) return;
-    const onKey = (e: KeyboardEvent): void => {
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        onClose();
-      }
-    };
-    window.addEventListener('keydown', onKey, true);
-    return () => window.removeEventListener('keydown', onKey, true);
-  }, [open, onClose]);
-
-  if (!open) return null;
-
-  const data = groups();
-
+export function EmbedShortcutsHelp({ open, onClose }: Props): JSX.Element {
   return (
-    <div
-      onClick={onClose}
-      style={{
-        position: 'fixed',
-        inset: 0,
-        background: 'rgba(0,0,0,0.45)',
-        zIndex: 10001,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        padding: 24,
-      }}
-    >
-      <div
-        onClick={(e) => e.stopPropagation()}
-        role="dialog"
-        aria-label="Keyboard shortcuts"
-        style={{
-          background: '#fff',
-          color: '#222',
-          borderRadius: 6,
-          boxShadow: '0 12px 32px rgba(0,0,0,0.3)',
-          maxWidth: 460,
-          width: '100%',
-          maxHeight: '85vh',
-          overflowY: 'auto',
-          fontFamily: 'sans-serif',
-        }}
-      >
-        <header
-          style={{
-            padding: '14px 20px',
-            borderBottom: '1px solid #eee',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: 16, fontWeight: 600 }}>Keyboard shortcuts</h2>
-          <button
-            onClick={onClose}
-            aria-label="Close"
-            style={{
-              border: 'none',
-              background: 'transparent',
-              fontSize: 20,
-              cursor: 'pointer',
-              lineHeight: 1,
-              padding: 4,
-              color: '#666',
-            }}
-          >
-            ×
-          </button>
-        </header>
-        <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 18 }}>
-          {data.map((group) => (
-            <section key={group.name}>
-              <h3
-                style={{
-                  margin: '0 0 8px',
-                  fontSize: 11,
-                  fontWeight: 600,
-                  letterSpacing: 0.5,
-                  textTransform: 'uppercase',
-                  color: '#666',
-                }}
-              >
-                {group.name}
-              </h3>
-              <dl style={{ margin: 0 }}>
+    <Modal open={open} onClose={onClose} size="small" closeIcon dimmer="blurring">
+      <Modal.Header>Keyboard shortcuts</Modal.Header>
+      <Modal.Content scrolling>
+        {GROUPS.map((group) => (
+          <div key={group.name} style={{ marginBottom: 16 }}>
+            <Header as="h4" style={{ marginBottom: 4 }}>{group.name}</Header>
+            <Table compact basic="very" size="small">
+              <Table.Body>
                 {group.rows.map((row) => (
-                  <div
-                    key={row.label}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      padding: '4px 0',
-                      fontSize: 13,
-                    }}
-                  >
-                    <dt style={{ color: '#333' }}>{row.label}</dt>
-                    <dd style={{ margin: 0, color: '#555', fontFamily: 'monospace', fontSize: 12 }}>
-                      {row.keys}
-                    </dd>
-                  </div>
+                  <Table.Row key={row.label}>
+                    <Table.Cell>{row.label}</Table.Cell>
+                    <Table.Cell textAlign="right">
+                      <code>{row.keys}</code>
+                    </Table.Cell>
+                  </Table.Row>
                 ))}
-              </dl>
-            </section>
-          ))}
-        </div>
-      </div>
-    </div>
+              </Table.Body>
+            </Table>
+          </div>
+        ))}
+      </Modal.Content>
+    </Modal>
   );
 }

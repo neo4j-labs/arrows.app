@@ -1,87 +1,45 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { shortcut } from './platformKeys';
 
-// shortcut() inspects navigator.platform / navigator.userAgent at call time.
-// Stub both for deterministic tests.
-function stubPlatform(mac: boolean): void {
-  const platform = mac ? 'MacIntel' : 'Win32';
-  const userAgent = mac
-    ? 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'
-    : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)';
-  vi.stubGlobal('navigator', { platform, userAgent });
-}
+const stubPlatform = (mac: boolean): void => {
+  vi.stubGlobal('navigator', {
+    platform: mac ? 'MacIntel' : 'Win32',
+    userAgent: mac
+      ? 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)'
+      : 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+  });
+};
 
-afterEach(() => {
-  vi.unstubAllGlobals();
-});
+afterEach(() => vi.unstubAllGlobals());
 
-describe('shortcut() — macOS vocabulary', () => {
-  beforeEach(() => stubPlatform(true));
+describe('shortcut() — platform-aware modifier formatting', () => {
+  const cases: Array<[Parameters<typeof shortcut>[0], string, string]> = [
+    // [input, mac, win/linux]
+    [{ mod: 'cmd', key: 'Z' }, '⌘Z', 'Ctrl+Z'],
+    [{ mod: 'cmd+shift', key: 'Z' }, '⇧⌘Z', 'Ctrl+Shift+Z'],
+    [{ mod: 'cmd+alt', key: 'A' }, '⌥⌘A', 'Ctrl+Alt+A'],
+    [{ mod: 'shift+alt', key: 'F' }, '⇧⌥F', 'Shift+Alt+F'],
+    [{ mod: 'shift', key: '←' }, '⇧←', 'Shift+←'],
+    [{ key: 'V' }, 'V', 'V'], // no modifier
+  ];
 
-  it('cmd → ⌘', () => {
-    expect(shortcut({ mod: 'cmd', key: 'Z' })).toBe('⌘Z');
+  it.each(cases)('macOS: %j → %s', (input, mac) => {
+    stubPlatform(true);
+    expect(shortcut(input)).toBe(mac);
   });
 
-  it('cmd+shift → ⇧⌘', () => {
-    expect(shortcut({ mod: 'cmd+shift', key: 'Z' })).toBe('⇧⌘Z');
+  it.each(cases)('Windows/Linux: %j → %s', (input, _mac, other) => {
+    stubPlatform(false);
+    expect(shortcut(input)).toBe(other);
   });
 
-  it('cmd+alt → ⌥⌘', () => {
-    expect(shortcut({ mod: 'cmd+alt', key: 'A' })).toBe('⌥⌘A');
-  });
-
-  it('shift+alt → ⇧⌥', () => {
-    expect(shortcut({ mod: 'shift+alt', key: 'F' })).toBe('⇧⌥F');
-  });
-
-  it('shift alone → ⇧', () => {
-    expect(shortcut({ mod: 'shift', key: '←' })).toBe('⇧←');
-  });
-
-  it('no modifier → just the key', () => {
-    expect(shortcut({ key: 'V' })).toBe('V');
-  });
-});
-
-describe('shortcut() — Windows/Linux vocabulary', () => {
-  beforeEach(() => stubPlatform(false));
-
-  it('cmd → Ctrl+', () => {
-    expect(shortcut({ mod: 'cmd', key: 'Z' })).toBe('Ctrl+Z');
-  });
-
-  it('cmd+shift → Ctrl+Shift+', () => {
-    expect(shortcut({ mod: 'cmd+shift', key: 'Z' })).toBe('Ctrl+Shift+Z');
-  });
-
-  it('cmd+alt → Ctrl+Alt+', () => {
-    expect(shortcut({ mod: 'cmd+alt', key: 'A' })).toBe('Ctrl+Alt+A');
-  });
-
-  it('shift+alt → Shift+Alt+', () => {
-    expect(shortcut({ mod: 'shift+alt', key: 'F' })).toBe('Shift+Alt+F');
-  });
-
-  it('shift alone → Shift+', () => {
-    expect(shortcut({ mod: 'shift', key: '←' })).toBe('Shift+←');
-  });
-
-  it('no modifier → just the key', () => {
-    expect(shortcut({ key: 'V' })).toBe('V');
-  });
-});
-
-describe('shortcut() — falls back gracefully', () => {
-  it('treats unknown navigator as non-Mac', () => {
+  it('falls back to non-Mac when navigator is empty', () => {
     vi.stubGlobal('navigator', { platform: '', userAgent: '' });
     expect(shortcut({ mod: 'cmd', key: 'Z' })).toBe('Ctrl+Z');
   });
 
-  it('detects Mac from userAgent when platform string lies', () => {
-    vi.stubGlobal('navigator', {
-      platform: 'unknown',
-      userAgent: 'Mozilla/5.0 (Macintosh; …)',
-    });
+  it('detects Mac from userAgent when navigator.platform lies', () => {
+    vi.stubGlobal('navigator', { platform: 'unknown', userAgent: 'Mozilla/5.0 (Macintosh; …)' });
     expect(shortcut({ mod: 'cmd', key: 'Z' })).toBe('⌘Z');
   });
 });

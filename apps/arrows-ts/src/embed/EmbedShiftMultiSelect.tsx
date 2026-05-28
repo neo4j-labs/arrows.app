@@ -1,27 +1,22 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Point } from '../model/Point';
+import { canvasPosOf } from './canvasPos';
+import { useAppDispatch } from './store';
 // @ts-expect-error JS module without .d.ts.
 import { mouseDown } from '../actions/mouse';
 
-// arrows.app's MouseHandler treats only Cmd (mac) / Ctrl (others) as the
-// multi-select modifier. Users coming from Figma / Excalidraw / Sketch expect
-// Shift+click to add to a selection. Intercept Shift+click in capture phase
-// and dispatch the existing mouseDown thunk with multiSelectModifierKey=true,
-// then stopImmediatePropagation so MouseHandler doesn't fire a second time
-// with the wrong modifier state.
+// Adds Shift+click as a multi-select modifier (web app only respects Cmd/Ctrl).
+// Capture-phase so MouseHandler doesn't fire a second time with the wrong state.
 export function EmbedShiftMultiSelect(): null {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const onMouseDown = (e: MouseEvent) => {
       if (e.button !== 0 || !e.shiftKey) return;
-      const target = e.target as HTMLElement | null;
-      if (!target || target.tagName !== 'CANVAS') return;
-      const rect = (target as HTMLCanvasElement).getBoundingClientRect();
+      const found = canvasPosOf(e);
+      if (!found) return;
       e.stopImmediatePropagation();
       e.preventDefault();
-      (dispatch as any)(mouseDown(new Point(e.clientX - rect.left, e.clientY - rect.top), true));
+      dispatch(mouseDown(found.pos, true));
     };
     document.addEventListener('mousedown', onMouseDown, true);
     return () => document.removeEventListener('mousedown', onMouseDown, true);

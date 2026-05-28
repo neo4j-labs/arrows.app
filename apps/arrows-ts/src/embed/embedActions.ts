@@ -1,4 +1,5 @@
 import { Point } from '../model/Point';
+import type { AppDispatch, ThunkAction } from './store';
 // @ts-expect-error JS modules without .d.ts.
 import { getPresentGraph, getVisualGraph } from '../selectors';
 // @ts-expect-error JS module.
@@ -6,20 +7,30 @@ import { activateEditing, toggleSelection } from '../actions/selection';
 // @ts-expect-error JS module.
 import { nextAvailableId } from '../model/Id';
 
-type GetState = () => any;
-type Dispatch = (action: any) => any;
-
 export type HitResult =
   | { kind: 'none' }
   | { kind: 'node'; id: string }
   | { kind: 'nodeRing'; id: string }
   | { kind: 'relationship'; id: string };
 
-export const hitTestAt = (canvasPosition: Point) =>
-  (_dispatch: Dispatch, getState: GetState): HitResult => {
-    const state = getState();
+type ViewState = {
+  viewTransformation: { inverse: (p: Point) => Point };
+  selection?: {
+    selectedNodeIdMap?: Record<string, unknown>;
+    selectedRelationshipIdMap?: Record<string, unknown>;
+  };
+};
+
+type GraphEntity = { id: string; entityType?: string };
+
+export const hitTestAt =
+  (canvasPosition: Point): ThunkAction<HitResult> =>
+  (_dispatch, getState) => {
+    const state = getState() as ViewState;
     const graphPosition = state.viewTransformation.inverse(canvasPosition);
-    const item = getVisualGraph(state).entityAtPoint(graphPosition);
+    const item = getVisualGraph(state).entityAtPoint(graphPosition) as
+      | (GraphEntity & { entityType: string })
+      | null;
     if (!item) return { kind: 'none' };
     if (item.entityType === 'node') return { kind: 'node', id: item.id };
     if (item.entityType === 'nodeRing') return { kind: 'nodeRing', id: item.id };
@@ -27,39 +38,48 @@ export const hitTestAt = (canvasPosition: Point) =>
     return { kind: 'none' };
   };
 
-export const selectAndPrepare = (hit: Exclude<HitResult, { kind: 'none' }>) =>
-  (dispatch: Dispatch, getState: GetState) => {
-    const state = getState();
-    const isSelected = hit.kind === 'node'
-      ? !!state.selection?.selectedNodeIdMap?.[hit.id]
-      : !!state.selection?.selectedRelationshipIdMap?.[hit.id];
+export const selectAndPrepare =
+  (hit: Exclude<HitResult, { kind: 'none' }>): ThunkAction<void> =>
+  (dispatch, getState) => {
+    const state = getState() as ViewState;
+    const isSelected =
+      hit.kind === 'node'
+        ? !!state.selection?.selectedNodeIdMap?.[hit.id]
+        : !!state.selection?.selectedRelationshipIdMap?.[hit.id];
     if (isSelected) return;
-    dispatch(toggleSelection([{ entityType: hit.kind, id: hit.id }], 'replace'));
+    (dispatch as AppDispatch)(
+      toggleSelection([{ entityType: hit.kind, id: hit.id }], 'replace')
+    );
   };
 
-export const editEntity = (hit: Exclude<HitResult, { kind: 'none' }>) =>
-  (dispatch: Dispatch, getState: GetState) => {
+export const editEntity =
+  (hit: Exclude<HitResult, { kind: 'none' }>): ThunkAction<void> =>
+  (dispatch, getState) => {
     const state = getState();
-    const graph = getPresentGraph(state);
-    const entity = hit.kind === 'node'
-      ? graph.nodes.find((n: any) => n.id === hit.id)
-      : graph.relationships.find((r: any) => r.id === hit.id);
+    const graph = getPresentGraph(state) as {
+      nodes: GraphEntity[];
+      relationships: GraphEntity[];
+    };
+    const entity =
+      hit.kind === 'node'
+        ? graph.nodes.find((n) => n.id === hit.id)
+        : graph.relationships.find((r) => r.id === hit.id);
     if (!entity) return;
-    dispatch(activateEditing({ ...entity, entityType: hit.kind }));
+    (dispatch as AppDispatch)(activateEditing({ ...entity, entityType: hit.kind }));
   };
 
-/** Double-click on canvas: edit a hit entity, or create a node at the click. */
-export const createOrEditAt = (canvasPosition: Point) =>
-  (dispatch: Dispatch, getState: GetState) => {
-    const state = getState();
+export const createOrEditAt =
+  (canvasPosition: Point): ThunkAction<void> =>
+  (dispatch, getState) => {
+    const state = getState() as ViewState;
     const graphPosition = state.viewTransformation.inverse(canvasPosition);
     const visualGraph = getVisualGraph(state);
     const hit = visualGraph.entityAtPoint(graphPosition);
     if (hit) {
-      dispatch(activateEditing(hit));
+      (dispatch as AppDispatch)(activateEditing(hit));
       return;
     }
-    const graph = getPresentGraph(state);
+    const graph = getPresentGraph(state) as { nodes: GraphEntity[] };
     dispatch({
       category: 'GRAPH',
       type: 'CREATE_NODE',

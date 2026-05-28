@@ -28,25 +28,14 @@ const store = createStore(
   applyMiddleware(thunkMiddleware, embedViewportMiddleware, imageCacheMiddleware)
 );
 
-// Guard against silent breakage from web-app refactors. The embed assumes a
-// specific store shape: a `graph` slice (with redux-undo's `present` field
-// containing { nodes, relationships, style }) and a `viewTransformation` slice.
-// If a future web-app change renames a slice or restructures the graph state,
-// the canvas renders blank — fail loudly here instead.
+// Boot-time check: fail loudly if a web-app refactor breaks the assumed store shape.
 const _bootState = store.getState() as Record<string, unknown>;
 const _graph = _bootState['graph'] as { present?: { nodes?: unknown } } | undefined;
 if (!_graph || !_graph.present || !Array.isArray(_graph.present.nodes)) {
-  throw new Error(
-    '[arrows-embed] Store shape mismatch: expected state.graph.present.nodes (array). ' +
-      'Likely cause: arrows-ts reducer refactor without updating the embed. ' +
-      'Check apps/arrows-ts/src/reducers/index.ts.'
-  );
+  throw new Error('[arrows-embed] expected state.graph.present.nodes (array)');
 }
 if (!_bootState['viewTransformation']) {
-  throw new Error(
-    '[arrows-embed] Store shape mismatch: expected state.viewTransformation slice. ' +
-      'Check apps/arrows-ts/src/reducers/index.ts.'
-  );
+  throw new Error('[arrows-embed] expected state.viewTransformation slice');
 }
 
 const CHROME_PADDING = 72;
@@ -59,10 +48,8 @@ pushViewport();
 window.addEventListener('resize', pushViewport);
 
 const bridge = initBridge(store);
-// acquireVsCodeApi is one-shot — child components reach the host via this hook.
-(
-  window as unknown as { __arrowsHostPost: (m: unknown) => void }
-).__arrowsHostPost = bridge.post;
+// acquireVsCodeApi is one-shot per webview; expose a posting hook for children.
+(window as unknown as { __arrowsHostPost: typeof bridge.post }).__arrowsHostPost = bridge.post;
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement

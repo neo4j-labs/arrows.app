@@ -1,21 +1,19 @@
 import { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { Point } from '../model/Point';
 import { createOrEditAt } from './embedActions';
+import { canvasPosOf } from './canvasPos';
+import { useAppDispatch } from './store';
 
 // arrows.app's MouseHandler.doubleClick only edits a hit entity — does nothing on empty canvas.
 // We intercept dblclick on the canvas (capture phase) and dispatch create-or-edit instead.
 export function EmbedCanvasDoubleClick(): null {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   useEffect(() => {
     const onDblClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement | null;
-      if (!target || target.tagName !== 'CANVAS') return;
-      const rect = (target as HTMLCanvasElement).getBoundingClientRect();
-      const canvasPos = new Point(e.clientX - rect.left, e.clientY - rect.top);
+      const found = canvasPosOf(e);
+      if (!found) return;
       e.stopImmediatePropagation();
       e.preventDefault();
-      dispatch(createOrEditAt(canvasPos) as any);
+      dispatch(createOrEditAt(found.pos));
     };
     document.addEventListener('dblclick', onDblClick, true);
     return () => document.removeEventListener('dblclick', onDblClick, true);

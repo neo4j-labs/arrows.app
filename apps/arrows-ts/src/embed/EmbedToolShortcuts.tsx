@@ -4,11 +4,8 @@ import { ignoreTarget } from '../interactions/Keybindings';
 import { useTool } from './ToolContext';
 import { resolveToolShortcut } from './panInteraction';
 
-// V → select tool, H → pan tool (Figma convention). Space temporarily activates pan.
-// Must run in capture phase: arrows-ts's TOGGLE_FOCUS keybinding eats every plain
-// letter (keyCode range 48-90) via preventDefault/stopPropagation in the bubble phase,
-// which would block V/H entirely. Capturing on window beats arrows' window-bubble handler.
-// Ignored when an input/textarea is focused so users can type "h" or "v" in inspector fields.
+// V → select, H → pan, Space → temporary pan. Capture phase because arrows.app's
+// TOGGLE_FOCUS bubble handler would otherwise swallow the letter.
 export function EmbedToolShortcuts(): null {
   const { setTool, setSpaceHeld } = useTool();
   useEffect(() => {

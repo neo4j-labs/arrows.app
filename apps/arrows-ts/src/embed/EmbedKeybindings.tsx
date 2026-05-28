@@ -2,15 +2,9 @@ import { Component } from 'react';
 // @ts-expect-error JS module without .d.ts — HOC adds fireAction prop.
 import withKeybindings, { ignoreTarget } from '../interactions/Keybindings';
 
-// LISTENER ORDERING CONTRACT (also documented in CLAUDE.md):
-//  - EmbedToolShortcuts: capture-phase keydown on window. Owns V / H / Space.
-//    Calls preventDefault + stopPropagation when it owns the key — beats this
-//    bubble-phase listener and arrows' TOGGLE_FOCUS handler.
-//  - EmbedKeybindings: bubble-phase keydown on window. Forwards to arrows'
-//    registered actions (Delete, ⌘D, ⌘A, arrows, etc.).
-// Don't add a third keydown listener. If you need a new chord, register it
-// through arrows' Keybindings module (fireAction will pick it up) OR add it
-// to EmbedToolShortcuts' capture-phase dispatch.
+// Bubble-phase: forwards to arrows.app's registered actions. EmbedToolShortcuts
+// runs in capture phase first and owns V/H/Space — see CLAUDE.md before
+// adding another keydown listener.
 interface Props { fireAction: (ev: KeyboardEvent) => boolean }
 
 class EmbedKeybindingsImpl extends Component<Props> {

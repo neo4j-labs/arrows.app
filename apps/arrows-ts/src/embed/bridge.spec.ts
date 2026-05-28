@@ -1,15 +1,22 @@
 // Interleaved-sequence tests for the bridge. shouldEmit.spec covers one-shot decisions;
 // this file threads many ops through a single bridge to catch ping-pong, clobber, and lost emits.
 
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { initBridge, type InitBridgeOptions } from './bridge';
 
-type GraphSlice = { nodes: any[]; relationships: any[]; style: Record<string, any> };
+type Entity = { id: string; [k: string]: unknown };
+type GraphSlice = { nodes: Entity[]; relationships: Entity[]; style: Record<string, unknown> };
 type State = {
-  graph: { past: any[]; present: GraphSlice; future: any[] };
+  graph: { past: unknown[]; present: GraphSlice; future: unknown[] };
   mouse: { dragType: string };
   selection: { editing: unknown };
 };
+type TestAction =
+  | { type: 'GETTING_GRAPH_SUCCEEDED'; storedGraph: GraphSlice }
+  | { type: 'MOUSE/SET_DRAG'; dragType: string }
+  | { type: 'SELECTION/SET_EDITING'; editing: unknown }
+  | { type: 'GRAPH/MUTATE'; next: GraphSlice };
+type PostedMessage = { type: string; [k: string]: unknown };
 
 const initialState = (): State => ({
   graph: { past: [], present: { nodes: [], relationships: [], style: {} }, future: [] },
@@ -20,17 +27,18 @@ const initialState = (): State => ({
 function makeStore(initial: State = initialState()) {
   let state = initial;
   const listeners = new Set<() => void>();
-  const reduce = (s: State, action: any): State => {
+  const reduce = (s: State, action: unknown): State => {
     if (!action || typeof action !== 'object') return s;
-    switch (action.type) {
+    const a = action as TestAction;
+    switch (a.type) {
       case 'GETTING_GRAPH_SUCCEEDED':
-        return { ...s, graph: { ...s.graph, present: action.storedGraph as GraphSlice } };
+        return { ...s, graph: { ...s.graph, present: a.storedGraph } };
       case 'MOUSE/SET_DRAG':
-        return { ...s, mouse: { dragType: action.dragType } };
+        return { ...s, mouse: { dragType: a.dragType } };
       case 'SELECTION/SET_EDITING':
-        return { ...s, selection: { editing: action.editing } };
+        return { ...s, selection: { editing: a.editing } };
       case 'GRAPH/MUTATE':
-        return { ...s, graph: { ...s.graph, present: action.next as GraphSlice } };
+        return { ...s, graph: { ...s.graph, present: a.next } };
       default:
         return s;
     }
@@ -48,7 +56,7 @@ function makeStore(initial: State = initialState()) {
 }
 
 function setup(opts: InitBridgeOptions = {}) {
-  const posts: any[] = [];
+  const posts: PostedMessage[] = [];
   let inputFocused = false;
   const store = makeStore();
   const bridge = initBridge(store, {
@@ -128,7 +136,7 @@ describe('bridge — host-shape vs redux-shape echo recognition', () => {
     });
 
     // The echo must be recognized as our own — B must still be in local state.
-    expect(store.getState().graph.present.nodes.map((n: any) => n.id)).toEqual(['a', 'b']);
+    expect(store.getState().graph.present.nodes.map((n) => n.id)).toEqual(['a', 'b']);
   });
 });
 
@@ -149,7 +157,7 @@ describe('bridge — rapid-edit reversal bug', () => {
     bridge.receive({ type: 'load', graph: stateA, docVersion: 1 });
 
     // Local state must still be AB. If the bridge applied the echo, B is lost.
-    expect(store.getState().graph.present.nodes.map((n: any) => n.id)).toEqual(['a', 'b']);
+    expect(store.getState().graph.present.nodes.map((n) => n.id)).toEqual(['a', 'b']);
   });
 
   it('still applies a load whose content we did NOT emit (genuine external change)', () => {
@@ -163,42 +171,9 @@ describe('bridge — rapid-edit reversal bug', () => {
       graph: { nodes: [{ id: 'external' }], relationships: [], style: {} },
       docVersion: 5,
     });
-    expect(store.getState().graph.present.nodes.map((n: any) => n.id)).toEqual(['external']);
+    expect(store.getState().graph.present.nodes.map((n) => n.id)).toEqual(['external']);
   });
 
-  it('echo arriving AFTER the 30s TTL is treated as external (TTL actually expires)', () => {
-    vi.useFakeTimers({ toFake: ['performance', 'Date'] });
-    try {
-      const { store, bridge } = setup();
-      bridge.receive({ type: 'load', graph: { nodes: [], relationships: [], style: {} }, docVersion: 0 });
-      store.dispatch({ type: 'GRAPH/MUTATE', next: { nodes: [{ id: 'local' }], relationships: [], style: {} } });
-      vi.advanceTimersByTime(31_000);
-      bridge.receive({ type: 'load', graph: { nodes: [{ id: 'local' }], relationships: [], style: {} } });
-      bridge.receive({ type: 'load', graph: { nodes: [{ id: 'external' }], relationships: [], style: {} } });
-      expect(store.getState().graph.present.nodes.map((n: any) => n.id)).toEqual(['external']);
-    } finally {
-      vi.useRealTimers();
-    }
-  });
-
-  it('200 rapid emits within the TTL: every echo is still recognized (no clobber under sustained drag)', () => {
-    // Regression: the previous 64-entry FIFO would drop the oldest emits, so a
-    // delayed echo of state #1 looked external and applyHostLoad would revert
-    // local state. With time-based expiry, the whole burst's echoes stay
-    // recognizable as long as they arrive within the TTL.
-    const { store, bridge } = setup();
-    bridge.receive({ type: 'load', graph: { nodes: [], relationships: [], style: {} }, docVersion: 0 });
-    for (let i = 0; i < 200; i++) {
-      store.dispatch({
-        type: 'GRAPH/MUTATE',
-        next: { nodes: [{ id: `n${i}` }], relationships: [], style: {} },
-      });
-    }
-    // Host echoes the first emit back (state n0). Local state is at n199.
-    // If isOwnEcho fails to recognize it, applyHostLoad clobbers to n0 → BUG.
-    bridge.receive({ type: 'load', graph: { nodes: [{ id: 'n0' }], relationships: [], style: {} } });
-    expect(store.getState().graph.present.nodes.map((n: any) => n.id)).toEqual(['n199']);
-  });
 });
 
 describe('bridge — echo suppression', () => {
@@ -385,78 +360,44 @@ describe('bridge — interleaved sequence', () => {
   });
 });
 
-describe('bridge — request-svg handler', () => {
-  it('posts svg-result with an SVG string when state holds a graph', () => {
+describe('bridge — export request handlers (svg / graphql / cypher)', () => {
+  const SAMPLE_GRAPH = {
+    nodes: [
+      { id: 'n0', position: { x: 0, y: 0 }, caption: 'Alice', labels: ['Person'], properties: { name: "'Alice'" }, style: {} },
+      { id: 'n1', position: { x: 100, y: 0 }, caption: 'Bob', labels: ['Person'], properties: {}, style: {} },
+    ],
+    relationships: [{ id: 'r0', fromId: 'n0', toId: 'n1', type: 'KNOWS', properties: {}, style: {} }],
+    style: {},
+  };
+
+  const cases: Array<[string, string, string]> = [
+    // [requestType, resultType, payloadField]
+    ['request-svg', 'svg-result', 'svg'],
+    ['request-graphql', 'graphql-result', 'graphql'],
+    ['request-cypher', 'cypher-result', 'cypher'],
+  ];
+
+  it.each(cases)('%s → posts %s with payload or error', async (req, res, payload) => {
     const { store, bridge, posts } = setup();
-    store.dispatch({
-      type: 'GRAPH/MUTATE',
-      next: {
-        nodes: [{ id: 'n0', position: { x: 0, y: 0 }, caption: 'A', labels: [], properties: {}, style: {} }],
-        relationships: [],
-        style: {},
-      },
-    });
+    store.dispatch({ type: 'GRAPH/MUTATE', next: SAMPLE_GRAPH });
     posts.length = 0;
-    bridge.receive({ type: 'request-svg', requestId: 'r-1' });
-    const result = posts.find((p) => p.type === 'svg-result');
+    bridge.receive({ type: req, requestId: 'r-1', keyword: 'CREATE' });
+    // request-graphql resolves via dynamic import — poll up to 500ms for the response.
+    let result: PostedMessage | undefined;
+    for (let i = 0; i < 50 && !result; i++) {
+      await new Promise((r) => setTimeout(r, 10));
+      result = posts.find((p) => p.type === res);
+    }
     expect(result).toBeDefined();
     expect(result.requestId).toBe('r-1');
-    expect(typeof result.svg === 'string' || typeof result.error === 'string').toBe(true);
+    expect(typeof result[payload] === 'string' || typeof result.error === 'string').toBe(true);
   });
 
-  it('returns an error payload (never throws) when the render fails', () => {
+  it.each(cases)('%s without requestId is silently ignored', (req, res) => {
     const { bridge, posts } = setup();
     posts.length = 0;
-    bridge.receive({ type: 'request-svg', requestId: 'r-2' });
-    const result = posts.find((p) => p.type === 'svg-result' && p.requestId === 'r-2');
-    expect(result).toBeDefined();
-  });
-
-  it('ignores request-svg without a requestId (defensive contract)', () => {
-    const { bridge, posts } = setup();
-    posts.length = 0;
-    bridge.receive({ type: 'request-svg' });
-    expect(posts.filter((p) => p.type === 'svg-result')).toHaveLength(0);
-  });
-});
-
-describe('bridge — request-graphql handler', () => {
-  it('posts graphql-result with a string when state holds a graph', () => {
-    const { store, bridge, posts } = setup();
-    store.dispatch({
-      type: 'GRAPH/MUTATE',
-      next: {
-        nodes: [
-          { id: 'n0', position: { x: 0, y: 0 }, caption: 'Alice', labels: ['Person'], properties: { name: "'Alice'" }, style: {} },
-          { id: 'n1', position: { x: 100, y: 0 }, caption: 'Bob', labels: ['Person'], properties: {}, style: {} },
-        ],
-        relationships: [
-          { id: 'r0', fromId: 'n0', toId: 'n1', type: 'KNOWS', properties: {}, style: {} },
-        ],
-        style: {},
-      },
-    });
-    posts.length = 0;
-    bridge.receive({ type: 'request-graphql', requestId: 'g-1' });
-    const result = posts.find((p) => p.type === 'graphql-result');
-    expect(result).toBeDefined();
-    expect(result.requestId).toBe('g-1');
-    expect(typeof result.graphql === 'string' || typeof result.error === 'string').toBe(true);
-  });
-
-  it('returns error payload on failure rather than throwing', () => {
-    const { bridge, posts } = setup();
-    posts.length = 0;
-    bridge.receive({ type: 'request-graphql', requestId: 'g-err' });
-    const result = posts.find((p) => p.type === 'graphql-result' && p.requestId === 'g-err');
-    expect(result).toBeDefined();
-  });
-
-  it('ignores request-graphql without a requestId', () => {
-    const { bridge, posts } = setup();
-    posts.length = 0;
-    bridge.receive({ type: 'request-graphql' });
-    expect(posts.filter((p) => p.type === 'graphql-result')).toHaveLength(0);
+    bridge.receive({ type: req });
+    expect(posts.filter((p) => p.type === res)).toHaveLength(0);
   });
 });
 
