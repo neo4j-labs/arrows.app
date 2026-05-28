@@ -1,6 +1,5 @@
 import * as vscode from 'vscode';
 import { readGraph, writeGraph } from '@arrows-code/format-json';
-import { decideApply } from './syncDecision';
 import { embedMenuPayload, webviewAllowedCommandIds } from './commandsCatalog';
 import { makeRequester, type Requester } from './webviewRequest';
 import { buildWebviewHtml } from './webviewHtml';
@@ -97,11 +96,8 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
 
     const applyGraphFromWebview = (graph: unknown): Promise<void> => {
       const task = async (): Promise<void> => {
-        const nextText = writeGraph(
-          graph as ReturnType<typeof readGraph>['graph']
-        );
-        const decision = decideApply({ currentText: document.getText(), nextText });
-        if (decision.action === 'skip') return;
+        const nextText = writeGraph(graph as ReturnType<typeof readGraph>['graph']);
+        if (document.getText() === nextText) return;
         await replaceDocumentText(document, nextText);
       };
       // Tail .catch keeps the chain alive if `task` throws (vs. just returning false).
