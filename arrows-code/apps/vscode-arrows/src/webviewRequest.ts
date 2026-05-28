@@ -1,12 +1,19 @@
-type Pending<T> = { resolve: (v: T) => void; reject: (e: Error) => void };
+type Pending<T> = { resolve: (v: T) => void; reject: (e: Error) => void; label: string };
+
+export interface RequestEnvelope {
+  type: 'request';
+  kind: string;
+  requestId: string;
+  payload?: unknown;
+}
 
 export interface RequestChannel {
-  post: (msg: { type: string; requestId: string; [k: string]: unknown }) => void;
+  post: (msg: RequestEnvelope) => void;
 }
 
 export interface Requester {
-  request(kind: string, label: string, extra?: Record<string, unknown>): Promise<string>;
-  resolve(requestId: string, value: string | undefined, error: string | undefined, label: string): void;
+  request(kind: string, label: string, payload?: unknown): Promise<string>;
+  resolve(requestId: string, value: string | undefined, error: string | undefined): void;
   rejectAll(err: Error): void;
   readonly size: number;
 }
@@ -23,7 +30,7 @@ export function makeRequester(channel: RequestChannel, opts: RequesterOptions = 
   const newId = opts.newId ?? ((kind: string) => `${kind}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`);
 
   return {
-    request(kind, label, extra) {
+    request(kind, label, payload) {
       const requestId = newId(kind);
       return new Promise<string>((resolve, reject) => {
         const timer = setTimeout(() => {
@@ -33,16 +40,17 @@ export function makeRequester(channel: RequestChannel, opts: RequesterOptions = 
         pending.set(requestId, {
           resolve: (v) => { clearTimeout(timer); resolve(v); },
           reject: (e) => { clearTimeout(timer); reject(e); },
+          label,
         });
-        channel.post({ type: `request-${kind}`, requestId, ...extra });
+        channel.post({ type: 'request', kind, requestId, payload });
       });
     },
-    resolve(requestId, value, error, label) {
+    resolve(requestId, value, error) {
       const p = pending.get(requestId);
       if (!p) return;
       pending.delete(requestId);
       if (typeof value === 'string') p.resolve(value);
-      else p.reject(new Error(error ?? `Webview ${label} export failed.`));
+      else p.reject(new Error(error ?? `Webview ${p.label} export failed.`));
     },
     rejectAll(err) {
       for (const p of pending.values()) p.reject(err);

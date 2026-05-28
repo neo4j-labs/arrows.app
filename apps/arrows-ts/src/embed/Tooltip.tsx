@@ -15,8 +15,6 @@ export function Tooltip({ label, children, placement = 'bottom' }: TooltipProps)
       position={`${placement} center`}
       size="mini"
       inverted
-      mouseEnterDelay={0}
-      mouseLeaveDelay={0}
     />
   );
 }

@@ -1,9 +1,5 @@
 import { Point, completeWithDefaults } from '@neo4j-arrows/model';
-import {
-  renderCurrentGraphToCypher,
-  renderCurrentGraphToGraphQL,
-  renderCurrentGraphToSvg,
-} from './bridgeRender';
+import { renderers, type RenderKind } from './bridgeRender';
 import { shouldEmit } from './shouldEmit';
 import { isUserBusy } from './userBusy';
 export { isUserBusy };
@@ -207,44 +203,28 @@ export function initBridge(
       tryApplyPending();
       return;
     }
-    if (m.type === 'request-svg' && typeof m.requestId === 'string') {
-      try {
-        const svg = renderCurrentGraphToSvg(store.getState());
-        host.post({ type: 'svg-result', requestId: m.requestId, svg });
-      } catch (err) {
-        host.post({
-          type: 'svg-result',
-          requestId: m.requestId,
-          error: err instanceof Error ? err.message : String(err),
-        });
+    if (m.type === 'request' && typeof m.requestId === 'string') {
+      const { kind, requestId, payload } = m as {
+        kind?: RenderKind;
+        requestId: string;
+        payload?: unknown;
+      };
+      const reply = (body: { result?: string; error?: string }): void => {
+        host.post({ type: 'response', kind, requestId, ...body });
+      };
+      const renderer = kind ? renderers[kind] : undefined;
+      if (!renderer) {
+        reply({ error: `Unknown request kind: ${kind}` });
+        return;
       }
-      return;
-    }
-    if (m.type === 'request-graphql' && typeof m.requestId === 'string') {
-      const requestId = m.requestId;
-      renderCurrentGraphToGraphQL(store.getState())
-        .then((graphql) => host.post({ type: 'graphql-result', requestId, graphql }))
-        .catch((err: unknown) =>
-          host.post({
-            type: 'graphql-result',
-            requestId,
-            error: err instanceof Error ? err.message : String(err),
-          })
-        );
-      return;
-    }
-    if (m.type === 'request-cypher' && typeof m.requestId === 'string') {
-      const keyword = (m as { keyword?: 'CREATE' | 'MERGE' | 'MATCH' }).keyword ?? 'CREATE';
-      try {
-        const cypher = renderCurrentGraphToCypher(store.getState(), keyword);
-        host.post({ type: 'cypher-result', requestId: m.requestId, cypher });
-      } catch (err) {
-        host.post({
-          type: 'cypher-result',
-          requestId: m.requestId,
-          error: err instanceof Error ? err.message : String(err),
+      // .then-chain catches both sync throws (via the initial Promise.resolve)
+      // and async rejections from the renderer.
+      Promise.resolve()
+        .then(() => renderer(store.getState(), payload))
+        .then((result) => reply({ result }))
+        .catch((err: unknown) => {
+          reply({ error: err instanceof Error ? err.message : String(err) });
         });
-      }
     }
   };
 

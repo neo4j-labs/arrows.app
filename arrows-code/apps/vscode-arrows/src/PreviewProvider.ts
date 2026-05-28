@@ -11,9 +11,7 @@ const TOOLBAR_COMMANDS = webviewAllowedCommandIds;
 interface ActivePanel {
   panel: vscode.WebviewPanel;
   ready: Promise<void>;
-  svg: Requester;
-  graphql: Requester;
-  cypher: Requester;
+  requester: Requester;
 }
 
 export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
@@ -25,7 +23,7 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
     uri: vscode.Uri,
     kind: 'svg' | 'graphql' | 'cypher',
     failLabel: string,
-    extra?: Record<string, unknown>
+    payload?: unknown
   ): Promise<string> {
     let active = ArrowsPreviewProvider.panels.get(uri.toString());
     if (!active) {
@@ -34,7 +32,7 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
     }
     if (!active) throw new Error(`Canvas editor failed to open for ${failLabel} export.`);
     await active.ready;
-    return active[kind].request(kind, failLabel, extra);
+    return active.requester.request(kind, failLabel, payload);
   }
 
   static requestSvg(uri: vscode.Uri): Promise<string> {
@@ -72,14 +70,11 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
     const readyPromise = new Promise<void>((r) => {
       resolveReady = r;
     });
-    const post = (msg: { type: string; requestId: string }): void => {
-      void panel.webview.postMessage(msg);
-    };
-    const svg = makeRequester({ post });
-    const graphql = makeRequester({ post });
-    const cypher = makeRequester({ post });
+    const requester = makeRequester({
+      post: (msg) => { void panel.webview.postMessage(msg); },
+    });
     const uriStr = document.uri.toString();
-    ArrowsPreviewProvider.panels.set(uriStr, { panel, ready: readyPromise, svg, graphql, cypher });
+    ArrowsPreviewProvider.panels.set(uriStr, { panel, ready: readyPromise, requester });
 
     const menuPayload = embedMenuPayload();
 
@@ -130,8 +125,7 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
           graph?: unknown;
           name?: string;
           requestId?: string;
-          svg?: string;
-          graphql?: string;
+          result?: string;
           error?: string;
         }) => {
           if (msg.type === 'ready') {
@@ -149,16 +143,8 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
             void applyGraphFromWebview(msg.graph);
             return;
           }
-          if (msg.type === 'svg-result' && typeof msg.requestId === 'string') {
-            svg.resolve(msg.requestId, msg.svg, msg.error, 'SVG');
-            return;
-          }
-          if (msg.type === 'graphql-result' && typeof msg.requestId === 'string') {
-            graphql.resolve(msg.requestId, msg.graphql, msg.error, 'GraphQL');
-            return;
-          }
-          if (msg.type === 'cypher-result' && typeof msg.requestId === 'string') {
-            cypher.resolve(msg.requestId, (msg as { cypher?: string }).cypher, msg.error, 'Cypher');
+          if (msg.type === 'response' && typeof msg.requestId === 'string') {
+            requester.resolve(msg.requestId, msg.result, msg.error);
             return;
           }
           if (
@@ -173,10 +159,7 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
     );
     panel.onDidDispose(() => {
       ArrowsPreviewProvider.panels.delete(uriStr);
-      const closed = new Error('Canvas editor closed during export.');
-      svg.rejectAll(closed);
-      graphql.rejectAll(closed);
-      cypher.rejectAll(closed);
+      requester.rejectAll(new Error('Canvas editor closed during export.'));
       subs.forEach((d) => d.dispose());
     });
 

@@ -3,11 +3,14 @@ import { presentGraphFromState } from './shouldEmit';
 // @ts-expect-error JS module without local typings.
 import { exportCypher } from '../storage/exportCypher';
 
+export type RenderKind = 'svg' | 'graphql' | 'cypher';
+export type Renderer = (state: unknown, payload?: unknown) => string | Promise<string>;
+
 function escapeAttr(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
 }
 
-export function renderCurrentGraphToSvg(state: unknown): string {
+function renderSvg(state: unknown): string {
   const s = state as { cachedImages?: Record<string, unknown> };
   const graph = presentGraphFromState(state) as Parameters<typeof renderSvgDom>[0];
   const cachedImages = (s.cachedImages ?? {}) as Parameters<typeof renderSvgDom>[1];
@@ -26,16 +29,21 @@ export function renderCurrentGraphToSvg(state: unknown): string {
   return svg;
 }
 
-export async function renderCurrentGraphToGraphQL(state: unknown): Promise<string> {
-  // @ts-expect-error — JS module without local typings.
+async function renderGraphQL(state: unknown): Promise<string> {
+  // @ts-expect-error JS module without local typings.
   const mod = await import('../graphql/exportGraphQL');
   const exportGraphQL = (mod.default ?? mod) as (g: unknown) => string;
   return exportGraphQL(presentGraphFromState(state));
 }
 
-export function renderCurrentGraphToCypher(
-  state: unknown,
-  keyword: 'CREATE' | 'MERGE' | 'MATCH'
-): string {
+function renderCypher(state: unknown, payload?: unknown): string {
+  const keyword =
+    (payload as { keyword?: 'CREATE' | 'MERGE' | 'MATCH' } | undefined)?.keyword ?? 'CREATE';
   return exportCypher(presentGraphFromState(state), keyword, { includeStyling: false }) as string;
 }
+
+export const renderers: Record<RenderKind, Renderer> = {
+  svg: renderSvg,
+  graphql: renderGraphQL,
+  cypher: renderCypher,
+};

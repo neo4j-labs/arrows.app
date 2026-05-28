@@ -1,8 +1,8 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { makeRequester, type RequestChannel } from './webviewRequest';
+import { makeRequester, type RequestChannel, type RequestEnvelope } from './webviewRequest';
 
-function fakeChannel(): { channel: RequestChannel; posted: Array<{ type: string; requestId: string }> } {
-  const posted: Array<{ type: string; requestId: string }> = [];
+function fakeChannel(): { channel: RequestChannel; posted: RequestEnvelope[] } {
+  const posted: RequestEnvelope[] = [];
   return {
     channel: { post: (msg) => posted.push(msg) },
     posted,
@@ -18,13 +18,25 @@ afterEach(() => {
 });
 
 describe('makeRequester — happy path', () => {
-  it('posts request-<kind> with a fresh requestId and resolves on matching result', async () => {
+  it('posts {type:request, kind, requestId} and resolves on matching result', async () => {
     const { channel, posted } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
     const pending = r.request('svg', 'SVG');
-    expect(posted).toEqual([{ type: 'request-svg', requestId: 'svg-1' }]);
-    r.resolve('svg-1', '<svg/>', undefined, 'SVG');
+    expect(posted).toEqual([{ type: 'request', kind: 'svg', requestId: 'svg-1', payload: undefined }]);
+    r.resolve('svg-1', '<svg/>', undefined);
     await expect(pending).resolves.toBe('<svg/>');
+  });
+
+  it('passes payload through on the request envelope', () => {
+    const { channel, posted } = fakeChannel();
+    const r = makeRequester(channel, { newId: deterministicId });
+    r.request('cypher', 'Cypher', { keyword: 'MERGE' });
+    expect(posted[0]).toEqual({
+      type: 'request',
+      kind: 'cypher',
+      requestId: 'cypher-1',
+      payload: { keyword: 'MERGE' },
+    });
   });
 
   it('multiple in-flight requests resolve independently', async () => {
@@ -33,8 +45,8 @@ describe('makeRequester — happy path', () => {
     const a = r.request('svg', 'SVG');
     const b = r.request('graphql', 'GraphQL');
     expect(r.size).toBe(2);
-    r.resolve('graphql-2', 'type Foo {}', undefined, 'GraphQL');
-    r.resolve('svg-1', '<svg/>', undefined, 'SVG');
+    r.resolve('graphql-2', 'type Foo {}', undefined);
+    r.resolve('svg-1', '<svg/>', undefined);
     await expect(a).resolves.toBe('<svg/>');
     await expect(b).resolves.toBe('type Foo {}');
     expect(r.size).toBe(0);
@@ -46,15 +58,15 @@ describe('makeRequester — error paths', () => {
     const { channel } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
     const p = r.request('svg', 'SVG');
-    r.resolve('svg-1', undefined, 'render blew up', 'SVG');
+    r.resolve('svg-1', undefined, 'render blew up');
     await expect(p).rejects.toThrow('render blew up');
   });
 
-  it('rejects with a default message when value+error are both missing', async () => {
+  it('rejects with a default message that names the request label when value+error are both missing', async () => {
     const { channel } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
     const p = r.request('svg', 'SVG');
-    r.resolve('svg-1', undefined, undefined, 'SVG');
+    r.resolve('svg-1', undefined, undefined);
     await expect(p).rejects.toThrow('Webview SVG export failed.');
   });
 });
@@ -77,7 +89,7 @@ describe('makeRequester — timeout', () => {
     const { channel } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId, timeoutMs: 5_000 });
     const p = r.request('svg', 'SVG');
-    r.resolve('svg-1', '<svg/>', undefined, 'SVG');
+    r.resolve('svg-1', '<svg/>', undefined);
     vi.advanceTimersByTime(10_000);
     await expect(p).resolves.toBe('<svg/>');
   });
@@ -87,15 +99,15 @@ describe('makeRequester — guard rails', () => {
   it('resolve() for an unknown requestId is a silent no-op (late ghost message)', () => {
     const { channel } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
-    expect(() => r.resolve('does-not-exist', 'x', undefined, 'SVG')).not.toThrow();
+    expect(() => r.resolve('does-not-exist', 'x', undefined)).not.toThrow();
   });
 
   it('resolving twice with the same id is a no-op (second resolve does not double-fire)', async () => {
     const { channel } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
     const p = r.request('svg', 'SVG');
-    r.resolve('svg-1', 'first', undefined, 'SVG');
-    r.resolve('svg-1', 'second', undefined, 'SVG');
+    r.resolve('svg-1', 'first', undefined);
+    r.resolve('svg-1', 'second', undefined);
     await expect(p).resolves.toBe('first');
     expect(r.size).toBe(0);
   });
@@ -130,16 +142,20 @@ describe('makeRequester — channel contract', () => {
     const r = makeRequester(channel, { newId: deterministicId });
     r.request('svg', 'SVG');
     expect(posted).toHaveLength(1);
-    r.resolve('svg-1', 'x', undefined, 'SVG');
+    r.resolve('svg-1', 'x', undefined);
     expect(posted).toHaveLength(1);
   });
 
-  it('request type is always "request-<kind>"', () => {
+  it('every request envelope is {type:"request", kind, requestId, payload?}', () => {
     const { channel, posted } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
     r.request('svg', 'SVG');
     r.request('graphql', 'GraphQL');
-    r.request('cypher', 'Cypher');
-    expect(posted.map((p) => p.type)).toEqual(['request-svg', 'request-graphql', 'request-cypher']);
+    r.request('cypher', 'Cypher', { keyword: 'CREATE' });
+    expect(posted.map((p) => ({ type: p.type, kind: p.kind }))).toEqual([
+      { type: 'request', kind: 'svg' },
+      { type: 'request', kind: 'graphql' },
+      { type: 'request', kind: 'cypher' },
+    ]);
   });
 });

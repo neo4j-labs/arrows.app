@@ -370,34 +370,44 @@ describe('bridge — export request handlers (svg / graphql / cypher)', () => {
     style: {},
   };
 
-  const cases: Array<[string, string, string]> = [
-    // [requestType, resultType, payloadField]
-    ['request-svg', 'svg-result', 'svg'],
-    ['request-graphql', 'graphql-result', 'graphql'],
-    ['request-cypher', 'cypher-result', 'cypher'],
+  const kinds: Array<['svg' | 'graphql' | 'cypher', unknown?]> = [
+    ['svg'],
+    ['graphql'],
+    ['cypher', { keyword: 'CREATE' }],
   ];
 
-  it.each(cases)('%s → posts %s with payload or error', async (req, res, payload) => {
+  it.each(kinds)('request kind=%s → posts a response with result or error', async (kind, payload) => {
     const { store, bridge, posts } = setup();
     store.dispatch({ type: 'GRAPH/MUTATE', next: SAMPLE_GRAPH });
     posts.length = 0;
-    bridge.receive({ type: req, requestId: 'r-1', keyword: 'CREATE' });
-    // request-graphql resolves via dynamic import — poll up to 500ms for the response.
-    let result: PostedMessage | undefined;
-    for (let i = 0; i < 50 && !result; i++) {
+    bridge.receive({ type: 'request', kind, requestId: 'r-1', payload });
+    // GraphQL resolves via dynamic import — poll up to 500ms for the response.
+    let response: PostedMessage | undefined;
+    for (let i = 0; i < 50 && !response; i++) {
       await new Promise((r) => setTimeout(r, 10));
-      result = posts.find((p) => p.type === res);
+      response = posts.find((p) => p.type === 'response');
     }
-    expect(result).toBeDefined();
-    expect(result.requestId).toBe('r-1');
-    expect(typeof result[payload] === 'string' || typeof result.error === 'string').toBe(true);
+    expect(response).toBeDefined();
+    expect(response.requestId).toBe('r-1');
+    expect(response.kind).toBe(kind);
+    expect(typeof response.result === 'string' || typeof response.error === 'string').toBe(true);
   });
 
-  it.each(cases)('%s without requestId is silently ignored', (req, res) => {
+  it('request without requestId is silently ignored', () => {
     const { bridge, posts } = setup();
     posts.length = 0;
-    bridge.receive({ type: req });
-    expect(posts.filter((p) => p.type === res)).toHaveLength(0);
+    bridge.receive({ type: 'request', kind: 'svg' });
+    expect(posts.filter((p) => p.type === 'response')).toHaveLength(0);
+  });
+
+  it('request with unknown kind responds with an error', () => {
+    const { bridge, posts } = setup();
+    posts.length = 0;
+    bridge.receive({ type: 'request', kind: 'pdf', requestId: 'r-1' });
+    const response = posts.find((p) => p.type === 'response');
+    expect(response).toBeDefined();
+    expect(response.requestId).toBe('r-1');
+    expect(response.error).toMatch(/Unknown request kind/);
   });
 });
 
