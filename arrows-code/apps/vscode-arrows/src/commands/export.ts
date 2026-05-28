@@ -87,7 +87,6 @@ export function makeCopyCypher(context: vscode.ExtensionContext) {
   };
 }
 
-// Safari URL limit ~80KB; warn above 20KB but allow.
 const ARROWS_APP_URL_WARN_BYTES = 20_000;
 
 export async function openInArrowsApp(arg?: unknown): Promise<void> {

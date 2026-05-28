@@ -141,8 +141,6 @@
     "install:local": "npm run build && vsce package --no-dependencies -o dist/arrows-code-vscode-arrows.vsix && code --install-extension dist/arrows-code-vscode-arrows.vsix --force && echo '\\n[install:local] DONE. In VS Code: Cmd+Shift+P → Developer: Reload Window (or close every VS Code window and reopen — extension host caches across reloads).'"
   },
   "dependencies": {
-    "@arrows-code/format-json": "*",
-    "@arrows-code/patch": "*",
-    "@arrows-code/validator": "*"
+    "@arrows-code/format-json": "*"
   }
 }

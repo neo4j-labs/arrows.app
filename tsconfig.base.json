@@ -16,9 +16,6 @@
     "baseUrl": ".",
     "paths": {
       "@arrows-code/format-json": ["arrows-code/libs/format-json/src/index.ts"],
-      "@arrows-code/layout": ["arrows-code/libs/layout/src/index.ts"],
-      "@arrows-code/patch": ["arrows-code/libs/patch/src/index.ts"],
-      "@arrows-code/validator": ["arrows-code/libs/validator/src/index.ts"],
       "@neo4j-arrows/graphics": ["libs/graphics/src/index.ts"],
       "@neo4j-arrows/model": ["libs/model/src/index.ts"],
       "@neo4j-arrows/selectors": ["libs/selectors/src/index.ts"]

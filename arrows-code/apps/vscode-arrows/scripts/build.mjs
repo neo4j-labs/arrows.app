@@ -43,10 +43,6 @@ rewriteCssAssetUrls(resolve(embedDst, 'assets'));
 console.log('▸ rewrote absolute /assets/ URLs in embed CSS to relative');
 
 // Strip dead weight from the Semantic UI fonts/icons:
-//  - brand-icons-* (Twitter/Facebook glyphs) — unused anywhere in the embed
-//  - .eot / .ttf / .svg legacy font formats — VS Code's webview is Chromium,
-//    only .woff2 (and .woff as fallback) ever resolves
-// Net: ~1.6MB smaller embed bundle, faster first-paint when a .arrows opens.
 import { unlinkSync } from 'node:fs';
 function stripDeadFontAssets(dir) {
   const drop = [];
@@ -62,17 +58,15 @@ function stripDeadFontAssets(dir) {
 const droppedFontFiles = stripDeadFontAssets(resolve(embedDst, 'assets'));
 console.log(`▸ stripped ${droppedFontFiles} unused Semantic UI font assets (brand-icons + .eot/.ttf/.svg)`);
 
-// Also strip the @font-face src URLs we just deleted so the browser doesn't
-// 404-spam the console looking for them.
+// Also strip the @font-face src URLs we just deleted 
+
 function stripDeadFontReferences(dir) {
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
     if (statSync(full).isDirectory()) { stripDeadFontReferences(full); continue; }
     if (!name.endsWith('.css')) continue;
     const text = readFileSync(full, 'utf8');
-    // Drop entire @font-face blocks whose ONLY src references vanished files —
-    // simpler: drop the individual url() entries that point at .eot/.ttf/.svg
-    // or any brand-icons file. The .woff2 entry remains, keeping the @font-face valid.
+    // Drop entire @font-face blocks whose ONLY src references vanished files
     const rewritten = text
       .replace(/url\(\.\/brand-icons-[^)]+\)\s+format\([^)]+\),?\s*/g, '')
       .replace(/url\(\.\/(outline-)?icons-[^)]+\.(eot|ttf|svg)[^)]*\)\s+format\([^)]+\),?\s*/g, '')
@@ -85,9 +79,6 @@ function stripDeadFontReferences(dir) {
 stripDeadFontReferences(resolve(embedDst, 'assets'));
 console.log('▸ cleaned dead font references from embed CSS');
 
-// Vite copies the web app's public/ into the embed output (index.html,
-// manifest.json, cookiebot.external.min.css, the duplicate "favicon copy.ico",
-// etc). The webview only loads embed.html — drop the rest.
 const webAppOnlyFiles = [
   'index.html',
   'manifest.json',
