@@ -1,7 +1,6 @@
-// Sugiyama-lite hierarchical layout. Longest-path layering via Kahn's topological
-// sort. Cyclic graphs are tolerated — back-edges into already-layered nodes are
-// ignored, and any node stuck in a pure cycle lands in an outer "leftover" layer
-// past all the DAG-reachable ones. Guarantees termination on any input.
+// Longest-path layering via Kahn's topological sort.
+// Cyclic graphs terminate: back-edges into already-layered nodes are ignored
+// and pure-cycle nodes land in an outer "leftover" layer.
 
 import type { LayoutFn } from './types';
 import { applyPositions, round1 } from './types';
@@ -14,7 +13,6 @@ export const hierarchical: LayoutFn = async (graph) => {
   const ids = graph.nodes.map((n) => n.id).sort();
   const idSet = new Set(ids);
 
-  // Compute in-degree (ignoring self-loops + dangling refs) and adjacency-out.
   const inDeg = new Map<string, number>();
   const edgesOut = new Map<string, string[]>();
   for (const id of ids) { inDeg.set(id, 0); edgesOut.set(id, []); }
@@ -25,9 +23,8 @@ export const hierarchical: LayoutFn = async (graph) => {
     edgesOut.get(r.fromId)!.push(r.toId);
   }
 
-  // Kahn-style longest-path layering. `tentative` carries the running max of
-  // (predecessorLayer + 1) for each unfinalized node; we only commit a node's
-  // layer when ALL its incoming edges have been processed (remaining→0).
+  // `tentative` carries max(predecessorLayer + 1); a node's layer is committed
+  // only when all incoming edges have been processed.
   const remaining = new Map(inDeg);
   const tentative = new Map<string, number>();
   const layer = new Map<string, number>();
@@ -53,11 +50,10 @@ export const hierarchical: LayoutFn = async (graph) => {
     frontier = next;
   }
 
-  // Anything still unlayered (pure cycles, no source) → outer leftover layer.
+  // Pure-cycle nodes (no source) go to a leftover layer past the DAG.
   const maxLayer = Math.max(0, ...layer.values());
   for (const id of ids) if (!layer.has(id)) layer.set(id, maxLayer + 1);
 
-  // Group, sort within layer by id for determinism, position.
   const byLayer = new Map<number, string[]>();
   for (const id of ids) {
     const L = layer.get(id)!;

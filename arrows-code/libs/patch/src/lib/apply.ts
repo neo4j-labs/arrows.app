@@ -10,14 +10,6 @@ import {
 import type { Graph, Node, Relationship } from '@neo4j-arrows/model';
 import type { PatchError, PatchOp, PatchResult } from './types';
 
-/**
- * Apply one or more PatchOps to a graph. Pure: never mutates input.
- *
- * Where arrows already exposes a pure entity helper in @neo4j-arrows/model,
- * we delegate to it rather than re-implement the spread. The patch lib's
- * remaining job is op routing, validation, and graph-level concerns
- * (adding/removing nodes/rels, graph-wide renames).
- */
 export function apply(graph: Graph, ops: PatchOp | PatchOp[]): PatchResult {
   const list = Array.isArray(ops) ? ops : [ops];
   let current = graph;

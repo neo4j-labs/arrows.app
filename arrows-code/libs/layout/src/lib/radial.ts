@@ -1,17 +1,10 @@
-// Radial layout. Highest-degree node sits at the origin; concentric rings hold
-// nodes at BFS distance from the center. Within a ring, nodes are evenly
-// spaced by angle, sorted by id for determinism. Ring radius scales with the
-// count of nodes on that ring so captions never collide — chord length per
-// node is at least (2·maxEffRadius + gap).
+// Highest-degree node at the origin; concentric rings hold nodes by BFS distance.
+// Ring radius scales with node count so chords don't collide.
 
 import type { LayoutFn } from './types';
 import { applyPositions, NODE_BODY_RADIUS, round1 } from './types';
 
 const RING_GAP = 320;
-// Lateral gap between adjacent nodes on a ring. Captions and properties stack
-// VERTICALLY below the node body, so they don't affect lateral packing —
-// using the full effectiveRadius (caption+labels) makes rings 3-4× too big
-// and autofit zooms the graph to a postage stamp.
 const LATERAL_GAP = 60;
 
 export const radial: LayoutFn = async (graph) => {
@@ -59,10 +52,8 @@ export const radial: LayoutFn = async (graph) => {
   }
   for (const arr of byRing.values()) arr.sort();
 
-  // First pass: compute each ring's actual radius. A ring with N nodes needs
-  // circumference ≥ N · (2·maxRadius + CHORD_GAP), i.e. radius ≥ that / (2π).
-  // We take the max of (ring index · RING_GAP) and that count-derived minimum,
-  // then accumulate so outer rings never sit inside inner ones.
+  // Ring radius = max(index · RING_GAP, circumference / 2π for N nodes), accumulated
+  // so outer rings never sit inside inner ones.
   const ringRadius = new Map<number, number>();
   let minOuter = 0;
   const sortedRings = [...byRing.keys()].sort((a, b) => a - b);
