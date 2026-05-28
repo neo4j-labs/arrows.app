@@ -1,7 +1,9 @@
 import { Point, completeWithDefaults } from '@neo4j-arrows/model';
-import { renderSvgDom } from '@neo4j-arrows/graphics';
-// graphql export is lazy-loaded — pulling `graphql-js` (~670 KB) into the
-// embed bundle is only justified when the user actually exports GraphQL.
+import {
+  renderCurrentGraphToCypher,
+  renderCurrentGraphToGraphQL,
+  renderCurrentGraphToSvg,
+} from './bridgeRender';
 import { shouldEmit } from './shouldEmit';
 import { isUserBusy } from './userBusy';
 export { isUserBusy };
@@ -21,11 +23,7 @@ interface HostChannel {
   name: 'vscode' | 'iframe' | 'test';
 }
 
-// Stable JSON for equality regardless of which side produced the graph:
-//  - writeGraph (host) sorts keys and strips entityType
-//  - reducers (embed) preserve insertion order and omit entityType on freshly created nodes/rels
-//  - readGraph (host's sendLoad) reconstructs with entityType added
-// Sort keys + drop entityType so the two shapes compare equal.
+// Sort keys + drop entityType so host-produced and embed-produced graphs compare equal.
 function canonical(value: unknown): string {
   return JSON.stringify(value, (_k, v) => {
     if (v && typeof v === 'object' && !Array.isArray(v)) {
@@ -140,12 +138,8 @@ export function initBridge(
   let docVersion = -1;
   let pendingLoad: IncomingGraph | null = null;
 
-  // Time-indexed map of recent emit serializations. An inbound load whose graph
-  // matches any unexpired entry is our own echo — applying it would clobber
-  // newer local state. A pure FIFO bound caps under sustained editing (>64
-  // distinct emits) and re-introduces the rapid-edit reversal bug; time-based
-  // expiry instead keeps every echo recognizable as long as the host echoes
-  // within the window (typical roundtrip <100ms; we give 30s slack).
+  // Recent emit canonicals; an inbound load matching one is our own echo.
+  // 30s TTL covers roundtrip slack without growing unboundedly.
   const ECHO_TTL_MS = 30_000;
   const emittedAt = new Map<string, number>();
   const now = (): number =>
@@ -156,13 +150,13 @@ export function initBridge(
       if (t < cutoff) emittedAt.delete(key);
     }
   };
-  const rememberEmit = (graph: unknown): void => {
+  const rememberEmitKey = (key: string): void => {
     prune();
-    emittedAt.set(canonical(graph), now());
+    emittedAt.set(key, now());
   };
-  const isOwnEcho = (graph: unknown): boolean => {
+  const isOwnEchoKey = (key: string): boolean => {
     prune();
-    return emittedAt.has(canonical(graph));
+    return emittedAt.has(key);
   };
 
   const tryApplyPending = (): void => {
@@ -170,10 +164,9 @@ export function initBridge(
     if (isUserBusy(store.getState(), inputFocused())) return;
     const raw = pendingLoad;
     pendingLoad = null;
-    // Echo of our own emit — local state is already at-or-past this point. Skip.
-    if (isOwnEcho(raw)) return;
+    if (isOwnEchoKey(canonical(raw))) return;
     const graph = rehydrate(raw);
-    // Pre-arm so the subscribe callback that follows dispatch skips re-emit.
+    // Pre-arm lastSerialized so the dispatch below doesn't re-emit.
     lastSerialized = JSON.stringify(graph);
     applyHostLoad(store, graph);
   };
@@ -190,7 +183,7 @@ export function initBridge(
     });
     if (!decision.emit || !decision.graph) return;
     lastSerialized = decision.serialized;
-    rememberEmit(decision.graph);
+    rememberEmitKey(canonical(decision.graph));
     host.post({ type: 'graph-changed', graph: decision.graph, docVersion });
   };
 
@@ -230,16 +223,28 @@ export function initBridge(
     if (m.type === 'request-graphql' && typeof m.requestId === 'string') {
       const requestId = m.requestId;
       renderCurrentGraphToGraphQL(store.getState())
-        .then((graphql) => {
-          host.post({ type: 'graphql-result', requestId, graphql });
-        })
-        .catch((err: unknown) => {
+        .then((graphql) => host.post({ type: 'graphql-result', requestId, graphql }))
+        .catch((err: unknown) =>
           host.post({
             type: 'graphql-result',
             requestId,
             error: err instanceof Error ? err.message : String(err),
-          });
+          })
+        );
+      return;
+    }
+    if (m.type === 'request-cypher' && typeof m.requestId === 'string') {
+      const keyword = (m as { keyword?: 'CREATE' | 'MERGE' | 'MATCH' }).keyword ?? 'CREATE';
+      try {
+        const cypher = renderCurrentGraphToCypher(store.getState(), keyword);
+        host.post({ type: 'cypher-result', requestId: m.requestId, cypher });
+      } catch (err) {
+        host.post({
+          type: 'cypher-result',
+          requestId: m.requestId,
+          error: err instanceof Error ? err.message : String(err),
         });
+      }
     }
   };
 
@@ -265,62 +270,4 @@ export function initBridge(
   host.post({ type: 'ready', host: host.name });
 
   return { receive, flush: tryEmit, post: host.post };
-}
-
-function renderCurrentGraphToSvg(state: unknown): string {
-  const s = state as {
-    graph?: unknown;
-    cachedImages?: Record<string, unknown>;
-  };
-  const graph = (
-    s.graph && typeof s.graph === 'object' && 'present' in (s.graph as object)
-      ? (s.graph as { present: unknown }).present
-      : s.graph
-  ) as Parameters<typeof renderSvgDom>[0];
-  const cachedImages = (s.cachedImages ?? {}) as Parameters<
-    typeof renderSvgDom
-  >[1];
-  const svgEl = renderSvgDom(graph, cachedImages);
-  const width = svgEl.getAttribute('width') ?? '0';
-  const height = svgEl.getAttribute('height') ?? '0';
-  let svg = new XMLSerializer().serializeToString(svgEl);
-  if (!svg.includes('xmlns=')) {
-    svg = svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg"');
-  }
-  const bg = (graph.style as Record<string, unknown> | undefined)?.[
-    'background-color'
-  ];
-  if (
-    typeof bg === 'string' &&
-    bg.trim().length > 0 &&
-    bg !== 'transparent' &&
-    bg !== 'none'
-  ) {
-    svg = svg.replace(
-      /<svg\b([^>]*)>/,
-      `<svg$1><rect width="100%" height="100%" fill="${escapeAttr(bg)}"/>`
-    );
-  }
-  void width;
-  void height;
-  return svg;
-}
-
-function escapeAttr(value: string): string {
-  return value
-    .replace(/&/g, '&amp;')
-    .replace(/"/g, '&quot;')
-    .replace(/</g, '&lt;');
-}
-
-async function renderCurrentGraphToGraphQL(state: unknown): Promise<string> {
-  const s = state as { graph?: unknown };
-  const graph =
-    s.graph && typeof s.graph === 'object' && 'present' in (s.graph as object)
-      ? (s.graph as { present: unknown }).present
-      : s.graph;
-  // @ts-expect-error — JS module without local typings.
-  const mod = await import('../graphql/exportGraphQL');
-  const exportGraphQL = (mod.default ?? mod) as (g: unknown) => string;
-  return exportGraphQL(graph);
 }

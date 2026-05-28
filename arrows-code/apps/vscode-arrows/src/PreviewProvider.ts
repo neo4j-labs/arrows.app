@@ -1,10 +1,10 @@
 import * as vscode from 'vscode';
-import { readFileSync } from 'node:fs';
-import { randomBytes } from 'node:crypto';
 import { readGraph, writeGraph } from '@arrows-code/format-json';
 import { decideApply } from './syncDecision';
 import { embedMenuPayload, webviewAllowedCommandIds } from './commandsCatalog';
 import { makeRequester, type Requester } from './webviewRequest';
+import { buildWebviewHtml } from './webviewHtml';
+import { msg, replaceDocumentText } from './commands/helpers';
 
 const TOOLBAR_COMMANDS = webviewAllowedCommandIds;
 
@@ -13,6 +13,7 @@ interface ActivePanel {
   ready: Promise<void>;
   svg: Requester;
   graphql: Requester;
+  cypher: Requester;
 }
 
 export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
@@ -22,25 +23,18 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
 
   private static async requestFromWebview(
     uri: vscode.Uri,
-    kind: 'svg' | 'graphql',
-    failLabel: string
+    kind: 'svg' | 'graphql' | 'cypher',
+    failLabel: string,
+    extra?: Record<string, unknown>
   ): Promise<string> {
     let active = ArrowsPreviewProvider.panels.get(uri.toString());
     if (!active) {
-      await vscode.commands.executeCommand(
-        'vscode.openWith',
-        uri,
-        'arrows.preview',
-        { preserveFocus: false }
-      );
+      await vscode.commands.executeCommand('vscode.openWith', uri, 'arrows.preview', { preserveFocus: false });
       active = ArrowsPreviewProvider.panels.get(uri.toString());
     }
-    if (!active) {
-      throw new Error(`Canvas editor failed to open for ${failLabel} export.`);
-    }
+    if (!active) throw new Error(`Canvas editor failed to open for ${failLabel} export.`);
     await active.ready;
-    const requester = kind === 'svg' ? active.svg : active.graphql;
-    return requester.request(kind, failLabel);
+    return active[kind].request(kind, failLabel, extra);
   }
 
   static requestSvg(uri: vscode.Uri): Promise<string> {
@@ -49,6 +43,10 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
 
   static requestGraphQL(uri: vscode.Uri): Promise<string> {
     return ArrowsPreviewProvider.requestFromWebview(uri, 'graphql', 'GraphQL');
+  }
+
+  static requestCypher(uri: vscode.Uri, keyword: 'CREATE' | 'MERGE' | 'MATCH'): Promise<string> {
+    return ArrowsPreviewProvider.requestFromWebview(uri, 'cypher', 'Cypher', { keyword });
   }
 
   async resolveCustomTextEditor(
@@ -79,13 +77,9 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
     };
     const svg = makeRequester({ post });
     const graphql = makeRequester({ post });
+    const cypher = makeRequester({ post });
     const uriStr = document.uri.toString();
-    ArrowsPreviewProvider.panels.set(uriStr, {
-      panel,
-      ready: readyPromise,
-      svg,
-      graphql,
-    });
+    ArrowsPreviewProvider.panels.set(uriStr, { panel, ready: readyPromise, svg, graphql, cypher });
 
     const menuPayload = embedMenuPayload();
 
@@ -108,35 +102,16 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
 
     const applyGraphFromWebview = (graph: unknown): Promise<void> => {
       const task = async (): Promise<void> => {
-        const currentText = document.getText();
         const nextText = writeGraph(
           graph as ReturnType<typeof readGraph>['graph']
         );
-        const decision = decideApply({ currentText, nextText });
+        const decision = decideApply({ currentText: document.getText(), nextText });
         if (decision.action === 'skip') return;
-        const edit = new vscode.WorkspaceEdit();
-        edit.replace(
-          document.uri,
-          new vscode.Range(
-            document.positionAt(0),
-            document.positionAt(currentText.length)
-          ),
-          nextText
-        );
-        const applied = await vscode.workspace.applyEdit(edit);
-        if (!applied) {
-          void vscode.window.showWarningMessage(
-            'Arrows: could not apply graph edit to document (read-only or workspace untrusted).'
-          );
-        }
+        await replaceDocumentText(document, nextText);
       };
       // Tail .catch keeps the chain alive if `task` throws (vs. just returning false).
       const next = applyChain.then(task, task).catch((err) => {
-        void vscode.window.showErrorMessage(
-          `Arrows: edit error: ${
-            err instanceof Error ? err.message : String(err)
-          }`
-        );
+        void vscode.window.showErrorMessage(`Arrows: edit error: ${msg(err)}`);
       });
       applyChain = next;
       return next;
@@ -182,6 +157,10 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
             graphql.resolve(msg.requestId, msg.graphql, msg.error, 'GraphQL');
             return;
           }
+          if (msg.type === 'cypher-result' && typeof msg.requestId === 'string') {
+            cypher.resolve(msg.requestId, (msg as { cypher?: string }).cypher, msg.error, 'Cypher');
+            return;
+          }
           if (
             msg.type === 'command' &&
             typeof msg.name === 'string' &&
@@ -197,75 +176,10 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
       const closed = new Error('Canvas editor closed during export.');
       svg.rejectAll(closed);
       graphql.rejectAll(closed);
+      cypher.rejectAll(closed);
       subs.forEach((d) => d.dispose());
     });
 
-    panel.webview.html = buildHtml(panel.webview, embedDir);
+    panel.webview.html = buildWebviewHtml(panel.webview, embedDir);
   }
-}
-
-function freshNonce(): string {
-  return randomBytes(16).toString('base64');
-}
-
-function buildHtml(webview: vscode.Webview, embedDir: vscode.Uri): string {
-  const htmlPath = vscode.Uri.joinPath(embedDir, 'embed.html');
-  let html: string;
-  try {
-    html = readFileSync(htmlPath.fsPath, 'utf8');
-  } catch (error) {
-    process.stderr.write(
-      `[arrows] failed to read embed.html: ${
-        error instanceof Error ? error.message : String(error)
-      }\n`
-    );
-    return missingBundleHtml();
-  }
-
-  const toWebviewUri = (relPath: string): string =>
-    webview.asWebviewUri(vscode.Uri.joinPath(embedDir, relPath)).toString();
-
-  html = html.replace(
-    /(src|href)="\/([^"]+)"/g,
-    (_m, attr, rel) => `${attr}="${toWebviewUri(rel)}"`
-  );
-  html = html.replace(/<base[^>]*>/g, '');
-
-  const nonce = freshNonce();
-  html = html.replace(
-    /<script\b(?![^>]*\bnonce=)/g,
-    `<script nonce="${nonce}"`
-  );
-
-  const csp =
-    `default-src 'none'; ` +
-    `img-src ${webview.cspSource} https: data:; ` +
-    `font-src ${webview.cspSource} https: data:; ` +
-    `style-src ${webview.cspSource} 'unsafe-inline'; ` +
-    `script-src ${webview.cspSource} 'nonce-${nonce}'; ` +
-    `connect-src ${webview.cspSource};`;
-  html = html.replace(
-    /<head>/i,
-    `<head><meta http-equiv="Content-Security-Policy" content="${csp}">`
-  );
-
-  // Force window.focus on every click so keyboard shortcuts target the canvas.
-  const focusScript = `<script nonce="${nonce}">
-    (function () {
-      var grabFocus = function () { try { window.focus(); } catch (_) {} };
-      document.addEventListener('mousedown', grabFocus, true);
-      document.addEventListener('touchstart', grabFocus, true);
-      window.addEventListener('load', grabFocus);
-    })();
-  </script>`;
-  html = html.replace(/<\/body>/i, `${focusScript}</body>`);
-
-  return html;
-}
-
-function missingBundleHtml(): string {
-  return /* html */ `<!doctype html><html><body style="font-family: -apple-system, sans-serif; padding: 2rem;">
-    <h3 style="color: #c33;">Embed bundle not found</h3>
-    <p>Run <code>npm run build</code> in <code>arrows-code/apps/vscode-arrows/</code> first.</p>
-  </body></html>`;
 }

@@ -13,8 +13,6 @@ export interface ShouldEmitOutput {
 }
 
 export function shouldEmit(input: ShouldEmitInput): ShouldEmitOutput {
-  // Single source of truth for "user is mid-interaction" — adding a new transient
-  // state should mean editing isUserBusy in one place, not two.
   if (isUserBusy(input.state, !!input.isTyping)) {
     return { emit: false, serialized: input.lastSerialized };
   }
@@ -25,7 +23,13 @@ export function shouldEmit(input: ShouldEmitInput): ShouldEmitOutput {
   return { emit: true, serialized, graph };
 }
 
-function getPresentGraph(slice: unknown): unknown {
+export function getPresentGraph(slice: unknown): unknown {
   const wrapped = slice as { present?: unknown };
   return wrapped && typeof wrapped === 'object' && 'present' in wrapped ? wrapped.present : slice;
+}
+
+// Convenience: navigate from a top-level redux state to the present graph.
+export function presentGraphFromState(state: unknown): unknown {
+  const s = state as { graph?: unknown };
+  return getPresentGraph(s.graph);
 }
