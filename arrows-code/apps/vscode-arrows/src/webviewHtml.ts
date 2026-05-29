@@ -31,7 +31,6 @@ export function buildWebviewHtml(webview: vscode.Webview, embedDir: vscode.Uri):
   const toWebviewUri = (rel: string): string =>
     webview.asWebviewUri(vscode.Uri.joinPath(embedDir, rel)).toString();
   const nonce = randomBytes(16).toString('base64');
-  // <base> trailing slash is required so the browser appends path segments rather than replacing the last one.
   const baseHref = `${webview.asWebviewUri(embedDir).toString().replace(/\/?$/, '/')}`;
 
   html = html

@@ -30,16 +30,6 @@ const store = createStore(
   applyMiddleware(thunkMiddleware, embedViewportMiddleware, imageCacheMiddleware)
 );
 
-// Boot-time check: fail loudly if a web-app refactor breaks the assumed store shape.
-const _bootState = store.getState() as Record<string, unknown>;
-const _graph = _bootState['graph'] as { present?: { nodes?: unknown } } | undefined;
-if (!_graph || !_graph.present || !Array.isArray(_graph.present.nodes)) {
-  throw new Error('[arrows-embed] expected state.graph.present.nodes (array)');
-}
-if (!_bootState['viewTransformation']) {
-  throw new Error('[arrows-embed] expected state.viewTransformation slice');
-}
-
 const CHROME_PADDING = headerHeight + footerHeight + 2;
 const pushViewport = () => {
   store.dispatch(

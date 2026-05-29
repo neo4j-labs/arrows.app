@@ -6,7 +6,7 @@ import { useTool, type Tool } from '../store/ToolContext';
 import { shortcut } from '../interactions/platformKeys';
 import { EmbedActionMenu } from './EmbedActionMenu';
 import { Tooltip } from './Tooltip';
-import { EmbedShortcutsHelp } from './EmbedShortcutsHelp';
+import { EmbedShortcutsHelp, HELP_TOGGLE_KEY, isHelpToggle } from './EmbedShortcutsHelp';
 import { ignoreTarget } from '../../interactions/Keybindings';
 
 interface GraphSlice {
@@ -47,7 +47,7 @@ export function EmbedToolbar(): JSX.Element {
   useEffect(() => {
     const onKey = (e: KeyboardEvent): void => {
       if (ignoreTarget(e)) return;
-      if (e.key === '?' || (e.key === '/' && (e.metaKey || e.ctrlKey))) {
+      if (isHelpToggle(e)) {
         e.preventDefault();
         setHelpOpen((v) => !v);
       }
@@ -90,7 +90,7 @@ export function EmbedToolbar(): JSX.Element {
         </Button>
       </Tooltip>
       <span style={verticalDivider} />
-      <Tooltip label="Keyboard shortcuts (?)">
+      <Tooltip label={`Keyboard shortcuts (${HELP_TOGGLE_KEY})`}>
         <Button icon basic onClick={() => setHelpOpen(true)}>
           <Icon name="question circle outline" />
         </Button>

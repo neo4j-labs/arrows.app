@@ -25,7 +25,7 @@ const aside: React.CSSProperties = {
 const handle: React.CSSProperties = {
   position: 'absolute',
   left: -22,
-  top: 12,
+  bottom: 40,
   width: 22,
   height: 36,
   display: 'flex',

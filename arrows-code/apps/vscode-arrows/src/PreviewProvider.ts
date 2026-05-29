@@ -12,10 +12,26 @@ interface ActivePanel {
   requester: Requester;
 }
 
+let outputChannel: vscode.OutputChannel | undefined;
+const getOutputChannel = (): vscode.OutputChannel => {
+  if (!outputChannel) outputChannel = vscode.window.createOutputChannel('Arrows');
+  return outputChannel;
+};
+
 export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
   private static panels = new Map<string, ActivePanel>();
 
   constructor(private readonly context: vscode.ExtensionContext) {}
+
+  private static async waitForPanel(uriStr: string, timeoutMs = 5000): Promise<ActivePanel | undefined> {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const found = ArrowsPreviewProvider.panels.get(uriStr);
+      if (found) return found;
+      await new Promise((r) => setTimeout(r, 50));
+    }
+    return undefined;
+  }
 
   private static async requestFromWebview(
     uri: vscode.Uri,
@@ -23,10 +39,12 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
     failLabel: string,
     payload?: unknown
   ): Promise<string> {
-    let active = ArrowsPreviewProvider.panels.get(uri.toString());
+    const uriStr = uri.toString();
+    let active = ArrowsPreviewProvider.panels.get(uriStr);
     if (!active) {
+      // openWith may resolve before resolveCustomTextEditor registers the panel.
       await vscode.commands.executeCommand('vscode.openWith', uri, 'arrows.preview', { preserveFocus: false });
-      active = ArrowsPreviewProvider.panels.get(uri.toString());
+      active = await ArrowsPreviewProvider.waitForPanel(uriStr);
     }
     if (!active) throw new Error(`Canvas editor failed to open for ${failLabel} export.`);
     await active.ready;
@@ -136,7 +154,8 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
             return;
           }
           if (msg.type === 'embed-error') {
-            console.error('[arrows-embed]', msg.message, msg.error ?? msg.message);
+            const detail = msg.error ?? msg.message ?? '';
+            getOutputChannel().appendLine(`[embed-error] ${msg.message ?? ''} ${detail}`.trim());
             return;
           }
           if (

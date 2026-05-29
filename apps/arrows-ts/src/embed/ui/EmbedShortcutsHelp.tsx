@@ -10,6 +10,10 @@ import {
   REDO,
 } from '../../interactions/Keybindings';
 
+export const HELP_TOGGLE_KEY = '?';
+export const isHelpToggle = (e: KeyboardEvent): boolean =>
+  e.key === '?' || (e.key === '/' && (e.metaKey || e.ctrlKey));
+
 interface ShortcutRow {
   label: string;
   keys: string;
@@ -51,7 +55,7 @@ const GROUPS: Group[] = [
     rows: [
       { label: 'Show JSON side by side', keys: shortcut({ mod: 'cmd', key: 'K V' }) },
       { label: 'Auto-arrange nodes', keys: shortcut({ mod: 'shift+alt', key: 'F' }) },
-      { label: 'Show this help', keys: '?' },
+      { label: 'Show this help', keys: HELP_TOGGLE_KEY },
     ],
   },
 ];

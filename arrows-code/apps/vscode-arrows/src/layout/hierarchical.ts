@@ -1,12 +1,5 @@
-// Algorithm: longest-path layering (Sugiyama-style layered drawing, layer-assignment
-// step only) driven by Kahn's topological sort for cycle-safe ordering.
-// Cyclic graphs terminate: back-edges into already-layered nodes are ignored;
-// pure-cycle nodes land in an outer "leftover" layer.
-// References:
-//   Sugiyama et al., "Methods for visual understanding of hierarchical system
-//   structures", IEEE Trans. SMC, 1981.
-//   Kahn, "Topological sorting of large networks", CACM, 1962.
-//   https://en.wikipedia.org/wiki/Layered_graph_drawing
+// Sugiyama-style layered drawing via Kahn topo sort: https://en.wikipedia.org/wiki/Layered_graph_drawing
+// Cyclic-safe: back-edges into already-layered nodes are ignored; pure-cycle nodes land in a leftover layer.
 
 import type { LayoutFn } from './types';
 import { applyPositions, round1 } from './types';

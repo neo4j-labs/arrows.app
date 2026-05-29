@@ -7,10 +7,8 @@ import { resolve } from 'node:path';
 export default defineConfig({
   cacheDir: '../../node_modules/.vite/arrows-ts',
 
-  // BUILD_EMBED=1 enables the second entry used by the VS Code extension's bundle.
-  // Relative base + a <base href="..."> tag injected by webviewHtml lets all asset
-  // URLs (HTML script/style + JS-emitted via import.meta.url) resolve through the
-  // webview's asset server, since webviews have no public root.
+  // BUILD_EMBED=1: second entry for the VS Code webview. Relative base lets
+  // assets resolve through asWebviewUri (no public root in a webview).
   base: process.env.BUILD_EMBED === '1' ? './' : '/',
   build: {
     rollupOptions: {
@@ -21,7 +19,6 @@ export default defineConfig({
           }
         : { main: resolve(__dirname, 'index.html') },
     },
-    // Webview is local-only; eager modulepreload defeats the graphql lazy-load.
     modulePreload: process.env.BUILD_EMBED === '1' ? false : true,
   },
 
@@ -38,8 +35,19 @@ export default defineConfig({
 
   plugins: [
     react(),
-    viteTsConfigPaths({ root: '../../' }),
+    viteTsConfigPaths({
+      root: '../../',
+    }),
   ],
+
+  // Uncomment this if you are using workers.
+  // worker: {
+  //  plugins: [
+  //    viteTsConfigPaths({
+  //      root: '../../',
+  //    }),
+  //  ],
+  // },
 
   test: {
     globals: true,

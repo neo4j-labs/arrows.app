@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Form, Icon, TextArea, Message } from "semantic-ui-react";
 import { Base64 } from "js-base64";
+import exportGraphQL from "../graphql/exportGraphQL";
 
 class ExportGraphQLPanel extends Component {
   constructor(props) {
@@ -12,10 +13,8 @@ class ExportGraphQLPanel extends Component {
     this.exportToGraphQL = this.exportToGraphQL.bind(this);
   }
 
-  async exportToGraphQL() {
+  exportToGraphQL() {
     try {
-      const mod = await import("../graphql/exportGraphQL");
-      const exportGraphQL = mod.default || mod;
       const typeDefs = exportGraphQL(this.props.graph);
 
       this.setState({typeDefs});

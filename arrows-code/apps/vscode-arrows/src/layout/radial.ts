@@ -1,9 +1,4 @@
-// Algorithm: radial (concentric) tree layout. Root = highest-degree node at origin;
-// concentric rings hold nodes by BFS-distance from the root. Ring radius scales
-// with node count so chords don't collide.
-// Reference: Eades, "Drawing free trees", Bulletin of the Institute for
-// Combinatorics and its Applications, 1992; see also
-// https://en.wikipedia.org/wiki/Radial_tree
+// Radial tree, BFS-rings from highest-degree root: https://en.wikipedia.org/wiki/Radial_tree
 
 import type { LayoutFn } from './types';
 import { applyPositions, NODE_BODY_RADIUS, round1 } from './types';
