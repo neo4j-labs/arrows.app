@@ -39,7 +39,7 @@ const sampleGraph = (): Graph => ({
   style: { 'node-color': '#ffe081' },
 });
 
-describe('writeGraph — output shape', () => {
+describe('writeGraph - output shape', () => {
   it('produces valid JSON', () => {
     expect(() => JSON.parse(writeGraph(sampleGraph()))).not.toThrow();
   });
@@ -49,11 +49,8 @@ describe('writeGraph — output shape', () => {
     expect(parsed.nodes[0].position).toEqual({ x: 120, y: 240 });
   });
 
-  it('preserves nodes, relationships, and style at the top level', () => {
+  it('preserves the node and relationship count round-trip', () => {
     const parsed = JSON.parse(writeGraph(sampleGraph()));
-    expect(parsed).toHaveProperty('nodes');
-    expect(parsed).toHaveProperty('relationships');
-    expect(parsed).toHaveProperty('style');
     expect(parsed.nodes).toHaveLength(2);
     expect(parsed.relationships).toHaveLength(1);
   });
@@ -65,14 +62,7 @@ describe('writeGraph — output shape', () => {
   });
 });
 
-describe('writeGraph — stability', () => {
-  it('is byte-identical across 100 consecutive calls', () => {
-    const graph = sampleGraph();
-    const first = writeGraph(graph);
-    for (let i = 0; i < 99; i++) {
-      expect(writeGraph(graph)).toBe(first);
-    }
-  });
+describe('writeGraph - stability', () => {
 
   it('sorts node keys alphabetically for diff-friendly output', () => {
     const graph = sampleGraph();

@@ -5,7 +5,7 @@ import { apply } from './apply';
 
 const empty = (): Graph => ({ nodes: [], relationships: [], style: {} });
 
-describe('apply — node ops', () => {
+describe('apply - node ops', () => {
   it('addNode adds a node with the given id and position', () => {
     const { graph, errors } = apply(empty(), {
       type: 'addNode', id: 'n0', x: 10, y: 20, caption: 'A', labels: ['L'],
@@ -46,7 +46,7 @@ describe('apply — node ops', () => {
   });
 });
 
-describe('apply — relationships', () => {
+describe('apply - relationships', () => {
   it('addRelationship requires both endpoints', () => {
     const start = apply(empty(), { type: 'addNode', id: 'n0', x: 0, y: 0 }).graph;
     const { errors } = apply(start, { type: 'addRelationship', id: 'r0', fromId: 'n0', toId: 'ghost', relType: 'R' });
@@ -66,7 +66,7 @@ describe('apply — relationships', () => {
   });
 });
 
-describe('apply — immutability', () => {
+describe('apply - immutability', () => {
   it('does not mutate the input graph', () => {
     const start = apply(empty(), { type: 'addNode', id: 'n0', x: 0, y: 0 }).graph;
     const before = JSON.stringify(start);
@@ -87,7 +87,7 @@ describe('apply — immutability', () => {
   });
 });
 
-describe('apply — coverage of remaining op types', () => {
+describe('apply - coverage of remaining op types', () => {
   it('setPos sets absolute position (replaces, does not translate)', () => {
     const start = apply(empty(), { type: 'addNode', id: 'n0', x: 5, y: 5 }).graph;
     const { graph } = apply(start, { type: 'setPos', id: 'n0', x: 100, y: 200 });
@@ -187,7 +187,7 @@ describe('apply — coverage of remaining op types', () => {
   });
 });
 
-describe('apply — style ops', () => {
+describe('apply - style ops', () => {
   it('setStyle with id=null updates graph-level style', () => {
     const { graph } = apply(empty(), { type: 'setStyle', id: null, key: 'node-color', value: '#abc' });
     expect(graph.style['node-color']).toBe('#abc');

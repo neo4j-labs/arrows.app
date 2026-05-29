@@ -129,7 +129,17 @@ function mapRel(graph: Graph, id: string, fn: (r: Relationship) => Relationship)
 }
 
 function mapEntity(graph: Graph, id: string, fn: <T extends Node | Relationship>(e: T) => T): Graph {
-  if (graph.nodes.some((n) => n.id === id)) return mapNode(graph, id, fn);
-  if (graph.relationships.some((r) => r.id === id)) return mapRel(graph, id, fn);
+  const nodeIdx = graph.nodes.findIndex((n) => n.id === id);
+  if (nodeIdx !== -1) {
+    const nodes = [...graph.nodes];
+    nodes[nodeIdx] = fn(nodes[nodeIdx]);
+    return { ...graph, nodes };
+  }
+  const relIdx = graph.relationships.findIndex((r) => r.id === id);
+  if (relIdx !== -1) {
+    const rels = [...graph.relationships];
+    rels[relIdx] = fn(rels[relIdx]);
+    return { ...graph, relationships: rels };
+  }
   throw new Error(`Entity ${id} not found`);
 }

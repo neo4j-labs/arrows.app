@@ -91,7 +91,7 @@ function checkRequiredFields(graph: Graph): Diagnostic[] {
       diagnostics.push({
         severity: 'error',
         code: CODES.emptyRequired,
-        message: `Relationship ${rel.id ?? '<no id>'} missing required field(s) — id/fromId/toId/type`,
+        message: `Relationship ${rel.id ?? '<no id>'} missing required field(s) - id/fromId/toId/type`,
         anchor: { kind: 'relationship', id: rel.id },
       });
     }

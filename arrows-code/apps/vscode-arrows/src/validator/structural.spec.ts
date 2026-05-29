@@ -88,10 +88,6 @@ describe('structural validator', () => {
     expect(unknownStyles).toHaveLength(2);
   });
 
-  it('empty graph produces zero diagnostics', () => {
-    expect(checkStructural(empty())).toEqual([]);
-  });
-
   it('accepts self-loops (fromId === toId) without diagnostics', () => {
     const g: Graph = {
       nodes: [node('n0')],

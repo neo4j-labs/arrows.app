@@ -28,7 +28,7 @@ export function readGraph(text: string): ReadResult {
     });
   }
 
-  if (parsed === null || parsed === undefined) {
+  if (parsed === null) {
     return { graph: { nodes: [], relationships: [], style: {} }, diagnostics: [] };
   }
 
@@ -40,14 +40,7 @@ export function readGraph(text: string): ReadResult {
     });
   }
 
-  const rawGraph: unknown = isRecord(parsed['graph']) ? parsed['graph'] : parsed;
-  if (!isRecord(rawGraph)) {
-    return emptyResult({
-      severity: 'error',
-      code: CODES.invalidShape,
-      message: 'Graph must be an object with nodes and relationships',
-    });
-  }
+  const rawGraph: Record<string, unknown> = isRecord(parsed['graph']) ? parsed['graph'] : parsed;
 
   const diagnostics: ReadDiagnostic[] = [];
   const nodes = readNodes(rawGraph['nodes'], diagnostics);

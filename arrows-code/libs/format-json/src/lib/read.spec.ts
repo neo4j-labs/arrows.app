@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { Point } from '@neo4j-arrows/model';
 import { readGraph } from './read';
 
-describe('readGraph — structural shape', () => {
+describe('readGraph - structural shape', () => {
   it('reads an empty graph stub into a Graph with no nodes or relationships', () => {
     const json = JSON.stringify({ nodes: [], relationships: [], style: {} });
     const { graph, diagnostics } = readGraph(json);
@@ -122,7 +122,7 @@ describe('readGraph — structural shape', () => {
   });
 });
 
-describe('readGraph — non-array nodes', () => {
+describe('readGraph - non-array nodes', () => {
   it('emits an invalid-shape diagnostic when nodes is a string instead of an array', () => {
     const { graph, diagnostics } = readGraph(
       JSON.stringify({ nodes: 'bad', relationships: [], style: {} }),
@@ -132,7 +132,7 @@ describe('readGraph — non-array nodes', () => {
   });
 });
 
-describe('readGraph — malformed input', () => {
+describe('readGraph - malformed input', () => {
   it('returns an empty graph with an error diagnostic on invalid JSON', () => {
     const { graph, diagnostics } = readGraph('not json {');
 
@@ -150,7 +150,7 @@ describe('readGraph — malformed input', () => {
     expect(diagnostics.some((d) => d.code === 'format-json.invalid-shape')).toBe(true);
   });
 
-  it('never throws — even on null', () => {
+  it('never throws - even on null', () => {
     expect(() => readGraph('null')).not.toThrow();
   });
 
