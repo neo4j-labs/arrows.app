@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- arrows.app logo — outline variant for the VS Code activity bar.
+<!-- arrows.app logo - outline variant for the VS Code activity bar.
      Original paths from apps/arrows-ts/public/arrows_logo.svg rendered as
      thin strokes (no fill) so the icon reads slick against the activity bar,
      same shape as the marketing logo, currentColor-tinted by VS Code. -->

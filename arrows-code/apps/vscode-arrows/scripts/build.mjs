@@ -11,7 +11,7 @@ const extRoot = resolve(__dirname, '..');
 const repoRoot = resolve(extRoot, '..', '..', '..');
 
 console.log('▸ building arrows-ts (embed entry)…');
-// --emptyOutDir: Vite preserves prior outputs by default — stale hashed bundles bloat the .vsix.
+// --emptyOutDir: Vite preserves prior outputs by default - stale hashed bundles bloat the .vsix.
 execSync('npx vite build --outDir ../../dist/apps/arrows-ts --emptyOutDir', {
   cwd: resolve(repoRoot, 'apps/arrows-ts'),
   stdio: 'inherit',
@@ -21,7 +21,7 @@ execSync('npx vite build --outDir ../../dist/apps/arrows-ts --emptyOutDir', {
 const embedSrc = resolve(repoRoot, 'dist/apps/arrows-ts');
 const embedDst = resolve(extRoot, 'media/embed');
 if (!existsSync(resolve(embedSrc, 'embed.html'))) {
-  throw new Error(`embed.html missing at ${embedSrc} — arrows-ts build did not produce it`);
+  throw new Error(`embed.html missing at ${embedSrc} - arrows-ts build did not produce it`);
 }
 if (existsSync(embedDst)) rmSync(embedDst, { recursive: true, force: true });
 cpSync(embedSrc, embedDst, { recursive: true });
@@ -42,7 +42,7 @@ function rewriteCssAssetUrls(dir) {
 rewriteCssAssetUrls(resolve(embedDst, 'assets'));
 console.log('▸ rewrote absolute /assets/ URLs in embed CSS to relative');
 
-// Strip dead weight from the Semantic UI fonts/icons:
+// Drop unused Semantic UI font files (brand-icons + alt formats kept for IE/legacy browsers).
 import { unlinkSync } from 'node:fs';
 function stripDeadFontAssets(dir) {
   const drop = [];
@@ -58,15 +58,14 @@ function stripDeadFontAssets(dir) {
 const droppedFontFiles = stripDeadFontAssets(resolve(embedDst, 'assets'));
 console.log(`▸ stripped ${droppedFontFiles} unused Semantic UI font assets (brand-icons + .eot/.ttf/.svg)`);
 
-// Also strip the @font-face src URLs we just deleted 
-
+// Remove @font-face src entries that point at files dropped above.
 function stripDeadFontReferences(dir) {
   for (const name of readdirSync(dir)) {
     const full = join(dir, name);
     if (statSync(full).isDirectory()) { stripDeadFontReferences(full); continue; }
     if (!name.endsWith('.css')) continue;
     const text = readFileSync(full, 'utf8');
-    // Drop entire @font-face blocks whose ONLY src references vanished files
+    // Drop url() entries whose target was removed.
     const rewritten = text
       .replace(/url\(\.\/brand-icons-[^)]+\)\s+format\([^)]+\),?\s*/g, '')
       .replace(/url\(\.\/(outline-)?icons-[^)]+\.(eot|ttf|svg)[^)]*\)\s+format\([^)]+\),?\s*/g, '')

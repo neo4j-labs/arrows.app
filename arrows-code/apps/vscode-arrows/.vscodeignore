@@ -1,4 +1,4 @@
-# Source — only the bundled dist/ ships
+# Source - only the bundled dist/ ships
 src/**
 tests/**
 scripts/**
@@ -26,5 +26,5 @@ dist/commands-test-runner/**
 .DS_Store
 **/*.map
 
-# README references screenshots via absolute GitHub URLs — no need to ship them.
+# README references screenshots via absolute GitHub URLs - no need to ship them.
 media/screenshots/**

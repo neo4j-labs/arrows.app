@@ -6,7 +6,7 @@ import { defineConfig, devices } from '@playwright/test';
  * stream the bridge emits, and asserts on user-visible outcomes after real
  * mouse interactions on the canvas.
  *
- * Tests run against the arrows-ts Vite dev server (port 4200) — the same one
+ * Tests run against the arrows-ts Vite dev server (port 4200) - the same one
  * `nx serve arrows-ts` starts. The server is launched automatically below.
  */
 export default defineConfig({

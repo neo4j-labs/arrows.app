@@ -138,7 +138,7 @@
     "commands-test": "node scripts/commands-test.mjs",
     "e2e": "playwright test -c tests/playwright.config.ts",
     "package": "npm run build && npm run test && npm run commands-test && vsce package --no-dependencies -o dist/arrows-code-vscode-arrows.vsix",
-    "install:local": "npm run build && vsce package --no-dependencies -o dist/arrows-code-vscode-arrows.vsix && code --install-extension dist/arrows-code-vscode-arrows.vsix --force && echo '\\n[install:local] DONE. In VS Code: Cmd+Shift+P → Developer: Reload Window (or close every VS Code window and reopen — extension host caches across reloads).'"
+    "install:local": "npm run build && vsce package --no-dependencies -o dist/arrows-code-vscode-arrows.vsix && code --install-extension dist/arrows-code-vscode-arrows.vsix --force && echo '\\n[install:local] DONE. In VS Code: Cmd+Shift+P → Developer: Reload Window (or close every VS Code window and reopen - extension host caches across reloads).'"
   },
   "dependencies": {
     "@arrows-code/format-json": "*"

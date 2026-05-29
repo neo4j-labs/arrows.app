@@ -178,7 +178,7 @@ exports.run = async function () {
   if (failures.length) {
     throw new Error(failures.length + ' check(s) failed:\\n  - ' + failures.join('\\n  - '));
   }
-  console.log('[commands-test] PASS — all command checks green');
+  console.log('[commands-test] PASS - all command checks green');
 };
 `,
 );
