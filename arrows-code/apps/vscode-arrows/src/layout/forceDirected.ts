@@ -1,6 +1,9 @@
-// Force-directed layout (Eades / Fruchterman-Reingold style) with a hard-collision
-// pass that uses per-node effective radii (caption + labels + properties).
-// Deterministic: identical input ⇒ identical output.
+// Algorithm: Fruchterman-Reingold force-directed graph drawing
+// (Fruchterman & Reingold, "Graph Drawing by Force-directed Placement", 1991).
+// Inverse-square repulsion + linear spring attraction, cooled per iteration,
+// then a hard-collision pass using per-node effective radii (caption + labels +
+// properties). Deterministic: identical input -> identical output.
+// Reference: https://en.wikipedia.org/wiki/Force-directed_graph_drawing
 
 import type { LayoutFn } from './types';
 import { applyPositions, effectiveRadius, round1 } from './types';

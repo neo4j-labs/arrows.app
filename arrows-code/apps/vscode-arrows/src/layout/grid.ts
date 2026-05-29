@@ -1,5 +1,7 @@
-// Square grid layout. Cells are nodes sorted by id, packed row-by-row in a
-// roughly-square shape. Cheap visual reset for graphs that need a clean slate.
+// Algorithm: square-packed grid. Nodes sorted by id, placed row-by-row in a
+// ceil(sqrt(n))-wide grid - the standard "square packing" reset used by most
+// graph editors (yEd, Gephi, Cytoscape grid layout).
+// Reference: https://js.cytoscape.org/#layouts/grid
 
 import type { LayoutFn } from './types';
 import { applyPositions, round1 } from './types';
