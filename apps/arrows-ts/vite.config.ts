@@ -8,6 +8,10 @@ export default defineConfig({
   cacheDir: '../../node_modules/.vite/arrows-ts',
 
   // BUILD_EMBED=1 enables the second entry used by the VS Code extension's bundle.
+  // Relative base + a <base href="..."> tag injected by webviewHtml lets all asset
+  // URLs (HTML script/style + JS-emitted via import.meta.url) resolve through the
+  // webview's asset server, since webviews have no public root.
+  base: process.env.BUILD_EMBED === '1' ? './' : '/',
   build: {
     rollupOptions: {
       input: process.env.BUILD_EMBED === '1'
