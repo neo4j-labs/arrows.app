@@ -66,15 +66,10 @@ function examplesRoot(context: vscode.ExtensionContext): string {
 
 function listExamples(context: vscode.ExtensionContext): ExampleInfo[] {
   const dir = examplesDir(context);
-  try {
-    return readdirSync(dir.fsPath)
-      .filter((n) => n.endsWith('.arrows'))
-      .sort()
-      .map((name) => ({ label: name.replace(/\.arrows$/, ''), uri: vscode.Uri.joinPath(dir, name) }));
-  } catch (error) {
-    process.stderr.write(`[arrows] listExamples failed: ${msg(error)}\n`);
-    return [];
-  }
+  return readdirSync(dir.fsPath)
+    .filter((n) => n.endsWith('.arrows'))
+    .sort()
+    .map((name) => ({ label: name.replace(/\.arrows$/, ''), uri: vscode.Uri.joinPath(dir, name) }));
 }
 
 async function copyExampleToWorkspace(source: vscode.Uri): Promise<void> {
@@ -112,7 +107,7 @@ export function makeNewFromExample(context: vscode.ExtensionContext) {
       if (!pick) return;
       source = pick.uri;
     }
-    // Restrict to bundled examples — command is publicly invocable.
+    // Restrict to bundled examples - command is publicly invocable.
     if (!source.fsPath.startsWith(examplesRoot(context))) {
       void vscode.window.showErrorMessage('Arrows: only bundled examples may be used as templates.');
       return;
@@ -194,4 +189,28 @@ export async function deleteFile(arg?: unknown): Promise<void> {
   } catch (error) {
     void vscode.window.showErrorMessage(`Arrows: failed to delete ${uri.fsPath}: ${msg(error)}`);
   }
+}
+
+const TUTORIAL_URL = 'https://www.youtube.com/watch?v=ZHJ-BrKJ8A4';
+
+const ALLOWED_HOSTS = new Set([
+  'neo4j.com',
+  'feedback.neo4j.com',
+  'www.youtube.com',
+  'youtube.com',
+  'github.com',
+]);
+
+export async function openTutorial(): Promise<void> {
+  await openExternalUrl(TUTORIAL_URL);
+}
+
+export async function openExternalUrl(rawUrl: unknown): Promise<void> {
+  if (typeof rawUrl !== 'string') return;
+  const uri = vscode.Uri.parse(rawUrl);
+  if (uri.scheme !== 'https' || !ALLOWED_HOSTS.has(uri.authority)) {
+    void vscode.window.showWarningMessage(`Arrows: refusing to open ${uri.authority || rawUrl}.`);
+    return;
+  }
+  await vscode.env.openExternal(uri);
 }

@@ -4,7 +4,6 @@ import {
   cypherClauseItems,
   LAST_CYPHER_CLAUSE_KEY,
   type CypherClause,
-  type CypherClauseItem,
 } from '../cypherClause';
 import { ArrowsPreviewProvider } from '../PreviewProvider';
 import { msg, resolveDocument, saveExport } from './helpers';
@@ -49,7 +48,7 @@ async function pickCypherClause(
     title: 'Cypher clause',
     placeHolder: 'Pick a clause',
     matchOnDetail: true,
-    ...(active ? ({ activeItem: active } as { activeItem: CypherClauseItem }) : {}),
+    ...(active ? { activeItem: active } : {}),
   });
   if (!pick) return undefined;
   await context.workspaceState.update(LAST_CYPHER_CLAUSE_KEY, pick.clause);
@@ -94,7 +93,7 @@ export async function openInArrowsApp(arg?: unknown): Promise<void> {
   if (!document) return;
   const { graph, diagnostics } = readGraph(document.getText());
   if (diagnostics.some((d) => d.severity === 'error')) {
-    void vscode.window.showWarningMessage('Arrows: cannot share — document does not parse cleanly.');
+    void vscode.window.showWarningMessage('Arrows: cannot share - document does not parse cleanly.');
     return;
   }
   const json = writeGraph(graph);

@@ -28,7 +28,7 @@ export function makeValidate(diagnostics: vscode.DiagnosticCollection) {
     void vscode.window.showInformationMessage(
       vscDiags.length === 0
         ? 'Arrows: no issues found.'
-        : `Arrows: ${vscDiags.length} issue(s) — see Problems panel.`
+        : `Arrows: ${vscDiags.length} issue(s) - see Problems panel.`
     );
   };
 }

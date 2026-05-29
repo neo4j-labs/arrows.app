@@ -91,7 +91,7 @@ export async function applyOpsToDocument(
   const { graph, diagnostics } = readGraph(document.getText());
   if (diagnostics.some((d) => d.severity === 'error')) {
     await vscode.window.showWarningMessage(
-      'Arrows: cannot apply edit — document does not parse cleanly.'
+      'Arrows: cannot apply edit - document does not parse cleanly.'
     );
     return false;
   }
