@@ -15,7 +15,7 @@ export function cypherClauseItems(last: unknown): {
   const items: CypherClauseItem[] = [
     { label: 'CREATE', clause: 'CREATE', detail: 'Insert nodes and relationships' },
     { label: 'MATCH',  clause: 'MATCH',  detail: 'Read pattern for query authoring' },
-    { label: 'MERGE',  clause: 'MERGE',  detail: 'Upsert — match-or-create on the key' },
+    { label: 'MERGE',  clause: 'MERGE',  detail: 'Upsert - match-or-create on the key' },
   ];
   const lastClause: CypherClause =
     last === 'CREATE' || last === 'MATCH' || last === 'MERGE' ? last : 'CREATE';

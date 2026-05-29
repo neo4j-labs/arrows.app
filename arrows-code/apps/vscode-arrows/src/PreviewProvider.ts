@@ -4,8 +4,7 @@ import { embedMenuPayload, webviewAllowedCommandIds } from './commandsCatalog';
 import { makeRequester, type Requester } from './webviewRequest';
 import { buildWebviewHtml } from './webviewHtml';
 import { msg, replaceDocumentText } from './commands/helpers';
-
-const TOOLBAR_COMMANDS = webviewAllowedCommandIds;
+import { openExternalUrl } from './commands';
 
 interface ActivePanel {
   panel: vscode.WebviewPanel;
@@ -62,8 +61,7 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
 
     // Serialize applyEdit so rapid webview emits don't race on the doc range.
     let applyChain: Promise<unknown> = Promise.resolve();
-    let webviewReady = false;
-    let pendingLoad: { graph: unknown; docVersion: number } | null = null;
+    let disposed = false;
 
     let resolveReady!: () => void;
     const readyPromise = new Promise<void>((r) => {
@@ -77,32 +75,30 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
 
     const menuPayload = embedMenuPayload();
 
-    const sendLoad = (): void => {
+    const sendLoad = async (): Promise<void> => {
       const { graph, diagnostics } = readGraph(document.getText());
       // Half-parsed JSON would blank the canvas; wait for valid text.
       if (diagnostics.some((d) => d.severity === 'error')) return;
-      const payload = {
+      await readyPromise;
+      void panel.webview.postMessage({
         type: 'load',
         graph,
         docVersion: document.version,
         menu: menuPayload,
-      };
-      if (webviewReady) {
-        void panel.webview.postMessage(payload);
-      } else {
-        pendingLoad = payload;
-      }
+      });
     };
 
     const applyGraphFromWebview = (graph: unknown): Promise<void> => {
-      const task = async (): Promise<void> => {
-        const nextText = writeGraph(graph as ReturnType<typeof readGraph>['graph']);
-        if (document.getText() === nextText) return;
-        await replaceDocumentText(document, nextText);
-      };
-      // Tail .catch keeps the chain alive if `task` throws (vs. just returning false).
-      const next = applyChain.then(task, task).catch((err) => {
-        void vscode.window.showErrorMessage(`Arrows: edit error: ${msg(err)}`);
+      const next = applyChain.then(async () => {
+        if (disposed) return;
+        try {
+          const nextText = writeGraph(graph as ReturnType<typeof readGraph>['graph']);
+          if (document.getText() === nextText) return;
+          await replaceDocumentText(document, nextText);
+        } catch (err) {
+          if (disposed) return;
+          void vscode.window.showErrorMessage(`Arrows: edit error: ${msg(err)}`);
+        }
       });
       applyChain = next;
       return next;
@@ -113,7 +109,7 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
       vscode.workspace.onDidChangeTextDocument((e) => {
         if (e.document.uri.toString() !== document.uri.toString()) return;
         // Bridge drops own-echoes; genuine external edits get applied.
-        sendLoad();
+        void sendLoad();
       }),
       panel.webview.onDidReceiveMessage(
         (msg: {
@@ -123,16 +119,12 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
           requestId?: string;
           result?: string;
           error?: string;
+          url?: string;
+          message?: string;
         }) => {
           if (msg.type === 'ready') {
-            webviewReady = true;
             resolveReady();
-            if (pendingLoad) {
-              void panel.webview.postMessage(pendingLoad);
-              pendingLoad = null;
-            } else {
-              sendLoad();
-            }
+            void sendLoad();
             return;
           }
           if (msg.type === 'graph-changed' && msg.graph) {
@@ -143,17 +135,26 @@ export class ArrowsPreviewProvider implements vscode.CustomTextEditorProvider {
             requester.resolve(msg.requestId, msg.result, msg.error);
             return;
           }
+          if (msg.type === 'embed-error') {
+            console.error('[arrows-embed]', msg.message, msg.error ?? msg.message);
+            return;
+          }
           if (
             msg.type === 'command' &&
             typeof msg.name === 'string' &&
-            TOOLBAR_COMMANDS.has(msg.name)
+            webviewAllowedCommandIds.has(msg.name)
           ) {
             void vscode.commands.executeCommand(msg.name, document.uri);
+            return;
+          }
+          if (msg.type === 'open-external' && typeof msg.url === 'string') {
+            void openExternalUrl(msg.url);
           }
         }
       )
     );
     panel.onDidDispose(() => {
+      disposed = true;
       ArrowsPreviewProvider.panels.delete(uriStr);
       requester.rejectAll(new Error('Canvas editor closed during export.'));
       subs.forEach((d) => d.dispose());

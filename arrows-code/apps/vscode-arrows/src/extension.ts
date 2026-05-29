@@ -16,6 +16,7 @@ import {
   openFile,
   openPreviewToSide,
   openSource,
+  openTutorial,
   renameLabel,
   renameRelType,
 } from './commands';
@@ -49,7 +50,8 @@ export function activate(context: vscode.ExtensionContext): void {
     cmd('arrows.openInArrowsApp', openInArrowsApp),
     cmd('arrows.renameLabel', renameLabel),
     cmd('arrows.renameRelType', renameRelType),
-    cmd('arrows.deleteFile', deleteFile)
+    cmd('arrows.deleteFile', deleteFile),
+    cmd('arrows.openTutorial', openTutorial)
   );
 
   registerSidebar(context);

@@ -30,7 +30,7 @@ export function applyPositions(
   };
 }
 
-/** 1dp rounding — stable JSON diffs, no 12-digit floats. */
+/** 1dp rounding - stable JSON diffs, no 12-digit floats. */
 export function round1(value: number): number {
   return Math.round(value * 10) / 10;
 }

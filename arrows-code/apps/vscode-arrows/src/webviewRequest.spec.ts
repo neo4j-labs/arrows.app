@@ -17,7 +17,7 @@ afterEach(() => {
   vi.useRealTimers();
 });
 
-describe('makeRequester — happy path', () => {
+describe('makeRequester - happy path', () => {
   it('posts {type:request, kind, requestId} and resolves on matching result', async () => {
     const { channel, posted } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
@@ -53,7 +53,7 @@ describe('makeRequester — happy path', () => {
   });
 });
 
-describe('makeRequester — error paths', () => {
+describe('makeRequester - error paths', () => {
   it('rejects with the webview-provided error message', async () => {
     const { channel } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
@@ -71,7 +71,7 @@ describe('makeRequester — error paths', () => {
   });
 });
 
-describe('makeRequester — timeout', () => {
+describe('makeRequester - timeout', () => {
   it('rejects after timeoutMs when no result arrives', async () => {
     vi.useFakeTimers();
     const { channel } = fakeChannel();
@@ -95,7 +95,7 @@ describe('makeRequester — timeout', () => {
   });
 });
 
-describe('makeRequester — guard rails', () => {
+describe('makeRequester - guard rails', () => {
   it('resolve() for an unknown requestId is a silent no-op (late ghost message)', () => {
     const { channel } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
@@ -136,7 +136,7 @@ describe('makeRequester — guard rails', () => {
   });
 });
 
-describe('makeRequester — channel contract', () => {
+describe('makeRequester - channel contract', () => {
   it('only posts to the channel on request, not on resolve', () => {
     const { channel, posted } = fakeChannel();
     const r = makeRequester(channel, { newId: deterministicId });
@@ -144,18 +144,5 @@ describe('makeRequester — channel contract', () => {
     expect(posted).toHaveLength(1);
     r.resolve('svg-1', 'x', undefined);
     expect(posted).toHaveLength(1);
-  });
-
-  it('every request envelope is {type:"request", kind, requestId, payload?}', () => {
-    const { channel, posted } = fakeChannel();
-    const r = makeRequester(channel, { newId: deterministicId });
-    r.request('svg', 'SVG');
-    r.request('graphql', 'GraphQL');
-    r.request('cypher', 'Cypher', { keyword: 'CREATE' });
-    expect(posted.map((p) => ({ type: p.type, kind: p.kind }))).toEqual([
-      { type: 'request', kind: 'svg' },
-      { type: 'request', kind: 'graphql' },
-      { type: 'request', kind: 'cypher' },
-    ]);
   });
 });

@@ -1,4 +1,4 @@
-// Single source of truth for the command surface — read by PreviewProvider's
+// Single source of truth for the command surface - read by PreviewProvider's
 // allowlist, sidebar quick actions, and the embed dropdown.
 
 export interface ArrowsCommand {
@@ -123,6 +123,14 @@ export const COMMANDS: ArrowsCommand[] = [
     description: 'Rename a relationship type everywhere',
     webview: true,
     surface: { sidebar: false, embedMenu: true },
+  },
+  {
+    id: 'arrows.openTutorial',
+    title: 'Watch tutorial',
+    icon: 'play',
+    description: 'Open the arrows.app intro video in your browser',
+    webview: true,
+    surface: { sidebar: false, embedMenu: false },
   },
 ];
 

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { cypherClauseItems } from './cypherClause';
 
-describe('cypherClauseItems — pure picker logic', () => {
+describe('cypherClauseItems - pure picker logic', () => {
   it('returns the three Cypher clauses in canonical order', () => {
     const { items } = cypherClauseItems(undefined);
     expect(items.map((i) => i.clause)).toEqual(['CREATE', 'MATCH', 'MERGE']);
@@ -31,7 +31,7 @@ describe('cypherClauseItems — pure picker logic', () => {
     expect(cypherClauseItems('CREATE').active?.clause).toBe('CREATE');
   });
 
-  it('active is always one of items (referential — same object identity)', () => {
+  it('active is always one of items (referential - same object identity)', () => {
     const { items, active } = cypherClauseItems('MERGE');
     expect(items).toContain(active);
   });

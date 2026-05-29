@@ -101,7 +101,7 @@ export class ArrowsTreeDataProvider implements vscode.TreeDataProvider<Item> {
     if (parent.section === 'workspace') {
       const files = await vscode.workspace.findFiles('**/*.arrows', WORKSPACE_EXCLUDE, 200);
       if (files.length === 0) {
-        return [{ kind: 'empty', label: 'No .arrows files yet — try Quick actions → New graph' }];
+        return [{ kind: 'empty', label: 'No .arrows files yet - try Quick actions → New graph' }];
       }
       files.sort((a, b) => a.fsPath.localeCompare(b.fsPath));
       return files.map((uri) => ({
@@ -110,7 +110,6 @@ export class ArrowsTreeDataProvider implements vscode.TreeDataProvider<Item> {
         uri,
       }));
     }
-    // examples
     if (!existsSync(this.examplesDir)) {
       return [{ kind: 'empty', label: 'Examples not bundled with this build' }];
     }

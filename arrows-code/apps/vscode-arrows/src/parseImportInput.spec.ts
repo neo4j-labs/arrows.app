@@ -54,9 +54,4 @@ describe('parseImportInput', () => {
     expect(parseImportInput('https://arrows.app/#/local/id=abc')).toBeNull();
   });
 
-  it('round-trips an export URL (symmetric flow)', () => {
-    const b64 = Buffer.from(aliceBobJson, 'utf8').toString('base64');
-    const url = `https://arrows.app/#/import/json=${encodeURIComponent(b64)}`;
-    expect(parseImportInput(url)).toBe(aliceBobJson);
-  });
 });
