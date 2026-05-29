@@ -1,6 +1,6 @@
-import { Modal, Table, Header } from 'semantic-ui-react';
-import { shortcut } from './platformKeys';
-// @ts-expect-error JS module without .d.ts.
+import { Modal, Table, Header, Button, Icon } from 'semantic-ui-react';
+import { shortcut } from '../interactions/platformKeys';
+import { postToHost } from '../bridge/hostPost';
 import {
   getKeybindingString,
   DELETE_SELECTION,
@@ -8,7 +8,7 @@ import {
   SELECT_ALL,
   UNDO,
   REDO,
-} from '../interactions/Keybindings';
+} from '../../interactions/Keybindings';
 
 interface ShortcutRow {
   label: string;
@@ -20,8 +20,8 @@ interface Group {
   rows: ShortcutRow[];
 }
 
-// Reads keys for actions the web app already binds — staying in sync if those bindings change.
-const bound = (name: string): string => getKeybindingString(name) as string;
+// Reads keys for actions the web app already binds - staying in sync if those bindings change.
+const bound = (name: string): string => getKeybindingString(name);
 
 const GROUPS: Group[] = [
   {
@@ -84,6 +84,15 @@ export function EmbedShortcutsHelp({ open, onClose }: Props): JSX.Element {
           </div>
         ))}
       </Modal.Content>
+      <Modal.Actions>
+        <Button onClick={() => {
+          postToHost({ type: 'command', name: 'arrows.openTutorial' });
+          onClose();
+        }}>
+          <Icon name="play" /> Watch tutorial
+        </Button>
+        <Button primary onClick={onClose}>Close</Button>
+      </Modal.Actions>
     </Modal>
   );
 }

@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 // @ts-expect-error JS module without .d.ts.
-import { ignoreTarget } from '../interactions/Keybindings';
-import { useTool } from './ToolContext';
+import { ignoreTarget } from '../../interactions/Keybindings';
+import { useTool } from '../store/ToolContext';
 import { resolveToolShortcut } from './panInteraction';
 
 // V → select, H → pan, Space → temporary pan. Capture phase because arrows.app's

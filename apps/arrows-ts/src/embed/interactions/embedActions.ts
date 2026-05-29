@@ -1,11 +1,11 @@
-import { Point } from '../model/Point';
-import type { AppDispatch, ThunkAction } from './store';
+import { Point } from '../../model/Point';
+import type { AppDispatch, ThunkAction } from '../store/store';
 // @ts-expect-error JS modules without .d.ts.
-import { getPresentGraph, getVisualGraph } from '../selectors';
+import { getPresentGraph, getVisualGraph } from '../../selectors';
 // @ts-expect-error JS module.
-import { activateEditing, toggleSelection } from '../actions/selection';
+import { activateEditing, toggleSelection } from '../../actions/selection';
 // @ts-expect-error JS module.
-import { nextAvailableId } from '../model/Id';
+import { nextAvailableId } from '../../model/Id';
 
 export type HitResult =
   | { kind: 'none' }

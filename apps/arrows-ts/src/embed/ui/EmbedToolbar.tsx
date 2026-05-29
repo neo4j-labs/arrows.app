@@ -2,13 +2,12 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { ActionCreators as UndoActionCreators } from 'redux-undo';
 import { Button, Icon } from 'semantic-ui-react';
-import { useTool, type Tool } from './ToolContext';
-import { shortcut } from './platformKeys';
+import { useTool, type Tool } from '../store/ToolContext';
+import { shortcut } from '../interactions/platformKeys';
 import { EmbedActionMenu } from './EmbedActionMenu';
 import { Tooltip } from './Tooltip';
 import { EmbedShortcutsHelp } from './EmbedShortcutsHelp';
-// @ts-expect-error JS module without .d.ts.
-import { ignoreTarget } from '../interactions/Keybindings';
+import { ignoreTarget } from '../../interactions/Keybindings';
 
 interface GraphSlice {
   past?: unknown[];

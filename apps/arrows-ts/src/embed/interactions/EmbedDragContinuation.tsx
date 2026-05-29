@@ -1,11 +1,11 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
-import { Point } from '../model/Point';
-import { Vector } from '../model/Vector';
+import { Point } from '../../model/Point';
+import { Vector } from '../../model/Vector';
 import { firstCanvas } from './canvasPos';
-import { useAppDispatch } from './store';
+import { useAppDispatch } from '../store/store';
 // @ts-expect-error JS module without .d.ts.
-import { mouseMove } from '../actions/mouse';
+import { mouseMove } from '../../actions/mouse';
 
 // Suppresses arrows.app's mouseleave-ends-drag so drags continue off-canvas,
 // and auto-pans the viewport when the cursor is past the edge.

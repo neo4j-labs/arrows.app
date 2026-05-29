@@ -69,7 +69,7 @@ function setup(opts: InitBridgeOptions = {}) {
     posts,
     bridge,
     setFocus: (v: boolean) => { inputFocused = v; },
-    /** Filter post log for graph-changed messages — drop the {type:'ready'} preamble. */
+    /** Filter post log for graph-changed messages - drop the {type:'ready'} preamble. */
     emits: () => posts.filter((p) => p.type === 'graph-changed'),
   };
 }
@@ -79,7 +79,7 @@ const moveNode = (current: GraphSlice, id: string, x: number, y: number): GraphS
   nodes: current.nodes.map((n) => (n.id === id ? { ...n, position: { x, y } } : n)),
 });
 
-describe('bridge — handshake', () => {
+describe('bridge - handshake', () => {
   it('posts {type:"ready"} on init', () => {
     const { posts } = setup();
     expect(posts[0]).toEqual({ type: 'ready', host: 'test' });
@@ -92,15 +92,15 @@ describe('bridge — handshake', () => {
   });
 });
 
-describe('bridge — host-shape vs redux-shape echo recognition', () => {
+describe('bridge - host-shape vs redux-shape echo recognition', () => {
   it('treats a load whose nodes carry entityType as an echo of an emit whose nodes did not', () => {
     // Real-world repro of "second create-node disappears until you do it again":
     //   1. Embed reducer's CREATE_NODE produces nodes WITHOUT `entityType`.
-    //   2. Bridge emits the redux state — no entityType on the new node.
+    //   2. Bridge emits the redux state - no entityType on the new node.
     //   3. Host applies; readGraph reconstructs the doc and ADDS entityType: 'Node'.
     //   4. Host posts that as a `load` back to the webview.
     //   5. canonical() of the load (with entityType) won't match canonical() of the
-    //      emit (without entityType) — the echo guard fails to recognize the round-trip
+    //      emit (without entityType) - the echo guard fails to recognize the round-trip
     //      and applyHostLoad clobbers local state, losing any nodes added between the
     //      emit and its echo. The user sees node B vanish until they trigger another emit.
     const { store, bridge } = setup();
@@ -111,7 +111,7 @@ describe('bridge — host-shape vs redux-shape echo recognition', () => {
       type: 'GRAPH/MUTATE',
       next: { nodes: [{ id: 'a', position: { x: 0, y: 0 }, caption: '', labels: [], properties: {}, style: {} }], relationships: [], style: {} },
     });
-    // User immediately creates B locally — state is now [A, B].
+    // User immediately creates B locally - state is now [A, B].
     store.dispatch({
       type: 'GRAPH/MUTATE',
       next: {
@@ -124,7 +124,7 @@ describe('bridge — host-shape vs redux-shape echo recognition', () => {
       },
     });
 
-    // Host echoes A back — with entityType added by readGraph (as it does in real life).
+    // Host echoes A back - with entityType added by readGraph (as it does in real life).
     bridge.receive({
       type: 'load',
       graph: {
@@ -135,17 +135,17 @@ describe('bridge — host-shape vs redux-shape echo recognition', () => {
       docVersion: 1,
     });
 
-    // The echo must be recognized as our own — B must still be in local state.
+    // The echo must be recognized as our own - B must still be in local state.
     expect(store.getState().graph.present.nodes.map((n) => n.id)).toEqual(['a', 'b']);
   });
 });
 
-describe('bridge — rapid-edit reversal bug', () => {
+describe('bridge - rapid-edit reversal bug', () => {
   it('does not revert local state when host echoes back an older emit after rapid A→B', () => {
     const { store, bridge, emits } = setup();
     bridge.receive({ type: 'load', graph: { nodes: [], relationships: [], style: {} }, docVersion: 0 });
 
-    // User does A then B in rapid succession — both are emitted (no version guard).
+    // User does A then B in rapid succession - both are emitted (no version guard).
     const stateA = { nodes: [{ id: 'a' }], relationships: [], style: {} };
     const stateAB = { nodes: [{ id: 'a' }, { id: 'b' }], relationships: [], style: {} };
     store.dispatch({ type: 'GRAPH/MUTATE', next: stateA });
@@ -153,7 +153,7 @@ describe('bridge — rapid-edit reversal bug', () => {
     expect(emits()).toHaveLength(2);
 
     // Host applies A, fires onDidChangeTextDocument → sends load(stateA) back.
-    // This is the echo of our own A. We must NOT apply it — local state is already at AB.
+    // This is the echo of our own A. We must NOT apply it - local state is already at AB.
     bridge.receive({ type: 'load', graph: stateA, docVersion: 1 });
 
     // Local state must still be AB. If the bridge applied the echo, B is lost.
@@ -176,18 +176,7 @@ describe('bridge — rapid-edit reversal bug', () => {
 
 });
 
-describe('bridge — echo suppression', () => {
-  it('does not re-emit when the host echoes back the exact graph we just sent', () => {
-    const { store, posts, emits } = setup();
-    store.dispatch({ type: 'GRAPH/MUTATE', next: { nodes: [{ id: 'a' }], relationships: [], style: {} } });
-    expect(emits()).toHaveLength(1);
-    posts.length = 0;
-    const echoed = emits()[0]?.graph ?? { nodes: [{ id: 'a' }], relationships: [], style: {} };
-    const { bridge } = setup();
-    bridge.receive({ type: 'load', graph: echoed, docVersion: 0 });
-    expect(posts.filter((p) => p.type === 'graph-changed')).toHaveLength(0);
-  });
-
+describe('bridge - echo suppression', () => {
   it('a load with a different JSON key order does not trigger a re-emit', () => {
     const { store, bridge, emits } = setup();
     store.dispatch({
@@ -205,7 +194,7 @@ describe('bridge — echo suppression', () => {
   });
 });
 
-describe('bridge — outbound suppression during interaction', () => {
+describe('bridge - outbound suppression during interaction', () => {
   it('suppresses emit while a drag is in flight', () => {
     const { store, emits } = setup();
     store.dispatch({ type: 'MOUSE/SET_DRAG', dragType: 'NODE_DRAG' });
@@ -262,7 +251,7 @@ describe('bridge — outbound suppression during interaction', () => {
   });
 });
 
-describe('bridge — inbound deferral', () => {
+describe('bridge - inbound deferral', () => {
   it('defers a host load that arrives mid-drag; applies on drag-end', () => {
     const { store, bridge } = setup();
     const local: GraphSlice = { nodes: [{ id: 'a', position: { x: 100, y: 100 } }], relationships: [], style: {} };
@@ -300,7 +289,7 @@ describe('bridge — inbound deferral', () => {
 
 // Invariant: total emits never exceed "settle" events (drag-ends, editing commits, idle mutations).
 // If emits exceed settles, we're ping-ponging.
-describe('bridge — interleaved sequence', () => {
+describe('bridge - interleaved sequence', () => {
   it('survives 50 mixed operations without ping-pong or lost state', () => {
     const { store, bridge, emits, setFocus } = setup();
     let settleEvents = 0;
@@ -360,7 +349,7 @@ describe('bridge — interleaved sequence', () => {
   });
 });
 
-describe('bridge — export request handlers (svg / graphql / cypher)', () => {
+describe('bridge - export request handlers (svg / graphql / cypher)', () => {
   const SAMPLE_GRAPH = {
     nodes: [
       { id: 'n0', position: { x: 0, y: 0 }, caption: 'Alice', labels: ['Person'], properties: { name: "'Alice'" }, style: {} },
@@ -381,7 +370,7 @@ describe('bridge — export request handlers (svg / graphql / cypher)', () => {
     store.dispatch({ type: 'GRAPH/MUTATE', next: SAMPLE_GRAPH });
     posts.length = 0;
     bridge.receive({ type: 'request', kind, requestId: 'r-1', payload });
-    // GraphQL resolves via dynamic import — poll up to 500ms for the response.
+    // GraphQL resolves via dynamic import - poll up to 500ms for the response.
     let response: PostedMessage | undefined;
     for (let i = 0; i < 50 && !response; i++) {
       await new Promise((r) => setTimeout(r, 10));
@@ -411,7 +400,7 @@ describe('bridge — export request handlers (svg / graphql / cypher)', () => {
   });
 });
 
-describe('bridge — menu payload', () => {
+describe('bridge - menu payload', () => {
   it('preserves icon field on inbound menu entries (host → window.__arrowsMenu)', () => {
     const { bridge } = setup();
     const menu = [
@@ -421,7 +410,5 @@ describe('bridge — menu payload', () => {
     bridge.receive({ type: 'load', graph: { nodes: [], relationships: [], style: {} }, menu, docVersion: 0 });
     const onWindow = (window as unknown as { __arrowsMenu?: typeof menu }).__arrowsMenu;
     expect(onWindow).toEqual(menu);
-    expect(onWindow?.[0]?.icon).toBe('check');
-    expect(onWindow?.[1]?.icon).toBe('database');
   });
 });

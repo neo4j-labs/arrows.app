@@ -4,23 +4,24 @@ import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import reducer from '../reducers';
 import GraphContainer from '../containers/GraphContainer';
-import { embedViewportMiddleware } from './embedViewportMiddleware';
 import { imageCacheMiddleware } from '../middlewares/imageCacheMiddleware';
 import { windowResized } from '../actions/applicationLayout';
-import { initBridge } from './bridge';
-import { embedWindow } from './hostPost';
-import { EmbedInspectorPanel } from './EmbedInspectorPanel';
-import { EmbedErrorBoundary } from './EmbedErrorBoundary';
-import { EmbedToolbar } from './EmbedToolbar';
-import { EmbedCanvasContextMenu } from './EmbedCanvasContextMenu';
-import { EmbedCanvasDoubleClick } from './EmbedCanvasDoubleClick';
-import { EmbedKeybindings } from './EmbedKeybindings';
-import { EmbedPanHandler } from './EmbedPanHandler';
-import { EmbedDragContinuation } from './EmbedDragContinuation';
-import { EmbedShiftMultiSelect } from './EmbedShiftMultiSelect';
-import { EmbedToolShortcuts } from './EmbedToolShortcuts';
-import { EmbedFooter } from './EmbedFooter';
-import { ToolProvider } from './ToolContext';
+import { headerHeight, footerHeight } from '../model/applicationLayout';
+import { initBridge } from './bridge/bridge';
+import { embedWindow } from './bridge/hostPost';
+import { embedViewportMiddleware } from './store/embedViewportMiddleware';
+import { ToolProvider } from './store/ToolContext';
+import { EmbedKeybindings } from './interactions/EmbedKeybindings';
+import { EmbedToolShortcuts } from './interactions/EmbedToolShortcuts';
+import { EmbedCanvasDoubleClick } from './interactions/EmbedCanvasDoubleClick';
+import { EmbedShiftMultiSelect } from './interactions/EmbedShiftMultiSelect';
+import { EmbedPanHandler } from './interactions/EmbedPanHandler';
+import { EmbedDragContinuation } from './interactions/EmbedDragContinuation';
+import { EmbedErrorBoundary } from './ui/EmbedErrorBoundary';
+import { EmbedToolbar } from './ui/EmbedToolbar';
+import { EmbedCanvasContextMenu } from './ui/EmbedCanvasContextMenu';
+import { EmbedInspectorPanel } from './ui/EmbedInspectorPanel';
+import { EmbedFooter } from './ui/EmbedFooter';
 import 'semantic-ui-css/semantic.min.css';
 import '../styles.css';
 
@@ -39,7 +40,7 @@ if (!_bootState['viewTransformation']) {
   throw new Error('[arrows-embed] expected state.viewTransformation slice');
 }
 
-const CHROME_PADDING = 72;
+const CHROME_PADDING = headerHeight + footerHeight + 2;
 const pushViewport = () => {
   store.dispatch(
     windowResized(window.innerWidth, window.innerHeight + CHROME_PADDING)
@@ -83,7 +84,9 @@ root.render(
             <EmbedErrorBoundary fallbackLabel="Context menu error">
               <EmbedCanvasContextMenu />
             </EmbedErrorBoundary>
-            <EmbedFooter />
+            <EmbedErrorBoundary fallbackLabel="Footer error">
+              <EmbedFooter />
+            </EmbedErrorBoundary>
           </div>
           <EmbedErrorBoundary fallbackLabel="Inspector error">
             <EmbedInspectorPanel />

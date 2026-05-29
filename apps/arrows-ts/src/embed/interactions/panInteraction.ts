@@ -1,4 +1,4 @@
-// Pure decision functions for pan tool behavior — keep the DOM-coupled handler
+// Pure decision functions for pan tool behavior - keep the DOM-coupled handler
 // thin and let the rules be unit-tested.
 
 import type { HitResult } from './embedActions';
@@ -24,7 +24,7 @@ export type CursorHint = '' | 'grab' | 'grabbing' | 'pointer';
 export function cursorFor(ctx: PanContext, hit: HitResult, dragging: boolean): CursorHint {
   if (ctx.tool !== 'pan' && !ctx.spaceHeld) return '';
   if (dragging) return 'grabbing';
-  if (hit.kind !== 'none') return ''; // default arrow — signal "click selects"
+  if (hit.kind !== 'none') return ''; // default arrow - signal "click selects"
   return 'grab';
 }
 

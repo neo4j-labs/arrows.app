@@ -76,7 +76,7 @@ type IncomingGraph = {
 export function rehydrate(graph: IncomingGraph): IncomingGraph {
   return {
     ...graph,
-    // Visual* classes do raw graph.style[key] lookups — missing keys crash adaptForBackground.
+    // Visual* classes do raw graph.style[key] lookups - missing keys crash adaptForBackground.
     style: completeWithDefaults((graph.style ?? {}) as Record<string, unknown>),
     nodes: (graph.nodes ?? []).map((node) => {
       const pos = (node as { position?: { x?: unknown; y?: unknown } })
@@ -95,7 +95,7 @@ export function rehydrate(graph: IncomingGraph): IncomingGraph {
   };
 }
 
-// Plain action — bypasses the gettingGraphSucceeded thunk's clearHistory() so undo survives host echoes.
+// Plain action - bypasses the gettingGraphSucceeded thunk's clearHistory() so undo survives host echoes.
 export function applyHostLoad(store: AnyStore, graph: IncomingGraph): void {
   store.dispatch({
     category: 'GRAPH',
@@ -105,7 +105,7 @@ export function applyHostLoad(store: AnyStore, graph: IncomingGraph): void {
 }
 
 const isInputFocused = (): boolean => {
-  const el = typeof document !== 'undefined' ? document.activeElement : null;
+  const el = document.activeElement;
   if (!el) return false;
   const tag = el.tagName;
   if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
@@ -225,24 +225,20 @@ export function initBridge(
     }
   };
 
-  if (typeof window !== 'undefined') {
-    window.addEventListener('message', (event: MessageEvent) => {
-      if (
-        host.name === 'iframe' &&
-        event.source !== window.parent &&
-        event.source !== window
-      )
-        return;
-      receive(event.data);
-    });
-  }
+  window.addEventListener('message', (event: MessageEvent) => {
+    if (
+      host.name === 'iframe' &&
+      event.source !== window.parent &&
+      event.source !== window
+    )
+      return;
+    receive(event.data);
+  });
 
   store.subscribe(tryEmit);
 
-  if (typeof document !== 'undefined') {
-    // setTimeout 0: focusout fires before document.activeElement updates.
-    document.addEventListener('focusout', () => setTimeout(tryEmit, 0), true);
-  }
+  // setTimeout 0: focusout fires before document.activeElement updates.
+  document.addEventListener('focusout', () => setTimeout(tryEmit, 0), true);
 
   host.post({ type: 'ready', host: host.name });
 

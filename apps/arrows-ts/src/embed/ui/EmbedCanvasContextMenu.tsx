@@ -1,14 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from 'react-redux';
 import { Icon, type SemanticICONS } from 'semantic-ui-react';
-import { Point } from '../model/Point';
-import { createOrEditAt, editEntity, hitTestAt, selectAndPrepare, type HitResult } from './embedActions';
-import { shortcut } from './platformKeys';
-import { canvasPosOf } from './canvasPos';
-import { postToHost } from './hostPost';
-import { useAppDispatch } from './store';
-import { selectAll } from '../actions/selection';
-import { deleteSelection, duplicateSelection, reverseRelationships } from '../actions/graph';
+import { Point } from '../../model/Point';
+import { createOrEditAt, editEntity, hitTestAt, selectAndPrepare, type HitResult } from '../interactions/embedActions';
+import { shortcut } from '../interactions/platformKeys';
+import { canvasPosOf } from '../interactions/canvasPos';
+import { postToHost } from '../bridge/hostPost';
+import { useAppDispatch } from '../store/store';
+import { selectAll } from '../../actions/selection';
+import { deleteSelection, duplicateSelection, reverseRelationships } from '../../actions/graph';
 
 interface MenuState {
   x: number;
@@ -52,7 +52,7 @@ export function EmbedCanvasContextMenu() {
       if (!found) return;
       e.preventDefault();
       const rawHit = dispatch(hitTestAt(found.pos));
-      // Right-click on a node's ring shows the same menu as the node itself — same entity.
+      // Right-click on a node's ring shows the same menu as the node itself - same entity.
       const hit: HitResult = rawHit.kind === 'nodeRing' ? { kind: 'node', id: rawHit.id } : rawHit;
       if (hit.kind !== 'none') dispatch(selectAndPrepare(hit));
       setMenu({ x: e.clientX, y: e.clientY, canvasPos: found.pos, hit });

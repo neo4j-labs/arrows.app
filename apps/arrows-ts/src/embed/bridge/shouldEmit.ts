@@ -1,6 +1,5 @@
 import { isUserBusy } from './userBusy';
-// @ts-expect-error JS module without local typings.
-import { getPresentGraph } from '../selectors';
+import { getPresentGraph } from '../../selectors';
 
 export interface ShouldEmitInput {
   state: unknown;

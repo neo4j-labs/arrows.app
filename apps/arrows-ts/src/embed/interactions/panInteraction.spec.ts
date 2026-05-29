@@ -7,7 +7,7 @@ const node: HitResult = { kind: 'node', id: 'n0' };
 const rel: HitResult = { kind: 'relationship', id: 'r0' };
 const ring: HitResult = { kind: 'nodeRing', id: 'n0' };
 
-describe('decideMouseDown — pan vs yield vs ignore', () => {
+describe('decideMouseDown - pan vs yield vs ignore', () => {
   it('ignores mousedown when select tool is active and spacebar not held', () => {
     expect(decideMouseDown({ tool: 'select', spaceHeld: false }, empty)).toBe('ignore');
     expect(decideMouseDown({ tool: 'select', spaceHeld: false }, node)).toBe('ignore');
@@ -28,7 +28,7 @@ describe('decideMouseDown — pan vs yield vs ignore', () => {
   });
 });
 
-describe('resolveToolShortcut — V/H/Space bindings', () => {
+describe('resolveToolShortcut - V/H/Space bindings', () => {
   // arrows-ts's TOGGLE_FOCUS keybinding eats plain letters (keyCode 48-90).
   // Capture-phase listener bypasses that; this spec pins V/H/Space mapping.
   it.each([
@@ -46,7 +46,7 @@ describe('resolveToolShortcut — V/H/Space bindings', () => {
   });
 });
 
-describe('computeZoomTransform — free-range zoom independent of canvas-fit', () => {
+describe('computeZoomTransform - free-range zoom independent of canvas-fit', () => {
   const base = { currentScale: 1, currentOffset: { dx: 0, dy: 0 }, cursor: { x: 100, y: 50 } };
 
   it('scrolls up to zoom in, down to zoom out', () => {
@@ -73,7 +73,7 @@ describe('computeZoomTransform — free-range zoom independent of canvas-fit', (
   });
 });
 
-describe('cursorFor — visual hint matches the mousedown action', () => {
+describe('cursorFor - visual hint matches the mousedown action', () => {
   it.each([
     // [ctx, hit, dragging, expected]
     [{ tool: 'select', spaceHeld: false }, empty, false, ''], // arrows owns its cursor

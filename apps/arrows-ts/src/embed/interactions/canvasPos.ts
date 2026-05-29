@@ -1,4 +1,4 @@
-import { Point } from '../model/Point';
+import { Point } from '../../model/Point';
 
 export interface CanvasHit {
   canvas: HTMLCanvasElement;

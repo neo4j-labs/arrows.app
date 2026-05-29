@@ -1,8 +1,8 @@
 import { Component } from 'react';
-import withKeybindings, { ignoreTarget } from '../interactions/Keybindings';
+import withKeybindings, { ignoreTarget } from '../../interactions/Keybindings';
 
 // Bubble-phase: forwards to arrows.app's registered actions. EmbedToolShortcuts
-// runs in capture phase first and owns V/H/Space — see CLAUDE.md before
+// runs in capture phase first and owns V/H/Space - see CLAUDE.md before
 // adding another keydown listener.
 interface Props { fireAction: (ev: KeyboardEvent) => boolean }
 

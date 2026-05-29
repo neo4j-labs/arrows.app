@@ -1,8 +1,25 @@
 import { useEffect, useState } from 'react';
 import { Button, Popup, Menu, Icon } from 'semantic-ui-react';
-import type { EmbedMenuEntry } from './bridge';
-import { shortcut } from './platformKeys';
-import { embedWindow, postToHost } from './hostPost';
+import { headerHeight, footerHeight } from '../../model/applicationLayout';
+import type { EmbedMenuEntry } from '../bridge/bridge';
+import { shortcut } from '../interactions/platformKeys';
+import { embedWindow, postToHost } from '../bridge/hostPost';
+
+const TOOLBAR_OFFSET = 60;
+const MENU_MAX_HEIGHT = `calc(100vh - ${TOOLBAR_OFFSET + headerHeight + footerHeight}px)`;
+const MENU_STYLE: React.CSSProperties = {
+  margin: 0,
+  minWidth: 220,
+  maxHeight: MENU_MAX_HEIGHT,
+  overflowY: 'auto',
+};
+const SCROLL_CSS = `
+.arrows-embed-scroll { scrollbar-width: thin; scrollbar-color: #c0c0c0 transparent; }
+.arrows-embed-scroll::-webkit-scrollbar { width: 8px; }
+.arrows-embed-scroll::-webkit-scrollbar-track { background: transparent; }
+.arrows-embed-scroll::-webkit-scrollbar-thumb { background: #c0c0c0; border-radius: 4px; }
+.arrows-embed-scroll::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+`;
 
 // Reads menu entries the host posted into `window.__arrowsMenu` and renders
 // the kebab dropdown. Single source of truth is
@@ -59,7 +76,8 @@ export function EmbedActionMenu(): JSX.Element | null {
       }
       style={{ padding: 0 }}
     >
-      <Menu vertical secondary style={{ margin: 0, minWidth: 220 }}>
+      <style>{SCROLL_CSS}</style>
+      <Menu vertical secondary className="arrows-embed-scroll" style={MENU_STYLE}>
         {entries.map((cmd) => {
           const tooltip = cmd.shortcut
             ? `${cmd.description}  (${shortcut(cmd.shortcut)})`

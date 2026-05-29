@@ -1,7 +1,7 @@
-import { adjustViewport } from '../actions/viewTransformation';
-import { computeCanvasSize } from '../model/applicationLayout';
-import { getVisualGraph } from '../selectors';
-import { calculateViewportTranslation } from '../middlewares/viewportMiddleware';
+import { adjustViewport } from '../../actions/viewTransformation';
+import { computeCanvasSize } from '../../model/applicationLayout';
+import { getVisualGraph } from '../../selectors';
+import { calculateViewportTranslation } from '../../middlewares/viewportMiddleware';
 import type { Middleware } from 'redux';
 
 const REFIT_ACTIONS = new Set(['WINDOW_RESIZED', 'TOGGLE_INSPECTOR']);

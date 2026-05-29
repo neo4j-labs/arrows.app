@@ -1,7 +1,7 @@
 import { renderSvgDom } from '@neo4j-arrows/graphics';
 import { presentGraphFromState } from './shouldEmit';
 // @ts-expect-error JS module without local typings.
-import { exportCypher } from '../storage/exportCypher';
+import { exportCypher } from '../../storage/exportCypher';
 
 export type RenderKind = 'svg' | 'graphql' | 'cypher';
 export type Renderer = (state: unknown, payload?: unknown) => string | Promise<string>;
@@ -31,7 +31,7 @@ function renderSvg(state: unknown): string {
 
 async function renderGraphQL(state: unknown): Promise<string> {
   // @ts-expect-error JS module without local typings.
-  const mod = await import('../graphql/exportGraphQL');
+  const mod = await import('../../graphql/exportGraphQL');
   const exportGraphQL = (mod.default ?? mod) as (g: unknown) => string;
   return exportGraphQL(presentGraphFromState(state));
 }

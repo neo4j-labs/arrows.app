@@ -12,7 +12,7 @@ const stubPlatform = (mac: boolean): void => {
 
 afterEach(() => vi.unstubAllGlobals());
 
-describe('shortcut() — platform-aware modifier formatting', () => {
+describe('shortcut() - platform-aware modifier formatting', () => {
   const cases: Array<[Parameters<typeof shortcut>[0], string, string]> = [
     // [input, mac, win/linux]
     [{ mod: 'cmd', key: 'Z' }, '⌘Z', 'Ctrl+Z'],

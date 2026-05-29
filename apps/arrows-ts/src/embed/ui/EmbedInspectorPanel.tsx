@@ -1,9 +1,9 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { Icon } from 'semantic-ui-react';
-import InspectorChooser from '../containers/InspectorChooser';
+import InspectorChooser from '../../containers/InspectorChooser';
 import { inspectorWidth } from '@neo4j-arrows/model';
 // @ts-expect-error JS module without .d.ts.
-import { toggleInspector } from '../actions/applicationLayout';
+import { toggleInspector } from '../../actions/applicationLayout';
 
 const wrapBase: React.CSSProperties = {
   position: 'relative',

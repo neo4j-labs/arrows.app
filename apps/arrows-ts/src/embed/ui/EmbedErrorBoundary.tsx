@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react';
+import { postToHost } from '../bridge/hostPost';
 
 interface Props {
   children: ReactNode;
@@ -17,11 +18,13 @@ export class EmbedErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo): void {
-    // Surface to the host so a wrapping VS Code extension / docs site can log it.
-    window.parent.postMessage(
-      { type: 'embed-error', message: error.message, stack: error.stack, info: info.componentStack },
-      '*',
-    );
+    console.error('[arrows-embed]', error, info.componentStack);
+    postToHost({
+      type: 'embed-error',
+      message: error.message,
+      stack: error.stack,
+      info: info.componentStack,
+    });
   }
 
   reset = (): void => this.setState({ error: null });

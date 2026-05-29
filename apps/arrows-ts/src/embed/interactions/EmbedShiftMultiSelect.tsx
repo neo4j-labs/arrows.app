@@ -1,8 +1,8 @@
 import { useEffect } from 'react';
 import { canvasPosOf } from './canvasPos';
-import { useAppDispatch } from './store';
+import { useAppDispatch } from '../store/store';
 // @ts-expect-error JS module without .d.ts.
-import { mouseDown } from '../actions/mouse';
+import { mouseDown } from '../../actions/mouse';
 
 // Adds Shift+click as a multi-select modifier (web app only respects Cmd/Ctrl).
 // Capture-phase so MouseHandler doesn't fire a second time with the wrong state.

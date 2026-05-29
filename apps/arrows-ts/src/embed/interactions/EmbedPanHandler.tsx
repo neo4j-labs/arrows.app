@@ -1,15 +1,15 @@
 import { useEffect } from 'react';
 import { useStore } from 'react-redux';
-import { Vector } from '../model/Vector';
-import { useTool } from './ToolContext';
+import { Vector } from '../../model/Vector';
+import { useTool } from '../store/ToolContext';
 import { hitTestAt } from './embedActions';
 import { computeZoomTransform, cursorFor, decideMouseDown } from './panInteraction';
 import { canvasPosOf } from './canvasPos';
-import { useAppDispatch } from './store';
+import { useAppDispatch } from '../store/store';
 // @ts-expect-error JS modules without local typings.
-import { getVisualGraph } from '../selectors';
+import { getVisualGraph } from '../../selectors';
 // @ts-expect-error JS module without local typings.
-import { computeCanvasSize, subtractPadding } from '../model/applicationLayout';
+import { computeCanvasSize, subtractPadding } from '../../model/applicationLayout';
 
 interface BoundingBox { width: number; height: number }
 interface ViewportState {
