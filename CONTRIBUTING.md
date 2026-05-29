@@ -7,6 +7,11 @@ By participating, you  are expected to uphold this code.
 
 Please report unacceptable behavior to feedback@neo4j.com.
 
+## Subsystems
+
+- **Web app** — `apps/arrows-ts/` plus shared libraries in `libs/{model,graphics,selectors}`.
+- **VS Code extension** — `arrows-code/`. Self-contained; see [`arrows-code/README.md`](arrows-code/README.md) for build, test, and architecture rules.
+
 ## Quickstart
 
 To submit a quick pull request:
