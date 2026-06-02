@@ -1,6 +1,6 @@
 {
   "name": "arrows-code-vscode-arrows",
-  "displayName": "Arrows",
+  "displayName": "Neo4j Arrows",
   "description": "The arrows.app canvas inside VS Code - edit Neo4j graph models visually with a .arrows JSON.",
   "version": "0.1.1",
   "publisher": "neo4j-labs",
@@ -24,7 +24,7 @@
       {
         "id": "arrows",
         "extensions": [".arrows"],
-        "aliases": ["Arrows", "arrows"],
+        "aliases": ["Neo4j Arrows", "Arrows", "arrows"],
         "configuration": "./language-configuration.json",
         "icon": {
           "light": "./media/file-icon.svg",
@@ -36,7 +36,7 @@
       "activitybar": [
         {
           "id": "arrows",
-          "title": "Arrows",
+          "title": "Neo4j Arrows",
           "icon": "media/sidebar-icon.svg"
         }
       ]
@@ -46,7 +46,7 @@
         {
           "id": "arrowsExplorer",
           "name": "Graphs",
-          "contextualTitle": "Arrows",
+          "contextualTitle": "Neo4j Arrows",
           "icon": "media/sidebar-icon.svg"
         }
       ]
@@ -60,28 +60,28 @@
     "customEditors": [
       {
         "viewType": "arrows.preview",
-        "displayName": "Arrows Preview",
+        "displayName": "Neo4j Arrows",
         "selector": [{ "filenamePattern": "*.arrows" }],
         "priority": "default"
       }
     ],
     "commands": [
-      { "command": "arrows.newGraph",          "title": "New graph",                  "category": "Arrows", "icon": "$(add)" },
-      { "command": "arrows.newFromExample",    "title": "New from example…",          "category": "Arrows", "icon": "$(library)" },
-      { "command": "arrows.import",            "title": "Import shared graph…",       "category": "Arrows", "icon": "$(cloud-download)" },
-      { "command": "arrows.openSource",        "title": "Show JSON side by side",     "category": "Arrows", "icon": "$(split-horizontal)" },
-      { "command": "arrows.openPreviewToSide", "title": "Show canvas side by side",   "category": "Arrows", "icon": "$(open-preview)" },
-      { "command": "arrows.format",            "title": "Auto-arrange nodes…",        "category": "Arrows", "icon": "$(symbol-namespace)" },
-      { "command": "arrows.validate",          "title": "Validate graph",                   "category": "Arrows", "icon": "$(check)" },
-      { "command": "arrows.exportSvg",         "title": "Save as SVG…",               "category": "Arrows", "icon": "$(file-media)" },
-      { "command": "arrows.exportGraphQL",     "title": "Save as GraphQL schema…",    "category": "Arrows", "icon": "$(symbol-interface)" },
-      { "command": "arrows.exportCypher",      "title": "Save as Cypher…",            "category": "Arrows", "icon": "$(database)" },
-      { "command": "arrows.copyCypher",        "title": "Copy Cypher to clipboard",   "category": "Arrows", "icon": "$(clippy)" },
-      { "command": "arrows.openInArrowsApp",   "title": "Open in arrows.app",         "category": "Arrows", "icon": "$(link-external)" },
-      { "command": "arrows.renameLabel",       "title": "Rename label…",              "category": "Arrows", "icon": "$(symbol-key)" },
-      { "command": "arrows.renameRelType",     "title": "Rename relationship type…",  "category": "Arrows", "icon": "$(arrow-swap)" },
-      { "command": "arrows.deleteFile",        "title": "Delete graph file…",         "category": "Arrows", "icon": "$(trash)" },
-      { "command": "arrows.sidebar.refresh",   "title": "Refresh sidebar",            "category": "Arrows", "icon": "$(refresh)" }
+      { "command": "arrows.newGraph",          "title": "New graph",                  "category": "Neo4j Arrows", "icon": "$(add)" },
+      { "command": "arrows.newFromExample",    "title": "New from example…",          "category": "Neo4j Arrows", "icon": "$(library)" },
+      { "command": "arrows.import",            "title": "Import shared graph…",       "category": "Neo4j Arrows", "icon": "$(cloud-download)" },
+      { "command": "arrows.openSource",        "title": "Show JSON side by side",     "category": "Neo4j Arrows", "icon": "$(split-horizontal)" },
+      { "command": "arrows.openPreviewToSide", "title": "Show canvas side by side",   "category": "Neo4j Arrows", "icon": "$(open-preview)" },
+      { "command": "arrows.format",            "title": "Auto-arrange nodes…",        "category": "Neo4j Arrows", "icon": "$(symbol-namespace)" },
+      { "command": "arrows.validate",          "title": "Validate graph",                   "category": "Neo4j Arrows", "icon": "$(check)" },
+      { "command": "arrows.exportSvg",         "title": "Save as SVG…",               "category": "Neo4j Arrows", "icon": "$(file-media)" },
+      { "command": "arrows.exportGraphQL",     "title": "Save as GraphQL schema…",    "category": "Neo4j Arrows", "icon": "$(symbol-interface)" },
+      { "command": "arrows.exportCypher",      "title": "Save as Cypher…",            "category": "Neo4j Arrows", "icon": "$(database)" },
+      { "command": "arrows.copyCypher",        "title": "Copy Cypher to clipboard",   "category": "Neo4j Arrows", "icon": "$(clippy)" },
+      { "command": "arrows.openInArrowsApp",   "title": "Open in arrows.app",         "category": "Neo4j Arrows", "icon": "$(link-external)" },
+      { "command": "arrows.renameLabel",       "title": "Rename label…",              "category": "Neo4j Arrows", "icon": "$(symbol-key)" },
+      { "command": "arrows.renameRelType",     "title": "Rename relationship type…",  "category": "Neo4j Arrows", "icon": "$(arrow-swap)" },
+      { "command": "arrows.deleteFile",        "title": "Delete graph file…",         "category": "Neo4j Arrows", "icon": "$(trash)" },
+      { "command": "arrows.sidebar.refresh",   "title": "Refresh sidebar",            "category": "Neo4j Arrows", "icon": "$(refresh)" }
     ],
     "menus": {
       "commandPalette": [

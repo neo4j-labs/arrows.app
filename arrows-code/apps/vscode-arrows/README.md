@@ -1,4 +1,4 @@
-# Arrows for VS Code
+# Neo4j Arrows for VS Code
 
 The arrows.app canvas, inside a VS Code tab. Open a `.arrows` file and you get the editor from arrows.app - drag nodes, draw relationships, edit inline. The underlying JSON stays in sync so your graph models can live in git next to the code that uses them.
 
@@ -13,12 +13,6 @@ The arrows.app canvas, inside a VS Code tab. Open a `.arrows` file and you get t
 - Project-wide rename for labels and relationship types
 - Sidebar with your workspace's `.arrows` files plus six bundled examples
 
-## Install
-
-```bash
-code --install-extension arrows-code-vscode-arrows.vsix
-```
-
 Or search for "Arrows" in the Extensions view.
 
 ## Getting started
@@ -31,19 +25,6 @@ Or search for "Arrows" in the Extensions view.
 - `Arrows: Show JSON side by side` to see the underlying file.
 
 Press **`?`** inside the canvas to see all shortcuts.
-
-## Shortcuts
-
-| | macOS | Windows / Linux |
-|---|---|---|
-| Select / Pan tool | V / H (or hold Space) | V / H (or hold Space) |
-| Add node | Double-click empty | Double-click empty |
-| Draw relationship | Drag from node ring | Drag from node ring |
-| Add to selection | Shift+click | Shift+click |
-| Delete | Delete / Backspace | Delete / Backspace |
-| Zoom | Wheel | Wheel |
-| Show JSON side by side | ⌘K V | Ctrl+K V |
-| Auto-arrange nodes | ⇧⌥F | Shift+Alt+F |
 
 ![Canvas and JSON file open side by side](https://raw.githubusercontent.com/neo4j-labs/arrows.app/main/arrows-code/apps/vscode-arrows/media/screenshots/sync.png)
 
@@ -68,7 +49,7 @@ Plain JSON, same format arrows.app uses. Files open in either tool.
 
 ## FAQ
 
-**Does it phone home?** No. It's local.
+**Does it require internet connection?** No. It's local.
 
 **Does it round-trip with arrows.app?** Yes - same format.
 
