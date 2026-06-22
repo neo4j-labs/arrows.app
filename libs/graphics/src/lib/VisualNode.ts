@@ -32,7 +32,7 @@ export class VisualNode {
   internalScaleFactor?: number;
   insideComponents: any;
   outsideComponents: any;
-  outsideOrientation: import("/Users/akollegger/Developer/neo4j-contrib/neo4j-arrows-app/libs/graphics/src/lib/circumferentialTextAlignment").TextOrientation;
+  outsideOrientation: import("./circumferentialTextAlignment").TextOrientation;
   icon?: NodeIconInside;
   caption?: NodeCaptionInsideNode | NodeCaptionFillNode;
   labels?: NodeLabelsInsideNode;

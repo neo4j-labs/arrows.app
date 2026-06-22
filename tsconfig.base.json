@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@arrows-code/format-json": ["arrows-code/libs/format-json/src/index.ts"],
       "@neo4j-arrows/graphics": ["libs/graphics/src/index.ts"],
       "@neo4j-arrows/model": ["libs/model/src/index.ts"],
       "@neo4j-arrows/selectors": ["libs/selectors/src/index.ts"]

@@ -1,0 +1,701 @@
+{
+  "nodes": [
+    {
+      "caption": "web-app",
+      "id": "fe01",
+      "labels": [
+        "Frontend"
+      ],
+      "position": {
+        "x": -340,
+        "y": 0
+      },
+      "properties": {
+        "tech": "'react'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "mobile-app",
+      "id": "fe02",
+      "labels": [
+        "Frontend"
+      ],
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "properties": {
+        "tech": "'flutter'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "admin-panel",
+      "id": "fe03",
+      "labels": [
+        "Frontend"
+      ],
+      "position": {
+        "x": 340,
+        "y": 0
+      },
+      "properties": {
+        "tech": "'svelte'"
+      },
+      "style": {
+        "node-color": "#a7c7e7"
+      }
+    },
+    {
+      "caption": "api-gateway",
+      "id": "gw01",
+      "labels": [
+        "Gateway"
+      ],
+      "position": {
+        "x": -170,
+        "y": 280
+      },
+      "properties": {
+        "tech": "'envoy'"
+      },
+      "style": {
+        "node-color": "#ffd166"
+      }
+    },
+    {
+      "caption": "admin-gateway",
+      "id": "gw02",
+      "labels": [
+        "Gateway"
+      ],
+      "position": {
+        "x": 170,
+        "y": 280
+      },
+      "properties": {
+        "tech": "'nginx'"
+      },
+      "style": {
+        "node-color": "#ffd166"
+      }
+    },
+    {
+      "caption": "user",
+      "id": "svc02",
+      "labels": [
+        "Service"
+      ],
+      "position": {
+        "x": -1020,
+        "y": 560
+      },
+      "properties": {
+        "lang": "'go'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "catalog",
+      "id": "svc03",
+      "labels": [
+        "Service"
+      ],
+      "position": {
+        "x": 680,
+        "y": 840
+      },
+      "properties": {
+        "lang": "'java'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "search",
+      "id": "svc09",
+      "labels": [
+        "Service"
+      ],
+      "position": {
+        "x": 1020,
+        "y": 560
+      },
+      "properties": {
+        "lang": "'rust'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "cart",
+      "id": "svc04",
+      "labels": [
+        "Service"
+      ],
+      "position": {
+        "x": -680,
+        "y": 560
+      },
+      "properties": {
+        "lang": "'node'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "order",
+      "id": "svc05",
+      "labels": [
+        "Service"
+      ],
+      "position": {
+        "x": -340,
+        "y": 560
+      },
+      "properties": {
+        "lang": "'java'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "payment",
+      "id": "svc06",
+      "labels": [
+        "Service"
+      ],
+      "position": {
+        "x": 0,
+        "y": 560
+      },
+      "properties": {
+        "lang": "'go'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "recommendation",
+      "id": "svc08",
+      "labels": [
+        "Service"
+      ],
+      "position": {
+        "x": 680,
+        "y": 560
+      },
+      "properties": {
+        "lang": "'python'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "notification",
+      "id": "svc07",
+      "labels": [
+        "Service"
+      ],
+      "position": {
+        "x": 340,
+        "y": 560
+      },
+      "properties": {
+        "lang": "'python'"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "auth",
+      "id": "svc01",
+      "labels": [
+        "Service",
+        "Foundation"
+      ],
+      "position": {
+        "x": 340,
+        "y": 840
+      },
+      "properties": {
+        "lang": "'go'"
+      },
+      "style": {
+        "node-color": "#ffd6a5"
+      }
+    },
+    {
+      "caption": "inventory",
+      "id": "svc10",
+      "labels": [
+        "Service",
+        "Foundation"
+      ],
+      "position": {
+        "x": 1020,
+        "y": 840
+      },
+      "properties": {
+        "lang": "'go'"
+      },
+      "style": {
+        "node-color": "#ffd6a5"
+      }
+    },
+    {
+      "caption": "billing",
+      "id": "svc11",
+      "labels": [
+        "Service",
+        "Foundation"
+      ],
+      "position": {
+        "x": 1360,
+        "y": 840
+      },
+      "properties": {
+        "lang": "'go'"
+      },
+      "style": {
+        "node-color": "#ffd6a5"
+      }
+    },
+    {
+      "caption": "user-db",
+      "id": "db01",
+      "labels": [
+        "Database"
+      ],
+      "position": {
+        "x": -1360,
+        "y": 840
+      },
+      "properties": {
+        "kind": "'postgres'"
+      },
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "catalog-db",
+      "id": "db02",
+      "labels": [
+        "Database"
+      ],
+      "position": {
+        "x": -170,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "'postgres'"
+      },
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "search-index",
+      "id": "db05",
+      "labels": [
+        "Database"
+      ],
+      "position": {
+        "x": -340,
+        "y": 840
+      },
+      "properties": {
+        "kind": "'elastic'"
+      },
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "cart-cache",
+      "id": "db03",
+      "labels": [
+        "Database"
+      ],
+      "position": {
+        "x": -1020,
+        "y": 840
+      },
+      "properties": {
+        "kind": "'redis'"
+      },
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "order-db",
+      "id": "db04",
+      "labels": [
+        "Database"
+      ],
+      "position": {
+        "x": -680,
+        "y": 840
+      },
+      "properties": {
+        "kind": "'postgres'"
+      },
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "billing-db",
+      "id": "db06",
+      "labels": [
+        "Database"
+      ],
+      "position": {
+        "x": 170,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "'postgres'"
+      },
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    },
+    {
+      "caption": "event-bus",
+      "id": "db07",
+      "labels": [
+        "Database"
+      ],
+      "position": {
+        "x": 0,
+        "y": 840
+      },
+      "properties": {
+        "kind": "'kafka'"
+      },
+      "style": {
+        "node-color": "#ffb4a2"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "fromId": "fe01",
+      "id": "c01",
+      "properties": {},
+      "style": {},
+      "toId": "gw01",
+      "type": "CALLS"
+    },
+    {
+      "fromId": "fe02",
+      "id": "c02",
+      "properties": {},
+      "style": {},
+      "toId": "gw01",
+      "type": "CALLS"
+    },
+    {
+      "fromId": "fe03",
+      "id": "c03",
+      "properties": {},
+      "style": {},
+      "toId": "gw02",
+      "type": "CALLS"
+    },
+    {
+      "fromId": "gw01",
+      "id": "r01",
+      "properties": {},
+      "style": {},
+      "toId": "svc02",
+      "type": "ROUTES_TO"
+    },
+    {
+      "fromId": "gw01",
+      "id": "r02",
+      "properties": {},
+      "style": {},
+      "toId": "svc03",
+      "type": "ROUTES_TO"
+    },
+    {
+      "fromId": "gw01",
+      "id": "r03",
+      "properties": {},
+      "style": {},
+      "toId": "svc09",
+      "type": "ROUTES_TO"
+    },
+    {
+      "fromId": "gw01",
+      "id": "r04",
+      "properties": {},
+      "style": {},
+      "toId": "svc04",
+      "type": "ROUTES_TO"
+    },
+    {
+      "fromId": "gw01",
+      "id": "r05",
+      "properties": {},
+      "style": {},
+      "toId": "svc05",
+      "type": "ROUTES_TO"
+    },
+    {
+      "fromId": "gw01",
+      "id": "r06",
+      "properties": {},
+      "style": {},
+      "toId": "svc08",
+      "type": "ROUTES_TO"
+    },
+    {
+      "fromId": "gw02",
+      "id": "r07",
+      "properties": {},
+      "style": {},
+      "toId": "svc05",
+      "type": "ROUTES_TO"
+    },
+    {
+      "fromId": "gw02",
+      "id": "r08",
+      "properties": {},
+      "style": {},
+      "toId": "svc06",
+      "type": "ROUTES_TO"
+    },
+    {
+      "fromId": "gw02",
+      "id": "r09",
+      "properties": {},
+      "style": {},
+      "toId": "svc07",
+      "type": "ROUTES_TO"
+    },
+    {
+      "fromId": "svc02",
+      "id": "d01",
+      "properties": {},
+      "style": {},
+      "toId": "svc01",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "fromId": "svc04",
+      "id": "d02",
+      "properties": {},
+      "style": {},
+      "toId": "svc01",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "fromId": "svc05",
+      "id": "d03",
+      "properties": {},
+      "style": {},
+      "toId": "svc01",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "fromId": "svc06",
+      "id": "d04",
+      "properties": {},
+      "style": {},
+      "toId": "svc01",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "fromId": "svc04",
+      "id": "d05",
+      "properties": {},
+      "style": {},
+      "toId": "svc10",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "fromId": "svc05",
+      "id": "d06",
+      "properties": {},
+      "style": {},
+      "toId": "svc10",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "fromId": "svc05",
+      "id": "d07",
+      "properties": {},
+      "style": {},
+      "toId": "svc11",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "fromId": "svc06",
+      "id": "d08",
+      "properties": {},
+      "style": {},
+      "toId": "svc11",
+      "type": "DEPENDS_ON"
+    },
+    {
+      "fromId": "svc08",
+      "id": "d09",
+      "properties": {},
+      "style": {},
+      "toId": "svc03",
+      "type": "READS"
+    },
+    {
+      "fromId": "svc02",
+      "id": "p01",
+      "properties": {},
+      "style": {},
+      "toId": "db01",
+      "type": "PERSISTS_IN"
+    },
+    {
+      "fromId": "svc03",
+      "id": "p02",
+      "properties": {},
+      "style": {},
+      "toId": "db02",
+      "type": "PERSISTS_IN"
+    },
+    {
+      "fromId": "svc09",
+      "id": "p03",
+      "properties": {},
+      "style": {},
+      "toId": "db05",
+      "type": "PERSISTS_IN"
+    },
+    {
+      "fromId": "svc04",
+      "id": "p04",
+      "properties": {},
+      "style": {},
+      "toId": "db03",
+      "type": "PERSISTS_IN"
+    },
+    {
+      "fromId": "svc05",
+      "id": "p05",
+      "properties": {},
+      "style": {},
+      "toId": "db04",
+      "type": "PERSISTS_IN"
+    },
+    {
+      "fromId": "svc10",
+      "id": "p06",
+      "properties": {},
+      "style": {},
+      "toId": "db02",
+      "type": "PERSISTS_IN"
+    },
+    {
+      "fromId": "svc11",
+      "id": "p07",
+      "properties": {},
+      "style": {},
+      "toId": "db06",
+      "type": "PERSISTS_IN"
+    },
+    {
+      "fromId": "svc05",
+      "id": "p08",
+      "properties": {},
+      "style": {},
+      "toId": "db07",
+      "type": "PUBLISHES_TO"
+    },
+    {
+      "fromId": "svc06",
+      "id": "p09",
+      "properties": {},
+      "style": {},
+      "toId": "db07",
+      "type": "PUBLISHES_TO"
+    },
+    {
+      "fromId": "svc07",
+      "id": "p10",
+      "properties": {},
+      "style": {},
+      "toId": "db07",
+      "type": "SUBSCRIBES_TO"
+    }
+  ],
+  "style": {
+    "arrow-color": "#000000",
+    "arrow-width": 5,
+    "attachment-end": "normal",
+    "attachment-start": "normal",
+    "background-color": "#ffffff",
+    "background-image": "",
+    "background-size": "100%",
+    "border-color": "#1a1a1a",
+    "border-width": 3,
+    "caption-color": "#1a1a1a",
+    "caption-font-size": 28,
+    "caption-font-weight": "normal",
+    "caption-max-width": 200,
+    "caption-position": "inside",
+    "detail-orientation": "parallel",
+    "detail-position": "inline",
+    "directionality": "directed",
+    "font-family": "sans-serif",
+    "icon-position": "inside",
+    "icon-size": 64,
+    "label-background-color": "#ffffff",
+    "label-border-color": "#000000",
+    "label-border-width": 4,
+    "label-color": "#000000",
+    "label-display": "pill",
+    "label-font-size": 40,
+    "label-margin": 4,
+    "label-padding": 5,
+    "label-position": "inside",
+    "margin-end": 5,
+    "margin-peer": 20,
+    "margin-start": 5,
+    "node-background-image": "",
+    "node-color": "#e2e8f0",
+    "node-icon-image": "",
+    "node-margin": 2,
+    "node-padding": 5,
+    "outside-position": "auto",
+    "property-alignment": "colon",
+    "property-color": "#000000",
+    "property-font-size": 16,
+    "property-font-weight": "normal",
+    "property-position": "outside",
+    "radius": 50,
+    "relationship-icon-image": "",
+    "type-background-color": "#ffffff",
+    "type-border-color": "#000000",
+    "type-border-width": 0,
+    "type-color": "#000000",
+    "type-font-size": 16,
+    "type-padding": 5
+  }
+}

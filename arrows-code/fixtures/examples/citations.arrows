@@ -1,0 +1,1706 @@
+{
+  "nodes": [
+    {
+      "caption": "PageRank",
+      "id": "p01",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 1280,
+        "y": -800
+      },
+      "properties": {
+        "doi": "10.1.1.31.1768",
+        "year": "1999"
+      },
+      "style": {}
+    },
+    {
+      "caption": "HITS",
+      "id": "p02",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -1280,
+        "y": -480
+      },
+      "properties": {
+        "year": "1999"
+      },
+      "style": {}
+    },
+    {
+      "caption": "SimRank",
+      "id": "p03",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -960,
+        "y": -480
+      },
+      "properties": {
+        "year": "2002"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Louvain",
+      "id": "p04",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -640,
+        "y": -480
+      },
+      "properties": {
+        "year": "2008"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Label Propagation",
+      "id": "p05",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -320,
+        "y": -480
+      },
+      "properties": {
+        "year": "2007"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Modularity",
+      "id": "p06",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 0,
+        "y": -480
+      },
+      "properties": {
+        "year": "2004"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Node2Vec",
+      "id": "p07",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 320,
+        "y": -480
+      },
+      "properties": {
+        "year": "2016"
+      },
+      "style": {}
+    },
+    {
+      "caption": "DeepWalk",
+      "id": "p08",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 640,
+        "y": -480
+      },
+      "properties": {
+        "year": "2014"
+      },
+      "style": {}
+    },
+    {
+      "caption": "GraphSAGE",
+      "id": "p09",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 960,
+        "y": -480
+      },
+      "properties": {
+        "year": "2017"
+      },
+      "style": {}
+    },
+    {
+      "caption": "GCN",
+      "id": "p10",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 1280,
+        "y": -480
+      },
+      "properties": {
+        "year": "2016"
+      },
+      "style": {}
+    },
+    {
+      "caption": "GAT",
+      "id": "p11",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -1280,
+        "y": -160
+      },
+      "properties": {
+        "year": "2018"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Word2Vec",
+      "id": "p12",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -960,
+        "y": -160
+      },
+      "properties": {
+        "year": "2013"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Triangle Count",
+      "id": "p13",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -640,
+        "y": -160
+      },
+      "properties": {
+        "year": "2008"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Strongly Connected",
+      "id": "p14",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -320,
+        "y": -160
+      },
+      "properties": {
+        "year": "1972"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Dijkstra",
+      "id": "p15",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 0,
+        "y": -160
+      },
+      "properties": {
+        "year": "1959"
+      },
+      "style": {}
+    },
+    {
+      "caption": "A* Search",
+      "id": "p16",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 320,
+        "y": -160
+      },
+      "properties": {
+        "year": "1968"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Yen's Algorithm",
+      "id": "p17",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 640,
+        "y": -160
+      },
+      "properties": {
+        "year": "1971"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Betweenness",
+      "id": "p18",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 960,
+        "y": -160
+      },
+      "properties": {
+        "year": "2001"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Closeness",
+      "id": "p19",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 1280,
+        "y": -160
+      },
+      "properties": {
+        "year": "1966"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Cypher",
+      "id": "p20",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -1280,
+        "y": 160
+      },
+      "properties": {
+        "year": "2018"
+      },
+      "style": {}
+    },
+    {
+      "caption": "GraphRAG",
+      "id": "p21",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -960,
+        "y": 160
+      },
+      "properties": {
+        "year": "2024"
+      },
+      "style": {}
+    },
+    {
+      "caption": "GraphRAG Eval",
+      "id": "p22",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -640,
+        "y": 160
+      },
+      "properties": {
+        "year": "2025"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Vector Search",
+      "id": "p23",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -320,
+        "y": 160
+      },
+      "properties": {
+        "year": "2020"
+      },
+      "style": {}
+    },
+    {
+      "caption": "HNSW",
+      "id": "p24",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 0,
+        "y": 160
+      },
+      "properties": {
+        "year": "2016"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Knowledge Graph Survey",
+      "id": "p25",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 320,
+        "y": 160
+      },
+      "properties": {
+        "year": "2021"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Property Graphs",
+      "id": "p26",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 640,
+        "y": 160
+      },
+      "properties": {
+        "year": "2019"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Belief Propagation",
+      "id": "p27",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 960,
+        "y": 160
+      },
+      "properties": {
+        "year": "1988"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Spectral Clustering",
+      "id": "p28",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": 1280,
+        "y": 160
+      },
+      "properties": {
+        "year": "2007"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Graph Kernels",
+      "id": "p29",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -1280,
+        "y": 480
+      },
+      "properties": {
+        "year": "2010"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Random Walks",
+      "id": "p30",
+      "labels": [
+        "Paper"
+      ],
+      "position": {
+        "x": -960,
+        "y": 480
+      },
+      "properties": {
+        "year": "1905"
+      },
+      "style": {}
+    },
+    {
+      "caption": "Stanford TR",
+      "id": "v01",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -640,
+        "y": 480
+      },
+      "properties": {
+        "kind": "technical-report"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "JACM",
+      "id": "v02",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -320,
+        "y": 480
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "KDD",
+      "id": "v03",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 0,
+        "y": 480
+      },
+      "properties": {
+        "kind": "conference"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "J Stat Mech",
+      "id": "v04",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 320,
+        "y": 480
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Phys Rev E",
+      "id": "v05",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 640,
+        "y": 480
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "NeurIPS",
+      "id": "v06",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 960,
+        "y": 480
+      },
+      "properties": {
+        "kind": "conference"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "ICLR",
+      "id": "v07",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 1280,
+        "y": 480
+      },
+      "properties": {
+        "kind": "conference"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "WWW",
+      "id": "v08",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -1280,
+        "y": 800
+      },
+      "properties": {
+        "kind": "conference"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "SIAM J Comp",
+      "id": "v09",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -960,
+        "y": 800
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Num Math",
+      "id": "v10",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -640,
+        "y": 800
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "IEEE Trans SSC",
+      "id": "v11",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -320,
+        "y": 800
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Mgmt Sci",
+      "id": "v12",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 0,
+        "y": 800
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "J Math Sociol",
+      "id": "v13",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 320,
+        "y": 800
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Sociometry",
+      "id": "v14",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 640,
+        "y": 800
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "SIGMOD",
+      "id": "v15",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 960,
+        "y": 800
+      },
+      "properties": {
+        "kind": "conference"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "arXiv",
+      "id": "v16",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 1280,
+        "y": 800
+      },
+      "properties": {
+        "kind": "preprint"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "IEEE TKDE",
+      "id": "v17",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -1280,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "VLDB",
+      "id": "v18",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -960,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "conference"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "AAAI",
+      "id": "v19",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -640,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "conference"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Stat Comp",
+      "id": "v20",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": -320,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "JMLR",
+      "id": "v21",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 0,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Nature",
+      "id": "v22",
+      "labels": [
+        "Venue"
+      ],
+      "position": {
+        "x": 320,
+        "y": 1120
+      },
+      "properties": {
+        "kind": "journal"
+      },
+      "style": {
+        "node-color": "#fff1a8"
+      }
+    },
+    {
+      "caption": "Larry Page",
+      "id": "a01",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": -1280,
+        "y": -1120
+      },
+      "properties": {
+        "affiliation": "Stanford"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Sergey Brin",
+      "id": "a02",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": -960,
+        "y": -1120
+      },
+      "properties": {
+        "affiliation": "Stanford"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Jon Kleinberg",
+      "id": "a03",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": -640,
+        "y": -1120
+      },
+      "properties": {
+        "affiliation": "Cornell"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Aditya Grover",
+      "id": "a04",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": -320,
+        "y": -1120
+      },
+      "properties": {
+        "affiliation": "Stanford"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Jure Leskovec",
+      "id": "a05",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": 0,
+        "y": -1120
+      },
+      "properties": {
+        "affiliation": "Stanford"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Bryan Perozzi",
+      "id": "a06",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": 320,
+        "y": -1120
+      },
+      "properties": {
+        "affiliation": "Google"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Will Hamilton",
+      "id": "a07",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": 640,
+        "y": -1120
+      },
+      "properties": {
+        "affiliation": "McGill"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Thomas Kipf",
+      "id": "a08",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": 960,
+        "y": -1120
+      },
+      "properties": {
+        "affiliation": "Amsterdam"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Max Welling",
+      "id": "a09",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": 1280,
+        "y": -1120
+      },
+      "properties": {
+        "affiliation": "Amsterdam"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Petar Velickovic",
+      "id": "a10",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": -1280,
+        "y": -800
+      },
+      "properties": {
+        "affiliation": "Cambridge"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Tomas Mikolov",
+      "id": "a11",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": -960,
+        "y": -800
+      },
+      "properties": {
+        "affiliation": "Google"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Robert Tarjan",
+      "id": "a12",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": -640,
+        "y": -800
+      },
+      "properties": {
+        "affiliation": "Princeton"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Edsger Dijkstra",
+      "id": "a13",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": -320,
+        "y": -800
+      },
+      "properties": {
+        "affiliation": "Eindhoven"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Judea Pearl",
+      "id": "a14",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": 0,
+        "y": -800
+      },
+      "properties": {
+        "affiliation": "UCLA"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Mark Newman",
+      "id": "a15",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": 320,
+        "y": -800
+      },
+      "properties": {
+        "affiliation": "Michigan"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Renzo Angles",
+      "id": "a16",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": 640,
+        "y": -800
+      },
+      "properties": {
+        "affiliation": "U Talca"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    },
+    {
+      "caption": "Albert Einstein",
+      "id": "a17",
+      "labels": [
+        "Author"
+      ],
+      "position": {
+        "x": 960,
+        "y": -800
+      },
+      "properties": {
+        "affiliation": "Bern"
+      },
+      "style": {
+        "node-color": "#c0a9e0"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "fromId": "p01",
+      "id": "pub01",
+      "properties": {},
+      "style": {},
+      "toId": "v01",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p02",
+      "id": "pub02",
+      "properties": {},
+      "style": {},
+      "toId": "v02",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p03",
+      "id": "pub03",
+      "properties": {},
+      "style": {},
+      "toId": "v03",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p04",
+      "id": "pub04",
+      "properties": {},
+      "style": {},
+      "toId": "v04",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p05",
+      "id": "pub05",
+      "properties": {},
+      "style": {},
+      "toId": "v05",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p06",
+      "id": "pub06",
+      "properties": {},
+      "style": {},
+      "toId": "v05",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p07",
+      "id": "pub07",
+      "properties": {},
+      "style": {},
+      "toId": "v03",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p08",
+      "id": "pub08",
+      "properties": {},
+      "style": {},
+      "toId": "v03",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p09",
+      "id": "pub09",
+      "properties": {},
+      "style": {},
+      "toId": "v06",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p10",
+      "id": "pub10",
+      "properties": {},
+      "style": {},
+      "toId": "v07",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p11",
+      "id": "pub11",
+      "properties": {},
+      "style": {},
+      "toId": "v07",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p12",
+      "id": "pub12",
+      "properties": {},
+      "style": {},
+      "toId": "v06",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p13",
+      "id": "pub13",
+      "properties": {},
+      "style": {},
+      "toId": "v08",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p14",
+      "id": "pub14",
+      "properties": {},
+      "style": {},
+      "toId": "v09",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p15",
+      "id": "pub15",
+      "properties": {},
+      "style": {},
+      "toId": "v10",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p16",
+      "id": "pub16",
+      "properties": {},
+      "style": {},
+      "toId": "v11",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p17",
+      "id": "pub17",
+      "properties": {},
+      "style": {},
+      "toId": "v12",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p18",
+      "id": "pub18",
+      "properties": {},
+      "style": {},
+      "toId": "v13",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p19",
+      "id": "pub19",
+      "properties": {},
+      "style": {},
+      "toId": "v14",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p20",
+      "id": "pub20",
+      "properties": {},
+      "style": {},
+      "toId": "v15",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p21",
+      "id": "pub21",
+      "properties": {},
+      "style": {},
+      "toId": "v16",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p22",
+      "id": "pub22",
+      "properties": {},
+      "style": {},
+      "toId": "v16",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p23",
+      "id": "pub23",
+      "properties": {},
+      "style": {},
+      "toId": "v16",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p24",
+      "id": "pub24",
+      "properties": {},
+      "style": {},
+      "toId": "v16",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p25",
+      "id": "pub25",
+      "properties": {},
+      "style": {},
+      "toId": "v17",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p26",
+      "id": "pub26",
+      "properties": {},
+      "style": {},
+      "toId": "v18",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p27",
+      "id": "pub27",
+      "properties": {},
+      "style": {},
+      "toId": "v19",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p28",
+      "id": "pub28",
+      "properties": {},
+      "style": {},
+      "toId": "v20",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p29",
+      "id": "pub29",
+      "properties": {},
+      "style": {},
+      "toId": "v21",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "p30",
+      "id": "pub30",
+      "properties": {},
+      "style": {},
+      "toId": "v22",
+      "type": "PUBLISHED_IN"
+    },
+    {
+      "fromId": "a01",
+      "id": "w01",
+      "properties": {},
+      "style": {},
+      "toId": "p01",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a02",
+      "id": "w02",
+      "properties": {},
+      "style": {},
+      "toId": "p01",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a03",
+      "id": "w03",
+      "properties": {},
+      "style": {},
+      "toId": "p02",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a04",
+      "id": "w04",
+      "properties": {},
+      "style": {},
+      "toId": "p07",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a05",
+      "id": "w05",
+      "properties": {},
+      "style": {},
+      "toId": "p07",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a05",
+      "id": "w06",
+      "properties": {},
+      "style": {},
+      "toId": "p09",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a06",
+      "id": "w07",
+      "properties": {},
+      "style": {},
+      "toId": "p08",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a07",
+      "id": "w08",
+      "properties": {},
+      "style": {},
+      "toId": "p09",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a08",
+      "id": "w09",
+      "properties": {},
+      "style": {},
+      "toId": "p10",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a09",
+      "id": "w10",
+      "properties": {},
+      "style": {},
+      "toId": "p10",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a08",
+      "id": "w11",
+      "properties": {},
+      "style": {},
+      "toId": "p11",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a10",
+      "id": "w12",
+      "properties": {},
+      "style": {},
+      "toId": "p11",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a11",
+      "id": "w13",
+      "properties": {},
+      "style": {},
+      "toId": "p12",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a12",
+      "id": "w14",
+      "properties": {},
+      "style": {},
+      "toId": "p14",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a13",
+      "id": "w15",
+      "properties": {},
+      "style": {},
+      "toId": "p15",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a14",
+      "id": "w16",
+      "properties": {},
+      "style": {},
+      "toId": "p27",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a15",
+      "id": "w17",
+      "properties": {},
+      "style": {},
+      "toId": "p06",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a16",
+      "id": "w18",
+      "properties": {},
+      "style": {},
+      "toId": "p26",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "a17",
+      "id": "w19",
+      "properties": {},
+      "style": {},
+      "toId": "p30",
+      "type": "WROTE"
+    },
+    {
+      "fromId": "p02",
+      "id": "c01",
+      "properties": {},
+      "style": {},
+      "toId": "p01",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p03",
+      "id": "c02",
+      "properties": {},
+      "style": {},
+      "toId": "p01",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p04",
+      "id": "c03",
+      "properties": {},
+      "style": {},
+      "toId": "p06",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p05",
+      "id": "c04",
+      "properties": {},
+      "style": {},
+      "toId": "p06",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p07",
+      "id": "c05",
+      "properties": {},
+      "style": {},
+      "toId": "p08",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p07",
+      "id": "c06",
+      "properties": {},
+      "style": {},
+      "toId": "p12",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p08",
+      "id": "c07",
+      "properties": {},
+      "style": {},
+      "toId": "p12",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p08",
+      "id": "c08",
+      "properties": {},
+      "style": {},
+      "toId": "p30",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p09",
+      "id": "c09",
+      "properties": {},
+      "style": {},
+      "toId": "p10",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p10",
+      "id": "c10",
+      "properties": {},
+      "style": {},
+      "toId": "p07",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p11",
+      "id": "c11",
+      "properties": {},
+      "style": {},
+      "toId": "p10",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p11",
+      "id": "c12",
+      "properties": {},
+      "style": {},
+      "toId": "p09",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p16",
+      "id": "c13",
+      "properties": {},
+      "style": {},
+      "toId": "p15",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p17",
+      "id": "c14",
+      "properties": {},
+      "style": {},
+      "toId": "p15",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p18",
+      "id": "c15",
+      "properties": {},
+      "style": {},
+      "toId": "p19",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p20",
+      "id": "c16",
+      "properties": {},
+      "style": {},
+      "toId": "p26",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p21",
+      "id": "c17",
+      "properties": {},
+      "style": {},
+      "toId": "p25",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p21",
+      "id": "c18",
+      "properties": {},
+      "style": {},
+      "toId": "p23",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p22",
+      "id": "c19",
+      "properties": {},
+      "style": {},
+      "toId": "p21",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p23",
+      "id": "c20",
+      "properties": {},
+      "style": {},
+      "toId": "p24",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p25",
+      "id": "c21",
+      "properties": {},
+      "style": {},
+      "toId": "p26",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p28",
+      "id": "c22",
+      "properties": {},
+      "style": {},
+      "toId": "p06",
+      "type": "CITES"
+    },
+    {
+      "fromId": "p13",
+      "id": "c23",
+      "properties": {},
+      "style": {},
+      "toId": "p06",
+      "type": "CITES"
+    }
+  ],
+  "style": {
+    "background-color": "#ffffff",
+    "border-color": "#1a1a1a",
+    "border-width": 3,
+    "caption-color": "#1a1a1a",
+    "caption-font-size": 24,
+    "font-family": "sans-serif",
+    "node-color": "#a7c7e7",
+    "radius": 55
+  }
+}
