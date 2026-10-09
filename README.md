@@ -1,5 +1,7 @@
 # [arrows.app](https://arrows.neo4jlabs.com/)
 
+> This is an experimental Neo4j Labs project and not part of Neo4j's supported product lineup. See the [Neo4j Labs disclaimer](./LABS_DISCLAIMER.txt).
+
 ![Arrow.app logo](https://arrows.neo4jlabs.com/arrows_logo.svg)
 
 **🚨 NOTE:** The domain https://arrows.app was unavialable, we've restored access (esp. for locally stored graphs). Sorry for the issues (Expiry/Google/Squarespace). We're planning to permanently move the app to https://arrows.neo4jlabs.com/ 
